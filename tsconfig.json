@@ -1,16 +1,7 @@
 {
   "extends": "@adonisjs/tsconfig/tsconfig.app.json",
   "compilerOptions": {
-    "outDir": "./build",
-    "module": "commonjs",
-    "target": "ES2019",
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "strict": true,
-    "sourceMap": true,
     "rootDir": "./",
-    "types": ["jest"],
-  },
-  "include": ["./**/*.spec.ts"],
-  "exclude": ["node_modules", "build"]
+    "outDir": "./build"
+  }
 }
