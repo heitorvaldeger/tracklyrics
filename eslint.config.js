@@ -3,7 +3,8 @@ export default [
   ...configApp(),
   {
     rules: {
-      "@unicorn/filename-case": "off"
+      "@unicorn/filename-case": "off",
+      "@typescript-eslint/naming-convention": "off"
     }
   }
 ]
