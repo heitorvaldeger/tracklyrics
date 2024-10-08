@@ -1,6 +1,7 @@
 import GenrerController from '#controllers/GenrerController'
 import Genrer from '#models/genrer'
 import { test } from '@japa/runner'
+import { ok } from '../../../app/helpers/http.js'
 
 test.group('GenrerController', (group) => {
   group.each.teardown(async () => {
@@ -15,6 +16,6 @@ test.group('GenrerController', (group) => {
     const sut = new GenrerController()
     const genres = await sut.findAll()
 
-    assert.deepEqual(genres, [genrer.serialize()])
+    assert.deepEqual(genres, ok([genrer.serialize()]))
   })
 })
