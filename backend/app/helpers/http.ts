@@ -9,3 +9,7 @@ export const badRequest = (body: any): IHttpResponse => ({
   statusCode: 400,
   body,
 })
+
+export const noContent = (): IHttpResponse => ({
+  statusCode: 204,
+})
