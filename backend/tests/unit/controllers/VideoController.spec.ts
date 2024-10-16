@@ -134,4 +134,37 @@ test.group('VideoController', (group) => {
       ])
     )
   })
+
+  test('should returns 400 if fields not contains most three characteres', async ({ assert }) => {
+    const fakeVideo = {
+      isDraft: false,
+      title: 'an',
+      artist: 'an',
+      releaseYear: '2004',
+      linkYoutube: 'an',
+    }
+
+    const httpContext = new HttpContextFactory().create()
+    httpContext.request.updateBody(fakeVideo)
+    const sut = new VideoController()
+    const httpResponse = await sut.create(httpContext)
+
+    assert.deepEqual(
+      httpResponse,
+      badRequest([
+        {
+          field: 'title',
+          message: 'The title field must have at least 3 characters',
+        },
+        {
+          field: 'artist',
+          message: 'The artist field must have at least 3 characters',
+        },
+        {
+          field: 'linkYoutube',
+          message: 'The linkYoutube field must have at least 3 characters',
+        },
+      ])
+    )
+  })
 })
