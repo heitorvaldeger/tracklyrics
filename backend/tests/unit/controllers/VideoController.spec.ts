@@ -52,4 +52,41 @@ test.group('VideoController', (group) => {
       ])
     )
   })
+
+  test('should returns 400 if required fields is not provided', async ({ assert }) => {
+    const fakeVideo = {
+      isDraft: false,
+    }
+
+    const httpContext = new HttpContextFactory().create()
+    httpContext.request.updateBody(fakeVideo)
+    const sut = new VideoController()
+    const httpResponse = await sut.create(httpContext)
+
+    assert.deepEqual(
+      httpResponse,
+      badRequest([
+        {
+          field: 'title',
+          message: 'The title field must be defined',
+          rule: 'required',
+        },
+        {
+          field: 'artist',
+          message: 'The artist field must be defined',
+          rule: 'required',
+        },
+        {
+          field: 'releaseYear',
+          message: 'The releaseYear field must be defined',
+          rule: 'required',
+        },
+        {
+          field: 'linkYoutube',
+          message: 'The linkYoutube field must be defined',
+          rule: 'required',
+        },
+      ])
+    )
+  })
 })
