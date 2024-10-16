@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import Video from '#models/video'
 import { badRequest, ok } from '../helpers/http.js'
-import { createVideoValidator } from '#validators/video_validator'
+import { createVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 
 export default class VideoController {
