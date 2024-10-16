@@ -47,7 +47,6 @@ test.group('VideoController', (group) => {
         {
           field: 'isDraft',
           message: 'The value must be a boolean',
-          rule: 'boolean',
         },
       ])
     )
@@ -69,22 +68,43 @@ test.group('VideoController', (group) => {
         {
           field: 'title',
           message: 'The title field must be defined',
-          rule: 'required',
         },
         {
           field: 'artist',
           message: 'The artist field must be defined',
-          rule: 'required',
         },
         {
           field: 'releaseYear',
           message: 'The releaseYear field must be defined',
-          rule: 'required',
         },
         {
           field: 'linkYoutube',
           message: 'The linkYoutube field must be defined',
-          rule: 'required',
+        },
+      ])
+    )
+  })
+
+  test('should returns 400 if releseYear not contains four length', async ({ assert }) => {
+    const fakeVideo = {
+      isDraft: false,
+      title: 'any_title',
+      artist: 'any_artist',
+      releaseYear: 'any_year',
+      linkYoutube: 'any_link',
+    }
+
+    const httpContext = new HttpContextFactory().create()
+    httpContext.request.updateBody(fakeVideo)
+    const sut = new VideoController()
+    const httpResponse = await sut.create(httpContext)
+
+    assert.deepEqual(
+      httpResponse,
+      badRequest([
+        {
+          field: 'releaseYear',
+          message: 'The releaseYear field must be 4 characters long',
         },
       ])
     )
