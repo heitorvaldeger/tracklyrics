@@ -109,4 +109,29 @@ test.group('VideoController', (group) => {
       ])
     )
   })
+
+  test('should returns 400 if releseYear not is numeric', async ({ assert }) => {
+    const fakeVideo = {
+      isDraft: false,
+      title: 'any_title',
+      artist: 'any_artist',
+      releaseYear: 'year',
+      linkYoutube: 'any_link',
+    }
+
+    const httpContext = new HttpContextFactory().create()
+    httpContext.request.updateBody(fakeVideo)
+    const sut = new VideoController()
+    const httpResponse = await sut.create(httpContext)
+
+    assert.deepEqual(
+      httpResponse,
+      badRequest([
+        {
+          field: 'releaseYear',
+          message: 'The releaseYear field format is invalid',
+        },
+      ])
+    )
+  })
 })
