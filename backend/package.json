@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky",
+    "prepare": "cd .. && husky backend/.husky",
     "commitlint": "commitlint --edit"
   },
   "imports": {
