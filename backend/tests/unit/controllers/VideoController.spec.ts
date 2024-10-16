@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
 import { test } from '@japa/runner'
-import { badRequest, ok } from '../../../app/helpers/http.js'
+import { badRequest, noContent, ok } from '../../../app/helpers/http.js'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
 
 test.group('VideoController', (group) => {
@@ -203,5 +203,22 @@ test.group('VideoController', (group) => {
         },
       ])
     )
+  })
+
+  test('should returns 200 if video was create on success', async ({ assert }) => {
+    const fakeVideo = {
+      isDraft: false,
+      title: 'any_title',
+      artist: 'any_artist',
+      releaseYear: '0000',
+      linkYoutube: 'any_link',
+    }
+
+    const httpContext = new HttpContextFactory().create()
+    httpContext.request.updateBody(fakeVideo)
+    const sut = new VideoController()
+    const httpResponse = await sut.create(httpContext)
+
+    assert.deepEqual(httpResponse, noContent())
   })
 })
