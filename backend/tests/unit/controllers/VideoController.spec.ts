@@ -6,7 +6,7 @@ import { badRequest, noContent, ok } from '../../../app/helpers/http.js'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
 
 test.group('VideoController', (group) => {
-  group.teardown(async () => {
+  group.setup(async () => {
     await Video.query().whereNotNull('id').delete()
   })
   test('should returns 200 if a list videos returns on success', async ({ assert }) => {
