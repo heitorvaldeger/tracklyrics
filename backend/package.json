@@ -8,7 +8,7 @@
     "start": "node bin/server.js",
     "build": "node ace build",
     "dev": "node ace serve --hmr",
-    "test": "node ace test",
+    "test": "node ./tests/run-tests.js",
     "test:watch": "npm test -- --watch",
     "lint": "eslint .",
     "format": "prettier --write .",
