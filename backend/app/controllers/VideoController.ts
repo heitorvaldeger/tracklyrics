@@ -30,4 +30,16 @@ export default class VideoController {
       return serverError(error as Error)
     }
   }
+
+  async delete({ request }: HttpContext) {
+    try {
+      const { uuid } = request.params()
+
+      await Video.query().where('uuid', uuid).delete()
+
+      return noContent()
+    } catch (error) {
+      return null
+    }
+  }
 }
