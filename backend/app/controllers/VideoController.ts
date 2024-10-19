@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import Video from '#models/video'
-import { badRequest, noContent, ok } from '../helpers/http.js'
+import { badRequest, noContent, ok, serverError } from '#helpers/http'
 import { createVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 
@@ -26,6 +26,8 @@ export default class VideoController {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)
       }
+
+      return serverError(error as Error)
     }
   }
 }

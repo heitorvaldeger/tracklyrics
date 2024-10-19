@@ -13,3 +13,8 @@ export const badRequest = (body: any): IHttpResponse => ({
 export const noContent = (): IHttpResponse => ({
   statusCode: 204,
 })
+
+export const serverError = (error: any): IHttpResponse => ({
+  statusCode: 500,
+  body: error,
+})
