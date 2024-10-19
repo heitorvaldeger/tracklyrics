@@ -1,10 +1,25 @@
 import { randomUUID } from 'node:crypto'
+import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import { stub } from 'sinon'
 import { test } from '@japa/runner'
-import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
 import { badRequest, noContent, ok, serverError } from '#helpers/http'
+
+const makeFakeRequest = () => ({
+  isDraft: false,
+  title: 'any_title',
+  artist: 'any_artist',
+  releaseYear: '0000',
+  linkYoutube: 'any_link',
+})
+
+const makeHttpContext = (fakeRequest: any) => {
+  const httpContext = new HttpContextFactory().create()
+  httpContext.request.updateBody(fakeRequest)
+
+  return httpContext
+}
 
 test.group('VideoController', (group) => {
   group.setup(async () => {
@@ -37,10 +52,8 @@ test.group('VideoController', (group) => {
       linkYoutube: 'any_link',
     }
 
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(fakeVideo))
 
     assert.deepEqual(
       httpResponse,
@@ -58,10 +71,8 @@ test.group('VideoController', (group) => {
       isDraft: false,
     }
 
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(fakeVideo))
 
     assert.deepEqual(
       httpResponse,
@@ -95,10 +106,8 @@ test.group('VideoController', (group) => {
       linkYoutube: 'any_link',
     }
 
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(fakeVideo))
 
     assert.deepEqual(
       httpResponse,
@@ -120,10 +129,8 @@ test.group('VideoController', (group) => {
       linkYoutube: 'any_link',
     }
 
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(fakeVideo))
 
     assert.deepEqual(
       httpResponse,
@@ -145,10 +152,8 @@ test.group('VideoController', (group) => {
       linkYoutube: 'an',
     }
 
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(fakeVideo))
 
     assert.deepEqual(
       httpResponse,
@@ -178,10 +183,8 @@ test.group('VideoController', (group) => {
       linkYoutube: '',
     }
 
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(fakeVideo))
 
     assert.deepEqual(
       httpResponse,
@@ -207,37 +210,17 @@ test.group('VideoController', (group) => {
   })
 
   test('should returns 200 if video was create on success', async ({ assert }) => {
-    const fakeVideo = {
-      isDraft: false,
-      title: 'any_title',
-      artist: 'any_artist',
-      releaseYear: '0000',
-      linkYoutube: 'any_link',
-    }
-
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(makeFakeRequest()))
 
     assert.deepEqual(httpResponse, noContent())
   })
 
   test('should returns 500 if video create throws', async ({ assert }) => {
     stub(Video, 'create').throws(new Error())
-    const fakeVideo = {
-      isDraft: false,
-      title: 'any_title',
-      artist: 'any_artist',
-      releaseYear: '0000',
-      linkYoutube: 'any_link',
-    }
-
-    const httpContext = new HttpContextFactory().create()
-    httpContext.request.updateBody(fakeVideo)
 
     const sut = new VideoController()
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.create(makeHttpContext(makeFakeRequest()))
 
     assert.deepEqual(httpResponse, serverError(new Error()))
   })
