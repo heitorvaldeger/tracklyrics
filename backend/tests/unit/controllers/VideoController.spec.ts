@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto'
+import { stub } from 'sinon'
+import { test } from '@japa/runner'
+import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
-import { test } from '@japa/runner'
-import { badRequest, noContent, ok } from '../../../app/helpers/http.js'
-import { HttpContextFactory } from '@adonisjs/core/factories/http'
+import { badRequest, noContent, ok, serverError } from '#helpers/http'
 
 test.group('VideoController', (group) => {
   group.setup(async () => {
@@ -220,5 +221,24 @@ test.group('VideoController', (group) => {
     const httpResponse = await sut.create(httpContext)
 
     assert.deepEqual(httpResponse, noContent())
+  })
+
+  test('should returns 500 if video create throws', async ({ assert }) => {
+    stub(Video, 'create').throws(new Error())
+    const fakeVideo = {
+      isDraft: false,
+      title: 'any_title',
+      artist: 'any_artist',
+      releaseYear: '0000',
+      linkYoutube: 'any_link',
+    }
+
+    const httpContext = new HttpContextFactory().create()
+    httpContext.request.updateBody(fakeVideo)
+
+    const sut = new VideoController()
+    const httpResponse = await sut.create(httpContext)
+
+    assert.deepEqual(httpResponse, serverError(new Error()))
   })
 })
