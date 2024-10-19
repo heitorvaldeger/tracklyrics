@@ -6,6 +6,17 @@ import { createVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 
 export default class VideoController {
+  async find({ request }: HttpContext) {
+    try {
+      const { uuid } = request.params()
+
+      const video = await Video.findBy('uuid', uuid)
+      return ok(video?.serialize())
+    } catch (error) {
+      serverError(error)
+    }
+  }
+
   async findAll() {
     const videos = await Video.all()
 
