@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
-import { stub } from 'sinon'
+import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
@@ -14,6 +14,21 @@ const makeFakeRequest = () => ({
   linkYoutube: 'any_link',
 })
 
+const makeFakeVideo = async () => {
+  const uuid = randomUUID()
+  const fakeVideo = {
+    isDraft: false,
+    title: 'any_title',
+    artist: 'any_artist',
+    qtyViews: BigInt(0),
+    releaseYear: '2000',
+    linkYoutube: 'any_link',
+    uuid: uuid,
+  }
+  await Video.create(fakeVideo)
+  return fakeVideo
+}
+
 const makeHttpContext = (fakeRequest: any) => {
   const httpContext = new HttpContextFactory().create()
   httpContext.request.updateBody(fakeRequest)
@@ -24,6 +39,10 @@ const makeHttpContext = (fakeRequest: any) => {
 test.group('VideoController', (group) => {
   group.setup(async () => {
     await Video.query().whereNotNull('id').delete()
+  })
+
+  group.each.teardown(() => {
+    sinon.reset()
   })
   test('should returns 200 if a list videos returns on success', async ({ assert }) => {
     const uuid = randomUUID()
@@ -223,5 +242,18 @@ test.group('VideoController', (group) => {
     const httpResponse = await sut.create(makeHttpContext(makeFakeRequest()))
 
     assert.deepEqual(httpResponse, serverError(new Error()))
+  })
+
+  test('should returns 204 if video was delete on success', async ({ assert }) => {
+    const fakeVideo = await makeFakeVideo()
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
+
+    const sut = new VideoController()
+    const httpResponse = await sut.delete(httpContext)
+
+    assert.deepEqual(httpResponse, noContent())
   })
 })
