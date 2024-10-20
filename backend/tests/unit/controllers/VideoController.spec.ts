@@ -4,7 +4,7 @@ import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
-import { badRequest, noContent, ok, serverError } from '#helpers/http'
+import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
 
 const makeFakeRequest = () => ({
   isDraft: false,
@@ -63,6 +63,18 @@ test.group('VideoController', (group) => {
     const video = await sut.find(httpContext)
 
     assert.deepEqual(video, ok(fakeVideo))
+  })
+
+  test('should returns 404 if a video return not found', async ({ assert }) => {
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      uuid: '00000000-0000-0000-0000-000000000000',
+    })
+
+    const sut = new VideoController()
+    const httpResponse = await sut.find(httpContext)
+
+    assert.deepEqual(httpResponse, notFound())
   })
 
   test('should returns 400 if isDraft is not a boolean', async ({ assert }) => {
