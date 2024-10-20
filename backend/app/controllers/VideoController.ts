@@ -11,8 +11,22 @@ export default class VideoController {
     try {
       const { uuid } = request.params()
 
-      const video = await Video.findBy('uuid', uuid)
-      return ok(video?.serialize())
+      const video: Video = await db
+        .from('videos')
+        .where('uuid', uuid)
+        .select(
+          'title',
+          'artist',
+          'uuid',
+          'release_year as releaseYear',
+          'link_youtube as linkYoutube',
+          'qty_views as qtyViews',
+          'is_draft as isDraft'
+        )
+        .first()
+
+      video.qtyViews = BigInt(video.qtyViews)
+      return ok(video)
     } catch (error) {
       serverError(error)
     }
