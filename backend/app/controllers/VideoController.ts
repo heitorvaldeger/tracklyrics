@@ -4,6 +4,7 @@ import Video from '#models/video'
 import { badRequest, noContent, ok, serverError } from '#helpers/http'
 import { createVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
+import db from '@adonisjs/lucid/services/db'
 
 export default class VideoController {
   async find({ request }: HttpContext) {
@@ -18,9 +19,24 @@ export default class VideoController {
   }
 
   async findAll() {
-    const videos = await Video.all()
+    const videos: Video[] = await db
+      .from('videos')
+      .select(
+        'title',
+        'artist',
+        'uuid',
+        'release_year as releaseYear',
+        'link_youtube as linkYoutube',
+        'qty_views as qtyViews',
+        'is_draft as isDraft'
+      )
 
-    return ok(videos.map((video) => video.serialize()))
+    return ok(
+      videos.map((video) => ({
+        ...video,
+        qtyViews: BigInt(video.qtyViews),
+      }))
+    )
   }
 
   async create({ request }: HttpContext) {
