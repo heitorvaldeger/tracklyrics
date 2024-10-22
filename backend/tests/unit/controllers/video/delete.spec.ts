@@ -11,7 +11,7 @@ test.group('VideoController.delete', (group) => {
     sinon.restore()
   })
 
-  test('should returns 204 if video was delete on success', async ({ assert }) => {
+  test('should returns 204 if video was delete on success', async ({ expect }) => {
     const fakeVideo = await makeFakeVideo()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
@@ -21,10 +21,10 @@ test.group('VideoController.delete', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.delete(httpContext)
 
-    assert.deepEqual(httpResponse, noContent())
+    expect(httpResponse).toEqual(noContent())
   })
 
-  test('should returns 404 if a video return not found on delete', async ({ assert }) => {
+  test('should returns 404 if a video return not found on delete', async ({ expect }) => {
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: '00000000-0000-0000-0000-000000000000',
@@ -33,6 +33,6 @@ test.group('VideoController.delete', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.delete(httpContext)
 
-    assert.deepEqual(httpResponse, notFound())
+    expect(httpResponse).toEqual(notFound())
   })
 })

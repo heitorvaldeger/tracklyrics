@@ -19,7 +19,7 @@ test.group('VideoController.create', (group) => {
     sinon.restore()
   })
 
-  test('should returns 400 if isDraft is not a boolean', async ({ assert }) => {
+  test('should returns 400 if isDraft is not a boolean', async ({ expect }) => {
     const fakeVideo = {
       isDraft: 'any_value',
       title: 'any_title',
@@ -31,8 +31,7 @@ test.group('VideoController.create', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
 
-    assert.deepEqual(
-      httpResponse,
+    expect(httpResponse).toEqual(
       badRequest([
         {
           field: 'isDraft',
@@ -42,7 +41,7 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if required fields is not provided', async ({ assert }) => {
+  test('should returns 400 if required fields is not provided', async ({ expect }) => {
     const fakeVideo = {
       isDraft: false,
     }
@@ -50,8 +49,7 @@ test.group('VideoController.create', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
 
-    assert.deepEqual(
-      httpResponse,
+    expect(httpResponse).toEqual(
       badRequest([
         {
           field: 'title',
@@ -73,7 +71,7 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if releseYear not contains four length', async ({ assert }) => {
+  test('should returns 400 if releseYear not contains four length', async ({ expect }) => {
     const fakeVideo = {
       isDraft: false,
       title: 'any_title',
@@ -85,8 +83,7 @@ test.group('VideoController.create', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
 
-    assert.deepEqual(
-      httpResponse,
+    expect(httpResponse).toEqual(
       badRequest([
         {
           field: 'releaseYear',
@@ -96,7 +93,7 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if releseYear not is numeric', async ({ assert }) => {
+  test('should returns 400 if releseYear not is numeric', async ({ expect }) => {
     const fakeVideo = {
       isDraft: false,
       title: 'any_title',
@@ -108,8 +105,7 @@ test.group('VideoController.create', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
 
-    assert.deepEqual(
-      httpResponse,
+    expect(httpResponse).toEqual(
       badRequest([
         {
           field: 'releaseYear',
@@ -119,7 +115,7 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if fields not contains most three characteres', async ({ assert }) => {
+  test('should returns 400 if fields not contains most three characteres', async ({ expect }) => {
     const fakeVideo = {
       isDraft: false,
       title: 'an',
@@ -131,8 +127,7 @@ test.group('VideoController.create', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
 
-    assert.deepEqual(
-      httpResponse,
+    expect(httpResponse).toEqual(
       badRequest([
         {
           field: 'title',
@@ -150,7 +145,7 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if fields is empty', async ({ assert }) => {
+  test('should returns 400 if fields is empty', async ({ expect }) => {
     const fakeVideo = {
       isDraft: false,
       title: '',
@@ -162,8 +157,7 @@ test.group('VideoController.create', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
 
-    assert.deepEqual(
-      httpResponse,
+    expect(httpResponse).toEqual(
       badRequest([
         {
           field: 'title',
@@ -185,19 +179,19 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 200 if video was create on success', async ({ assert }) => {
+  test('should returns 200 if video was create on success', async ({ expect }) => {
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(makeFakeRequest()))
 
-    assert.deepEqual(httpResponse, noContent())
+    expect(httpResponse).toEqual(noContent())
   })
 
-  test('should returns 500 if video create throws', async ({ assert }) => {
+  test('should returns 500 if video create throws', async ({ expect }) => {
     stub(Video, 'create').throws(new Error())
 
     const sut = new VideoController()
     const httpResponse = await sut.create(makeHttpRequestBody(makeFakeRequest()))
 
-    assert.deepEqual(httpResponse, serverError(new Error()))
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

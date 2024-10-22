@@ -8,14 +8,14 @@ test.group('GenrerController.findAll', (group) => {
     await Genrer.query().whereNotNull('id').delete()
   })
 
-  test('should returns a list of genres with on success', async ({ assert }) => {
+  test('should returns a list of genres with on success', async ({ expect }) => {
     const genrer = await Genrer.create({
       name: 'any_name',
     })
 
     const sut = new GenrerController()
-    const genres = await sut.findAll()
+    const httpResponse = await sut.findAll()
 
-    assert.deepEqual(genres, ok([genrer.serialize()]))
+    expect(httpResponse).toEqual(ok([genrer.serialize()]))
   })
 })

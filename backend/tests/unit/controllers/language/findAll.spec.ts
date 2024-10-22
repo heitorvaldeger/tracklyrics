@@ -8,13 +8,13 @@ test.group('LanguageController.findAll', (group) => {
     await Language.query().whereNotNull('id').delete()
   })
 
-  test('should returns 200 if a list languages returns on success', async ({ assert }) => {
+  test('should returns 200 if a list languages returns on success', async ({ expect }) => {
     const language = await Language.create({
       name: 'any_language',
     })
     const sut = new LanguageController()
-    const languages = await sut.findAll()
+    const httpResponse = await sut.findAll()
 
-    assert.deepEqual(languages, ok([language.serialize()]))
+    expect(httpResponse).toEqual(ok([language.serialize()]))
   })
 })

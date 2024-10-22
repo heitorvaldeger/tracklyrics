@@ -11,7 +11,7 @@ test.group('VideoController.find', (group) => {
     sinon.restore()
   })
 
-  test('should returns 200 if a video return on success', async ({ assert }) => {
+  test('should returns 200 if a video return on success', async ({ expect }) => {
     const fakeVideo = await makeFakeVideo()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
@@ -21,10 +21,10 @@ test.group('VideoController.find', (group) => {
     const sut = new VideoController()
     const video = await sut.find(httpContext)
 
-    assert.deepEqual(video, ok(fakeVideo))
+    expect(video).toEqual(ok(fakeVideo))
   })
 
-  test('should returns 404 if a video return not found', async ({ assert }) => {
+  test('should returns 404 if a video return not found', async ({ expect }) => {
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: '00000000-0000-0000-0000-000000000000',
@@ -33,6 +33,6 @@ test.group('VideoController.find', (group) => {
     const sut = new VideoController()
     const httpResponse = await sut.find(httpContext)
 
-    assert.deepEqual(httpResponse, notFound())
+    expect(httpResponse).toEqual(notFound())
   })
 })

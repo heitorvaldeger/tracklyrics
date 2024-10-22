@@ -9,11 +9,11 @@ test.group('VideoController.findAll', (group) => {
     await Video.query().whereNotNull('id').delete()
   })
 
-  test('should returns 200 if a list videos returns on success', async ({ assert }) => {
+  test('should returns 200 if a list videos returns on success', async ({ expect }) => {
     const fakeVideo = await makeFakeVideo()
     const sut = new VideoController()
     const videos = await sut.findAll()
 
-    assert.deepEqual(videos, ok([fakeVideo]))
+    expect(videos).toEqual(ok([fakeVideo]))
   })
 })
