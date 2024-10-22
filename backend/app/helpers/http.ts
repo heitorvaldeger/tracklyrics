@@ -21,5 +21,5 @@ export const serverError = (error: any): IHttpResponse => ({
 
 export const notFound = (): IHttpResponse => ({
   statusCode: 404,
-  body: 'Resource not found',
+  body: null,
 })

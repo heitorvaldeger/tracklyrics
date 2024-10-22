@@ -78,6 +78,10 @@ export default class VideoController {
     try {
       const { uuid } = request.params()
 
+      const video = await Video.findBy('uuid', uuid)
+      if (!video) {
+        return notFound()
+      }
       await Video.query().where('uuid', uuid).delete()
 
       return noContent()
