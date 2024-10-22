@@ -1,9 +1,9 @@
 import LanguageController from '#controllers/LanguageController'
 import { test } from '@japa/runner'
-import { ok } from '../../../app/helpers/http.js'
+import { ok } from '#helpers/http'
 import Language from '#models/language'
 
-test.group('LanguageController', (group) => {
+test.group('LanguageController.findAll', (group) => {
   group.teardown(async () => {
     await Language.query().whereNotNull('id').delete()
   })

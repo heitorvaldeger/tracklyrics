@@ -1,9 +1,9 @@
 import GenrerController from '#controllers/GenrerController'
 import Genrer from '#models/genrer'
 import { test } from '@japa/runner'
-import { ok } from '../../../app/helpers/http.js'
+import { ok } from '#helpers/http'
 
-test.group('GenrerController', (group) => {
+test.group('GenrerController.findAll', (group) => {
   group.each.teardown(async () => {
     await Genrer.query().whereNotNull('id').delete()
   })
