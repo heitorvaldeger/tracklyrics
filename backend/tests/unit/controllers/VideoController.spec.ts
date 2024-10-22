@@ -37,12 +37,13 @@ const makeHttpContext = (fakeRequest: any) => {
 }
 
 test.group('VideoController', (group) => {
-  group.setup(async () => {
+  group.each.teardown(async () => {
     await Video.query().whereNotNull('id').delete()
   })
 
   group.each.teardown(() => {
     sinon.reset()
+    sinon.restore()
   })
   test('should returns 200 if a list videos returns on success', async ({ assert }) => {
     const fakeVideo = await makeFakeVideo()
@@ -270,5 +271,17 @@ test.group('VideoController', (group) => {
     const httpResponse = await sut.delete(httpContext)
 
     assert.deepEqual(httpResponse, noContent())
+  })
+
+  test('should returns 404 if a video return not found on delete', async ({ assert }) => {
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      uuid: '00000000-0000-0000-0000-000000000000',
+    })
+
+    const sut = new VideoController()
+    const httpResponse = await sut.delete(httpContext)
+
+    assert.deepEqual(httpResponse, notFound())
   })
 })
