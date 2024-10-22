@@ -2,9 +2,11 @@ import LanguageController from '#controllers/LanguageController'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
 import Language from '#models/language'
+import Video from '#models/video'
 
 test.group('LanguageController.findAll', (group) => {
-  group.teardown(async () => {
+  group.setup(async () => {
+    await Video.query().whereNotNull('id').delete()
     await Language.query().whereNotNull('id').delete()
   })
 

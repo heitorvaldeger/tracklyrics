@@ -20,7 +20,8 @@ export default class VideoController {
           'release_year as releaseYear',
           'link_youtube as linkYoutube',
           'qty_views as qtyViews',
-          'is_draft as isDraft'
+          'is_draft as isDraft',
+          'language_id as languageId'
         )
         .first()
 
@@ -28,6 +29,7 @@ export default class VideoController {
         return notFound()
       }
       video.qtyViews = BigInt(video.qtyViews)
+      video.languageId = BigInt(video.languageId)
       return ok(video)
     } catch (error) {
       serverError(error)
@@ -44,13 +46,15 @@ export default class VideoController {
         'release_year as releaseYear',
         'link_youtube as linkYoutube',
         'qty_views as qtyViews',
-        'is_draft as isDraft'
+        'is_draft as isDraft',
+        'language_id as languageId'
       )
 
     return ok(
       videos.map((video) => ({
         ...video,
         qtyViews: BigInt(video.qtyViews),
+        languageId: BigInt(video.languageId),
       }))
     )
   }

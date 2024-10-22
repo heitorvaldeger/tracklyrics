@@ -1,9 +1,12 @@
-import sinon, { stub } from 'sinon'
+/* eslint-disable @unicorn/no-await-expression-member */
+import _, { random } from 'lodash'
+import sinon, { stub, spy } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
 import { badRequest, noContent, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
+import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
 
 const makeFakeRequest = () => ({
   isDraft: false,
@@ -11,25 +14,23 @@ const makeFakeRequest = () => ({
   artist: 'any_artist',
   releaseYear: '0000',
   linkYoutube: 'any_link',
+  languageId: 0,
 })
 
 test.group('VideoController.create', (group) => {
+  let httpRequest = makeFakeRequest()
+  group.setup(async () => {
+    httpRequest.languageId = (await makeFakeLanguage()).id
+  })
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
   })
 
   test('should returns 400 if isDraft is not a boolean', async ({ expect }) => {
-    const fakeVideo = {
-      isDraft: 'any_value',
-      title: 'any_title',
-      artist: 'any_artist',
-      releaseYear: '2000',
-      linkYoutube: 'any_link',
-    }
-
+    stub(httpRequest, 'isDraft').value('any_value')
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
+    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -42,12 +43,12 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 400 if required fields is not provided', async ({ expect }) => {
-    const fakeVideo = {
-      isDraft: false,
-    }
-
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
+    const httpResponse = await sut.create(
+      makeHttpRequestBody({
+        isDraft: false,
+      })
+    )
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -67,21 +68,19 @@ test.group('VideoController.create', (group) => {
           field: 'linkYoutube',
           message: 'The linkYoutube field must be defined',
         },
+        {
+          field: 'languageId',
+          message: 'The languageId field must be defined',
+        },
       ])
     )
   })
 
   test('should returns 400 if releseYear not contains four length', async ({ expect }) => {
-    const fakeVideo = {
-      isDraft: false,
-      title: 'any_title',
-      artist: 'any_artist',
-      releaseYear: 'any_year',
-      linkYoutube: 'any_link',
-    }
+    stub(httpRequest, 'releaseYear').value('any_year')
 
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
+    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -93,17 +92,11 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if releseYear not is numeric', async ({ expect }) => {
-    const fakeVideo = {
-      isDraft: false,
-      title: 'any_title',
-      artist: 'any_artist',
-      releaseYear: 'year',
-      linkYoutube: 'any_link',
-    }
+  test('should returns 400 if releseYear not is string numeric', async ({ expect }) => {
+    stub(httpRequest, 'releaseYear').value('year')
 
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
+    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -116,16 +109,12 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 400 if fields not contains most three characteres', async ({ expect }) => {
-    const fakeVideo = {
-      isDraft: false,
-      title: 'an',
-      artist: 'an',
-      releaseYear: '2004',
-      linkYoutube: 'an',
-    }
+    stub(httpRequest, 'title').value('an')
+    stub(httpRequest, 'artist').value('an')
+    stub(httpRequest, 'linkYoutube').value('an')
 
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
+    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -146,16 +135,16 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 400 if fields is empty', async ({ expect }) => {
-    const fakeVideo = {
-      isDraft: false,
-      title: '',
-      artist: '',
-      releaseYear: '',
-      linkYoutube: '',
-    }
-
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(fakeVideo))
+    const httpResponse = await sut.create(
+      makeHttpRequestBody({
+        ...httpRequest,
+        title: '',
+        artist: '',
+        releaseYear: '',
+        linkYoutube: '',
+      })
+    )
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -181,7 +170,7 @@ test.group('VideoController.create', (group) => {
 
   test('should returns 200 if video was create on success', async ({ expect }) => {
     const sut = new VideoController()
-    const httpResponse = await sut.create(makeHttpRequestBody(makeFakeRequest()))
+    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
 
     expect(httpResponse).toEqual(noContent())
   })

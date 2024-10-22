@@ -33,4 +33,7 @@ export default class Video extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   declare updatedAt: DateTime
+
+  @column()
+  declare languageId: bigint
 }
