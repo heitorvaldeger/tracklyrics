@@ -8,6 +8,7 @@ import { badRequest, noContent, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
+import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
 
 const makeFakeRequest = (): IVideoCreateRequest => ({
   isDraft: false,
@@ -16,12 +17,14 @@ const makeFakeRequest = (): IVideoCreateRequest => ({
   releaseYear: '0000',
   linkYoutube: 'any_link',
   languageId: 0,
+  genrerId: 0,
 })
 
 test.group('VideoController.create', (group) => {
   let httpRequest = makeFakeRequest()
   group.setup(async () => {
     httpRequest.languageId = (await makeFakeLanguage()).id
+    httpRequest.genrerId = (await makeFakeGenrer()).id
   })
   group.each.teardown(() => {
     sinon.reset()
@@ -72,6 +75,10 @@ test.group('VideoController.create', (group) => {
         {
           field: 'languageId',
           message: 'The languageId field must be defined',
+        },
+        {
+          field: 'genrerId',
+          message: 'The genrerId field must be defined',
         },
       ])
     )

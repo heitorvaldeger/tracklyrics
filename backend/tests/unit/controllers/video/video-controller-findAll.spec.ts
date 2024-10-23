@@ -18,7 +18,7 @@ test.group('VideoController.findAll', (group) => {
     expect(videos).toEqual(
       ok([
         {
-          ..._.omit(fakeVideo, 'languageId'),
+          ..._.omit(fakeVideo, 'languageId', 'genrerId'),
           language: language.name,
         },
       ])

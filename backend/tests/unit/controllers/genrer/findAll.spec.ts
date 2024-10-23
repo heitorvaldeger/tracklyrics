@@ -2,9 +2,11 @@ import GenrerController from '#controllers/GenrerController'
 import Genrer from '#models/genrer'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
+import Video from '#models/video'
 
 test.group('GenrerController.findAll', (group) => {
-  group.each.teardown(async () => {
+  group.setup(async () => {
+    await Video.query().whereNotNull('id').delete()
     await Genrer.query().whereNotNull('id').delete()
   })
 
