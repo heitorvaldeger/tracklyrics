@@ -5,14 +5,16 @@ import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
 import { createVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 import db from '@adonisjs/lucid/services/db'
+import { IVideoResponse } from '#interfaces/IVideoResponse'
 
 export default class VideoController {
   async find({ request }: HttpContext) {
     try {
       const { uuid } = request.params()
-      const video: Video = await db
+      const video: IVideoResponse | null = await db
         .from('videos')
         .where('uuid', uuid)
+        .innerJoin('languages', 'languages.id', 'language_id')
         .select(
           'title',
           'artist',
@@ -21,7 +23,7 @@ export default class VideoController {
           'link_youtube as linkYoutube',
           'qty_views as qtyViews',
           'is_draft as isDraft',
-          'language_id as languageId'
+          'languages.name as language'
         )
         .first()
 
@@ -29,7 +31,6 @@ export default class VideoController {
         return notFound()
       }
       video.qtyViews = BigInt(video.qtyViews)
-      video.languageId = BigInt(video.languageId)
       return ok(video)
     } catch (error) {
       serverError(error)
@@ -37,8 +38,9 @@ export default class VideoController {
   }
 
   async findAll() {
-    const videos: Video[] = await db
+    const videos: IVideoResponse[] = await db
       .from('videos')
+      .innerJoin('languages', 'languages.id', 'language_id')
       .select(
         'title',
         'artist',
@@ -47,14 +49,13 @@ export default class VideoController {
         'link_youtube as linkYoutube',
         'qty_views as qtyViews',
         'is_draft as isDraft',
-        'language_id as languageId'
+        'languages.name as language'
       )
 
     return ok(
       videos.map((video) => ({
         ...video,
         qtyViews: BigInt(video.qtyViews),
-        languageId: BigInt(video.languageId),
       }))
     )
   }

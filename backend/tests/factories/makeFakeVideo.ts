@@ -16,5 +16,5 @@ export const makeFakeVideo = async () => {
     languageId: BigInt(language.id),
   }
   await Video.create(fakeVideo)
-  return fakeVideo
+  return { fakeVideo, language }
 }
