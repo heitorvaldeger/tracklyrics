@@ -6,6 +6,7 @@ import { createVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 import db from '@adonisjs/lucid/services/db'
 import { IVideoResponse } from '#interfaces/IVideoResponse'
+import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 
 export default class VideoController {
   async find({ request }: HttpContext) {
@@ -62,7 +63,8 @@ export default class VideoController {
 
   async create({ request }: HttpContext) {
     try {
-      const payload = await createVideoValidator.validate(request.all())
+      const requestBody = request.body() as IVideoCreateRequest
+      const payload = await createVideoValidator.validate(requestBody)
       const uuid = randomUUID()
       await Video.create({
         ...payload,
