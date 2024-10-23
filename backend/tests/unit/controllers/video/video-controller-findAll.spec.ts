@@ -11,15 +11,16 @@ test.group('VideoController.findAll', (group) => {
   })
 
   test('should returns 200 if a list videos returns on success', async ({ expect }) => {
-    const { fakeVideo, language } = await makeFakeVideo()
+    const { fakeVideo, language, genrer } = await makeFakeVideo()
     const sut = new VideoController()
-    const videos = await sut.findAll()
+    const httpResponse = await sut.findAll()
 
-    expect(videos).toEqual(
+    expect(httpResponse).toEqual(
       ok([
         {
           ..._.omit(fakeVideo, 'languageId', 'genrerId'),
           language: language.name,
+          genrer: genrer.name,
         },
       ])
     )

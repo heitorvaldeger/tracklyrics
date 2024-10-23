@@ -13,19 +13,20 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 200 if a video return on success', async ({ expect }) => {
-    const { fakeVideo, language } = await makeFakeVideo()
+    const { fakeVideo, language, genrer } = await makeFakeVideo()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: fakeVideo.uuid,
     })
 
     const sut = new VideoController()
-    const video = await sut.find(httpContext)
+    const httpResponse = await sut.find(httpContext)
 
-    expect(video).toEqual(
+    expect(httpResponse).toEqual(
       ok({
         ..._.omit(fakeVideo, 'languageId', 'genrerId'),
         language: language.name,
+        genrer: genrer.name,
       })
     )
   })

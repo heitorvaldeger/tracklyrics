@@ -7,4 +7,5 @@ export interface IVideoResponse {
   qtyViews: bigint
   isDraft: boolean
   language: string
+  genrer: string
 }

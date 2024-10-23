@@ -17,6 +17,7 @@ export default class VideoController {
         .from('videos')
         .where('uuid', uuid)
         .innerJoin('languages', 'languages.id', 'language_id')
+        .innerJoin('genrers', 'genrers.id', 'genrer_id')
         .select(
           'title',
           'artist',
@@ -25,7 +26,8 @@ export default class VideoController {
           'link_youtube as linkYoutube',
           'qty_views as qtyViews',
           'is_draft as isDraft',
-          'languages.name as language'
+          'languages.name as language',
+          'genrers.name as genrer'
         )
         .first()
 
@@ -46,6 +48,7 @@ export default class VideoController {
     const videos: IVideoResponse[] = await db
       .from('videos')
       .innerJoin('languages', 'languages.id', 'language_id')
+      .innerJoin('genrers', 'genrers.id', 'genrer_id')
       .select(
         'title',
         'artist',
@@ -54,7 +57,8 @@ export default class VideoController {
         'link_youtube as linkYoutube',
         'qty_views as qtyViews',
         'is_draft as isDraft',
-        'languages.name as language'
+        'languages.name as language',
+        'genrers.name as genrer'
       )
 
     return ok(
