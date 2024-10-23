@@ -4,5 +4,6 @@ export interface IVideoCreateRequest {
   releaseYear: string
   linkYoutube: string
   languageId: number
+  genrerId: number
   isDraft?: boolean
 }

@@ -36,4 +36,7 @@ export default class Video extends BaseModel {
 
   @column()
   declare languageId: bigint
+
+  @column()
+  declare genrerId: bigint
 }
