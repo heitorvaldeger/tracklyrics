@@ -12,7 +12,7 @@ test.group('VideoController.delete', (group) => {
   })
 
   test('should returns 204 if video was delete on success', async ({ expect }) => {
-    const fakeVideo = await makeFakeVideo()
+    const { fakeVideo } = await makeFakeVideo()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: fakeVideo.uuid,

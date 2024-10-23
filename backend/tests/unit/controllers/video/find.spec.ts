@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
@@ -12,7 +13,7 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 200 if a video return on success', async ({ expect }) => {
-    const fakeVideo = await makeFakeVideo()
+    const { fakeVideo, language } = await makeFakeVideo()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: fakeVideo.uuid,
@@ -21,7 +22,12 @@ test.group('VideoController.find', (group) => {
     const sut = new VideoController()
     const video = await sut.find(httpContext)
 
-    expect(video).toEqual(ok(fakeVideo))
+    expect(video).toEqual(
+      ok({
+        ..._.omit(fakeVideo, 'languageId'),
+        language: language.name,
+      })
+    )
   })
 
   test('should returns 404 if a video return not found', async ({ expect }) => {

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
@@ -10,10 +11,17 @@ test.group('VideoController.findAll', (group) => {
   })
 
   test('should returns 200 if a list videos returns on success', async ({ expect }) => {
-    const fakeVideo = await makeFakeVideo()
+    const { fakeVideo, language } = await makeFakeVideo()
     const sut = new VideoController()
     const videos = await sut.findAll()
 
-    expect(videos).toEqual(ok([fakeVideo]))
+    expect(videos).toEqual(
+      ok([
+        {
+          ..._.omit(fakeVideo, 'languageId'),
+          language: language.name,
+        },
+      ])
+    )
   })
 })
