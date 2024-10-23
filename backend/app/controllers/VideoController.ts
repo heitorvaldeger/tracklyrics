@@ -87,7 +87,7 @@ export default class VideoController {
 
   async delete({ request }: HttpContext) {
     try {
-      const { uuid } = request.params()
+      const { uuid } = await uuidVideoValidator.validate(request.params())
 
       const video = await Video.findBy('uuid', uuid)
       if (!video) {
@@ -97,7 +97,7 @@ export default class VideoController {
 
       return noContent()
     } catch (error) {
-      return null
+      return serverError(error)
     }
   }
 }
