@@ -35,7 +35,8 @@
     "#tests/*": "./tests/*.js",
     "#config/*": "./config/*.js",
     "#helpers/*": "./app/helpers/*.js",
-    "#interfaces/*": "./app/interfaces/*.js"
+    "#interfaces/*": "./app/interfaces/*.js",
+    "#repository/*": "./app/repository/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.1",

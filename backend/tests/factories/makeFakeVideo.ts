@@ -7,7 +7,9 @@ export const makeFakeVideo = async () => {
   const language = await makeFakeLanguage()
   const genrer = await makeFakeGenrer()
   const uuid = randomUUID()
-  const fakeVideo: Partial<Video> = {
+
+  const fakeVideo = new Video()
+  fakeVideo.fill({
     isDraft: false,
     title: 'any_title',
     artist: 'any_artist',
@@ -17,7 +19,7 @@ export const makeFakeVideo = async () => {
     uuid: uuid,
     languageId: BigInt(language.id),
     genrerId: BigInt(genrer.id),
-  }
+  })
   await Video.create(fakeVideo)
   return { fakeVideo, language, genrer }
 }

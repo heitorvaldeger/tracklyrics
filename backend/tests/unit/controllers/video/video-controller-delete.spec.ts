@@ -4,6 +4,14 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { badRequest, noContent, notFound } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
+import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+
+const makeSut = () => {
+  const videoServiceStub = makeFakeVideoServiceStub()
+  const sut = new VideoController(videoServiceStub)
+
+  return { sut }
+}
 
 test.group('VideoController.delete', (group) => {
   group.each.teardown(() => {
@@ -18,7 +26,7 @@ test.group('VideoController.delete', (group) => {
       uuid: fakeVideo.uuid,
     })
 
-    const sut = new VideoController()
+    const { sut } = makeSut()
     const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(noContent())
@@ -30,7 +38,7 @@ test.group('VideoController.delete', (group) => {
       uuid: '00000000-0000-0000-0000-000000000000',
     })
 
-    const sut = new VideoController()
+    const { sut } = makeSut()
     const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(notFound())
@@ -42,8 +50,8 @@ test.group('VideoController.delete', (group) => {
       uuid: 'invalid_uuid',
     })
 
-    const sut = new VideoController()
-    const httpResponse = await sut.find(httpContext)
+    const { sut } = makeSut()
+    const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([

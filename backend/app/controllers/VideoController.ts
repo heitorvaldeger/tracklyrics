@@ -4,32 +4,18 @@ import Video from '#models/video'
 import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
 import { createVideoValidator, uuidVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
-import db from '@adonisjs/lucid/services/db'
-import { IVideoResponse } from '#interfaces/IVideoResponse'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
+import { IVideoService } from '#services/interfaces/IVideoService'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class VideoController {
+  constructor(private videoService: IVideoService) {}
+
   async find({ request }: HttpContext) {
     try {
       const { uuid } = await uuidVideoValidator.validate(request.params())
-
-      const video: IVideoResponse | null = await db
-        .from('videos')
-        .where('uuid', uuid)
-        .innerJoin('languages', 'languages.id', 'language_id')
-        .innerJoin('genrers', 'genrers.id', 'genrer_id')
-        .select(
-          'title',
-          'artist',
-          'uuid',
-          'release_year as releaseYear',
-          'link_youtube as linkYoutube',
-          'qty_views as qtyViews',
-          'is_draft as isDraft',
-          'languages.name as language',
-          'genrers.name as genrer'
-        )
-        .first()
+      const video = await this.videoService.find(uuid)
 
       if (!video) {
         return notFound()
@@ -45,21 +31,7 @@ export default class VideoController {
   }
 
   async findAll() {
-    const videos: IVideoResponse[] = await db
-      .from('videos')
-      .innerJoin('languages', 'languages.id', 'language_id')
-      .innerJoin('genrers', 'genrers.id', 'genrer_id')
-      .select(
-        'title',
-        'artist',
-        'uuid',
-        'release_year as releaseYear',
-        'link_youtube as linkYoutube',
-        'qty_views as qtyViews',
-        'is_draft as isDraft',
-        'languages.name as language',
-        'genrers.name as genrer'
-      )
+    const videos = await this.videoService.findAll()
 
     return ok(
       videos.map((video) => ({
@@ -101,6 +73,9 @@ export default class VideoController {
 
       return noContent()
     } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return badRequest(error.messages)
+      }
       return serverError(error)
     }
   }

@@ -5,6 +5,16 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { badRequest, notFound, ok } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
+import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+
+const makeSut = async () => {
+  const { fakeVideo, language, genrer } = await makeFakeVideo()
+
+  const videoServiceStub = makeFakeVideoServiceStub(fakeVideo, language, genrer)
+  const sut = new VideoController(videoServiceStub)
+
+  return { sut, fakeVideo, language, genrer, videoServiceStub }
+}
 
 test.group('VideoController.find', (group) => {
   group.each.teardown(() => {
@@ -13,13 +23,12 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 200 if a video return on success', async ({ expect }) => {
-    const { fakeVideo, language, genrer } = await makeFakeVideo()
+    const { sut, fakeVideo, language, genrer } = await makeSut()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: fakeVideo.uuid,
     })
 
-    const sut = new VideoController()
     const httpResponse = await sut.find(httpContext)
 
     expect(httpResponse).toEqual(
@@ -32,24 +41,25 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 404 if a video return not found', async ({ expect }) => {
+    const { sut, videoServiceStub } = await makeSut()
+    stub(videoServiceStub, 'find').returns(new Promise((resolve) => resolve(null)))
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: '00000000-0000-0000-0000-000000000000',
     })
 
-    const sut = new VideoController()
     const httpResponse = await sut.find(httpContext)
 
     expect(httpResponse).toEqual(notFound())
   })
 
   test('should returns 400 if pass invalid uuid on find', async ({ expect }) => {
+    const { sut } = await makeSut()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
       uuid: 'invalid_uuid',
     })
 
-    const sut = new VideoController()
     const httpResponse = await sut.find(httpContext)
 
     expect(httpResponse).toEqual(
