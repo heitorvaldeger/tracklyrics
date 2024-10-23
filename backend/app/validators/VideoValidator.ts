@@ -14,3 +14,9 @@ export const createVideoValidator = vine.compile(
     languageId: vine.number().transform((value) => BigInt(value)),
   })
 )
+
+export const uuidVideoValidator = vine.compile(
+  vine.object({
+    uuid: vine.string().trim().uuid(),
+  })
+)

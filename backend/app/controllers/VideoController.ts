@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import Video from '#models/video'
 import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
-import { createVideoValidator } from '#validators/VideoValidator'
+import { createVideoValidator, uuidVideoValidator } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 import db from '@adonisjs/lucid/services/db'
 import { IVideoResponse } from '#interfaces/IVideoResponse'
@@ -11,7 +11,8 @@ import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 export default class VideoController {
   async find({ request }: HttpContext) {
     try {
-      const { uuid } = request.params()
+      const { uuid } = await uuidVideoValidator.validate(request.params())
+
       const video: IVideoResponse | null = await db
         .from('videos')
         .where('uuid', uuid)
@@ -34,6 +35,9 @@ export default class VideoController {
       video.qtyViews = BigInt(video.qtyViews)
       return ok(video)
     } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return badRequest(error.messages)
+      }
       serverError(error)
     }
   }
