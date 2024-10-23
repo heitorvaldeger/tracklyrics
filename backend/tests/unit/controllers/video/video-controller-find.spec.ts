@@ -42,10 +42,10 @@ test.group('VideoController.find', (group) => {
     expect(httpResponse).toEqual(notFound())
   })
 
-  test('should returns 400 if pass invalid uuid', async ({ expect }) => {
+  test('should returns 400 if pass invalid uuid on find', async ({ expect }) => {
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
-      uuid: 'any_uuid',
+      uuid: 'invalid_uuid',
     })
 
     const sut = new VideoController()
