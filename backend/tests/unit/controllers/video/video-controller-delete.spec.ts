@@ -2,7 +2,7 @@ import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
-import { noContent, notFound } from '#helpers/http'
+import { badRequest, noContent, notFound } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 
 test.group('VideoController.delete', (group) => {
@@ -34,5 +34,24 @@ test.group('VideoController.delete', (group) => {
     const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(notFound())
+  })
+
+  test('should returns 400 if pass invalid uuid', async ({ expect }) => {
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      uuid: 'any_uuid',
+    })
+
+    const sut = new VideoController()
+    const httpResponse = await sut.find(httpContext)
+
+    expect(httpResponse).toEqual(
+      badRequest([
+        {
+          field: 'uuid',
+          message: 'The uuid field must be a valid UUID',
+        },
+      ])
+    )
   })
 })
