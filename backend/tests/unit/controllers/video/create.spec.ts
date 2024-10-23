@@ -1,14 +1,15 @@
 /* eslint-disable @unicorn/no-await-expression-member */
-import _, { random } from 'lodash'
-import sinon, { stub, spy } from 'sinon'
+import _ from 'lodash'
+import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
 import { badRequest, noContent, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
+import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 
-const makeFakeRequest = () => ({
+const makeFakeRequest = (): IVideoCreateRequest => ({
   isDraft: false,
   title: 'any_title',
   artist: 'any_artist',
