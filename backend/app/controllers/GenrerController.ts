@@ -1,12 +1,16 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
-import Genrer from '#models/genrer'
-import { ok } from '../helpers/http.js'
+import { ok } from '#helpers/http'
+import { inject } from '@adonisjs/core'
+import { IGenrerService } from '#services/interfaces/IGenrerService'
 
+@inject()
 export default class GenrerController {
-  async findAll() {
-    const genres = await Genrer.all()
+  constructor(private readonly genrerService: IGenrerService) {}
 
-    return ok(genres.map((genrer) => genrer.serialize()))
+  async findAll() {
+    const genres = await this.genrerService.findAll()
+
+    return ok(genres)
   }
 }

@@ -3,7 +3,14 @@ import Genrer from '#models/genrer'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
 import Video from '#models/video'
+import { makeFakeGenrerServiceStub } from '#tests/factories/makeFakeGenrerServiceStub'
 
+const makeSut = () => {
+  const { genrerServiceStub, fakeGenrer } = makeFakeGenrerServiceStub()
+  const sut = new GenrerController(genrerServiceStub)
+
+  return { sut, fakeGenrer }
+}
 test.group('GenrerController.findAll', (group) => {
   group.setup(async () => {
     await Video.query().whereNotNull('id').delete()
@@ -11,13 +18,10 @@ test.group('GenrerController.findAll', (group) => {
   })
 
   test('should returns a list of genres with on success', async ({ expect }) => {
-    const genrer = await Genrer.create({
-      name: 'any_name',
-    })
+    const { sut, fakeGenrer } = makeSut()
 
-    const sut = new GenrerController()
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual(ok([genrer.serialize()]))
+    expect(httpResponse).toEqual(ok([fakeGenrer]))
   })
 })
