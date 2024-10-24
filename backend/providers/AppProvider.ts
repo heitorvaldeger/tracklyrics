@@ -1,10 +1,11 @@
 import { FindVideoPostgresRepository } from '#repository/postgres/videos/FindVideoPostgresRepository'
-import { IFindAllVideoRepository } from '#repository/interfaces/IFindAllVideoRepository'
 import { ApplicationService } from '@adonisjs/core/types'
 import { FindAllVideoPostgresRepository } from '#repository/postgres/videos/FindAllVideoPostgresRepository'
-import { IFindVideoRepository } from '#repository/interfaces/IFindVideoRepository'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { VideoService } from '#services/VideoService'
+import { IGenrerService } from '#services/interfaces/IGenrerService'
+import { GenrerService } from '#services/GenrerService'
+import { FindAllGenrerPostgresRepository } from '#repository/postgres/genrers/FindAllGenrerPostgresRepository'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -12,14 +13,15 @@ export default class AppProvider {
   register() {}
 
   async boot() {
-    this.app.container.bind(IFindAllVideoRepository, () => {
-      return this.app.container.make(FindAllVideoPostgresRepository)
+    this.app.container.bind(IVideoService, async () => {
+      return new VideoService(
+        await this.app.container.make(FindVideoPostgresRepository),
+        await this.app.container.make(FindAllVideoPostgresRepository)
+      )
     })
-    this.app.container.bind(IFindVideoRepository, () => {
-      return this.app.container.make(FindVideoPostgresRepository)
-    })
-    this.app.container.bind(IVideoService, () => {
-      return this.app.container.make(VideoService)
+
+    this.app.container.bind(IGenrerService, async () => {
+      return new GenrerService(await this.app.container.make(FindAllGenrerPostgresRepository))
     })
   }
 

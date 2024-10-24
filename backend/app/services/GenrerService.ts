@@ -1,13 +1,13 @@
 import { inject } from '@adonisjs/core'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
 import { IGenrerResponse } from '#interfaces/IGenrerResponse'
-import { IFindAllGenrerRepository } from '#repository/interfaces/IFindAllGenrerRepository'
+import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 
 @inject()
 export class GenrerService implements IGenrerService {
-  constructor(private readonly findAllGenrerRepository: IFindAllGenrerRepository) {}
+  constructor(private readonly findAllRepository: IFindAllRepository) {}
 
   async findAll(): Promise<IGenrerResponse[]> {
-    return await this.findAllGenrerRepository.findAll()
+    return await this.findAllRepository.findAll()
   }
 }

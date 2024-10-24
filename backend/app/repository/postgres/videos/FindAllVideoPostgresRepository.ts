@@ -1,8 +1,8 @@
 import db from '@adonisjs/lucid/services/db'
 import { IVideoResponse } from '#interfaces/IVideoResponse'
-import { IFindAllVideoRepository } from '#repository/interfaces/IFindAllVideoRepository'
+import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 
-export class FindAllVideoPostgresRepository implements IFindAllVideoRepository {
+export class FindAllVideoPostgresRepository implements IFindAllRepository {
   async findAll(): Promise<IVideoResponse[]> {
     const videos: IVideoResponse[] = await db
       .from('videos')
