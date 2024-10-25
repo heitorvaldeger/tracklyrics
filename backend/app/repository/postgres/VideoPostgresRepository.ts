@@ -26,8 +26,8 @@ export class VideoPostgresRepository implements IVideoRepository {
     return video
   }
 
-  async findByGenrer(genrerId: number): Promise<IVideoResponse | null> {
-    const video: IVideoResponse | null = await db
+  async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
+    const video: IVideoResponse[] = await db
       .from('videos')
       .where('genrer_id', genrerId)
       .innerJoin('languages', 'languages.id', 'language_id')
@@ -43,7 +43,6 @@ export class VideoPostgresRepository implements IVideoRepository {
         'languages.name as language',
         'genrers.name as genrer'
       )
-      .first()
 
     return video
   }

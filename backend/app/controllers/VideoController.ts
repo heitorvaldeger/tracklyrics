@@ -2,7 +2,11 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import Video from '#models/video'
 import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
-import { createVideoValidator, uuidVideoValidator } from '#validators/VideoValidator'
+import {
+  createVideoValidator,
+  genrerIdVideoValidator,
+  uuidVideoValidator,
+} from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { IVideoService } from '#services/interfaces/IVideoService'
@@ -23,6 +27,25 @@ export default class VideoController {
 
       video.qtyViews = BigInt(video.qtyViews)
       return ok(video)
+    } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return badRequest(error.messages)
+      }
+      serverError(error)
+    }
+  }
+
+  async findByGenrer({ request }: HttpContext) {
+    try {
+      const { genrerId } = await genrerIdVideoValidator.validate(request.params())
+      const videos = await this.videoService.findByGenrer(genrerId)
+
+      return ok(
+        videos.map((video) => ({
+          ...video,
+          qtyViews: BigInt(video.qtyViews),
+        }))
+      )
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)

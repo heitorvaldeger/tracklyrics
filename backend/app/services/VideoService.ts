@@ -15,7 +15,7 @@ export class VideoService implements IVideoService {
     return await this.videoRepository.find(uuid)
   }
 
-  async findByGenrer(genrerId: number): Promise<IVideoResponse | null> {
+  async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
     return await this.videoRepository.findByGenrer(genrerId)
   }
 }

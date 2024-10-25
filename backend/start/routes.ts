@@ -17,5 +17,5 @@ router.get('/', async () => {
   }
 })
 
-router.get('/test', [GenrerController, 'findAll'])
+router.get('/test/:genrerId', [VideoController, 'findByGenrer'])
 router.get('/test2/:uuid', [VideoController, 'find'])

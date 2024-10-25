@@ -21,3 +21,9 @@ export const uuidVideoValidator = vine.compile(
     uuid: vine.string().trim().uuid(),
   })
 )
+
+export const genrerIdVideoValidator = vine.compile(
+  vine.object({
+    genrerId: vine.number().positive(),
+  })
+)
