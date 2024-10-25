@@ -5,6 +5,7 @@ import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
 import {
   createVideoValidator,
   genrerIdVideoValidator,
+  languageIdVideoValidator,
   uuidVideoValidator,
 } from '#validators/VideoValidator'
 import { randomUUID } from 'node:crypto'
@@ -39,6 +40,25 @@ export default class VideoController {
     try {
       const { genrerId } = await genrerIdVideoValidator.validate(request.params())
       const videos = await this.videoService.findByGenrer(genrerId)
+
+      return ok(
+        videos.map((video) => ({
+          ...video,
+          qtyViews: BigInt(video.qtyViews),
+        }))
+      )
+    } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return badRequest(error.messages)
+      }
+      serverError(error)
+    }
+  }
+
+  async findByLanguage({ request }: HttpContext) {
+    try {
+      const { languageId } = await languageIdVideoValidator.validate(request.params())
+      const videos = await this.videoService.findByLanguage(languageId)
 
       return ok(
         videos.map((video) => ({

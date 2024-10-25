@@ -18,4 +18,8 @@ export class VideoService implements IVideoService {
   async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
     return await this.videoRepository.findByGenrer(genrerId)
   }
+
+  async findByLanguage(languageId: number): Promise<IVideoResponse[]> {
+    return await this.videoRepository.findByLanguage(languageId)
+  }
 }

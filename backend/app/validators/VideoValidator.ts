@@ -27,3 +27,9 @@ export const genrerIdVideoValidator = vine.compile(
     genrerId: vine.number().positive(),
   })
 )
+
+export const languageIdVideoValidator = vine.compile(
+  vine.object({
+    languageId: vine.number().positive(),
+  })
+)

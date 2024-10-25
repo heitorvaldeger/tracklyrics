@@ -47,6 +47,27 @@ export class VideoPostgresRepository implements IVideoRepository {
     return video
   }
 
+  async findByLanguage(languageId: number): Promise<IVideoResponse[]> {
+    const video: IVideoResponse[] = await db
+      .from('videos')
+      .where('language_id', languageId)
+      .innerJoin('languages', 'languages.id', 'language_id')
+      .innerJoin('genrers', 'genrers.id', 'genrer_id')
+      .select(
+        'title',
+        'artist',
+        'uuid',
+        'release_year as releaseYear',
+        'link_youtube as linkYoutube',
+        'qty_views as qtyViews',
+        'is_draft as isDraft',
+        'languages.name as language',
+        'genrers.name as genrer'
+      )
+
+    return video
+  }
+
   async findAll(): Promise<IVideoResponse[]> {
     const videos: IVideoResponse[] = await db
       .from('videos')
