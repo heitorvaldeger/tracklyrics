@@ -10,10 +10,10 @@ import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceS
 const makeSut = async () => {
   const { fakeVideo, language, genrer } = await makeFakeVideo()
 
-  const videoServiceStub = makeFakeVideoServiceStub(fakeVideo, language, genrer)
+  const { videoServiceStub, videoStub } = makeFakeVideoServiceStub(fakeVideo, language, genrer)
   const sut = new VideoController(videoServiceStub)
 
-  return { sut, fakeVideo, language, genrer, videoServiceStub }
+  return { sut, videoStub, videoServiceStub }
 }
 
 test.group('VideoController.find', (group) => {
@@ -23,21 +23,15 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 200 if a video return on success', async ({ expect }) => {
-    const { sut, fakeVideo, language, genrer } = await makeSut()
+    const { sut, videoStub } = await makeSut()
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
-      uuid: fakeVideo.uuid,
+      uuid: videoStub.uuid,
     })
 
     const httpResponse = await sut.find(httpContext)
 
-    expect(httpResponse).toEqual(
-      ok({
-        ..._.omit(fakeVideo, 'languageId', 'genrerId'),
-        language: language.name,
-        genrer: genrer.name,
-      })
-    )
+    expect(httpResponse).toEqual(ok(videoStub))
   })
 
   test('should returns 404 if a video return not found', async ({ expect }) => {

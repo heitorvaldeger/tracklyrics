@@ -22,7 +22,7 @@ const makeFakeRequest = (): IVideoCreateRequest => ({
 })
 
 const makeSut = () => {
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const { videoServiceStub } = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
   return { sut }

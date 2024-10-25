@@ -7,7 +7,7 @@ import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 
 const makeSut = () => {
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const { videoServiceStub } = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
   return { sut }

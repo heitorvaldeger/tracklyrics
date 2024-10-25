@@ -10,29 +10,32 @@ export const makeFakeVideoServiceStub = (
   language?: Language,
   genrer?: Genrer
 ) => {
+  const videoStub = {
+    ..._.omit(fakeVideo, 'languageId', 'genrerId'),
+    language: language?.name || '',
+    genrer: genrer?.name || '',
+  }
+
   class VideoServiceStub implements IVideoService {
     find(uuid: string): Promise<IVideoResponse | null> {
-      return new Promise<IVideoResponse>((resolve) =>
-        resolve({
-          ..._.omit(fakeVideo, 'languageId', 'genrerId'),
-          language: language?.name || '',
-          genrer: genrer?.name || '',
-        })
-      )
+      return new Promise<IVideoResponse>((resolve) => resolve(videoStub))
     }
 
     findAll(): Promise<IVideoResponse[]> {
-      return new Promise((resolve) =>
-        resolve([
-          {
-            ..._.omit(fakeVideo, 'languageId', 'genrerId'),
-            language: language?.name || '',
-            genrer: genrer?.name || '',
-          },
-        ])
-      )
+      return new Promise((resolve) => resolve([videoStub]))
+    }
+
+    findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
+      return new Promise((resolve) => resolve([videoStub]))
+    }
+
+    findByLanguage(languageId: number): Promise<IVideoResponse[]> {
+      return new Promise((resolve) => resolve([videoStub]))
     }
   }
 
-  return new VideoServiceStub()
+  return {
+    videoServiceStub: new VideoServiceStub(),
+    videoStub,
+  }
 }
