@@ -3,7 +3,7 @@ import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
-import { badRequest, notFound, ok } from '#helpers/http'
+import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 
@@ -64,5 +64,18 @@ test.group('VideoController.find', (group) => {
         },
       ])
     )
+  })
+
+  test('should returns 500 if video find throws', async ({ expect }) => {
+    const { sut, videoServiceStub, videoStub } = await makeSut()
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      uuid: videoStub.uuid,
+    })
+    stub(videoServiceStub, 'find').throws(new Error())
+
+    const httpResponse = await sut.find(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

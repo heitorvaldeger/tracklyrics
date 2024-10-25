@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
 import { stub } from 'sinon'
-import { badRequest, ok } from '#helpers/http'
+import { badRequest, ok, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
@@ -50,5 +50,19 @@ test.group('VideoController.findByLanguage', (group) => {
         },
       ])
     )
+  })
+
+  test('should returns 500 if video find throws', async ({ expect }) => {
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      languageId: 0,
+    })
+
+    const { sut, videoServiceStub } = await makeSut()
+    stub(videoServiceStub, 'findByLanguage').throws(new Error())
+
+    const httpResponse = await sut.findByLanguage(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
