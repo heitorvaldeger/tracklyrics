@@ -32,7 +32,7 @@ export default class VideoController {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)
       }
-      serverError(error)
+      return serverError(error)
     }
   }
 
@@ -41,17 +41,12 @@ export default class VideoController {
       const { genrerId } = await genrerIdVideoValidator.validate(request.params())
       const videos = await this.videoService.findByGenrer(genrerId)
 
-      return ok(
-        videos.map((video) => ({
-          ...video,
-          qtyViews: BigInt(video.qtyViews),
-        }))
-      )
+      return ok(videos)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)
       }
-      serverError(error)
+      return serverError(error)
     }
   }
 
@@ -60,29 +55,23 @@ export default class VideoController {
       const { languageId } = await languageIdVideoValidator.validate(request.params())
       const videos = await this.videoService.findByLanguage(languageId)
 
-      return ok(
-        videos.map((video) => ({
-          ...video,
-          qtyViews: BigInt(video.qtyViews),
-        }))
-      )
+      return ok(videos)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)
       }
-      serverError(error)
+      return serverError(error)
     }
   }
 
   async findAll() {
-    const videos = await this.videoService.findAll()
+    try {
+      const videos = await this.videoService.findAll()
 
-    return ok(
-      videos.map((video) => ({
-        ...video,
-        qtyViews: BigInt(video.qtyViews),
-      }))
-    )
+      return ok(videos)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 
   async create({ request }: HttpContext) {

@@ -8,7 +8,8 @@ export class VideoService implements IVideoService {
   constructor(private readonly videoRepository: IVideoRepository) {}
 
   async findAll(): Promise<IVideoResponse[]> {
-    return await this.videoRepository.findAll()
+    const videos = await this.videoRepository.findAll()
+    return this.mapperVideos(videos)
   }
 
   async find(uuid: string): Promise<IVideoResponse | null> {
@@ -16,10 +17,19 @@ export class VideoService implements IVideoService {
   }
 
   async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
-    return await this.videoRepository.findByGenrer(genrerId)
+    const videos = await this.videoRepository.findByGenrer(genrerId)
+    return this.mapperVideos(videos)
   }
 
   async findByLanguage(languageId: number): Promise<IVideoResponse[]> {
-    return await this.videoRepository.findByLanguage(languageId)
+    const videos = await this.videoRepository.findByLanguage(languageId)
+    return this.mapperVideos(videos)
+  }
+
+  private mapperVideos(videos: IVideoResponse[]) {
+    return videos.map((video) => ({
+      ...video,
+      qtyViews: BigInt(video.qtyViews),
+    }))
   }
 }
