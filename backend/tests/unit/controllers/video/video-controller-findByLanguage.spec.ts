@@ -17,7 +17,7 @@ const makeSut = async () => {
   return { sut, videoStub, videoServiceStub }
 }
 
-test.group('VideoController.findByGenrer', (group) => {
+test.group('VideoController.findByLanguage', (group) => {
   group.setup(async () => {
     await Video.query().whereNotNull('id').delete()
   })
@@ -25,10 +25,10 @@ test.group('VideoController.findByGenrer', (group) => {
   test('should returns 200 if a list videos returns on success', async ({ expect }) => {
     const httpContext = new HttpContextFactory().create()
     stub(httpContext.request, 'params').returns({
-      genrerId: 0,
+      languageId: 0,
     })
     const { videoStub, sut } = await makeSut()
-    const httpResponse = await sut.findByGenrer(httpContext)
+    const httpResponse = await sut.findByLanguage(httpContext)
 
     expect(httpResponse).toEqual(ok([videoStub]))
   })
