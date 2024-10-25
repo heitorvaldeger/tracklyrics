@@ -2,7 +2,8 @@ import _ from 'lodash'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
-import { ok } from '#helpers/http'
+import { stub } from 'sinon'
+import { ok, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 
@@ -25,5 +26,14 @@ test.group('VideoController.findAll', (group) => {
     const httpResponse = await sut.findAll()
 
     expect(httpResponse).toEqual(ok([videoStub]))
+  })
+
+  test('should returns 500 if video find throws', async ({ expect }) => {
+    const { sut, videoServiceStub } = await makeSut()
+    stub(videoServiceStub, 'findAll').throws(new Error())
+
+    const httpResponse = await sut.findAll()
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
