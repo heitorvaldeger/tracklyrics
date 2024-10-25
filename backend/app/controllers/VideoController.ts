@@ -20,6 +20,7 @@ export default class VideoController {
       if (!video) {
         return notFound()
       }
+
       video.qtyViews = BigInt(video.qtyViews)
       return ok(video)
     } catch (error) {

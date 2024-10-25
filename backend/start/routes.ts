@@ -16,3 +16,6 @@ router.get('/', async () => {
     hello: 'world',
   }
 })
+
+router.get('/test', [GenrerController, 'findAll'])
+router.get('/test2/:uuid', [VideoController, 'find'])
