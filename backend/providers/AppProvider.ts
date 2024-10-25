@@ -2,10 +2,10 @@ import { ApplicationService } from '@adonisjs/core/types'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
 import { GenrerService } from '#services/GenrerService'
-import { FindAllGenrerPostgresRepository } from '#repository/postgres/genrers/FindAllGenrerPostgresRepository'
+import { GenrerPostgresRepository } from '#repository/postgres/GenrerPostgresRepository'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
 import { VideoService } from '#services/VideoService'
-import { VideoPostgresRepository } from '#repository/postgres/videos/VideoPostgresRepository'
+import { VideoPostgresRepository } from '#repository/postgres/VideoPostgresRepository'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -22,7 +22,7 @@ export default class AppProvider {
     })
 
     this.app.container.bind(IGenrerService, async () => {
-      return new GenrerService(await this.app.container.make(FindAllGenrerPostgresRepository))
+      return new GenrerService(await this.app.container.make(GenrerPostgresRepository))
     })
   }
 
