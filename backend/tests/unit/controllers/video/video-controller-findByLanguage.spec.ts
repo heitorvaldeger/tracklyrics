@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import Video from '#models/video'
 import { stub } from 'sinon'
-import { ok } from '#helpers/http'
+import { badRequest, ok } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
@@ -31,5 +31,24 @@ test.group('VideoController.findByLanguage', (group) => {
     const httpResponse = await sut.findByLanguage(httpContext)
 
     expect(httpResponse).toEqual(ok([videoStub]))
+  })
+
+  test('should returns 400 if pass invalid languageId on findByLanguage', async ({ expect }) => {
+    const { sut } = await makeSut()
+    const httpContext = new HttpContextFactory().create()
+    stub(httpContext.request, 'params').returns({
+      languageId: 'any_value',
+    })
+
+    const httpResponse = await sut.findByLanguage(httpContext)
+
+    expect(httpResponse).toEqual(
+      badRequest([
+        {
+          field: 'languageId',
+          message: 'The languageId field must be a number',
+        },
+      ])
+    )
   })
 })
