@@ -2,9 +2,10 @@ import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
-import { badRequest, noContent, notFound } from '#helpers/http'
+import { badRequest, noContent, notFound, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import Video from '#models/video'
 
 const makeSut = () => {
   const httpContext = new HttpContextFactory().create()
@@ -60,5 +61,19 @@ test.group('VideoController.delete', (group) => {
         },
       ])
     )
+  })
+
+  test('should returns 500 if video delete throws', async ({ expect }) => {
+    const fakeVideo = await makeFakeVideo()
+    const { sut, httpContext } = makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
+
+    stub(Video, 'query').throws(new Error())
+
+    const httpResponse = await sut.delete(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
