@@ -11,12 +11,24 @@ import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 
+const generateYouTubeURL = () => {
+  const baseURL = 'https://www.youtube.com/watch?v='
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let videoID = ''
+
+  for (let i = 0; i < 11; i++) {
+    videoID += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+
+  return baseURL + videoID
+}
+
 const makeFakeRequest = (): IVideoCreateRequest => ({
   isDraft: false,
   title: 'any_title',
   artist: 'any_artist',
   releaseYear: '0000',
-  linkYoutube: 'any_link',
+  linkYoutube: generateYouTubeURL(),
   languageId: 0,
   genrerId: 0,
 })
@@ -179,6 +191,21 @@ test.group('VideoController.create', (group) => {
         {
           field: 'linkYoutube',
           message: 'The linkYoutube field must have at least 3 characters',
+        },
+      ])
+    )
+  })
+
+  test('should returns 400 if linkYoutube is not Youtube link valid', async ({ expect }) => {
+    const { sut } = makeSut()
+    stub(httpRequest, 'linkYoutube').value('any_value')
+    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
+
+    expect(httpResponse).toEqual(
+      badRequest([
+        {
+          field: 'linkYoutube',
+          message: 'The linkYoutube field format is invalid',
         },
       ])
     )
