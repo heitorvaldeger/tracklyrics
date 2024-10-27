@@ -2,7 +2,8 @@ import vine from '@vinejs/vine'
 
 const youtubeLinkRegex =
   /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
-export const createVideoValidator = vine.compile(
+
+export const createOrUpdateVideoValidator = vine.compile(
   vine.object({
     title: vine.string().trim().minLength(3),
     artist: vine.string().trim().minLength(3),
@@ -12,7 +13,7 @@ export const createVideoValidator = vine.compile(
       .trim()
       .fixedLength(4)
       .regex(/^[0-9]+$/),
-    linkYoutube: vine.string().trim().minLength(3).regex(youtubeLinkRegex).url(),
+    linkYoutube: vine.string().regex(youtubeLinkRegex).url(),
     languageId: vine.number().transform((value) => BigInt(value)),
     genrerId: vine.number().transform((value) => BigInt(value)),
   })

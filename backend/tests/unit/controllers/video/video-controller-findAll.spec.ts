@@ -8,12 +8,11 @@ import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 
 const makeSut = async () => {
-  const { fakeVideo, language, genrer } = await makeFakeVideo()
-
-  const { videoServiceStub, videoStub } = makeFakeVideoServiceStub(fakeVideo, language, genrer)
+  const fakeVideo = await makeFakeVideo()
+  const videoServiceStub = makeFakeVideoServiceStub(fakeVideo)
   const sut = new VideoController(videoServiceStub)
 
-  return { sut, videoStub, videoServiceStub }
+  return { sut, fakeVideo, videoServiceStub }
 }
 
 test.group('VideoController.findAll', (group) => {
@@ -22,10 +21,10 @@ test.group('VideoController.findAll', (group) => {
   })
 
   test('should returns 200 if a list videos returns on success', async ({ expect }) => {
-    const { videoStub, sut } = await makeSut()
+    const { fakeVideo, sut } = await makeSut()
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual(ok([videoStub]))
+    expect(httpResponse).toEqual(ok([fakeVideo]))
   })
 
   test('should returns 500 if video find throws', async ({ expect }) => {

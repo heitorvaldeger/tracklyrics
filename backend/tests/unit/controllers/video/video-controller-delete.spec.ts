@@ -7,10 +7,11 @@ import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 
 const makeSut = () => {
-  const { videoServiceStub } = makeFakeVideoServiceStub()
+  const httpContext = new HttpContextFactory().create()
+  const videoServiceStub = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
-  return { sut }
+  return { sut, httpContext }
 }
 
 test.group('VideoController.delete', (group) => {
@@ -20,37 +21,35 @@ test.group('VideoController.delete', (group) => {
   })
 
   test('should returns 204 if video was delete on success', async ({ expect }) => {
-    const { fakeVideo } = await makeFakeVideo()
-    const httpContext = new HttpContextFactory().create()
+    const fakeVideo = await makeFakeVideo()
+    const { sut, httpContext } = makeSut()
+
     stub(httpContext.request, 'params').returns({
       uuid: fakeVideo.uuid,
     })
 
-    const { sut } = makeSut()
     const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(noContent())
   })
 
   test('should returns 404 if a video return not found on delete', async ({ expect }) => {
-    const httpContext = new HttpContextFactory().create()
+    const { sut, httpContext } = makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: '00000000-0000-0000-0000-000000000000',
     })
 
-    const { sut } = makeSut()
     const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(notFound())
   })
 
   test('should returns 400 if pass invalid uuid on delete', async ({ expect }) => {
-    const httpContext = new HttpContextFactory().create()
+    const { sut, httpContext } = makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: 'invalid_uuid',
     })
 
-    const { sut } = makeSut()
     const httpResponse = await sut.delete(httpContext)
 
     expect(httpResponse).toEqual(

@@ -9,12 +9,12 @@ import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceS
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
 
 const makeSut = async () => {
-  const { fakeVideo, language, genrer } = await makeFakeVideo()
-
-  const { videoServiceStub, videoStub } = makeFakeVideoServiceStub(fakeVideo, language, genrer)
+  const fakeVideo = await makeFakeVideo()
+  const videoServiceStub = makeFakeVideoServiceStub(fakeVideo)
+  const httpContext = new HttpContextFactory().create()
   const sut = new VideoController(videoServiceStub)
 
-  return { sut, videoStub, videoServiceStub }
+  return { sut, fakeVideo, videoServiceStub, httpContext }
 }
 
 test.group('VideoController.findByLanguage', (group) => {
@@ -23,19 +23,18 @@ test.group('VideoController.findByLanguage', (group) => {
   })
 
   test('should returns 200 if a list videos returns on success', async ({ expect }) => {
-    const httpContext = new HttpContextFactory().create()
+    const { fakeVideo, sut, httpContext } = await makeSut()
+
     stub(httpContext.request, 'params').returns({
       languageId: 0,
     })
-    const { videoStub, sut } = await makeSut()
     const httpResponse = await sut.findByLanguage(httpContext)
 
-    expect(httpResponse).toEqual(ok([videoStub]))
+    expect(httpResponse).toEqual(ok([fakeVideo]))
   })
 
   test('should returns 400 if pass invalid languageId on findByLanguage', async ({ expect }) => {
-    const { sut } = await makeSut()
-    const httpContext = new HttpContextFactory().create()
+    const { sut, httpContext } = await makeSut()
     stub(httpContext.request, 'params').returns({
       languageId: 'any_value',
     })
@@ -53,12 +52,11 @@ test.group('VideoController.findByLanguage', (group) => {
   })
 
   test('should returns 500 if video find throws', async ({ expect }) => {
-    const httpContext = new HttpContextFactory().create()
+    const { sut, videoServiceStub, httpContext } = await makeSut()
     stub(httpContext.request, 'params').returns({
       languageId: 0,
     })
 
-    const { sut, videoServiceStub } = await makeSut()
     stub(videoServiceStub, 'findByLanguage').throws(new Error())
 
     const httpResponse = await sut.findByLanguage(httpContext)

@@ -3,7 +3,7 @@ import { errors } from '@vinejs/vine'
 import Video from '#models/video'
 import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
 import {
-  createVideoValidator,
+  createOrUpdateVideoValidator,
   genrerIdVideoValidator,
   languageIdVideoValidator,
   uuidVideoValidator,
@@ -77,13 +77,30 @@ export default class VideoController {
   async create({ request }: HttpContext) {
     try {
       const requestBody = request.body() as IVideoCreateRequest
-      const payload = await createVideoValidator.validate(requestBody)
+      const payload = await createOrUpdateVideoValidator.validate(requestBody)
       const uuid = randomUUID()
       await Video.create({
         ...payload,
         uuid,
       })
 
+      return noContent()
+    } catch (error) {
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return badRequest(error.messages)
+      }
+
+      return serverError(error as Error)
+    }
+  }
+
+  async update({ request }: HttpContext) {
+    try {
+      const requestBody = request.body() as IVideoCreateRequest
+      const { uuid } = await uuidVideoValidator.validate(request.params())
+      const payload = await createOrUpdateVideoValidator.validate(requestBody)
+
+      await Video.query().where('uuid', uuid).update(payload)
       return noContent()
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {

@@ -1,9 +1,22 @@
+import _ from 'lodash'
 import { randomUUID } from 'node:crypto'
 import Video from '#models/video'
 import { makeFakeLanguage } from './makeFakeLanguage.js'
 import { makeFakeGenrer } from './makeFakeGenrer.js'
 
-export const makeFakeVideo = async () => {
+export interface FakeVideoFactory {
+  isDraft: boolean
+  title: string
+  artist: string
+  qtyViews: bigint
+  releaseYear: string
+  linkYoutube: string
+  uuid: string
+  language: string
+  genrer: string
+}
+
+export const makeFakeVideo = async (): Promise<FakeVideoFactory> => {
   const language = await makeFakeLanguage()
   const genrer = await makeFakeGenrer()
   const uuid = randomUUID()
@@ -21,5 +34,10 @@ export const makeFakeVideo = async () => {
     genrerId: BigInt(genrer.id),
   })
   await Video.create(fakeVideo)
-  return { fakeVideo, language, genrer }
+
+  return {
+    ..._.omit(fakeVideo, 'languageId', 'genrerId'),
+    language: language.name,
+    genrer: genrer.name,
+  }
 }

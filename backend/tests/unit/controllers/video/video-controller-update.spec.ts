@@ -1,8 +1,6 @@
-import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
-import Video from '#models/video'
 import { badRequest, noContent, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
@@ -10,6 +8,8 @@ import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
+import Video from '#models/video'
+import { FakeVideoFactory, makeFakeVideo } from '#tests/factories/makeFakeVideo'
 
 const makeFakeRequest = (): IVideoCreateRequest => ({
   isDraft: false,
@@ -38,7 +38,11 @@ const makeSut = async () => {
   return { sut, httpContext }
 }
 
-test.group('VideoController.create', (group) => {
+test.group('VideoController.update', (group) => {
+  let fakeVideo: FakeVideoFactory
+  group.setup(async () => {
+    fakeVideo = await makeFakeVideo()
+  })
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
@@ -46,9 +50,12 @@ test.group('VideoController.create', (group) => {
 
   test('should returns 400 if isDraft is not a boolean', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
-    stub(httpContext.request.body(), 'isDraft').value('any_value')
 
-    const httpResponse = await sut.create(httpContext)
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
+    stub(httpContext.request.body(), 'isDraft').value('any_value')
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -62,10 +69,13 @@ test.group('VideoController.create', (group) => {
 
   test('should returns 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
     stub(httpContext.request, 'body').returns({
       isDraft: false,
     })
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -99,9 +109,12 @@ test.group('VideoController.create', (group) => {
 
   test('should returns 400 if releseYear not contains four length', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
     stub(httpContext.request.body(), 'releaseYear').value('00000')
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -115,9 +128,12 @@ test.group('VideoController.create', (group) => {
 
   test('should returns 400 if releseYear not is string numeric', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
     stub(httpContext.request.body(), 'releaseYear').value('abcd')
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -132,13 +148,16 @@ test.group('VideoController.create', (group) => {
   test('should returns 400 if fields not contains most three characteres', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
     stub(httpContext.request, 'body').returns({
       ...httpBody,
       title: 'ab',
       artist: 'ab',
     })
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -157,6 +176,9 @@ test.group('VideoController.create', (group) => {
   test('should returns 400 if fields is empty', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
     stub(httpContext.request, 'body').returns({
       ...httpBody,
       title: '',
@@ -164,7 +186,7 @@ test.group('VideoController.create', (group) => {
       releaseYear: '',
     })
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -186,9 +208,12 @@ test.group('VideoController.create', (group) => {
 
   test('should returns 400 if linkYoutube is not Youtube link valid', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
     stub(httpContext.request.body(), 'linkYoutube').value('any_link')
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -200,19 +225,44 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 200 if video was create on success', async ({ expect }) => {
+  test('should returns 400 if pass invalid uuid on update', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
-    const httpResponse = await sut.create(httpContext)
 
+    stub(httpContext.request, 'params').returns({
+      uuid: 'invalid_uuid',
+    })
+
+    const httpResponse = await sut.update(httpContext)
+
+    expect(httpResponse).toEqual(
+      badRequest([
+        {
+          field: 'uuid',
+          message: 'The uuid field must be a valid UUID',
+        },
+      ])
+    )
+  })
+
+  test('should returns 200 if video was update on success', async ({ expect }) => {
+    const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
+
+    const httpResponse = await sut.update(httpContext)
     expect(httpResponse).toEqual(noContent())
   })
 
-  test('should returns 500 if video create throws', async ({ expect }) => {
+  test('should returns 500 if video update throws', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: fakeVideo.uuid,
+    })
 
-    stub(Video, 'create').throws(new Error())
+    stub(Video, 'query').throws(new Error())
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(serverError(new Error()))
   })
