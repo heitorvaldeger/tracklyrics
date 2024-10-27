@@ -16,7 +16,7 @@ const makeSut = async () => {
 }
 
 test.group('VideoController.findAll', (group) => {
-  group.setup(async () => {
+  group.teardown(async () => {
     await Video.query().whereNotNull('id').delete()
   })
 

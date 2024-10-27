@@ -12,7 +12,7 @@ const makeSut = () => {
   return { sut, fakeGenrer }
 }
 test.group('GenrerController.findAll', (group) => {
-  group.setup(async () => {
+  group.teardown(async () => {
     await Video.query().whereNotNull('id').delete()
     await Genrer.query().whereNotNull('id').delete()
   })

@@ -18,7 +18,7 @@ const makeSut = async () => {
 }
 
 test.group('VideoController.findByLanguage', (group) => {
-  group.setup(async () => {
+  group.teardown(async () => {
     await Video.query().whereNotNull('id').delete()
   })
 
