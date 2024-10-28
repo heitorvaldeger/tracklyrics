@@ -56,6 +56,12 @@ export class VideoService implements IVideoService {
     return createSuccessResponse()
   }
 
+  async update(payload: IVideoCreateRequest, uuid: string): Promise<IMethodResponse<any>> {
+    await this.videoRepository.update(payload, uuid)
+
+    return createSuccessResponse()
+  }
+
   private mapperVideos(videos: IVideoResponse[]) {
     return videos.map((video) => ({
       ...video,

@@ -39,6 +39,10 @@ export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
     create(payload: IVideoCreateRequest): Promise<IMethodResponse<any>> {
       return new Promise((resolve) => resolve(createSuccessResponse()))
     }
+
+    update(payload: IVideoCreateRequest, uuid: string): Promise<IMethodResponse<any>> {
+      return new Promise((resolve) => resolve(createSuccessResponse()))
+    }
   }
 
   return new VideoServiceStub()

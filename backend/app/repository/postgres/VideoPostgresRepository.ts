@@ -98,4 +98,8 @@ export class VideoPostgresRepository implements IVideoRepository {
   async create(payload: any): Promise<void> {
     await Video.create(payload)
   }
+
+  async update(payload: any, uuid: string): Promise<void> {
+    await Video.query().where('uuid', uuid).update(payload)
+  }
 }

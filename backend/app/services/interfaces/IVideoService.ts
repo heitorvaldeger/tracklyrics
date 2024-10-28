@@ -9,4 +9,5 @@ export abstract class IVideoService {
   abstract findByLanguage(languageId: number): Promise<IMethodResponse<IVideoResponse[]>>
   abstract delete(uuid: string): Promise<IMethodResponse<any>>
   abstract create(payload: IVideoCreateRequest): Promise<IMethodResponse<any>>
+  abstract update(payload: IVideoCreateRequest, uuid: string): Promise<IMethodResponse<any>>
 }

@@ -8,4 +8,5 @@ export abstract class IVideoRepository extends IFindAllRepository {
   abstract isVideoAvailable(uuid: string): Promise<boolean>
   abstract delete(uuid: string): Promise<void>
   abstract create(payload: any): Promise<void>
+  abstract update(payload: any, uuid: string): Promise<void>
 }
