@@ -5,6 +5,6 @@ export abstract class IVideoService {
   abstract findAll(): Promise<IVideoResponse[]>
   abstract find(uuid: string): Promise<IMethodResponse<IVideoResponse | null>>
   abstract findByGenrer(genrerId: number): Promise<IMethodResponse<IVideoResponse[]>>
-  abstract findByLanguage(languageId: number): Promise<IVideoResponse[]>
+  abstract findByLanguage(languageId: number): Promise<IMethodResponse<IVideoResponse[]>>
   abstract delete(uuid: string): Promise<IMethodResponse<any>>
 }

@@ -23,8 +23,10 @@ export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
       )
     }
 
-    findByLanguage(languageId: number): Promise<IVideoResponse[]> {
-      return new Promise((resolve) => resolve(fakeVideo ? [fakeVideo] : []))
+    findByLanguage(languageId: number): Promise<IMethodResponse<IVideoResponse[]>> {
+      return new Promise<IMethodResponse<IVideoResponse[]>>((resolve) =>
+        resolve(createSuccessResponse(fakeVideo ? [fakeVideo] : []))
+      )
     }
 
     delete(uuid: string): Promise<IMethodResponse<any>> {

@@ -30,9 +30,9 @@ export class VideoService implements IVideoService {
     return createSuccessResponse(this.mapperVideos(videos))
   }
 
-  async findByLanguage(languageId: number): Promise<IVideoResponse[]> {
+  async findByLanguage(languageId: number): Promise<IMethodResponse<IVideoResponse[]>> {
     const videos = await this.videoRepository.findByLanguage(languageId)
-    return this.mapperVideos(videos)
+    return createSuccessResponse(this.mapperVideos(videos))
   }
 
   async delete(uuid: string): Promise<IMethodResponse<any>> {

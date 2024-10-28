@@ -49,9 +49,9 @@ export default class VideoController {
   async findByLanguage({ request }: HttpContext) {
     try {
       const { languageId } = await languageIdVideoValidator.validate(request.params())
-      const videos = await this.videoService.findByLanguage(languageId)
+      const response = await this.videoService.findByLanguage(languageId)
 
-      return ok(videos)
+      return dispatch(response)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)
