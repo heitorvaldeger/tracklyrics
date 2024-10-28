@@ -25,9 +25,9 @@ export class VideoService implements IVideoService {
     return createSuccessResponse(video)
   }
 
-  async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
+  async findByGenrer(genrerId: number): Promise<IMethodResponse<IVideoResponse[]>> {
     const videos = await this.videoRepository.findByGenrer(genrerId)
-    return this.mapperVideos(videos)
+    return createSuccessResponse(this.mapperVideos(videos))
   }
 
   async findByLanguage(languageId: number): Promise<IVideoResponse[]> {

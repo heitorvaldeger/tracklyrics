@@ -17,8 +17,10 @@ export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
       return new Promise((resolve) => resolve(fakeVideo ? [fakeVideo] : []))
     }
 
-    findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
-      return new Promise((resolve) => resolve(fakeVideo ? [fakeVideo] : []))
+    findByGenrer(genrerId: number): Promise<IMethodResponse<IVideoResponse[]>> {
+      return new Promise<IMethodResponse<IVideoResponse[]>>((resolve) =>
+        resolve(createSuccessResponse(fakeVideo ? [fakeVideo] : []))
+      )
     }
 
     findByLanguage(languageId: number): Promise<IVideoResponse[]> {

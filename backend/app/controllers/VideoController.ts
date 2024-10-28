@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import Video from '#models/video'
-import { badRequest, noContent, notFound, ok, serverError } from '#helpers/http'
+import { badRequest, noContent, ok, serverError } from '#helpers/http'
 import {
   createOrUpdateVideoValidator,
   genrerIdVideoValidator,
@@ -35,9 +35,9 @@ export default class VideoController {
   async findByGenrer({ request }: HttpContext) {
     try {
       const { genrerId } = await genrerIdVideoValidator.validate(request.params())
-      const videos = await this.videoService.findByGenrer(genrerId)
+      const response = await this.videoService.findByGenrer(genrerId)
 
-      return ok(videos)
+      return dispatch(response)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)
