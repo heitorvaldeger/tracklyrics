@@ -7,4 +7,5 @@ export abstract class IVideoRepository extends IFindAllRepository {
   abstract findByLanguage(languageId: number): Promise<IVideoResponse[]>
   abstract isVideoAvailable(uuid: string): Promise<boolean>
   abstract delete(uuid: string): Promise<void>
+  abstract create(payload: any): Promise<void>
 }

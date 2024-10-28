@@ -35,7 +35,7 @@ const makeSut = async () => {
   const videoServiceStub = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
-  return { sut, httpContext }
+  return { sut, httpContext, videoServiceStub }
 }
 
 test.group('VideoController.create', (group) => {
@@ -208,9 +208,9 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 500 if video create throws', async ({ expect }) => {
-    const { sut, httpContext } = await makeSut()
+    const { sut, httpContext, videoServiceStub } = await makeSut()
 
-    stub(Video, 'create').throws(new Error())
+    stub(videoServiceStub, 'create').throws(new Error())
 
     const httpResponse = await sut.create(httpContext)
 

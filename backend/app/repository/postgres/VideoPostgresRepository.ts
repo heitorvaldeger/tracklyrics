@@ -94,4 +94,8 @@ export class VideoPostgresRepository implements IVideoRepository {
   async delete(uuid: string): Promise<void> {
     await Video.query().where('uuid', uuid).delete()
   }
+
+  async create(payload: any): Promise<void> {
+    await Video.create(payload)
+  }
 }

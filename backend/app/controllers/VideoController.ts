@@ -72,15 +72,11 @@ export default class VideoController {
 
   async create({ request }: HttpContext) {
     try {
-      const requestBody = request.body() as IVideoCreateRequest
-      const payload = await createOrUpdateVideoValidator.validate(requestBody)
-      const uuid = randomUUID()
-      await Video.create({
-        ...payload,
-        uuid,
-      })
-
-      return noContent()
+      const payload = await createOrUpdateVideoValidator.validate(
+        request.body() as IVideoCreateRequest
+      )
+      const response = await this.videoService.create(payload)
+      return dispatch(response)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)

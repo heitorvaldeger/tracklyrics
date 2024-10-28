@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { FakeVideoFactory } from './makeFakeVideo.js'
 import { createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
+import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 
 export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
   class VideoServiceStub implements IVideoService {
@@ -32,6 +33,10 @@ export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
     }
 
     delete(uuid: string): Promise<IMethodResponse<any>> {
+      return new Promise((resolve) => resolve(createSuccessResponse()))
+    }
+
+    create(payload: IVideoCreateRequest): Promise<IMethodResponse<any>> {
       return new Promise((resolve) => resolve(createSuccessResponse()))
     }
   }

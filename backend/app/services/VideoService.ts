@@ -5,6 +5,8 @@ import { IVideoService } from './interfaces/IVideoService.js'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
+import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
+import { randomUUID } from 'node:crypto'
 
 @inject()
 export class VideoService implements IVideoService {
@@ -41,6 +43,16 @@ export class VideoService implements IVideoService {
     }
 
     await this.videoRepository.delete(uuid)
+    return createSuccessResponse()
+  }
+
+  async create(payload: IVideoCreateRequest): Promise<IMethodResponse<any>> {
+    const uuid = randomUUID()
+    await this.videoRepository.create({
+      ...payload,
+      uuid,
+    })
+
     return createSuccessResponse()
   }
 
