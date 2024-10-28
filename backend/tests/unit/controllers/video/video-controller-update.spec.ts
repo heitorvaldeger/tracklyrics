@@ -8,7 +8,6 @@ import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
-import Video from '#models/video'
 import { FakeVideoFactory, makeFakeVideo } from '#tests/factories/makeFakeVideo'
 
 const makeFakeRequest = (): IVideoCreateRequest => ({

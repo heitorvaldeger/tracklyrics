@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
-import Video from '#models/video'
-import { badRequest, noContent, serverError } from '#helpers/http'
+import { badRequest, serverError } from '#helpers/http'
 import {
   createOrUpdateVideoValidator,
   genrerIdVideoValidator,
