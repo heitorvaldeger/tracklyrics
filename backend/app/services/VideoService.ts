@@ -2,6 +2,9 @@ import { IVideoResponse } from '#interfaces/IVideoResponse'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
 import { inject } from '@adonisjs/core'
 import { IVideoService } from './interfaces/IVideoService.js'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
 
 @inject()
 export class VideoService implements IVideoService {
@@ -24,6 +27,15 @@ export class VideoService implements IVideoService {
   async findByLanguage(languageId: number): Promise<IVideoResponse[]> {
     const videos = await this.videoRepository.findByLanguage(languageId)
     return this.mapperVideos(videos)
+  }
+
+  async delete(uuid: string): Promise<IMethodResponse<any>> {
+    if (!(await this.videoRepository.isVideoAvailable(uuid))) {
+      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    }
+
+    await this.videoRepository.delete(uuid)
+    return createSuccessResponse()
   }
 
   private mapperVideos(videos: IVideoResponse[]) {

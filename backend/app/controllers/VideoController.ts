@@ -12,6 +12,7 @@ import { randomUUID } from 'node:crypto'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { inject } from '@adonisjs/core'
+import { dispatch } from '#helpers/dispatch'
 
 @inject()
 export default class VideoController {
@@ -115,13 +116,8 @@ export default class VideoController {
     try {
       const { uuid } = await uuidVideoValidator.validate(request.params())
 
-      const video = await Video.findBy('uuid', uuid)
-      if (!video) {
-        return notFound()
-      }
-      await Video.query().where('uuid', uuid).delete()
-
-      return noContent()
+      const result = await this.videoService.delete(uuid)
+      return dispatch(result)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)

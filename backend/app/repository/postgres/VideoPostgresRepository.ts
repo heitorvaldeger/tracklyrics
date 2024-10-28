@@ -1,6 +1,7 @@
 import db from '@adonisjs/lucid/services/db'
 import { IVideoResponse } from '#interfaces/IVideoResponse'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
+import Video from '#models/video'
 
 export class VideoPostgresRepository implements IVideoRepository {
   async find(uuid: string): Promise<IVideoResponse | null> {
@@ -22,7 +23,6 @@ export class VideoPostgresRepository implements IVideoRepository {
       )
       .first()
 
-    console.log(video)
     return video
   }
 
@@ -85,5 +85,13 @@ export class VideoPostgresRepository implements IVideoRepository {
         'genrers.name as genrer'
       )
     return videos
+  }
+
+  async isVideoAvailable(uuid: string): Promise<boolean> {
+    return !!(await db.from('videos').where('uuid', uuid).first())
+  }
+
+  async delete(uuid: string): Promise<void> {
+    await Video.query().where('uuid', uuid).delete()
   }
 }

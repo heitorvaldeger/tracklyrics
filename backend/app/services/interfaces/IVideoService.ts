@@ -1,3 +1,4 @@
+import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
 import { IVideoResponse } from '#interfaces/IVideoResponse'
 
 export abstract class IVideoService {
@@ -5,4 +6,5 @@ export abstract class IVideoService {
   abstract find(uuid: string): Promise<IVideoResponse | null>
   abstract findByGenrer(genrerId: number): Promise<IVideoResponse[]>
   abstract findByLanguage(languageId: number): Promise<IVideoResponse[]>
+  abstract delete(uuid: string): Promise<IMethodResponse<any>>
 }

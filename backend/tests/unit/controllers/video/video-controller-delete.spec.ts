@@ -6,13 +6,15 @@ import { badRequest, noContent, notFound, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import Video from '#models/video'
+import { createFailureResponse } from '#helpers/method-response'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
 
 const makeSut = () => {
   const httpContext = new HttpContextFactory().create()
   const videoServiceStub = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
-  return { sut, httpContext }
+  return { sut, httpContext, videoServiceStub }
 }
 
 test.group('VideoController.delete', (group) => {
@@ -35,7 +37,10 @@ test.group('VideoController.delete', (group) => {
   })
 
   test('should returns 404 if a video return not found on delete', async ({ expect }) => {
-    const { sut, httpContext } = makeSut()
+    const { sut, httpContext, videoServiceStub } = makeSut()
+    stub(videoServiceStub, 'delete').returns(
+      new Promise((resolve) => resolve(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)))
+    )
     stub(httpContext.request, 'params').returns({
       uuid: '00000000-0000-0000-0000-000000000000',
     })
@@ -65,12 +70,12 @@ test.group('VideoController.delete', (group) => {
 
   test('should returns 500 if video delete throws', async ({ expect }) => {
     const fakeVideo = await makeFakeVideo()
-    const { sut, httpContext } = makeSut()
+    const { sut, httpContext, videoServiceStub } = makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: fakeVideo.uuid,
     })
 
-    stub(Video, 'query').throws(new Error())
+    stub(videoServiceStub, 'delete').throws(new Error())
 
     const httpResponse = await sut.delete(httpContext)
 
