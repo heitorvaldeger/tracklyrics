@@ -57,6 +57,9 @@ export class VideoService implements IVideoService {
   }
 
   async update(payload: IVideoCreateRequest, uuid: string): Promise<IMethodResponse<any>> {
+    if (!(await this.videoRepository.isVideoAvailable(uuid))) {
+      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    }
     await this.videoRepository.update(payload, uuid)
 
     return createSuccessResponse()

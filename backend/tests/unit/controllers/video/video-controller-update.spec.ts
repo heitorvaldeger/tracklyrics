@@ -1,7 +1,7 @@
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
-import { badRequest, noContent, serverError } from '#helpers/http'
+import { badRequest, noContent, notFound, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
@@ -9,6 +9,8 @@ import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
 import { FakeVideoFactory, makeFakeVideo } from '#tests/factories/makeFakeVideo'
+import { createFailureResponse } from '#helpers/method-response'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
 
 const makeFakeRequest = (): IVideoCreateRequest => ({
   isDraft: false,
@@ -241,6 +243,20 @@ test.group('VideoController.update', (group) => {
         },
       ])
     )
+  })
+
+  test('should returns 404 if a video return not found on delete', async ({ expect }) => {
+    const { sut, httpContext, videoServiceStub } = await makeSut()
+    stub(videoServiceStub, 'update').returns(
+      new Promise((resolve) => resolve(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)))
+    )
+    stub(httpContext.request, 'params').returns({
+      uuid: '00000000-0000-0000-0000-000000000000',
+    })
+
+    const httpResponse = await sut.update(httpContext)
+
+    expect(httpResponse).toEqual(notFound())
   })
 
   test('should returns 200 if video was update on success', async ({ expect }) => {
