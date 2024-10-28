@@ -10,9 +10,9 @@ import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
 export class VideoService implements IVideoService {
   constructor(private readonly videoRepository: IVideoRepository) {}
 
-  async findAll(): Promise<IVideoResponse[]> {
+  async findAll(): Promise<IMethodResponse<IVideoResponse[]>> {
     const videos = await this.videoRepository.findAll()
-    return this.mapperVideos(videos)
+    return createSuccessResponse(this.mapperVideos(videos))
   }
 
   async find(uuid: string): Promise<IMethodResponse<IVideoResponse | null>> {

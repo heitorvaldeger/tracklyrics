@@ -62,9 +62,9 @@ export default class VideoController {
 
   async findAll() {
     try {
-      const videos = await this.videoService.findAll()
+      const response = await this.videoService.findAll()
 
-      return ok(videos)
+      return dispatch(response)
     } catch (error) {
       return serverError(error)
     }
