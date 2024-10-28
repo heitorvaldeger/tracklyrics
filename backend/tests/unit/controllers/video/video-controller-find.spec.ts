@@ -6,6 +6,8 @@ import VideoController from '#controllers/VideoController'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import { createFailureResponse } from '#helpers/method-response'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
 
 const makeSut = async () => {
   const fakeVideo = await makeFakeVideo()
@@ -35,7 +37,9 @@ test.group('VideoController.find', (group) => {
 
   test('should returns 404 if a video return not found', async ({ expect }) => {
     const { sut, httpContext, videoServiceStub } = await makeSut()
-    stub(videoServiceStub, 'find').returns(new Promise((resolve) => resolve(null)))
+    stub(videoServiceStub, 'find').returns(
+      new Promise((resolve) => resolve(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)))
+    )
     stub(httpContext.request, 'params').returns({
       uuid: '00000000-0000-0000-0000-000000000000',
     })

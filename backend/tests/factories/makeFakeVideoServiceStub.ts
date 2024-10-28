@@ -7,8 +7,10 @@ import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
 
 export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
   class VideoServiceStub implements IVideoService {
-    find(uuid: string): Promise<IVideoResponse | null> {
-      return new Promise<IVideoResponse | null>((resolve) => resolve(fakeVideo ?? null))
+    find(uuid: string): Promise<IMethodResponse<IVideoResponse | null>> {
+      return new Promise<IMethodResponse<IVideoResponse | null>>((resolve) =>
+        resolve(createSuccessResponse(fakeVideo ?? null))
+      )
     }
 
     findAll(): Promise<IVideoResponse[]> {

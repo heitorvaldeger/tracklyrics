@@ -21,14 +21,9 @@ export default class VideoController {
   async find({ request }: HttpContext) {
     try {
       const { uuid } = await uuidVideoValidator.validate(request.params())
-      const video = await this.videoService.find(uuid)
+      const response = await this.videoService.find(uuid)
 
-      if (!video) {
-        return notFound()
-      }
-
-      video.qtyViews = BigInt(video.qtyViews)
-      return ok(video)
+      return dispatch(response)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)

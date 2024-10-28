@@ -15,8 +15,14 @@ export class VideoService implements IVideoService {
     return this.mapperVideos(videos)
   }
 
-  async find(uuid: string): Promise<IVideoResponse | null> {
-    return await this.videoRepository.find(uuid)
+  async find(uuid: string): Promise<IMethodResponse<IVideoResponse | null>> {
+    const video = await this.videoRepository.find(uuid)
+    if (!video) {
+      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    }
+
+    video.qtyViews = BigInt(video.qtyViews)
+    return createSuccessResponse(video)
   }
 
   async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
