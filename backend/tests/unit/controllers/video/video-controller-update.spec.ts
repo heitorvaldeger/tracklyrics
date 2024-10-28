@@ -23,15 +23,7 @@ const makeFakeRequest = (): IVideoCreateRequest => ({
 })
 
 const makeSut = async () => {
-  const fakeLanguage = await makeFakeLanguage()
-  const fakeGenrer = await makeFakeGenrer()
-
-  const fakeRequest: IVideoCreateRequest = {
-    ...makeFakeRequest(),
-    languageId: fakeLanguage.id,
-    genrerId: fakeGenrer.id,
-  }
-  const httpContext = makeHttpRequestBody(fakeRequest)
+  const httpContext = makeHttpRequestBody(makeFakeRequest())
 
   const videoServiceStub = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)

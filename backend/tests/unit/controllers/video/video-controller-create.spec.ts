@@ -4,9 +4,7 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { badRequest, noContent, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
-import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
-import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
 
@@ -21,15 +19,7 @@ const makeFakeRequest = (): IVideoCreateRequest => ({
 })
 
 const makeSut = async () => {
-  const fakeLanguage = await makeFakeLanguage()
-  const fakeGenrer = await makeFakeGenrer()
-
-  const fakeRequest: IVideoCreateRequest = {
-    ...makeFakeRequest(),
-    languageId: fakeLanguage.id,
-    genrerId: fakeGenrer.id,
-  }
-  const httpContext = makeHttpRequestBody(fakeRequest)
+  const httpContext = makeHttpRequestBody(makeFakeRequest())
 
   const videoServiceStub = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)

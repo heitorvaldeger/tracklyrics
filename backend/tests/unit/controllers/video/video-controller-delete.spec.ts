@@ -5,7 +5,6 @@ import VideoController from '#controllers/VideoController'
 import { badRequest, noContent, notFound, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
-import Video from '#models/video'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 

@@ -8,14 +8,14 @@ import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { randomUUID } from 'node:crypto'
 
 const makeSut = async () => {
-  const fakeVideo = await makeFakeVideo()
   const httpContext = new HttpContextFactory().create()
-  const videoServiceStub = makeFakeVideoServiceStub(fakeVideo)
+  const videoServiceStub = makeFakeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
-  return { sut, httpContext, fakeVideo, videoServiceStub }
+  return { sut, httpContext, videoServiceStub }
 }
 
 test.group('VideoController.find', (group) => {
@@ -25,14 +25,26 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 200 if a video return on success', async ({ expect }) => {
-    const { sut, httpContext, fakeVideo } = await makeSut()
+    const { sut, httpContext } = await makeSut()
     stub(httpContext.request, 'params').returns({
-      uuid: fakeVideo.uuid,
+      uuid: randomUUID(),
     })
 
     const httpResponse = await sut.find(httpContext)
 
-    expect(httpResponse).toEqual(ok(fakeVideo))
+    expect(httpResponse).toEqual(
+      ok({
+        uuid: 'any_uuid',
+        isDraft: false,
+        title: 'any_title',
+        artist: 'any_artist',
+        linkYoutube: 'any_link',
+        qtyViews: BigInt(0),
+        releaseYear: 'any_year',
+        language: 'any_language',
+        genrer: 'any_genrer',
+      })
+    )
   })
 
   test('should returns 404 if a video return not found', async ({ expect }) => {
@@ -68,9 +80,9 @@ test.group('VideoController.find', (group) => {
   })
 
   test('should returns 500 if video find throws', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub, fakeVideo } = await makeSut()
+    const { sut, httpContext, videoServiceStub } = await makeSut()
     stub(httpContext.request, 'params').returns({
-      uuid: fakeVideo.uuid,
+      uuid: randomUUID(),
     })
     stub(videoServiceStub, 'find').throws(new Error())
 

@@ -1,34 +1,45 @@
 import { IVideoResponse } from '#interfaces/IVideoResponse'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import _ from 'lodash'
-import { FakeVideoFactory } from './makeFakeVideo.js'
 import { createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 
-export const makeFakeVideoServiceStub = (fakeVideo?: FakeVideoFactory) => {
+export const makeFakeVideoServiceStub = () => {
   class VideoServiceStub implements IVideoService {
     find(uuid: string): Promise<IMethodResponse<IVideoResponse | null>> {
       return new Promise<IMethodResponse<IVideoResponse | null>>((resolve) =>
-        resolve(createSuccessResponse(fakeVideo ?? null))
+        resolve(
+          createSuccessResponse({
+            uuid: 'any_uuid',
+            isDraft: false,
+            title: 'any_title',
+            artist: 'any_artist',
+            linkYoutube: 'any_link',
+            qtyViews: BigInt(0),
+            releaseYear: 'any_year',
+            language: 'any_language',
+            genrer: 'any_genrer',
+          })
+        )
       )
     }
 
     findAll(): Promise<IMethodResponse<IVideoResponse[]>> {
       return new Promise<IMethodResponse<IVideoResponse[]>>((resolve) =>
-        resolve(createSuccessResponse(fakeVideo ? [fakeVideo] : []))
+        resolve(createSuccessResponse([]))
       )
     }
 
     findByGenrer(genrerId: number): Promise<IMethodResponse<IVideoResponse[]>> {
       return new Promise<IMethodResponse<IVideoResponse[]>>((resolve) =>
-        resolve(createSuccessResponse(fakeVideo ? [fakeVideo] : []))
+        resolve(createSuccessResponse([]))
       )
     }
 
     findByLanguage(languageId: number): Promise<IMethodResponse<IVideoResponse[]>> {
       return new Promise<IMethodResponse<IVideoResponse[]>>((resolve) =>
-        resolve(createSuccessResponse(fakeVideo ? [fakeVideo] : []))
+        resolve(createSuccessResponse([]))
       )
     }
 
