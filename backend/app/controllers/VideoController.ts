@@ -1,14 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import Video from '#models/video'
-import { badRequest, noContent, ok, serverError } from '#helpers/http'
+import { badRequest, noContent, serverError } from '#helpers/http'
 import {
   createOrUpdateVideoValidator,
   genrerIdVideoValidator,
   languageIdVideoValidator,
   uuidVideoValidator,
 } from '#validators/VideoValidator'
-import { randomUUID } from 'node:crypto'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { inject } from '@adonisjs/core'
