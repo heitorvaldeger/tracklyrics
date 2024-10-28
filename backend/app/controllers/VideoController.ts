@@ -1,16 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import { badRequest, serverError } from '#helpers/http'
-import {
-  createOrUpdateVideoValidator,
-  genrerIdVideoValidator,
-  languageIdVideoValidator,
-  uuidVideoValidator,
-} from '#validators/VideoValidator'
+import { createOrUpdateVideoValidator, uuidVideoValidator } from '#validators/VideoValidator'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
+import { genrerIdVideoValidator } from '#validators/GenrerValidator'
+import { languageIdVideoValidator } from '#validators/LanguageValidator'
 
 @inject()
 export default class VideoController {
