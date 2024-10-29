@@ -30,7 +30,7 @@ const fakeVideoPayload = {
   genrerId: 0,
 }
 
-const makeVideoRepositoryStub = () => {
+const makeGenrerRepositoryStub = () => {
   class GenrerRepositoryStub implements IVideoRepository {
     find(uuid: string): Promise<IVideoResponse | null> {
       return new Promise((resolve) => resolve(fakeVideo))
@@ -61,7 +61,7 @@ const makeVideoRepositoryStub = () => {
   return new GenrerRepositoryStub()
 }
 const makeSut = () => {
-  const videoRepositoryStub = makeVideoRepositoryStub()
+  const videoRepositoryStub = makeGenrerRepositoryStub()
   const sut = new VideoService(videoRepositoryStub)
 
   return { sut, videoRepositoryStub }
