@@ -6,7 +6,7 @@ import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
-import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
 import { FakeVideoFactory, makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { createFailureResponse } from '#helpers/method-response'
@@ -25,7 +25,7 @@ const makeFakeRequest = (): IVideoCreateRequest => ({
 const makeSut = async () => {
   const httpContext = makeHttpRequestBody(makeFakeRequest())
 
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const videoServiceStub = makeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
   return { sut, httpContext, videoServiceStub }

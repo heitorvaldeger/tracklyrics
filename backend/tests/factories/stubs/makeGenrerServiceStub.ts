@@ -2,7 +2,7 @@ import { IGenrerResponse } from '#interfaces/IGenrerResponse'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
 import _ from 'lodash'
 
-export const makeFakeGenrerServiceStub = () => {
+export const makeGenrerServiceStub = () => {
   const fakeGenrer: IGenrerResponse = {
     id: BigInt(0),
     name: 'any_name',

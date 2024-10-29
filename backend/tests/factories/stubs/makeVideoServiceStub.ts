@@ -5,7 +5,7 @@ import { createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
 
-export const makeFakeVideoServiceStub = () => {
+export const makeVideoServiceStub = () => {
   class VideoServiceStub implements IVideoService {
     find(uuid: string): Promise<IMethodResponse<IVideoResponse | null>> {
       return new Promise<IMethodResponse<IVideoResponse | null>>((resolve) =>

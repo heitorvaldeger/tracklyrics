@@ -3,11 +3,11 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { stub } from 'sinon'
 import { badRequest, ok, serverError } from '#helpers/http'
-import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
 
 const makeSut = () => {
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const videoServiceStub = makeVideoServiceStub()
   const httpContext = new HttpContextFactory().create()
   const sut = new VideoController(videoServiceStub)
 

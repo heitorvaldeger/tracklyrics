@@ -5,14 +5,14 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
-import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
 
 const makeSut = async () => {
   const httpContext = new HttpContextFactory().create()
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const videoServiceStub = makeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
   return { sut, httpContext, videoServiceStub }

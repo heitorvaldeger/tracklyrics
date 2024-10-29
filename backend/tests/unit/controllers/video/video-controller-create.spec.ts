@@ -5,7 +5,7 @@ import VideoController from '#controllers/VideoController'
 import { badRequest, noContent, serverError } from '#helpers/http'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
-import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
 
 const makeFakeRequest = (): IVideoCreateRequest => ({
@@ -21,7 +21,7 @@ const makeFakeRequest = (): IVideoCreateRequest => ({
 const makeSut = async () => {
   const httpContext = makeHttpRequestBody(makeFakeRequest())
 
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const videoServiceStub = makeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
   return { sut, httpContext, videoServiceStub }

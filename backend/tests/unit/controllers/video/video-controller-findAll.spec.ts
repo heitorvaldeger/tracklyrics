@@ -3,10 +3,10 @@ import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { stub } from 'sinon'
 import { ok, serverError } from '#helpers/http'
-import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
 
 const makeSut = () => {
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const videoServiceStub = makeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
   return { sut, videoServiceStub }

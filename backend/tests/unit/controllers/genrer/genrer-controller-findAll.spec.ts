@@ -1,10 +1,10 @@
 import GenrerController from '#controllers/GenrerController'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
-import { makeFakeGenrerServiceStub } from '#tests/factories/makeFakeGenrerServiceStub'
+import { makeGenrerServiceStub } from '#tests/factories/stubs/makeGenrerServiceStub'
 
 const makeSut = () => {
-  const { genrerServiceStub, fakeGenrer } = makeFakeGenrerServiceStub()
+  const { genrerServiceStub, fakeGenrer } = makeGenrerServiceStub()
   const sut = new GenrerController(genrerServiceStub)
 
   return { sut, fakeGenrer }
