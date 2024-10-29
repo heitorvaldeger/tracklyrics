@@ -10,7 +10,7 @@ const makeSut = () => {
   return { sut }
 }
 
-test.group('GenrerService.findAll', (group) => {
+test.group('GenrerPostgresRepository.findAll', (group) => {
   group.setup(async () => {
     await Video.query().whereNotNull('id').delete()
     await Genrer.query().whereNotNull('id').delete()

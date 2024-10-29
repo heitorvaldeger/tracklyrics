@@ -23,11 +23,15 @@ export class VideoPostgresRepository implements IVideoRepository {
       )
       .first()
 
+    if (video) {
+      video.qtyViews = BigInt(video.qtyViews)
+    }
+
     return video
   }
 
   async findByGenrer(genrerId: number): Promise<IVideoResponse[]> {
-    const video: IVideoResponse[] = await db
+    const videos: IVideoResponse[] = await db
       .from('videos')
       .where('genrer_id', genrerId)
       .innerJoin('languages', 'languages.id', 'language_id')
@@ -44,11 +48,11 @@ export class VideoPostgresRepository implements IVideoRepository {
         'genrers.name as genrer'
       )
 
-    return video
+    return this.mapperVideos(videos)
   }
 
   async findByLanguage(languageId: number): Promise<IVideoResponse[]> {
-    const video: IVideoResponse[] = await db
+    const videos: IVideoResponse[] = await db
       .from('videos')
       .where('language_id', languageId)
       .innerJoin('languages', 'languages.id', 'language_id')
@@ -65,7 +69,7 @@ export class VideoPostgresRepository implements IVideoRepository {
         'genrers.name as genrer'
       )
 
-    return video
+    return this.mapperVideos(videos)
   }
 
   async findAll(): Promise<IVideoResponse[]> {
@@ -84,7 +88,7 @@ export class VideoPostgresRepository implements IVideoRepository {
         'languages.name as language',
         'genrers.name as genrer'
       )
-    return videos
+    return this.mapperVideos(videos)
   }
 
   async isVideoAvailable(uuid: string): Promise<boolean> {
@@ -101,5 +105,12 @@ export class VideoPostgresRepository implements IVideoRepository {
 
   async update(payload: any, uuid: string): Promise<void> {
     await Video.query().where('uuid', uuid).update(payload)
+  }
+
+  private mapperVideos(videos: IVideoResponse[]) {
+    return videos.map((video) => ({
+      ...video,
+      qtyViews: BigInt(video.qtyViews),
+    }))
   }
 }
