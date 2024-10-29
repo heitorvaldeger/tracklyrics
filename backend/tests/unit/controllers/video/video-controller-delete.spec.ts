@@ -3,10 +3,10 @@ import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/VideoController'
 import { badRequest, noContent, notFound, serverError } from '#helpers/http'
-import { makeFakeVideo } from '#tests/factories/makeFakeVideo'
 import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { randomUUID } from 'node:crypto'
 
 const makeSut = () => {
   const httpContext = new HttpContextFactory().create()
@@ -23,11 +23,10 @@ test.group('VideoController.delete', (group) => {
   })
 
   test('should returns 204 if video was delete on success', async ({ expect }) => {
-    const fakeVideo = await makeFakeVideo()
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'params').returns({
-      uuid: fakeVideo.uuid,
+      uuid: randomUUID(),
     })
 
     const httpResponse = await sut.delete(httpContext)
@@ -68,10 +67,9 @@ test.group('VideoController.delete', (group) => {
   })
 
   test('should returns 500 if video delete throws', async ({ expect }) => {
-    const fakeVideo = await makeFakeVideo()
     const { sut, httpContext, videoServiceStub } = makeSut()
     stub(httpContext.request, 'params').returns({
-      uuid: fakeVideo.uuid,
+      uuid: randomUUID(),
     })
 
     stub(videoServiceStub, 'delete').throws(new Error())
