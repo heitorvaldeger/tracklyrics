@@ -1,5 +1,3 @@
-// import type { HttpContext } from '@adonisjs/core/http'
-
 import { ok } from '#helpers/http'
 import { inject } from '@adonisjs/core'
 import { IGenrerService } from '#services/interfaces/IGenrerService'

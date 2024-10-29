@@ -1,22 +1,20 @@
 import LanguageController from '#controllers/LanguageController'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
-import Language from '#models/language'
-import Video from '#models/video'
+import { makeLanguageServiceStub } from '#tests/factories/stubs/makeLanguageServiceStub'
 
-test.group('LanguageController.findAll', (group) => {
-  group.setup(async () => {
-    await Video.query().whereNotNull('id').delete()
-    await Language.query().whereNotNull('id').delete()
-  })
+const makeSut = () => {
+  const { languageServiceStub, fakeLanguage } = makeLanguageServiceStub()
+  const sut = new LanguageController(languageServiceStub)
 
-  test('should returns 200 if a list languages returns on success', async ({ expect }) => {
-    const language = await Language.create({
-      name: 'any_language',
-    })
-    const sut = new LanguageController()
+  return { sut, fakeLanguage }
+}
+test.group('LanguageController.findAll', () => {
+  test('should returns a list of languages with on success', async ({ expect }) => {
+    const { sut, fakeLanguage } = makeSut()
+
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual(ok([language.serialize()]))
+    expect(httpResponse).toEqual(ok([fakeLanguage]))
   })
 })

@@ -1,11 +1,14 @@
-// import type { HttpContext } from '@adonisjs/core/http'
+import { ok } from '#helpers/http'
+import { inject } from '@adonisjs/core'
+import { ILanguageService } from '#services/interfaces/ILanguageService'
 
-import Language from '#models/language'
-import { ok } from '../helpers/http.js'
-
+@inject()
 export default class LanguageController {
+  constructor(private readonly languageService: ILanguageService) {}
+
   async findAll() {
-    const languages = await Language.all()
-    return ok(languages.map((language) => language.serialize()))
+    const languages = await this.languageService.findAll()
+
+    return ok(languages)
   }
 }
