@@ -1,8 +1,6 @@
-import GenrerController from '#controllers/GenrerController'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
-import { notFound, ok } from '#helpers/http'
-import { makeGenrerServiceStub } from '#tests/factories/stubs/makeGenrerServiceStub'
+import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import UserController from '#controllers/UserController'
 import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import User from '#models/user'
@@ -53,5 +51,35 @@ test.group('UserController.find', (group) => {
     const httpResponse = await sut.find(httpContext)
 
     expect(httpResponse).toEqual(notFound())
+  })
+
+  test('should returns 400 if pass invalid uuid on find', async ({ expect }) => {
+    const { sut, httpContext } = makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: 'invalid_uuid',
+    })
+
+    const httpResponse = await sut.find(httpContext)
+
+    expect(httpResponse).toEqual(
+      badRequest([
+        {
+          field: 'uuid',
+          message: 'The uuid field must be a valid UUID',
+        },
+      ])
+    )
+  })
+
+  test('should returns 500 if find user throws', async ({ expect }) => {
+    const { sut, httpContext } = makeSut()
+    stub(httpContext.request, 'params').returns({
+      uuid: randomUUID(),
+    })
+    stub(User, 'query').throws(new Error())
+
+    const httpResponse = await sut.find(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

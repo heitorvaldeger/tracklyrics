@@ -155,7 +155,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should returns 200 if create user return success', async ({ expect }) => {
+  test('should returns 500 if create user return throws', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(User.accessTokens, 'create').throws(new Error())
     const httpResponse = await sut.register(httpContext)
