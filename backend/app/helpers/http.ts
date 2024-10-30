@@ -23,3 +23,8 @@ export const notFound = (): IHttpResponse => ({
   statusCode: 404,
   body: null,
 })
+
+export const unprocessable = (body: any): IHttpResponse => ({
+  statusCode: 422,
+  body,
+})

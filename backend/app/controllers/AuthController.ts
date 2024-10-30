@@ -1,4 +1,4 @@
-import { badRequest, noContent, ok, serverError } from '#helpers/http'
+import { badRequest, noContent, ok, serverError, unprocessable } from '#helpers/http'
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import { registerAuthValidator } from '#validators/AuthValidator'
@@ -12,23 +12,24 @@ import { uuidVideoValidator } from '#validators/VideoValidator'
 export default class AuthController {
   async register({ request }: HttpContext) {
     try {
-      const user = await registerAuthValidator.validate(request.body())
-      user.password = await hash.make(user.password)
+      const { password, email, username, ...rest } = await registerAuthValidator.validate(
+        request.body()
+      )
+      const passwordHashed = await hash.make(password)
 
-      const userInDb = await User.query()
-        .where('email', user.email)
-        .orWhere('username', user.username)
-        .first()
-
-      if (userInDb) {
-        return badRequest({
-          message: 'Já existe um caba cadastrado',
+      const user = await User.query().where('email', email).orWhere('username', username).first()
+      if (user) {
+        return unprocessable({
+          message: 'Email or username already in use. Please choose another.',
         })
       }
 
       const newUser = await User.create({
-        ...user,
         uuid: randomUUID(),
+        email,
+        username,
+        password: passwordHashed,
+        ...rest,
       })
 
       const token = await User.accessTokens.create(newUser)
