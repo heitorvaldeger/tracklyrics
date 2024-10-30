@@ -34,7 +34,10 @@ export default class AuthController {
 
       const token = await User.accessTokens.create(newUser)
 
-      return ok(token)
+      return ok({
+        type: token.type,
+        token: token.value?.release(),
+      })
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)

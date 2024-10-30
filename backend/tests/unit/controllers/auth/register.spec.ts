@@ -1,10 +1,12 @@
 import { test } from '@japa/runner'
-import { stub } from 'sinon'
-import { badRequest, ok, unprocessable } from '#helpers/http'
+import sinon, { stub } from 'sinon'
+import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import AuthController from '#controllers/AuthController'
 import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
 import User from '#models/user'
 import { randomUUID } from 'node:crypto'
+import { Secret } from '@adonisjs/core/helpers'
+import { AccessToken } from '@adonisjs/auth/access_tokens'
 
 const makeFakeRequest = () => ({
   username: 'any_username',
@@ -21,8 +23,13 @@ const makeSut = () => {
   return { sut, httpContext }
 }
 test.group('AuthController.register', (group) => {
-  group.setup(async () => {
+  group.each.setup(async () => {
     await User.query().whereNotNull('id').delete()
+  })
+
+  group.each.teardown(() => {
+    sinon.reset()
+    sinon.restore()
   })
 
   test('should returns 400 if required fields is not provided', async ({ expect }) => {
@@ -107,7 +114,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should returns 400 if email provided already in use', async ({ expect }) => {
+  test('should returns 422 if email provided already in use', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     User.create({
@@ -121,5 +128,38 @@ test.group('AuthController.register', (group) => {
         message: 'Email or username already in use. Please choose another.',
       })
     )
+  })
+
+  test('should returns 200 if create user return success', async ({ expect }) => {
+    const { sut, httpContext } = makeSut()
+    const accessToken = new AccessToken({
+      identifier: 'any_id',
+      tokenableId: 1,
+      type: 'any_type',
+      hash: 'any_hash',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastUsedAt: null,
+      name: null,
+      expiresAt: null,
+    })
+    stub(accessToken, 'value').value(new Secret('any_token'))
+    stub(User.accessTokens, 'create').returns(new Promise((resolve) => resolve(accessToken)))
+    const httpResponse = await sut.register(httpContext)
+
+    expect(httpResponse).toEqual(
+      ok({
+        type: 'any_type',
+        token: 'any_token',
+      })
+    )
+  })
+
+  test('should returns 200 if create user return success', async ({ expect }) => {
+    const { sut, httpContext } = makeSut()
+    stub(User.accessTokens, 'create').throws(new Error())
+    const httpResponse = await sut.register(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
