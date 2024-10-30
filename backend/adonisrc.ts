@@ -32,6 +32,7 @@ export default defineConfig({
     () => import('@adonisjs/cors/cors_provider'),
     () => import('@adonisjs/lucid/database_provider'),
     () => import('#providers/AppProvider'),
+    () => import('@adonisjs/auth/auth_provider'),
   ],
 
   /*
