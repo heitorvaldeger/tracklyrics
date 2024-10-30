@@ -117,7 +117,7 @@ test.group('AuthController.register', (group) => {
   test('should returns 422 if email provided already in use', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
-    User.create({
+    await User.create({
       ...makeFakeRequest(),
       uuid: randomUUID(),
     })
