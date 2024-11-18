@@ -4,7 +4,8 @@ export default [
   {
     rules: {
       "@unicorn/filename-case": "off",
-      "@typescript-eslint/naming-convention": "off"
+      "@typescript-eslint/naming-convention": "off",
+      "@unicorn/no-await-expression-member": "off"
     }
   }
 ]

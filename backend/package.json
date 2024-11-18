@@ -8,9 +8,10 @@
     "start": "node bin/server.js",
     "build": "node ace build",
     "dev": "node ace serve --hmr",
-    "test": "node ./tests/run-tests.js",
-    "test:unit": "node ace test unit",
-    "test:watch": "node ace test --watch",
+    "test": "tsc && node ./tests/run-tests.js",
+    "test:unit": "tsc && node ace test unit",
+    "test:watch": "tsc && node ace test --watch",
+    "test:coverage": "tsc && c8 node ace test --reporter=html",
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
@@ -36,7 +37,9 @@
     "#config/*": "./config/*.js",
     "#helpers/*": "./app/helpers/*.js",
     "#interfaces/*": "./app/interfaces/*.js",
-    "#repository/*": "./app/repository/*.js"
+    "#repository/*": "./app/repository/*.js",
+    "#enums/*": "./app/enums/*.js",
+    "#params/*": "./app/params/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.1",
@@ -54,7 +57,9 @@
     "@types/lodash": "^4.17.12",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.5.1",
+    "@types/pg": "^8.11.10",
     "@types/sinon": "^17.0.3",
+    "c8": "^10.1.2",
     "eslint": "^9.9.1",
     "hot-hook": "^0.2.6",
     "husky": "^9.1.6",
@@ -93,5 +98,26 @@
       "strtok3": "8.0.1"
     }
   },
-  "prettier": "@adonisjs/prettier-config"
+  "prettier": "@adonisjs/prettier-config",
+  "c8": {
+    "all": true,
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "include": [
+      "app/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "tests",
+      "start",
+      "public",
+      "database",
+      "build",
+      "**/interfaces/**/*.ts",
+      "**/params/**/*.ts",
+      "**/models/**/*.ts"
+    ]
+  }
 }

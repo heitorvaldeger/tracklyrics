@@ -1,4 +1,4 @@
-import { IHttpResponse } from './contracts/IHttpResponse.js'
+import { IHttpResponse } from './interfaces/IHttpResponse.js'
 
 export const ok = (body: any): IHttpResponse => ({
   statusCode: 200,
@@ -19,7 +19,12 @@ export const serverError = (error: any): IHttpResponse => ({
   body: error,
 })
 
-export const notFound = (): IHttpResponse => ({
+export const notFound = (body: any): IHttpResponse => ({
   statusCode: 404,
-  body: null,
+  body,
+})
+
+export const unprocessable = (body: any): IHttpResponse => ({
+  statusCode: 422,
+  body,
 })

@@ -1,48 +1,34 @@
-/* eslint-disable @unicorn/no-await-expression-member */
 import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
-import VideoController from '#controllers/VideoController'
-import Video from '#models/video'
-import { badRequest, noContent, serverError } from '#helpers/http'
-import { makeHttpRequestBody } from '#tests/factories/makeHttpRequestBody'
-import { makeFakeLanguage } from '#tests/factories/makeFakeLanguage'
-import { IVideoCreateRequest } from '#interfaces/IVideoCreateRequest'
-import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
-import { makeFakeVideoServiceStub } from '#tests/factories/makeFakeVideoServiceStub'
+import VideoController from '#controllers/video-controller'
+import { badRequest, noContent, serverError, unprocessable } from '#helpers/http'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { makeVideoServiceStub } from '#tests/factories/stubs/makeVideoServiceStub'
+import { createFailureResponse } from '#helpers/method-response'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { makeFakeRequest } from './factories/make-fake-request.js'
 
-const makeFakeRequest = (): IVideoCreateRequest => ({
-  isDraft: false,
-  title: 'any_title',
-  artist: 'any_artist',
-  releaseYear: '0000',
-  linkYoutube: 'any_link',
-  languageId: 0,
-  genrerId: 0,
-})
+const makeSut = async () => {
+  const httpContext = makeHttpRequest(makeFakeRequest())
 
-const makeSut = () => {
-  const videoServiceStub = makeFakeVideoServiceStub()
+  const videoServiceStub = makeVideoServiceStub()
   const sut = new VideoController(videoServiceStub)
 
-  return { sut }
+  return { sut, httpContext, videoServiceStub }
 }
 
-test.group('VideoController.create', (group) => {
-  let httpRequest = makeFakeRequest()
-  group.setup(async () => {
-    httpRequest.languageId = (await makeFakeLanguage()).id
-    httpRequest.genrerId = (await makeFakeGenrer()).id
-  })
+test.group('VideoController.create()', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
   })
 
   test('should returns 400 if isDraft is not a boolean', async ({ expect }) => {
-    stub(httpRequest, 'isDraft').value('any_value')
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
+    const { sut, httpContext } = await makeSut()
+    stub(httpContext.request.body(), 'isDraft').value('any_value')
+
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -55,12 +41,11 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 400 if required fields is not provided', async ({ expect }) => {
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(
-      makeHttpRequestBody({
-        isDraft: false,
-      })
-    )
+    const { sut, httpContext } = await makeSut()
+    stub(httpContext.request, 'body').returns({
+      isDraft: false,
+    })
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -93,10 +78,10 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 400 if releseYear not contains four length', async ({ expect }) => {
-    stub(httpRequest, 'releaseYear').value('any_year')
+    const { sut, httpContext } = await makeSut()
+    stub(httpContext.request.body(), 'releaseYear').value('00000')
 
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -108,11 +93,11 @@ test.group('VideoController.create', (group) => {
     )
   })
 
-  test('should returns 400 if releseYear not is string numeric', async ({ expect }) => {
-    stub(httpRequest, 'releaseYear').value('year')
+  test('should returns 400 if releseYear is not string numeric', async ({ expect }) => {
+    const { sut, httpContext } = await makeSut()
+    stub(httpContext.request.body(), 'releaseYear').value('abcd')
 
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -125,12 +110,15 @@ test.group('VideoController.create', (group) => {
   })
 
   test('should returns 400 if fields not contains most three characteres', async ({ expect }) => {
-    stub(httpRequest, 'title').value('an')
-    stub(httpRequest, 'artist').value('an')
-    stub(httpRequest, 'linkYoutube').value('an')
+    const { sut, httpContext } = await makeSut()
+    const httpBody = httpContext.request.body()
+    stub(httpContext.request, 'body').returns({
+      ...httpBody,
+      title: 'ab',
+      artist: 'ab',
+    })
 
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -142,25 +130,21 @@ test.group('VideoController.create', (group) => {
           field: 'artist',
           message: 'The artist field must have at least 3 characters',
         },
-        {
-          field: 'linkYoutube',
-          message: 'The linkYoutube field must have at least 3 characters',
-        },
       ])
     )
   })
 
-  test('should returns 400 if fields is empty', async ({ expect }) => {
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(
-      makeHttpRequestBody({
-        ...httpRequest,
-        title: '',
-        artist: '',
-        releaseYear: '',
-        linkYoutube: '',
-      })
-    )
+  test('should returns 400 if string fields is empty', async ({ expect }) => {
+    const { sut, httpContext } = await makeSut()
+    const httpBody = httpContext.request.body()
+    stub(httpContext.request, 'body').returns({
+      ...httpBody,
+      title: '',
+      artist: '',
+      releaseYear: '',
+    })
+
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -176,27 +160,55 @@ test.group('VideoController.create', (group) => {
           field: 'releaseYear',
           message: 'The releaseYear field must be 4 characters long',
         },
+      ])
+    )
+  })
+
+  test('should returns 400 if linkYoutube is not valid link', async ({ expect }) => {
+    const { sut, httpContext } = await makeSut()
+    stub(httpContext.request.body(), 'linkYoutube').value('any_link')
+
+    const httpResponse = await sut.create(httpContext)
+
+    expect(httpResponse).toEqual(
+      badRequest([
         {
           field: 'linkYoutube',
-          message: 'The linkYoutube field must have at least 3 characters',
+          message: 'The linkYoutube field format is invalid',
         },
       ])
     )
   })
 
-  test('should returns 200 if video was create on success', async ({ expect }) => {
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(makeHttpRequestBody(httpRequest))
+  test('should returns 200 if video created on success', async ({ expect }) => {
+    const { sut, httpContext } = await makeSut()
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(noContent())
   })
 
   test('should returns 500 if video create throws', async ({ expect }) => {
-    stub(Video, 'create').throws(new Error())
+    const { sut, httpContext, videoServiceStub } = await makeSut()
 
-    const { sut } = makeSut()
-    const httpResponse = await sut.create(makeHttpRequestBody(makeFakeRequest()))
+    stub(videoServiceStub, 'create').throws(new Error())
+
+    const httpResponse = await sut.create(httpContext)
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('should returns 422 if link youtube already exists', async ({ expect }) => {
+    const { sut, httpContext, videoServiceStub } = await makeSut()
+    stub(videoServiceStub, 'create').returns(
+      new Promise((resolve) =>
+        resolve(createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
+      )
+    )
+
+    const httpResponse = await sut.create(httpContext)
+
+    expect(httpResponse).toEqual(
+      unprocessable(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS.message)
+    )
   })
 })
