@@ -1,12 +1,17 @@
-import { IVideoResponse } from '#interfaces/IVideoResponse'
-import { IFindAllRepository } from './IFindAllRepository.js'
+import { VideoFindParams } from '../../params/video/video-find-params.js'
+import { VideoFindModel } from '#models/video/video-find-model'
+import { VideoSaveParams } from '../../params/video/video-save-params.js'
+import { VideoSaveResultModel } from '#models/video/video-save-result-model'
 
-export abstract class IVideoRepository extends IFindAllRepository {
-  abstract find(uuid: string): Promise<IVideoResponse | null>
-  abstract findByGenrer(genrerId: number): Promise<IVideoResponse[]>
-  abstract findByLanguage(languageId: number): Promise<IVideoResponse[]>
-  abstract isVideoAvailable(uuid: string): Promise<boolean>
-  abstract delete(uuid: string): Promise<void>
-  abstract create(payload: any): Promise<void>
-  abstract update(payload: any, uuid: string): Promise<void>
+export abstract class IVideoRepository {
+  abstract find(uuid: string): Promise<VideoFindModel | null>
+  abstract findBy(filters: Partial<VideoFindParams>): Promise<VideoFindModel[]>
+  abstract getVideoId(videoUuid: string): Promise<number | null>
+  abstract getUserId(videoUuid: string): Promise<number | null>
+  abstract delete(uuid: string): Promise<boolean>
+  abstract create(payload: VideoSaveParams): Promise<VideoSaveResultModel>
+  abstract update(payload: Partial<VideoSaveParams>, uuid: string): Promise<boolean>
+  abstract hasYoutubeLink(link: string): Promise<boolean>
+  abstract addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean>
+  abstract removeFavorite(videoId: number, userId: number): Promise<boolean>
 }

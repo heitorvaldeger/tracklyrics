@@ -1,14 +1,14 @@
 import { ApplicationService } from '@adonisjs/core/types'
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
-import { GenrerService } from '#services/GenrerService'
-import { GenrerPostgresRepository } from '#repository/postgres/GenrerPostgresRepository'
+import { GenrerService } from '#services/genrer-service'
+import { GenrerPostgresRepository } from '#repository/postgres/genrer-postgres-repository'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
-import { VideoService } from '#services/VideoService'
-import { VideoPostgresRepository } from '#repository/postgres/VideoPostgresRepository'
+import { VideoService } from '#services/video-service'
+import { VideoPostgresRepository } from '#repository/postgres/video-postgres-repository'
 import { ILanguageService } from '#services/interfaces/ILanguageService'
-import { LanguageService } from '#services/LanguageService'
-import { LanguagePostgresRepository } from '#repository/postgres/LanguagePostgresRepository'
+import { LanguageService } from '#services/language-service'
+import { LanguagePostgresRepository } from '#repository/postgres/language-postgres-repository'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}

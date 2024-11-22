@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
-import { ILanguageResponse } from '#interfaces/ILanguageResponse'
-import { LanguageService } from '#services/LanguageService'
+import { LanguageFindModel } from '#models/language/language-find-model'
+import { LanguageService } from '#services/language-service'
 
 const makeFakeLanguageRepositoryStub = () => {
   class LanguageRepositoryStub implements IFindAllRepository {
-    findAll(): Promise<ILanguageResponse[]> {
+    findAll(): Promise<LanguageFindModel[]> {
       return new Promise((resolve) => resolve([]))
     }
   }

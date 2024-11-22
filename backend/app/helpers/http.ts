@@ -19,9 +19,9 @@ export const serverError = (error: any): IHttpResponse => ({
   body: error,
 })
 
-export const notFound = (): IHttpResponse => ({
+export const notFound = (body: any): IHttpResponse => ({
   statusCode: 404,
-  body: null,
+  body,
 })
 
 export const unprocessable = (body: any): IHttpResponse => ({

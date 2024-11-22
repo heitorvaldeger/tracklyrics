@@ -1,5 +1,5 @@
-import { IGenrerResponse } from '#interfaces/IGenrerResponse'
+import { GenrerFindModel } from '#models/genrer/genrer-find-model'
 
 export abstract class IGenrerService {
-  abstract findAll(): Promise<IGenrerResponse[]>
+  abstract findAll(): Promise<GenrerFindModel[]>
 }

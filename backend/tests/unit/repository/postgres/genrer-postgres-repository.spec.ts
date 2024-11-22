@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import { test } from '@japa/runner'
-import { GenrerPostgresRepository } from '#repository/postgres/GenrerPostgresRepository'
-import { makeFakeGenrer } from '#tests/factories/makeFakeGenrer'
-import Genrer from '#models/genrer'
-import Video from '#models/video'
+import { GenrerPostgresRepository } from '#repository/postgres/genrer-postgres-repository'
+import { makeFakeGenrer } from '#tests/factories/fakes/makeFakeGenrer'
+import VideoLucid from '#models/video/video-lucid'
+import GenrerLucid from '#models/genrer/genrer-lucid'
 
 const makeSut = () => {
   const sut = new GenrerPostgresRepository()
@@ -12,8 +12,8 @@ const makeSut = () => {
 
 test.group('GenrerPostgresRepository.findAll', (group) => {
   group.setup(async () => {
-    await Video.query().whereNotNull('id').delete()
-    await Genrer.query().whereNotNull('id').delete()
+    await VideoLucid.query().whereNotNull('id').delete()
+    await GenrerLucid.query().whereNotNull('id').delete()
   })
 
   test('should returns a list of genres with on success', async ({ expect }) => {

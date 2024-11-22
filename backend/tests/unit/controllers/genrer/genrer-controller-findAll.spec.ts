@@ -1,20 +1,39 @@
-import GenrerController from '#controllers/GenrerController'
+import GenrerController from '#controllers/genrer-controller'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
-import { makeGenrerServiceStub } from '#tests/factories/stubs/makeGenrerServiceStub'
+import { GenrerFindModel } from '#models/genrer/genrer-find-model'
+import { IGenrerService } from '#services/interfaces/IGenrerService'
+
+const makeFakeGenrer = (): GenrerFindModel[] => [
+  {
+    id: 0,
+    name: 'any_name',
+  },
+]
+
+export const makeGenrerServiceStub = () => {
+  class GenrerServiceStub implements IGenrerService {
+    async findAll(): Promise<GenrerFindModel[]> {
+      return new Promise((resolve) => resolve(makeFakeGenrer()))
+    }
+  }
+
+  return new GenrerServiceStub()
+}
 
 const makeSut = () => {
-  const { genrerServiceStub, fakeGenrer } = makeGenrerServiceStub()
+  const genrerServiceStub = makeGenrerServiceStub()
   const sut = new GenrerController(genrerServiceStub)
 
-  return { sut, fakeGenrer }
+  return { sut }
 }
-test.group('GenrerController.findAll', () => {
-  test('should returns a list of genres with on success', async ({ expect }) => {
-    const { sut, fakeGenrer } = makeSut()
+
+test.group('GenrerController.findAll()', () => {
+  test('should returns a list of genres on success', async ({ expect }) => {
+    const { sut } = makeSut()
 
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual(ok([fakeGenrer]))
+    expect(httpResponse).toEqual(ok(makeFakeGenrer()))
   })
 })

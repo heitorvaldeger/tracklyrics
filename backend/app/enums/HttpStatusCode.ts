@@ -4,4 +4,5 @@ export enum HttpStatusCode {
   SERVER_ERROR = 500,
   OK = 200,
   NO_CONTENT = 204,
+  UNPROCESSABLE_ENTITY = 422,
 }

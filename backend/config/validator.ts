@@ -18,7 +18,7 @@ class JSONAPIErrorReporter implements ErrorReporterContract {
   /**
    * VineJS call the report method
    */
-  report(message: string, rule: string, field: FieldContext, meta?: any) {
+  report(message: string, _rule: string, field: FieldContext, _meta?: any) {
     this.hasErrors = true
 
     /**

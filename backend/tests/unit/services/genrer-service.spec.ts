@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
-import { IGenrerResponse } from '#interfaces/IGenrerResponse'
-import { GenrerService } from '#services/GenrerService'
+import { GenrerFindModel } from '#models/genrer/genrer-find-model'
+import { GenrerService } from '#services/genrer-service'
 
 const makeFakeGenrerRepositoryStub = () => {
   class GenrerRepositoryStub implements IFindAllRepository {
-    findAll(): Promise<IGenrerResponse[]> {
+    findAll(): Promise<GenrerFindModel[]> {
       return new Promise((resolve) => resolve([]))
     }
   }
