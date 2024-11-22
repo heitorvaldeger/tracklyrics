@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
-import { GenrerFindModel } from '#models/genrer/genrer-find-model'
+import { GenrerFindModel } from '#models/genrer-model/genrer-find-model'
 import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 
 @inject()

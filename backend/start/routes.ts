@@ -7,13 +7,12 @@
 |
 */
 
-const AuthController = () => import('#controllers/auth-controller')
 import router from '@adonisjs/core/services/router'
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
+const LanguageController = () => import('#controllers/language-controller')
+const GenrerController = () => import('#controllers/genrer-controller')
+const VideoController = () => import('#controllers/video-controller')
 
-router.post('/register', [AuthController, 'register'])
+router.get('/languages', [LanguageController, 'findAll'])
+router.get('/genrers', [GenrerController, 'findAll'])
+router.get('/videos/:uuid', [VideoController, 'find'])

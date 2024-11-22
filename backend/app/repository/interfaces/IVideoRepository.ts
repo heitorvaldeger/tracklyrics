@@ -1,7 +1,7 @@
-import { VideoFindParams } from '../../params/video/video-find-params.js'
-import { VideoFindModel } from '#models/video/video-find-model'
-import { VideoSaveParams } from '../../params/video/video-save-params.js'
-import { VideoSaveResultModel } from '#models/video/video-save-result-model'
+import { VideoFindParams } from '../../params/video-params/video-find-params.js'
+import { VideoFindModel } from '#models/video-model/video-find-model'
+import { VideoSaveParams } from '../../params/video-params/video-save-params.js'
+import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 
 export abstract class IVideoRepository {
   abstract find(uuid: string): Promise<VideoFindModel | null>

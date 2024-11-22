@@ -1,4 +1,4 @@
-import GenrerLucid from '#models/genrer/genrer-lucid'
+import GenrerLucid from '#models/genrer-model/genrer-lucid'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {

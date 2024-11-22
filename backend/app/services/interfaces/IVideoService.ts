@@ -1,8 +1,8 @@
-import { IApplicationError } from '#helpers/interfaces/IApplicationError'
-import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
-import { VideoFindParams } from '../../params/video/video-find-params.js'
-import { VideoRequestParams } from '../../params/video/video-request-params.js'
-import { VideoFindModel } from '#models/video/video-find-model'
+import { ApplicationError } from '#helpers/types/ApplicationError'
+import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { VideoFindParams } from '../../params/video-params/video-find-params.js'
+import { VideoRequestParams } from '../../params/video-params/video-request-params.js'
+import { VideoFindModel } from '#models/video-model/video-find-model'
 
 export abstract class IVideoService {
   abstract find(uuid: string): Promise<IMethodResponse<VideoFindModel | null>>
@@ -10,6 +10,6 @@ export abstract class IVideoService {
   abstract delete(uuid: string): Promise<IMethodResponse<boolean>>
   abstract create(payload: VideoRequestParams): Promise<IMethodResponse<any>>
   abstract update(payload: VideoRequestParams, uuid: string): Promise<IMethodResponse<boolean>>
-  abstract addFavorite(videoUuid: string): Promise<IMethodResponse<boolean | IApplicationError>>
+  abstract addFavorite(videoUuid: string): Promise<IMethodResponse<boolean | ApplicationError>>
   abstract removeFavorite(videoUuid: string): Promise<IMethodResponse<boolean>>
 }

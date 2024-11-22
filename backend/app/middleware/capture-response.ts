@@ -15,6 +15,8 @@ export default class CaptureResponseMiddleware {
 
     const { statusCode, body } = response.getBody()
 
-    response.status(statusCode).json(body)
+    if (statusCode && body) {
+      response.status(statusCode).json(body)
+    }
   }
 }

@@ -3,13 +3,13 @@ import { inject } from '@adonisjs/core'
 import { IVideoService } from './interfaces/IVideoService.js'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { IMethodResponse } from '#helpers/interfaces/IMethodResponse'
-import { VideoRequestParams } from '../params/video/video-request-params.js'
+import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { VideoRequestParams } from '../params/video-params/video-request-params.js'
 import { randomUUID } from 'node:crypto'
-import { VideoFindParams } from '../params/video/video-find-params.js'
+import { VideoFindParams } from '../params/video-params/video-find-params.js'
 import { IAuthService } from './interfaces/IAuthService.js'
-import { VideoFindModel } from '#models/video/video-find-model'
-import { IApplicationError } from '#helpers/interfaces/IApplicationError'
+import { VideoFindModel } from '#models/video-model/video-find-model'
+import { ApplicationError } from '#helpers/types/ApplicationError'
 import _ from 'lodash'
 
 @inject()
@@ -81,7 +81,7 @@ export class VideoService implements IVideoService {
     return createSuccessResponse(isSuccess)
   }
 
-  async addFavorite(videoUuid: string): Promise<IMethodResponse<IApplicationError | boolean>> {
+  async addFavorite(videoUuid: string): Promise<IMethodResponse<ApplicationError | boolean>> {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     const userId = this.authService.getUserId()
     if (

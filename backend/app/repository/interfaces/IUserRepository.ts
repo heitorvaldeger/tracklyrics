@@ -1,8 +1,8 @@
-import { UserAccessTokenModel } from '#models/user/user-access-token-model'
-import User from '#models/user/user-lucid'
-import { UserModel } from '#models/user/user-model'
-import { UserCreateAccessTokenParams } from '#params/user/user-create-access-token-params'
-import { UserCreateParams } from '../../params/user/user-create-params.js'
+import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
+import User from '#models/user-model/user-lucid'
+import { UserModel } from '#models/user-model/user-model'
+import { UserCreateAccessTokenParams } from '#params/user-params/user-create-access-token-params'
+import { UserCreateParams } from '#params/user-params/user-create-params'
 
 export abstract class IUserRepository {
   abstract getUserByEmailOrUsername(payload: any): Promise<UserModel | null>

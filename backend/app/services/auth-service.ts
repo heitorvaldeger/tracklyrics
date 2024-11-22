@@ -8,6 +8,9 @@ import { IUserRepository } from '#repository/interfaces/IUserRepository'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
+import { UserRegisterRequest } from '#params/user-params/user-register-request'
+import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 
 @inject()
 export class AuthService implements IAuthService, IRegisterService {
@@ -23,7 +26,7 @@ export class AuthService implements IAuthService, IRegisterService {
     return Number(this.auth?.user?.id ?? -1)
   }
 
-  async register(payload: any): Promise<any> {
+  async register(payload: UserRegisterRequest): Promise<IMethodResponse<UserAccessTokenModel>> {
     const { password, email, username, ...rest } = payload
     const passwordHashed = await hash.make(password)
 
@@ -39,10 +42,7 @@ export class AuthService implements IAuthService, IRegisterService {
       ...rest,
     })
 
-    const { type, token } = await this.userRepository.createAccessToken({ uuid })
-    return createSuccessResponse({
-      type,
-      token,
-    })
+    const userAccessToken = await this.userRepository.createAccessToken({ uuid })
+    return createSuccessResponse(userAccessToken)
   }
 }

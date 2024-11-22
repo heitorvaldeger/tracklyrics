@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core'
 import { ILanguageService } from '#services/interfaces/ILanguageService'
-import { LanguageFindModel } from '#models/language/language-find-model'
+import { LanguageFindModel } from '#models/language-model/language-find-model'
 import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 
 @inject()

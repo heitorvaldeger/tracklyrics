@@ -1,4 +1,4 @@
-import Language from '#models/lucid-orm/language'
+import { LanguageLucid } from '#models/language-model/language-lucid'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
@@ -7,7 +7,7 @@ export default class extends BaseSeeder {
   async run() {
     const uniqueKey = 'id'
 
-    await Language.updateOrCreateMany(uniqueKey, [
+    await LanguageLucid.updateOrCreateMany(uniqueKey, [
       { id: 1, name: 'English' },
       { id: 2, name: 'Spanish' },
       { id: 3, name: 'Portuguese' },

@@ -1,6 +1,6 @@
 import { badRequest, noContent, notFound, serverError, ok, unprocessable } from '#helpers/http'
 import { HttpStatusCode } from '../enums/HttpStatusCode.js'
-import { IMethodResponse } from './interfaces/IMethodResponse.js'
+import { IMethodResponse } from './types/IMethodResponse.js'
 
 export const dispatch = (response: IMethodResponse<any>) => {
   if (response.isSuccess) {
