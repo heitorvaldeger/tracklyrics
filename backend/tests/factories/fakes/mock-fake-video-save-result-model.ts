@@ -2,7 +2,7 @@ import { VideoSaveResultModel } from '#models/video-model/video-save-result-mode
 
 export const mockFakeVideoSaveResultModel = (): VideoSaveResultModel => ({
   artist: 'any_artist',
-  genrerId: 0,
+  genreId: 0,
   isDraft: false,
   languageId: 0,
   linkYoutube: 'any_link',

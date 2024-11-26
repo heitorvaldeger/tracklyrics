@@ -18,7 +18,7 @@ export class VideoPostgresRepository implements IVideoRepository {
       .where('videos.uuid', uuid)
       .innerJoin('users', 'users.id', 'user_id')
       .innerJoin('languages', 'languages.id', 'language_id')
-      .innerJoin('genrers', 'genrers.id', 'genrer_id')
+      .innerJoin('genres', 'genres.id', 'genre_id')
 
     const video: VideoFindModel | null = await this.selectFind(qb).first()
 
@@ -30,7 +30,7 @@ export class VideoPostgresRepository implements IVideoRepository {
       .from('videos')
       .innerJoin('users', 'users.id', 'user_id')
       .innerJoin('languages', 'languages.id', 'language_id')
-      .innerJoin('genrers', 'genrers.id', 'genrer_id')
+      .innerJoin('genres', 'genres.id', 'genre_id')
     for (const [key, value] of Object.entries(toSnakeCase(filters))) {
       if (!value) continue
 
@@ -84,7 +84,7 @@ export class VideoPostgresRepository implements IVideoRepository {
         'is_draft',
         'user_id',
         'language_id',
-        'genrer_id'
+        'genre_id'
       )
       .first()
 
@@ -121,7 +121,7 @@ export class VideoPostgresRepository implements IVideoRepository {
   }
 
   private getParamValidToFindBy(): Array<string> {
-    return ['language_id', 'genrer_id', 'user_uuid']
+    return ['language_id', 'genre_id', 'user_uuid']
   }
 
   private selectFind(qb: DatabaseQueryBuilderContract<any>) {
@@ -134,7 +134,7 @@ export class VideoPostgresRepository implements IVideoRepository {
       'qty_views',
       'is_draft',
       'languages.name as language',
-      'genrers.name as genrer',
+      'genres.name as genre',
       'users.username as username'
     )
   }

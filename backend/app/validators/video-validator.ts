@@ -15,7 +15,7 @@ export const createOrUpdateVideoValidator = vine.compile(
       .regex(/^[0-9]+$/),
     linkYoutube: vine.string().regex(youtubeLinkRegex).url(),
     languageId: vine.number(),
-    genrerId: vine.number(),
+    genreId: vine.number(),
   })
 )
 
@@ -27,7 +27,7 @@ export const uuidVideoValidator = vine.compile(
 
 export const findByVideoValidator = vine.compile(
   vine.object({
-    genrerId: vine.number().positive().optional(),
+    genreId: vine.number().positive().optional(),
     languageId: vine.number().positive().optional(),
     userUuid: vine.string().uuid().optional(),
     videoUuid: vine.string().uuid().optional(),

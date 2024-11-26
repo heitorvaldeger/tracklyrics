@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class GenrerLucid extends BaseModel {
-  static table = 'genrers'
+export default class GenreLucid extends BaseModel {
+  static table = 'genres'
 
   @column({ isPrimary: true })
   declare id: number

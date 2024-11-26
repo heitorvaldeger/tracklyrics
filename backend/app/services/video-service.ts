@@ -52,7 +52,7 @@ export class VideoService implements IVideoService {
     const newVideo = await this.videoRepository.create({
       ...payload,
       languageId: payload.languageId,
-      genrerId: payload.genrerId,
+      genreId: payload.genreId,
       userId: this.authService.getUserId(),
       uuid,
     })
@@ -72,7 +72,7 @@ export class VideoService implements IVideoService {
       {
         ...payload,
         languageId: payload.languageId,
-        genrerId: payload.genrerId,
+        genreId: payload.genreId,
         userId: this.authService.getUserId(),
       },
       uuid

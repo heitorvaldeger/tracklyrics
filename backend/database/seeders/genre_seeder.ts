@@ -1,9 +1,9 @@
-import GenrerLucid from '#models/genrer-model/genrer-lucid'
+import GenreLucid from '#models/genre-model/genre-lucid'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
   async run() {
-    await GenrerLucid.updateOrCreateMany('id', [
+    await GenreLucid.updateOrCreateMany('id', [
       { id: 1, name: 'Pop' },
       { id: 2, name: 'Rock' },
       { id: 3, name: 'Hard Rock' },

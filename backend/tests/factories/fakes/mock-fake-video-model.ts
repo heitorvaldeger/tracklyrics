@@ -9,6 +9,6 @@ export const mockFakeVideoModel = (): VideoFindModel => ({
   qtyViews: 0,
   releaseYear: 'any_year',
   language: 'any_language',
-  genrer: 'any_genrer',
+  genre: 'any_genre',
   username: 'any_username',
 })

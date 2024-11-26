@@ -4,7 +4,7 @@ export type VideoSaveParams = {
   releaseYear: string
   linkYoutube: string
   languageId: number
-  genrerId: number
+  genreId: number
   userId: number
   uuid: string
   isDraft?: boolean

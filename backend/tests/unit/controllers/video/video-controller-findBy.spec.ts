@@ -26,7 +26,7 @@ test.group('VideoController.findBy()', () => {
     const { sut, httpContext, videoServiceStub } = makeSut()
     const findBySpy = spy(videoServiceStub, 'findBy')
     stub(httpContext.request, 'qs').returns({
-      genrerId: 0,
+      genreId: 0,
       languageId: 0,
       userUuid: NilUUID,
       videoUuid: NilUUID,
@@ -35,7 +35,7 @@ test.group('VideoController.findBy()', () => {
     await sut.findBy(httpContext)
     expect(
       findBySpy.calledWith({
-        genrerId: 0,
+        genreId: 0,
         languageId: 0,
         userUuid: NilUUID,
         videoUuid: NilUUID,
@@ -46,7 +46,7 @@ test.group('VideoController.findBy()', () => {
   test('should returns 400 if invalid params is provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(httpContext.request, 'qs').returns({
-      genrerId: 'any_id',
+      genreId: 'any_id',
       languageId: 'any_id',
       userUuid: 'any_uuid',
       videoUuid: 'any_uuid',
@@ -56,8 +56,8 @@ test.group('VideoController.findBy()', () => {
     expect(httpResponse).toEqual(
       badRequest([
         {
-          field: 'genrerId',
-          message: 'The genrerId field must be a number',
+          field: 'genreId',
+          message: 'The genreId field must be a number',
         },
         {
           field: 'languageId',

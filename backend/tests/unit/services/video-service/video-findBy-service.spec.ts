@@ -23,9 +23,9 @@ test.group('VideoService.findBy()', () => {
     expect(video).toEqual(createSuccessResponse([]))
   })
 
-  test('should returns a list videos returns on find by genrer', async ({ expect }) => {
+  test('should returns a list videos returns on find by genre', async ({ expect }) => {
     const { sut } = makeSut()
-    const video = await sut.findBy({ genrerId: 0 })
+    const video = await sut.findBy({ genreId: 0 })
 
     expect(video).toEqual(createSuccessResponse([]))
   })

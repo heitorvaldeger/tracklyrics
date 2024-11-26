@@ -8,5 +8,5 @@ export const mockVideoRequest = (): VideoRequestParams => ({
   releaseYear: '0000',
   linkYoutube: makeYoutubeUrl(),
   languageId: 0,
-  genrerId: 0,
+  genreId: 0,
 })

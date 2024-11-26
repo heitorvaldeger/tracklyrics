@@ -32,7 +32,7 @@ export default class VideoLucid extends BaseModel {
   declare languageId: number
 
   @column()
-  declare genrerId: number
+  declare genreId: number
 
   @column()
   declare userId: number

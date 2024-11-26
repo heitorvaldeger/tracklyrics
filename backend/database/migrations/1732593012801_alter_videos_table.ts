@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.bigInteger('genre_id').references('id').inTable('genres')
+      table.renameColumn('genrer_id', 'genre_id')
     })
   }
 }

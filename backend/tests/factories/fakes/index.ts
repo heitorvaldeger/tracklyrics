@@ -1,4 +1,4 @@
-export * from '#tests/factories/fakes/mock-genrer-entity'
+export * from '#tests/factories/fakes/mock-genre-entity'
 export * from '#tests/factories/fakes/mock-language-entity'
 export * from '#tests/factories/fakes/mock-user-entity'
 export * from '#tests/factories/fakes/mock-fake-video-model'

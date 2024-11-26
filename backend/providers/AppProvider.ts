@@ -1,8 +1,8 @@
 import { ApplicationService } from '@adonisjs/core/types'
 import { IVideoService } from '#services/interfaces/IVideoService'
-import { IGenrerService } from '#services/interfaces/IGenrerService'
-import { GenrerService } from '#services/genrer-service'
-import { GenrerPostgresRepository } from '#repository/postgres-repository/genrer-postgres-repository'
+import { IGenreService } from '#services/interfaces/IGenreService'
+import { GenreService } from '#services/genre-service'
+import { GenrePostgresRepository } from '#repository/postgres-repository/genre-postgres-repository'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
 import { VideoService } from '#services/video-service'
 import { VideoPostgresRepository } from '#repository/postgres-repository/video-postgres-repository'
@@ -24,8 +24,8 @@ export default class AppProvider {
       return this.app.container.make(VideoPostgresRepository)
     })
 
-    this.app.container.bind(IGenrerService, async () => {
-      return new GenrerService(await this.app.container.make(GenrerPostgresRepository))
+    this.app.container.bind(IGenreService, async () => {
+      return new GenreService(await this.app.container.make(GenrePostgresRepository))
     })
 
     this.app.container.bind(ILanguageService, async () => {

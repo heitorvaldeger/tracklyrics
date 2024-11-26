@@ -73,8 +73,8 @@ test.group('VideoController.update()', (group) => {
           message: 'The languageId field must be defined',
         },
         {
-          field: 'genrerId',
-          message: 'The genrerId field must be defined',
+          field: 'genreId',
+          message: 'The genreId field must be defined',
         },
       ])
     )

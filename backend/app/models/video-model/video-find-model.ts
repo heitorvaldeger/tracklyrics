@@ -7,6 +7,6 @@ export type VideoFindModel = {
   linkYoutube: string
   uuid: string
   language: string
-  genrer: string
+  genre: string
   username: string
 }

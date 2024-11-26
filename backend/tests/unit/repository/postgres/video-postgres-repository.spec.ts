@@ -11,19 +11,19 @@ import { NilUUID } from '#tests/utils/NilUUID'
 import { faker } from '@faker-js/faker'
 import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
 
-const fieldsToOmit = ['userId', 'languageId', 'genrerId', 'id']
+const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
 export const makeFake = async () => {
-  const { fakeGenrer, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
+  const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
 
   const fakeFullVideo = Object.assign({}, fakeVideo.serialize() as Video, {
-    genrer: fakeGenrer.name,
+    genre: fakeGenre.name,
     language: fakeLanguage.name,
     username: fakeUser.username,
     id: fakeVideo.id,
   })
 
   return {
-    fakeGenrer,
+    fakeGenre,
     fakeLanguage,
     fakeUser,
     fakeVideo,
@@ -55,12 +55,10 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos.length).toBe(1)
   })
 
-  test('should return a list videos on findBy if genrerId param is provided', async ({
-    expect,
-  }) => {
+  test('should return a list videos on findBy if genreId param is provided', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
 
-    const videos = await sut.findBy({ genrerId: fakeFullVideo.genrerId })
+    const videos = await sut.findBy({ genreId: fakeFullVideo.genreId })
 
     expect(Array.isArray(videos)).toBeTruthy()
     expect(videos.length).toBe(1)
@@ -166,7 +164,7 @@ test.group('VideoPostgresRepository', (group) => {
   test('should return success if a video created on success', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {
-      ..._.omit(fakeFullVideo, ['language', 'genrer', 'username', 'id']),
+      ..._.omit(fakeFullVideo, ['language', 'genre', 'username', 'id']),
       uuid: faker.string.uuid(),
     }
     const newVideo = await sut.create(fakePayload)
@@ -197,7 +195,7 @@ test.group('VideoPostgresRepository', (group) => {
   test('should throws an error on create', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {
-      ..._.omit(fakeFullVideo, ['language', 'genrer', 'username', 'id']),
+      ..._.omit(fakeFullVideo, ['language', 'genre', 'username', 'id']),
       uuid: faker.string.uuid(),
     }
 

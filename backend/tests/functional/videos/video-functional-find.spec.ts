@@ -5,7 +5,7 @@ import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { test } from '@japa/runner'
 
-const fieldsToOmit = ['userId', 'languageId', 'genrerId', 'id']
+const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
 test.group('Video Find Route', (group) => {
   group.each.setup(async () => {
     await Favorite.query().del()
@@ -17,7 +17,7 @@ test.group('Video Find Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeGenrer, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
+    const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
 
     const response = await client.get(`/videos/${fakeVideo.uuid}`)
 
@@ -28,7 +28,7 @@ test.group('Video Find Route', (group) => {
           omit: fieldsToOmit,
         },
       }),
-      genrer: fakeGenrer.name,
+      genre: fakeGenre.name,
       language: fakeLanguage.name,
       username: fakeUser.username,
     })

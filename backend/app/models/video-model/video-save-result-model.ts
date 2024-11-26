@@ -7,7 +7,7 @@ export type VideoSaveResultModel = {
   linkYoutube: string
   qtyViews: number
   languageId: number
-  genrerId: number
+  genreId: number
   userId: number
   uuid: string
   isDraft?: boolean

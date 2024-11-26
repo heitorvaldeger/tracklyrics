@@ -1,5 +1,5 @@
 export type VideoFindParams = {
-  genrerId: number
+  genreId: number
   languageId: number
   userUuid: string
   videoUuid: string

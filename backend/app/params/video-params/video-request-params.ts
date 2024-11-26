@@ -4,6 +4,6 @@ export type VideoRequestParams = {
   releaseYear: string
   linkYoutube: string
   languageId: number
-  genrerId: number
+  genreId: number
   isDraft?: boolean
 }
