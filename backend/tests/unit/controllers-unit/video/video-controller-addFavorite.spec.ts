@@ -6,13 +6,13 @@ import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockVideoServiceStub } from '#tests/factories/stubs/mock-video-service-stub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { randomUUID } from 'node:crypto'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { makeFakeRequest } from './factories/make-fake-request.js'
+import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
+import { faker } from '@faker-js/faker'
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(makeFakeRequest(), {
-    uuid: randomUUID(),
+  const httpContext = makeHttpRequest(mockVideoRequest(), {
+    uuid: faker.string.uuid(),
   })
 
   const videoServiceStub = mockVideoServiceStub()
@@ -70,7 +70,7 @@ test.group('VideoController.addFavorite()', (group) => {
   test('should returns 500 if video add favorite throws', async ({ expect }) => {
     const { sut, httpContext, videoServiceStub } = await makeSut()
     stub(httpContext.request, 'params').returns({
-      uuid: randomUUID(),
+      uuid: faker.string.uuid(),
     })
 
     stub(videoServiceStub, 'addFavorite').throws(new Error())

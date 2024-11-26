@@ -3,8 +3,8 @@ import { createSuccessResponse, createFailureResponse } from '#helpers/method-re
 import { VideoService } from '#services/video-service'
 import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
-import { randomUUID } from 'node:crypto'
 import { stub } from 'sinon'
 
 const makeSut = () => {
@@ -18,7 +18,7 @@ const makeSut = () => {
 test.group('VideoService.addFavorite()', () => {
   test('should return success if a video was added to favorite', async ({ expect }) => {
     const { sut } = makeSut()
-    const response = await sut.addFavorite(randomUUID())
+    const response = await sut.addFavorite(faker.string.uuid())
 
     expect(response).toEqual(createSuccessResponse(true))
   })
@@ -26,7 +26,7 @@ test.group('VideoService.addFavorite()', () => {
   test("should return fail if a video wasn't added to favorite", async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'addFavorite').returns(Promise.resolve(false))
-    const response = await sut.addFavorite(randomUUID())
+    const response = await sut.addFavorite(faker.string.uuid())
 
     expect(response).toEqual(
       createFailureResponse(APPLICATION_ERRORS.VIDEO_UNPOSSIBLE_ADD_TO_FAVORITE)
@@ -36,7 +36,7 @@ test.group('VideoService.addFavorite()', () => {
   test('should return an error if video not belong from user', async ({ expect }) => {
     const { sut, authServiceStub } = makeSut()
     stub(authServiceStub, 'getUserId').returns(-1)
-    const response = await sut.addFavorite(randomUUID())
+    const response = await sut.addFavorite(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
   })

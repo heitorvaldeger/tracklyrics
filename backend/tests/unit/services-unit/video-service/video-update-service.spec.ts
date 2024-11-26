@@ -1,9 +1,10 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { createSuccessResponse, createFailureResponse } from '#helpers/method-response'
 import { VideoService } from '#services/video-service'
-import { fakeVideoRequest } from '#tests/factories/objects'
+import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
 import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
@@ -23,7 +24,7 @@ test.group('VideoService.update()', (group) => {
 
   test('should return success if a video updated with success', async ({ expect }) => {
     const { sut } = makeSut()
-    const updated = await sut.update(fakeVideoRequest, 'any_uuid')
+    const updated = await sut.update(mockVideoRequest(), faker.string.uuid())
 
     expect(updated).toEqual(createSuccessResponse(true))
   })
@@ -31,7 +32,7 @@ test.group('VideoService.update()', (group) => {
   test('should return userId valid on call AuthService.getUserId', async ({ expect }) => {
     const { sut, authServiceStub } = makeSut()
     const getUserIdSpy = sinon.spy(authServiceStub, 'getUserId')
-    await sut.update(fakeVideoRequest, 'any_uuid')
+    await sut.update(mockVideoRequest(), faker.string.uuid())
 
     expect(getUserIdSpy.returned(0)).toBeTruthy()
   })
@@ -39,7 +40,7 @@ test.group('VideoService.update()', (group) => {
   test('should returns a error if link youtube already exists on update', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'hasYoutubeLink').returns(new Promise((resolve) => resolve(true)))
-    const video = await sut.update(fakeVideoRequest, 'any_uuid')
+    const video = await sut.update(mockVideoRequest(), faker.string.uuid())
     expect(video).toEqual(createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
   })
 
@@ -47,7 +48,7 @@ test.group('VideoService.update()', (group) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'find').returns(new Promise((resolve) => resolve(null)))
     stub(videoRepositoryStub, 'getUserId').returns(new Promise((resolve) => resolve(1)))
-    const video = await sut.update(fakeVideoRequest, 'any_uuid')
+    const video = await sut.update(mockVideoRequest(), faker.string.uuid())
 
     expect(video).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
   })

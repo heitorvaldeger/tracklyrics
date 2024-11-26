@@ -3,49 +3,13 @@ import sinon, { stub } from 'sinon'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import AuthController from '#controllers/auth-controller'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { Secret } from '@adonisjs/core/helpers'
-import { AccessToken } from '@adonisjs/auth/access_tokens'
-import { IAuthService } from '#services/interfaces/IAuthService'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
-import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import UserLucid from '#models/user-model/user-lucid'
-import { UserRegisterRequest } from '#params/user-params/user-register-request'
-import { Authenticator } from '@adonisjs/auth'
-import { Authenticators } from '@adonisjs/auth/types'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
+import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 
-export const mockAuthServiceStub = () => {
-  class AuthServiceStub implements IAuthService {
-    private auth: Authenticator<Authenticators> | null = null
-    public setAuth(auth: Authenticator<Authenticators>) {
-      this.auth = auth
-    }
-
-    getUserId(): number {
-      return 0
-    }
-
-    async register(payload: UserRegisterRequest): Promise<IMethodResponse<UserAccessTokenModel>> {
-      return createSuccessResponse({
-        type: 'any_type',
-        token: 'any_token',
-      })
-    }
-  }
-
-  return new AuthServiceStub()
-}
-
-const makeFakeRequest = () => ({
-  username: 'any_username',
-  email: 'any_mail@mail.com',
-  password: 'any_password',
-  firstName: 'any_firstName',
-  lastName: 'any_lastName',
-})
 const makeSut = () => {
-  const httpContext = makeHttpRequest(makeFakeRequest())
+  const httpContext = makeHttpRequest(mockUserRegisterRequest())
   const authServiceStub = mockAuthServiceStub()
   const sut = new AuthController(authServiceStub)
 

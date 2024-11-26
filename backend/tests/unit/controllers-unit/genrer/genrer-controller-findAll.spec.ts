@@ -4,17 +4,17 @@ import { ok } from '#helpers/http'
 import { GenrerFindModel } from '#models/genrer-model/genrer-find-model'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
 
-const mockFakeGenrer = (): GenrerFindModel[] => [
-  {
-    id: 0,
-    name: 'any_name',
-  },
-]
-
-export const makeGenrerServiceStub = () => {
+export const mockGenrerServiceStub = () => {
   class GenrerServiceStub implements IGenrerService {
     async findAll(): Promise<GenrerFindModel[]> {
-      return new Promise((resolve) => resolve(mockFakeGenrer()))
+      return new Promise((resolve) =>
+        resolve([
+          {
+            id: 0,
+            name: 'any_name',
+          },
+        ])
+      )
     }
   }
 
@@ -22,7 +22,7 @@ export const makeGenrerServiceStub = () => {
 }
 
 const makeSut = () => {
-  const genrerServiceStub = makeGenrerServiceStub()
+  const genrerServiceStub = mockGenrerServiceStub()
   const sut = new GenrerController(genrerServiceStub)
 
   return { sut }
@@ -34,6 +34,13 @@ test.group('GenrerController.findAll()', () => {
 
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual(ok(mockFakeGenrer()))
+    expect(httpResponse).toEqual(
+      ok([
+        {
+          id: 0,
+          name: 'any_name',
+        },
+      ])
+    )
   })
 })

@@ -4,16 +4,17 @@ import { ok } from '#helpers/http'
 import { LanguageFindModel } from '#models/language-model/language-find-model'
 import { IGenrerService } from '#services/interfaces/IGenrerService'
 
-const mockFakeLanguage = () => [
-  {
-    id: 0,
-    name: 'any_name',
-  },
-]
-const makeLanguageServiceStub = () => {
+const mockLanguageServiceStub = () => {
   class LanguageServiceStub implements IGenrerService {
     async findAll(): Promise<LanguageFindModel[]> {
-      return new Promise((resolve) => resolve(mockFakeLanguage()))
+      return new Promise((resolve) =>
+        resolve([
+          {
+            id: 0,
+            name: 'any_name',
+          },
+        ])
+      )
     }
   }
 
@@ -21,7 +22,7 @@ const makeLanguageServiceStub = () => {
 }
 
 const makeSut = () => {
-  const languageServiceStub = makeLanguageServiceStub()
+  const languageServiceStub = mockLanguageServiceStub()
   const sut = new LanguageController(languageServiceStub)
 
   return { sut }
@@ -32,6 +33,13 @@ test.group('LanguageController.findAll', () => {
 
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual(ok(mockFakeLanguage()))
+    expect(httpResponse).toEqual(
+      ok([
+        {
+          id: 0,
+          name: 'any_name',
+        },
+      ])
+    )
   })
 })

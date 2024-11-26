@@ -12,8 +12,8 @@ const makeSut = () => {
 
 test.group('GenrerPostgresRepository.findAll', (group) => {
   group.setup(async () => {
-    await VideoLucid.query().whereNotNull('id').delete()
-    await GenrerLucid.query().whereNotNull('id').delete()
+    await VideoLucid.query().delete()
+    await GenrerLucid.query().delete()
   })
 
   test('should returns a list of genres with on success', async ({ expect }) => {

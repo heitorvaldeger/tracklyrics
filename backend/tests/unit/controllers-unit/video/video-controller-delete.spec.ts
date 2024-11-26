@@ -6,15 +6,15 @@ import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { mockVideoServiceStub } from '#tests/factories/stubs/mock-video-service-stub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { randomUUID } from 'node:crypto'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { faker } from '@faker-js/faker'
 
 const makeSut = () => {
   const httpContext = makeHttpRequest(
     {},
     {
-      uuid: randomUUID(),
+      uuid: faker.string.uuid(),
     }
   )
   const videoServiceStub = mockVideoServiceStub()

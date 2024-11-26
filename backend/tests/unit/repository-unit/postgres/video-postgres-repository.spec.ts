@@ -10,6 +10,7 @@ import VideoLucid from '#models/video-model/video-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { mockFakeGenrer, mockFakeLanguage, mockFakeUser } from '#tests/factories/fakes/index'
+import { faker } from '@faker-js/faker'
 
 const fieldsToOmit = ['userId', 'languageId', 'genrerId', 'id']
 export const makeFake = async () => {
@@ -19,12 +20,12 @@ export const makeFake = async () => {
 
   const fakeVideo = await VideoLucid.create({
     isDraft: false,
-    title: 'any_title',
-    artist: 'any_artist',
+    title: faker.lorem.words(2),
+    artist: faker.lorem.words(2),
     qtyViews: 0,
-    releaseYear: '2000',
-    linkYoutube: 'any_link',
-    uuid: randomUUID(),
+    releaseYear: faker.string.numeric({ length: 4 }),
+    linkYoutube: faker.internet.url(),
+    uuid: faker.string.uuid(),
     languageId: fakeLanguage.id,
     genrerId: fakeGenrer.id,
     userId: fakeUser.id,
@@ -182,7 +183,7 @@ test.group('VideoPostgresRepository', (group) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {
       ..._.omit(fakeFullVideo, ['language', 'genrer', 'username', 'id']),
-      uuid: randomUUID(),
+      uuid: faker.string.uuid(),
     }
     const newVideo = await sut.create(fakePayload)
 
@@ -192,7 +193,7 @@ test.group('VideoPostgresRepository', (group) => {
   test('should return true if video added to favorite on success', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
 
-    const added = await sut.addFavorite(fakeFullVideo.id, fakeFullVideo.userId, randomUUID())
+    const added = await sut.addFavorite(fakeFullVideo.id, fakeFullVideo.userId, faker.string.uuid())
     expect(added).toBeTruthy()
   })
 
@@ -202,7 +203,7 @@ test.group('VideoPostgresRepository', (group) => {
     await Favorite.create({
       videoId: fakeFullVideo.id,
       userId: fakeFullVideo.userId,
-      uuid: randomUUID(),
+      uuid: faker.string.uuid(),
     })
 
     const response = await sut.removeFavorite(fakeFullVideo.id, fakeFullVideo.userId)
@@ -213,7 +214,7 @@ test.group('VideoPostgresRepository', (group) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {
       ..._.omit(fakeFullVideo, ['language', 'genrer', 'username', 'id']),
-      uuid: randomUUID(),
+      uuid: faker.string.uuid(),
     }
 
     stub(db, 'from')

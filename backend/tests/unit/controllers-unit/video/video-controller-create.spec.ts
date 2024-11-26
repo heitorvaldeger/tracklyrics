@@ -7,10 +7,10 @@ import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockVideoServiceStub } from '#tests/factories/stubs/mock-video-service-stub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { makeFakeRequest } from './factories/make-fake-request.js'
+import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(makeFakeRequest())
+  const httpContext = makeHttpRequest(mockVideoRequest())
 
   const videoServiceStub = mockVideoServiceStub()
   const sut = new VideoController(videoServiceStub)

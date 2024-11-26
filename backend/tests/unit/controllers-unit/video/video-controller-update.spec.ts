@@ -8,10 +8,10 @@ import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { makeFakeRequest } from './factories/make-fake-request.js'
+import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(makeFakeRequest(), {
+  const httpContext = makeHttpRequest(mockVideoRequest(), {
     uuid: randomUUID(),
   })
 

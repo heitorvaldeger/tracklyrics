@@ -4,6 +4,7 @@ import { createSuccessResponse } from '#helpers/method-response'
 import _ from 'lodash'
 import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
+import { faker } from '@faker-js/faker'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
@@ -39,7 +40,7 @@ test.group('VideoService.findBy()', () => {
   test('should returns a list videos returns on find by user uuid', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({
-      userUuid: 'any_uuid',
+      userUuid: faker.string.uuid(),
     })
 
     expect(video).toEqual(createSuccessResponse([]))

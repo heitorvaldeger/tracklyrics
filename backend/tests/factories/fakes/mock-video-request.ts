@@ -1,7 +1,7 @@
-import { VideoRequestParams } from '../../../../../app/params/video-params/video-request-params.js'
+import { VideoRequestParams } from '../../../app/params/video-params/video-request-params.js'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
 
-export const makeFakeRequest = (): VideoRequestParams => ({
+export const mockVideoRequest = (): VideoRequestParams => ({
   isDraft: false,
   title: 'any_title',
   artist: 'any_artist',

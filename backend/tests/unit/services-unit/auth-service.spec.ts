@@ -11,6 +11,7 @@ import { UserAccessTokenModel } from '#models/user-model/user-access-token-model
 import { UserRegisterRequest } from '#params/user-params/user-register-request'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 
 export const mockVideoRepositoryStub = () => {
   class UserRepositoryStub implements IUserRepository {
@@ -65,15 +66,8 @@ test.group('AuthService', () => {
 
   test('should return a token if user was register on success', async ({ expect }) => {
     const { sut } = makeSut()
-    const user: UserRegisterRequest = {
-      email: 'any_mail@mail.com',
-      username: 'any_username',
-      password: 'any_password',
-      firstName: 'any_first_name',
-      lastName: 'any_last_name',
-    }
 
-    const userAccessToken = await sut.register(user)
+    const userAccessToken = await sut.register(mockUserRegisterRequest())
     expect(userAccessToken).toEqual(
       createSuccessResponse({
         type: 'any_type',
@@ -84,22 +78,16 @@ test.group('AuthService', () => {
 
   test('should return a fail if user already using', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
+    const mockUser = mockUserRegisterRequest()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').returns(
       Promise.resolve({
-        email: 'any_mail@mail.com',
-        username: 'any_username',
+        email: mockUser.email,
+        username: mockUser.username,
         uuid: 'any_uuid',
       })
     )
-    const user: UserRegisterRequest = {
-      email: 'any_mail@mail.com',
-      username: 'any_username',
-      password: 'any_password',
-      firstName: 'any_first_name',
-      lastName: 'any_last_name',
-    }
 
-    const userAccessToken = await sut.register(user)
+    const userAccessToken = await sut.register(mockUser)
     expect(userAccessToken).toEqual(
       createFailureResponse(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING)
     )
