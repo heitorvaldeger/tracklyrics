@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import UserLucid from '#models/user-model/user-lucid'
 
-export const mockFakeUser = async (email?: string, username?: string) => {
+export const mockUserEntity = async (email?: string, username?: string) => {
   return await UserLucid.create({
     email: email ?? faker.internet.email(),
     username: username ?? faker.internet.username(),

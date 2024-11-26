@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import { LanguagePostgresRepository } from '#repository/postgres-repository/language-postgres-repository'
 import { LanguageLucid } from '#models/language-model/language-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
-import { mockFakeLanguage } from '#tests/factories/fakes/index'
+import { mockLanguageEntity } from '#tests/factories/fakes/index'
 
 const makeSut = () => {
   const sut = new LanguagePostgresRepository()
@@ -17,7 +17,7 @@ test.group('LanguagePostgresRepository.findAll', (group) => {
   })
 
   test('should returns a list of languages with on success', async ({ expect }) => {
-    const fakeLanguage = (await mockFakeLanguage()).serialize()
+    const fakeLanguage = (await mockLanguageEntity()).serialize()
     const { sut } = makeSut()
 
     const languages = await sut.findAll()

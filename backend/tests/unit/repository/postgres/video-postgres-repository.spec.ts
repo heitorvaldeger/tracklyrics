@@ -2,34 +2,18 @@ import _ from 'lodash'
 import { test } from '@japa/runner'
 import { VideoPostgresRepository } from '#repository/postgres-repository/video-postgres-repository'
 import Video from '#models/video-model/video-lucid'
-import { randomUUID } from 'node:crypto'
 import Favorite from '#models/lucid-orm/favorite'
 import { stub } from 'sinon'
 import db from '@adonisjs/lucid/services/db'
 import VideoLucid from '#models/video-model/video-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { mockFakeGenrer, mockFakeLanguage, mockFakeUser } from '#tests/factories/fakes/index'
 import { faker } from '@faker-js/faker'
+import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
 
 const fieldsToOmit = ['userId', 'languageId', 'genrerId', 'id']
 export const makeFake = async () => {
-  const fakeLanguage = await mockFakeLanguage()
-  const fakeGenrer = await mockFakeGenrer()
-  const fakeUser = await mockFakeUser()
-
-  const fakeVideo = await VideoLucid.create({
-    isDraft: false,
-    title: faker.lorem.words(2),
-    artist: faker.lorem.words(2),
-    qtyViews: 0,
-    releaseYear: faker.string.numeric({ length: 4 }),
-    linkYoutube: faker.internet.url(),
-    uuid: faker.string.uuid(),
-    languageId: fakeLanguage.id,
-    genrerId: fakeGenrer.id,
-    userId: fakeUser.id,
-  })
+  const { fakeGenrer, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
 
   const fakeFullVideo = Object.assign({}, fakeVideo.serialize() as Video, {
     genrer: fakeGenrer.name,

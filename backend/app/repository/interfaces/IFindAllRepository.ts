@@ -1,3 +1,3 @@
-export abstract class IFindAllRepository {
-  abstract findAll(): Promise<any[]>
+export abstract class IFindAllRepository<T> {
+  abstract findAll(): Promise<T[]>
 }

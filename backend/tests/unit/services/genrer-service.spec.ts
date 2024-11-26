@@ -3,8 +3,8 @@ import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 import { GenrerFindModel } from '#models/genrer-model/genrer-find-model'
 import { GenrerService } from '#services/genrer-service'
 
-const mockFakeGenrerRepositoryStub = () => {
-  class GenrerRepositoryStub implements IFindAllRepository {
+const mockGenrerEntityRepositoryStub = () => {
+  class GenrerRepositoryStub implements IFindAllRepository<GenrerFindModel> {
     findAll(): Promise<GenrerFindModel[]> {
       return new Promise((resolve) => resolve([]))
     }
@@ -13,7 +13,7 @@ const mockFakeGenrerRepositoryStub = () => {
   return new GenrerRepositoryStub()
 }
 const makeSut = () => {
-  const fakeGenrerRepositoryStub = mockFakeGenrerRepositoryStub()
+  const fakeGenrerRepositoryStub = mockGenrerEntityRepositoryStub()
   const sut = new GenrerService(fakeGenrerRepositoryStub)
 
   return { sut }

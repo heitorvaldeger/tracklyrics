@@ -111,15 +111,9 @@
       "app/**/*.ts"
     ],
     "exclude": [
-      "node_modules",
-      "tests",
-      "start",
-      "public",
-      "database",
-      "build",
-      "**/interfaces/**/*.ts",
       "**/params/**/*.ts",
-      "**/models/**/*.ts"
+      "**/models/**/*.ts",
+      "**/helpers/types/**/*.ts"
     ]
   }
 }

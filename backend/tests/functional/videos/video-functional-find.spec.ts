@@ -1,14 +1,11 @@
 import Favorite from '#models/lucid-orm/favorite'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
-import { mockFakeGenrer } from '#tests/factories/fakes/mock-fake-genrer'
-import { mockFakeLanguage } from '#tests/factories/fakes/mock-fake-language'
-import { mockFakeUser } from '#tests/factories/fakes/mock-fake-user'
-import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
+import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { test } from '@japa/runner'
-import { randomUUID } from 'node:crypto'
 
+const fieldsToOmit = ['userId', 'languageId', 'genrerId', 'id']
 test.group('Video Find Route', (group) => {
   group.each.setup(async () => {
     await Favorite.query().del()
@@ -20,39 +17,20 @@ test.group('Video Find Route', (group) => {
     client,
     expect,
   }) => {
-    const videoUuid = randomUUID()
-    const [genrer, language, user] = await Promise.all([
-      mockFakeGenrer(),
-      mockFakeLanguage(),
-      mockFakeUser(),
-    ])
+    const { fakeGenrer, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
 
-    const fakeVideo = (
-      await VideoLucid.create({
-        isDraft: false,
-        title: 'Youtube Music - Video Test',
-        artist: 'From Youtube',
-        qtyViews: 10000,
-        releaseYear: '2012',
-        linkYoutube: makeYoutubeUrl(),
-        uuid: videoUuid,
-        languageId: language.id,
-        genrerId: genrer.id,
-        userId: user.id,
-      })
-    ).serialize({
-      fields: {
-        omit: ['userId', 'languageId', 'genrerId', 'id'],
-      },
-    })
-    const response = await client.get(`/videos/${videoUuid}`)
+    const response = await client.get(`/videos/${fakeVideo.uuid}`)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toEqual({
-      ...fakeVideo,
-      genrer: genrer.name,
-      language: language.name,
-      username: user.username,
+      ...fakeVideo.serialize({
+        fields: {
+          omit: fieldsToOmit,
+        },
+      }),
+      genrer: fakeGenrer.name,
+      language: fakeLanguage.name,
+      username: fakeUser.username,
     })
   })
 

@@ -5,7 +5,7 @@ import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 
 @inject()
 export class LanguageService implements ILanguageService {
-  constructor(private readonly findAllRepository: IFindAllRepository) {}
+  constructor(private readonly findAllRepository: IFindAllRepository<LanguageFindModel>) {}
 
   async findAll(): Promise<LanguageFindModel[]> {
     return await this.findAllRepository.findAll()

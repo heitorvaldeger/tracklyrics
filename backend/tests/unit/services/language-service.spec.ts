@@ -3,8 +3,8 @@ import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 import { LanguageFindModel } from '#models/language-model/language-find-model'
 import { LanguageService } from '#services/language-service'
 
-const mockFakeLanguageRepositoryStub = () => {
-  class LanguageRepositoryStub implements IFindAllRepository {
+const mockLanguageEntityRepositoryStub = () => {
+  class LanguageRepositoryStub implements IFindAllRepository<LanguageFindModel> {
     findAll(): Promise<LanguageFindModel[]> {
       return new Promise((resolve) => resolve([]))
     }
@@ -13,7 +13,7 @@ const mockFakeLanguageRepositoryStub = () => {
   return new LanguageRepositoryStub()
 }
 const makeSut = () => {
-  const fakeLanguageRepositoryStub = mockFakeLanguageRepositoryStub()
+  const fakeLanguageRepositoryStub = mockLanguageEntityRepositoryStub()
   const sut = new LanguageService(fakeLanguageRepositoryStub)
 
   return { sut }

@@ -5,7 +5,7 @@ import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
 
 @inject()
 export class GenrerService implements IGenrerService {
-  constructor(private readonly findAllRepository: IFindAllRepository) {}
+  constructor(private readonly findAllRepository: IFindAllRepository<GenrerFindModel>) {}
 
   async findAll(): Promise<GenrerFindModel[]> {
     return await this.findAllRepository.findAll()
