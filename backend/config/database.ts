@@ -2,22 +2,8 @@ import env from '#start/env'
 import pg from 'pg'
 import { defineConfig } from '@adonisjs/lucid'
 
-// The OID 20 corresponds the 'bigint' type on PostgresSQL
-const BIGINT_OID = 20
-
-pg.types.setTypeParser(BIGINT_OID, (val) => {
-  if (val === null) {
-    return null
-  }
-
-  const num = Number.parseInt(val, 10)
-
-  if (num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
-    throw new Error(`BigInt value is out of secure range to Number: ${val}`)
-  }
-
-  return num
-})
+pg.types.setTypeParser(pg.types.builtins.INT8, Number.parseInt)
+pg.types.setTypeParser(pg.types.builtins.NUMERIC, Number.parseFloat)
 
 const dbConfig = defineConfig({
   connection: 'postgres',

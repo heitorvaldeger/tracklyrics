@@ -1,14 +1,14 @@
+import { faker } from '@faker-js/faker'
 import UserLucid from '#models/user-model/user-lucid'
-import { randomUUID } from 'node:crypto'
 
 export const mockFakeUser = async (email?: string, username?: string) => {
   const genrer = await UserLucid.create({
-    email: email ?? 'any_email',
-    username: username ?? 'any_username',
-    password: 'any_password',
-    firstName: 'any_firstName',
-    lastName: 'any_lastName',
-    uuid: randomUUID(),
+    email: email ?? faker.internet.email(),
+    username: username ?? faker.internet.username(),
+    password: faker.internet.password(),
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    uuid: faker.string.uuid(),
   })
 
   return genrer
