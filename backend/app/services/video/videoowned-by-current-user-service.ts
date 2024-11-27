@@ -1,10 +1,10 @@
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
 import { inject } from '@adonisjs/core'
 import { IAuthService } from '#services/interfaces/IAuthService'
-import { IVideoOwnedByCurrentUser } from '#services/video/interfaces/IVideoOwnedByCurrentUser'
+import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
 
 @inject()
-export class VideoOwnedByCurrentUserService implements IVideoOwnedByCurrentUser {
+export class VideoOwnedByCurrentUserService implements IVideoCurrentUserService {
   constructor(
     private readonly videoRepository: IVideoRepository,
     private readonly authService: IAuthService

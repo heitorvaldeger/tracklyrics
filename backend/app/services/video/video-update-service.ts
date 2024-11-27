@@ -6,21 +6,21 @@ import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { IAuthService } from '#services/interfaces/IAuthService'
 import { IVideoUpdateService } from '#services/video/interfaces/IVideoUpdateService'
 import { VideoRequestParams } from '#params/video-params/video-request-params'
-import { IVideoOwnedByCurrentUser } from './interfaces/IVideoOwnedByCurrentUser.js'
+import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
 
 @inject()
 export class VideoUpdateService implements IVideoUpdateService {
   constructor(
     private readonly videoRepository: IVideoRepository,
     private readonly authService: IAuthService,
-    private readonly videoIsNotVideoOwnedByCurrentUser: IVideoOwnedByCurrentUser
+    private readonly videoCurrentUserService: IVideoCurrentUserService
   ) {}
 
   async update(payload: VideoRequestParams, uuid: string): Promise<IMethodResponse<boolean>> {
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {
       return createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
     }
-    if (await this.videoIsNotVideoOwnedByCurrentUser.isNotVideoOwnedByCurrentUser(uuid)) {
+    if (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(uuid)) {
       return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
     }
 

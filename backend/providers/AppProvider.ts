@@ -17,7 +17,7 @@ import { IVideoCreateService } from '#services/video/interfaces/IVideoCreateServ
 import { VideoCreateService } from '#services/video/video-create-service'
 import { IVideoUpdateService } from '#services/video/interfaces/IVideoUpdateService'
 import { VideoUpdateService } from '#services/video/video-update-service'
-import { IVideoOwnedByCurrentUser } from '#services/video/interfaces/IVideoOwnedByCurrentUser'
+import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
 import { VideoOwnedByCurrentUserService } from '#services/video/videoowned-by-current-user-service'
 
 export default class AppProvider {
@@ -42,7 +42,7 @@ export default class AppProvider {
       return this.app.container.make(VideoUpdateService)
     })
 
-    this.app.container.bind(IVideoOwnedByCurrentUser, async () => {
+    this.app.container.bind(IVideoCurrentUserService, async () => {
       return this.app.container.make(VideoOwnedByCurrentUserService)
     })
 

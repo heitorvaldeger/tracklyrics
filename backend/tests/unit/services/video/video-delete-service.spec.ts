@@ -3,17 +3,17 @@ import { createSuccessResponse, createFailureResponse } from '#helpers/method-re
 import { VideoDeleteService } from '#services/video/video-delete-service'
 import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
-import { mockVideoOwnedCurrentUserServiceStub } from '#tests/factories/stubs/video/mock-video-owned-current-user-service-stub'
+import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/video/mock-video-current-user-service-stub'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const videoOwnedCurrentUserServiceStub = mockVideoOwnedCurrentUserServiceStub()
-  const sut = new VideoDeleteService(videoRepositoryStub, videoOwnedCurrentUserServiceStub)
+  const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
+  const sut = new VideoDeleteService(videoRepositoryStub, videoCurrentUserServiceStub)
 
-  return { sut, videoRepositoryStub, videoOwnedCurrentUserServiceStub }
+  return { sut, videoRepositoryStub, videoCurrentUserServiceStub }
 }
 
 test.group('Video Delete Service', (group) => {
@@ -30,20 +30,16 @@ test.group('Video Delete Service', (group) => {
   })
 
   test('should return an error if video not exists', async ({ expect }) => {
-    const { sut, videoOwnedCurrentUserServiceStub } = makeSut()
-    stub(videoOwnedCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(
-      Promise.resolve(true)
-    )
+    const { sut, videoCurrentUserServiceStub } = makeSut()
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
     const response = await sut.delete(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
   })
 
   test('should return an error if video not belong from user', async ({ expect }) => {
-    const { sut, videoOwnedCurrentUserServiceStub } = makeSut()
-    stub(videoOwnedCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(
-      Promise.resolve(true)
-    )
+    const { sut, videoCurrentUserServiceStub } = makeSut()
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
     const response = await sut.delete(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))

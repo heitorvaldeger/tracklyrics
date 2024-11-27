@@ -1,3 +1,3 @@
-export abstract class IVideoOwnedByCurrentUser {
+export abstract class IVideoCurrentUserService {
   abstract isNotVideoOwnedByCurrentUser(videoUuid: string): Promise<boolean>
 }
