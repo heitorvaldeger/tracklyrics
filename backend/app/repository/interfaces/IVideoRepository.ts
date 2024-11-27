@@ -12,6 +12,4 @@ export abstract class IVideoRepository {
   abstract create(payload: VideoSaveParams): Promise<VideoSaveResultModel>
   abstract update(payload: Partial<VideoSaveParams>, uuid: string): Promise<boolean>
   abstract hasYoutubeLink(link: string): Promise<boolean>
-  abstract addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean>
-  abstract removeFavorite(videoId: number, userId: number): Promise<boolean>
 }

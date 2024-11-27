@@ -172,26 +172,6 @@ test.group('VideoPostgresRepository', (group) => {
     expect(newVideo).toEqual(fakePayload)
   })
 
-  test('should return true if video added to favorite on success', async ({ expect }) => {
-    const { sut, fakeFullVideo } = await makeSut()
-
-    const added = await sut.addFavorite(fakeFullVideo.id, fakeFullVideo.userId, faker.string.uuid())
-    expect(added).toBeTruthy()
-  })
-
-  test('should return true if video removed to favorite on success', async ({ expect }) => {
-    const { sut, fakeFullVideo } = await makeSut()
-
-    await Favorite.create({
-      videoId: fakeFullVideo.id,
-      userId: fakeFullVideo.userId,
-      uuid: faker.string.uuid(),
-    })
-
-    const response = await sut.removeFavorite(fakeFullVideo.id, fakeFullVideo.userId)
-    expect(response).toBeTruthy()
-  })
-
   test('should throws an error on create', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {

@@ -11,10 +11,12 @@ import { IAuthService } from './interfaces/IAuthService.js'
 import { VideoFindModel } from '#models/video-model/video-find-model'
 import { ApplicationError } from '#helpers/types/ApplicationError'
 import _ from 'lodash'
+import { IFavoriteRepository } from '#repository/interfaces/IFavoriteRepository'
 
 @inject()
 export class VideoService implements IVideoService {
   constructor(
+    private readonly favoriteRepository: IFavoriteRepository,
     private readonly videoRepository: IVideoRepository,
     private readonly authService: IAuthService
   ) {}
@@ -31,15 +33,6 @@ export class VideoService implements IVideoService {
   async findBy(filters: Partial<VideoFindParams>): Promise<IMethodResponse<VideoFindModel[]>> {
     const videos = await this.videoRepository.findBy(filters)
     return createSuccessResponse(videos)
-  }
-
-  async delete(uuid: string): Promise<IMethodResponse<boolean>> {
-    if (await this.isNotVideoOwnedByCurrentUser(uuid)) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
-    }
-
-    const isSuccess = await this.videoRepository.delete(uuid)
-    return createSuccessResponse(isSuccess)
   }
 
   async create(payload: VideoRequestParams): Promise<IMethodResponse<any>> {
@@ -93,7 +86,7 @@ export class VideoService implements IVideoService {
     }
 
     const favoriteUuid = randomUUID()
-    const added = await this.videoRepository.addFavorite(videoId, userId, favoriteUuid)
+    const added = await this.favoriteRepository.addFavorite(videoId, userId, favoriteUuid)
 
     if (!added) {
       return createFailureResponse(APPLICATION_ERRORS.VIDEO_UNPOSSIBLE_ADD_TO_FAVORITE)
@@ -112,7 +105,7 @@ export class VideoService implements IVideoService {
       return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
     }
 
-    const removed = await this.videoRepository.removeFavorite(videoId, userId)
+    const removed = await this.favoriteRepository.removeFavorite(videoId, userId)
     if (!removed) {
       return createFailureResponse(APPLICATION_ERRORS.VIDEO_UNPOSSIBLE_REMOVE_TO_FAVORITE)
     }

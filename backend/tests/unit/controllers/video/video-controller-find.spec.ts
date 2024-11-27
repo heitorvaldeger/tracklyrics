@@ -10,6 +10,7 @@ import { NilUUID } from '#tests/utils/NilUUID'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockFakeVideoModel } from '#tests/factories/fakes/index'
 import { faker } from '@faker-js/faker'
+import { mockVideoDeleteServiceStub } from '#tests/factories/stubs/video/mock-video-delete-service-stub'
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(
@@ -19,7 +20,8 @@ const makeSut = async () => {
     }
   )
   const videoServiceStub = mockVideoServiceStub()
-  const sut = new VideoController(videoServiceStub)
+  const videoDeleteServiceStub = mockVideoDeleteServiceStub()
+  const sut = new VideoController(videoServiceStub, videoDeleteServiceStub)
 
   return { sut, httpContext, videoServiceStub }
 }

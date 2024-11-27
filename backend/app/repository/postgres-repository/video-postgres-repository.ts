@@ -1,7 +1,6 @@
 import db from '@adonisjs/lucid/services/db'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
 import { VideoFindParams } from '../../params/video-params/video-find-params.js'
-import Favorite from '#models/lucid-orm/favorite'
 import { VideoFindModel } from '#models/video-model/video-find-model'
 import { VideoSaveParams } from '../../params/video-params/video-save-params.js'
 import { toSnakeCase } from '#helpers/to-snake-case'
@@ -9,7 +8,6 @@ import { toCamelCase } from '#helpers/to-camel-case'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { DatabaseQueryBuilderContract } from '@adonisjs/lucid/types/querybuilder'
 import VideoLucid from '#models/video-model/video-lucid'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
 
 export class VideoPostgresRepository implements IVideoRepository {
   async find(uuid: string): Promise<VideoFindModel | null> {
@@ -100,20 +98,6 @@ export class VideoPostgresRepository implements IVideoRepository {
   async update(payload: Partial<VideoSaveParams>, uuid: string): Promise<boolean> {
     await db.from('videos').where('uuid', uuid).update(toSnakeCase(payload))
     return !!(await db.from('videos').where('uuid', uuid).first())
-  }
-
-  async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
-    const favoriteAdded = await Favorite.create({
-      videoId,
-      userId,
-      uuid: favoriteUuid,
-    })
-    return favoriteAdded.$isPersisted
-  }
-
-  async removeFavorite(videoId: number, userId: number): Promise<boolean> {
-    await Favorite.query().where('videoId', videoId).where('userId', userId).delete()
-    return !(await Favorite.query().where('videoId', videoId).where('userId', userId).first())
   }
 
   private mapperVideoList(videos: VideoFindModel[]) {

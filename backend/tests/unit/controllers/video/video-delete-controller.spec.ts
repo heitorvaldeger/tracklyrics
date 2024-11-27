@@ -1,14 +1,13 @@
-import { HttpContextFactory } from '@adonisjs/core/factories/http'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
-import VideoController from '#controllers/video-controller'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { mockVideoServiceStub } from '#tests/factories/stubs/mock-video-service-stub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { faker } from '@faker-js/faker'
+import { mockVideoDeleteServiceStub } from '#tests/factories/stubs/video/mock-video-delete-service-stub'
+import VideoDeleteController from '#controllers/video/video-delete-controller'
 
 const makeSut = () => {
   const httpContext = makeHttpRequest(
@@ -17,13 +16,13 @@ const makeSut = () => {
       uuid: faker.string.uuid(),
     }
   )
-  const videoServiceStub = mockVideoServiceStub()
-  const sut = new VideoController(videoServiceStub)
+  const videoDeleteServiceStub = mockVideoDeleteServiceStub()
+  const sut = new VideoDeleteController(videoDeleteServiceStub)
 
-  return { sut, httpContext, videoServiceStub }
+  return { sut, httpContext, videoDeleteServiceStub }
 }
 
-test.group('VideoController.delete()', (group) => {
+test.group('Video Delete Controller', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
@@ -38,8 +37,8 @@ test.group('VideoController.delete()', (group) => {
   })
 
   test('should returns 404 if a video not found', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = makeSut()
-    stub(videoServiceStub, 'delete').returns(
+    const { sut, httpContext, videoDeleteServiceStub } = makeSut()
+    stub(videoDeleteServiceStub, 'delete').returns(
       new Promise((resolve) => resolve(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)))
     )
     stub(httpContext.request, 'params').returns({
@@ -70,9 +69,9 @@ test.group('VideoController.delete()', (group) => {
   })
 
   test('should returns 500 if video delete throws', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = makeSut()
+    const { sut, httpContext, videoDeleteServiceStub } = makeSut()
 
-    stub(videoServiceStub, 'delete').throws(new Error())
+    stub(videoDeleteServiceStub, 'delete').throws(new Error())
 
     const httpResponse = await sut.delete(httpContext)
 

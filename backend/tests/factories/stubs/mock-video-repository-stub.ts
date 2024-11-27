@@ -1,18 +1,12 @@
-import { VideoFindParams } from '../../../app/params/video-params/video-find-params.js'
+import { VideoFindParams } from '#params/video-params/video-find-params'
 import { VideoFindModel } from '#models/video-model/video-find-model'
-import { VideoSaveParams } from '../../../app/params/video-params/video-save-params.js'
+import { VideoSaveParams } from '#params/video-params/video-save-params'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
 import { mockFakeVideoModel, mockFakeVideoSaveResultModel } from '#tests/factories/fakes/index'
 
 export const mockVideoRepositoryStub = () => {
   class VideoRepositoryStub implements IVideoRepository {
-    addFavorite(videoId: number, userId: number): Promise<boolean> {
-      return new Promise((resolve) => resolve(true))
-    }
-    removeFavorite(videoId: number, userId: number): Promise<boolean> {
-      return new Promise((resolve) => resolve(true))
-    }
     find(_uuid: string): Promise<VideoFindModel | null> {
       return new Promise((resolve) => resolve(mockFakeVideoModel()))
     }

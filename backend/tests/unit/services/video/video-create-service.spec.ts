@@ -1,22 +1,22 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { createSuccessResponse, createFailureResponse } from '#helpers/method-response'
-import { VideoService } from '#services/video-service'
+import { VideoCreateService } from '#services/video/video-create-service'
 import { mockFakeVideoSaveResultModel } from '#tests/factories/fakes/index'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
 import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
 import { test } from '@japa/runner'
-import Sinon, { stub, spy } from 'sinon'
+import { stub, spy } from 'sinon'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
   const authServiceStub = mockAuthServiceStub()
-  const sut = new VideoService(videoRepositoryStub, authServiceStub)
+  const sut = new VideoCreateService(videoRepositoryStub, authServiceStub)
 
   return { sut, videoRepositoryStub, authServiceStub }
 }
 
-test.group('VideoService.create()', () => {
+test.group('Video Create Service', () => {
   test('should return success if a video created on success', async ({ expect }) => {
     const { sut } = makeSut()
     const videoResponse = await sut.create(mockVideoRequest())

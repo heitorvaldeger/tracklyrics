@@ -1,34 +1,40 @@
-import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import VideoController from '#controllers/video-controller'
-import { badRequest, noContent, serverError, unprocessable } from '#helpers/http'
+import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockVideoServiceStub } from '#tests/factories/stubs/mock-video-service-stub'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { randomUUID } from 'node:crypto'
+import { NilUUID } from '#tests/utils/NilUUID'
 import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
+import { mockVideoDeleteServiceStub } from '#tests/factories/stubs/video/mock-video-delete-service-stub'
+import { mockVideoUpdateServiceStub } from '#tests/factories/stubs/video/mock-video-update-service-stub'
+import VideoUpdateController from '#controllers/video/video-update-controller'
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(mockVideoRequest())
+  const httpContext = makeHttpRequest(mockVideoRequest(), {
+    uuid: randomUUID(),
+  })
 
-  const videoServiceStub = mockVideoServiceStub()
-  const sut = new VideoController(videoServiceStub)
+  const videoUpdateServiceStub = mockVideoUpdateServiceStub()
+  const sut = new VideoUpdateController(videoUpdateServiceStub)
 
-  return { sut, httpContext, videoServiceStub }
+  return { sut, httpContext, videoUpdateServiceStub }
 }
 
-test.group('VideoController.create()', (group) => {
+test.group('Video Update Controller', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
   })
 
-  test('should returns 400 if isDraft is not a boolean', async ({ expect }) => {
+  test('should returns 400 if isDraft is not boolean', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
-    stub(httpContext.request.body(), 'isDraft').value('any_value')
 
-    const httpResponse = await sut.create(httpContext)
+    stub(httpContext.request.body(), 'isDraft').value('any_value')
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -45,7 +51,7 @@ test.group('VideoController.create()', (group) => {
     stub(httpContext.request, 'body').returns({
       isDraft: false,
     })
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -81,7 +87,7 @@ test.group('VideoController.create()', (group) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'releaseYear').value('00000')
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -97,7 +103,7 @@ test.group('VideoController.create()', (group) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'releaseYear').value('abcd')
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -118,7 +124,7 @@ test.group('VideoController.create()', (group) => {
       artist: 'ab',
     })
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -134,7 +140,7 @@ test.group('VideoController.create()', (group) => {
     )
   })
 
-  test('should returns 400 if string fields is empty', async ({ expect }) => {
+  test('should returns 400 if fields are empty', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
     stub(httpContext.request, 'body').returns({
@@ -144,7 +150,7 @@ test.group('VideoController.create()', (group) => {
       releaseYear: '',
     })
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -164,11 +170,11 @@ test.group('VideoController.create()', (group) => {
     )
   })
 
-  test('should returns 400 if linkYoutube is not valid link', async ({ expect }) => {
+  test('should returns 400 if linkYoutube is not link valid', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'linkYoutube').value('any_link')
 
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -180,35 +186,53 @@ test.group('VideoController.create()', (group) => {
     )
   })
 
-  test('should returns 200 if video created on success', async ({ expect }) => {
+  test('should returns 400 if invalid uuid is provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
-    const httpResponse = await sut.create(httpContext)
 
-    expect(httpResponse).toEqual(noContent())
-  })
+    stub(httpContext.request, 'params').returns({
+      uuid: 'invalid_uuid',
+    })
 
-  test('should returns 500 if video create throws', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = await makeSut()
-
-    stub(videoServiceStub, 'create').throws(new Error())
-
-    const httpResponse = await sut.create(httpContext)
-
-    expect(httpResponse).toEqual(serverError(new Error()))
-  })
-
-  test('should returns 422 if link youtube already exists', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = await makeSut()
-    stub(videoServiceStub, 'create').returns(
-      new Promise((resolve) =>
-        resolve(createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
-      )
-    )
-
-    const httpResponse = await sut.create(httpContext)
+    const httpResponse = await sut.update(httpContext)
 
     expect(httpResponse).toEqual(
-      unprocessable(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS.message)
+      badRequest([
+        {
+          field: 'uuid',
+          message: 'The uuid field must be a valid UUID',
+        },
+      ])
     )
+  })
+
+  test('should returns 404 if a video return not found', async ({ expect }) => {
+    const { sut, httpContext, videoUpdateServiceStub } = await makeSut()
+    stub(videoUpdateServiceStub, 'update').returns(
+      new Promise((resolve) => resolve(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)))
+    )
+    stub(httpContext.request, 'params').returns({
+      uuid: NilUUID,
+    })
+
+    const httpResponse = await sut.update(httpContext)
+
+    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND.message))
+  })
+
+  test('should returns 200 if video updated on success', async ({ expect }) => {
+    const { sut, httpContext } = await makeSut()
+
+    const httpResponse = await sut.update(httpContext)
+    expect(httpResponse).toEqual(ok(true))
+  })
+
+  test('should returns 500 if video update throws', async ({ expect }) => {
+    const { sut, httpContext, videoUpdateServiceStub } = await makeSut()
+
+    stub(videoUpdateServiceStub, 'update').throws(new Error())
+
+    const httpResponse = await sut.update(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

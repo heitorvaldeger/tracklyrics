@@ -9,6 +9,7 @@ import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
 import { faker } from '@faker-js/faker'
+import { mockVideoDeleteServiceStub } from '#tests/factories/stubs/video/mock-video-delete-service-stub'
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(mockVideoRequest(), {
@@ -16,7 +17,8 @@ const makeSut = async () => {
   })
 
   const videoServiceStub = mockVideoServiceStub()
-  const sut = new VideoController(videoServiceStub)
+  const videoDeleteServiceStub = mockVideoDeleteServiceStub()
+  const sut = new VideoController(videoServiceStub, videoDeleteServiceStub)
 
   return { sut, httpContext, videoServiceStub }
 }

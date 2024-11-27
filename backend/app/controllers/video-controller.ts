@@ -9,10 +9,14 @@ import {
 import { IVideoService } from '#services/interfaces/IVideoService'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
+import { IVideoDeleteService } from '#services/video/interfaces/IVideoDeleteService'
 
 @inject()
 export default class VideoController {
-  constructor(private videoService: IVideoService) {}
+  constructor(
+    private videoService: IVideoService,
+    private readonly videoDeleteService: IVideoDeleteService
+  ) {}
 
   async find({ request }: HttpContext) {
     try {
@@ -34,50 +38,6 @@ export default class VideoController {
       const response = await this.videoService.findBy(queryParams)
 
       return dispatch(response)
-    } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
-      return serverError(error)
-    }
-  }
-
-  async create({ request }: HttpContext) {
-    try {
-      const payload = await createOrUpdateVideoValidator.validate(request.body())
-      const response = await this.videoService.create(payload)
-      return dispatch(response)
-    } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
-
-      return serverError(error as Error)
-    }
-  }
-
-  async update({ request }: HttpContext) {
-    try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
-      const payload = await createOrUpdateVideoValidator.validate(request.body())
-
-      const response = await this.videoService.update(payload, uuid)
-      return dispatch(response)
-    } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
-
-      return serverError(error as Error)
-    }
-  }
-
-  async delete({ request }: HttpContext) {
-    try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
-
-      const deleted = await this.videoService.delete(uuid)
-      return dispatch(deleted)
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return badRequest(error.messages)

@@ -8,11 +8,13 @@ import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-st
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
 import { mockFakeVideoModel } from '#tests/factories/fakes/index'
 import { faker } from '@faker-js/faker'
+import { mockFavoriteRepositoryStub } from '#tests/factories/stubs/mock-favorite-repository-stub'
 
 const makeSut = () => {
+  const favoriteRepositoryStub = mockFavoriteRepositoryStub()
   const videoRepositoryStub = mockVideoRepositoryStub()
   const authServiceStub = mockAuthServiceStub()
-  const sut = new VideoService(videoRepositoryStub, authServiceStub)
+  const sut = new VideoService(favoriteRepositoryStub, videoRepositoryStub, authServiceStub)
 
   return { sut, videoRepositoryStub, authServiceStub }
 }
