@@ -30,6 +30,5 @@ export const findByVideoValidator = vine.compile(
     genreId: vine.number().positive().optional(),
     languageId: vine.number().positive().optional(),
     userUuid: vine.string().uuid().optional(),
-    videoUuid: vine.string().uuid().optional(),
   })
 )

@@ -46,15 +46,6 @@ test.group('Video Find Route', (group) => {
     ])
   })
 
-  test('/GET videos/{uuid} - should return 404 if video uuid is not provided', async ({
-    client,
-    expect,
-  }) => {
-    const response = await client.get(`/videos`)
-
-    expect(response.status()).toBe(404)
-  })
-
   test('/GET videos/{uuid} - should return 404 if video uuid not exists', async ({
     client,
     expect,

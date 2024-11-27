@@ -31,7 +31,6 @@ test.group('VideoController.findBy()', () => {
       genreId: 0,
       languageId: 0,
       userUuid: NilUUID,
-      videoUuid: NilUUID,
     })
 
     await sut.findBy(httpContext)
@@ -40,7 +39,6 @@ test.group('VideoController.findBy()', () => {
         genreId: 0,
         languageId: 0,
         userUuid: NilUUID,
-        videoUuid: NilUUID,
       })
     ).toBeTruthy()
   })
@@ -51,7 +49,6 @@ test.group('VideoController.findBy()', () => {
       genreId: 'any_id',
       languageId: 'any_id',
       userUuid: 'any_uuid',
-      videoUuid: 'any_uuid',
     })
 
     const httpResponse = await sut.findBy(httpContext)
@@ -68,10 +65,6 @@ test.group('VideoController.findBy()', () => {
         {
           field: 'userUuid',
           message: 'The userUuid field must be a valid UUID',
-        },
-        {
-          field: 'videoUuid',
-          message: 'The videoUuid field must be a valid UUID',
         },
       ])
     )
