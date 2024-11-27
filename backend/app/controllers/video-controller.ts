@@ -45,30 +45,4 @@ export default class VideoController {
       return serverError(error)
     }
   }
-
-  async addFavorite({ request }: HttpContext) {
-    try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
-      const added = await this.videoService.addFavorite(uuid)
-      return dispatch(added)
-    } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
-      return serverError(error)
-    }
-  }
-
-  async removeFavorite({ request }: HttpContext) {
-    try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
-      const result = await this.videoService.removeFavorite(uuid)
-      return dispatch(result)
-    } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
-      return serverError(error)
-    }
-  }
 }

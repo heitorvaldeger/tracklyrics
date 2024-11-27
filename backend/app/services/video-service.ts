@@ -74,45 +74,6 @@ export class VideoService implements IVideoService {
     return createSuccessResponse(isSuccess)
   }
 
-  async addFavorite(videoUuid: string): Promise<IMethodResponse<ApplicationError | boolean>> {
-    const videoId = await this.videoRepository.getVideoId(videoUuid)
-    const userId = this.authService.getUserId()
-    if (
-      (await this.isNotVideoOwnedByCurrentUser(videoUuid)) ||
-      _.isNull(videoId) ||
-      _.isNull(userId)
-    ) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
-    }
-
-    const favoriteUuid = randomUUID()
-    const added = await this.favoriteRepository.addFavorite(videoId, userId, favoriteUuid)
-
-    if (!added) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_UNPOSSIBLE_ADD_TO_FAVORITE)
-    }
-    return createSuccessResponse(added)
-  }
-
-  async removeFavorite(videoUuid: string): Promise<IMethodResponse<boolean>> {
-    const videoId = await this.videoRepository.getVideoId(videoUuid)
-    const userId = this.authService.getUserId()
-    if (
-      (await this.isNotVideoOwnedByCurrentUser(videoUuid)) ||
-      _.isNull(videoId) ||
-      _.isNull(userId)
-    ) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
-    }
-
-    const removed = await this.favoriteRepository.removeFavorite(videoId, userId)
-    if (!removed) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_UNPOSSIBLE_REMOVE_TO_FAVORITE)
-    }
-
-    return createSuccessResponse(removed)
-  }
-
   private async isNotVideoOwnedByCurrentUser(videoUuid: string): Promise<boolean> {
     const userId = this.authService.getUserId()
     const userIdFromVideo = await this.videoRepository.getUserId(videoUuid)

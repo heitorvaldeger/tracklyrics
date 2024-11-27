@@ -4,7 +4,7 @@ import { IAuthService } from '#services/interfaces/IAuthService'
 import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
 
 @inject()
-export class VideoOwnedByCurrentUserService implements IVideoCurrentUserService {
+export class VideoCurrentUserService implements IVideoCurrentUserService {
   constructor(
     private readonly videoRepository: IVideoRepository,
     private readonly authService: IAuthService

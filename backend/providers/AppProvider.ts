@@ -18,7 +18,9 @@ import { VideoCreateService } from '#services/video/video-create-service'
 import { IVideoUpdateService } from '#services/video/interfaces/IVideoUpdateService'
 import { VideoUpdateService } from '#services/video/video-update-service'
 import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
-import { VideoOwnedByCurrentUserService } from '#services/video/videoowned-by-current-user-service'
+import { VideoCurrentUserService } from '#services/video/video-current-user-service'
+import { IVideoFavoriteService } from '#services/video/interfaces/IVideoFavoriteService'
+import { VideoFavoriteService } from '#services/video/video-favorite-service'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -43,7 +45,11 @@ export default class AppProvider {
     })
 
     this.app.container.bind(IVideoCurrentUserService, async () => {
-      return this.app.container.make(VideoOwnedByCurrentUserService)
+      return this.app.container.make(VideoCurrentUserService)
+    })
+
+    this.app.container.bind(IVideoFavoriteService, async () => {
+      return this.app.container.make(VideoFavoriteService)
     })
 
     this.app.container.bind(IVideoRepository, async () => {

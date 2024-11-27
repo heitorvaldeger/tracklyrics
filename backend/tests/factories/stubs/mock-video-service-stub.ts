@@ -21,18 +21,6 @@ export const mockVideoServiceStub = () => {
       )
     }
 
-    delete(_uuid: string): Promise<IMethodResponse<boolean>> {
-      return new Promise((resolve) => resolve(createSuccessResponse(true)))
-    }
-
-    create(_payload: VideoRequestParams): Promise<IMethodResponse<any>> {
-      return new Promise((resolve) => resolve(createSuccessResponse()))
-    }
-
-    update(_payload: VideoRequestParams, _uuid: string): Promise<IMethodResponse<boolean>> {
-      return new Promise((resolve) => resolve(createSuccessResponse(true)))
-    }
-
     addFavorite(_videoUuid: string): Promise<IMethodResponse<boolean>> {
       return new Promise((resolve) => resolve(createSuccessResponse(true)))
     }
