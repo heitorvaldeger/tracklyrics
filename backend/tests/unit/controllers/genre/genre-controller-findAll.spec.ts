@@ -1,25 +1,17 @@
 import GenreController from '#controllers/genre-controller'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
-import { GenreFindModel } from '#models/genre-model/genre-find-model'
-import { IGenreService } from '#services/interfaces/IGenreService'
+import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
 
-export const mockGenreServiceStub = () => {
-  class GenreServiceStub implements IGenreService {
-    async findAll(): Promise<GenreFindModel[]> {
-      return new Promise((resolve) =>
-        resolve([
-          {
-            id: 0,
-            name: 'any_name',
-          },
-        ])
-      )
-    }
-  }
-
-  return new GenreServiceStub()
-}
+const mockGenreServiceStub = (): GenreProtocolService => ({
+  findAll: () =>
+    Promise.resolve([
+      {
+        id: 0,
+        name: 'any_name',
+      },
+    ]),
+})
 
 const makeSut = () => {
   const genreServiceStub = mockGenreServiceStub()

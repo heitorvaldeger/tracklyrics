@@ -10,13 +10,13 @@ import { FavoritePostgresRepository } from '#repository/postgres-repository/favo
 
 export const makeFake = async () => {
   const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
-
-  const fakeFullVideo = Object.assign({}, fakeVideo.serialize() as Video, {
+  const fakeFullVideo = {
+    ...(fakeVideo.serialize() as Video),
     genre: fakeGenre.name,
     language: fakeLanguage.name,
     username: fakeUser.username,
     id: fakeVideo.id,
-  })
+  }
 
   return {
     fakeGenre,

@@ -1,25 +1,17 @@
 import LanguageController from '#controllers/language-controller'
 import { test } from '@japa/runner'
 import { ok } from '#helpers/http'
-import { LanguageFindModel } from '#models/language-model/language-find-model'
-import { ILanguageService } from '#services/interfaces/ILanguageService'
+import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
 
-const mockLanguageServiceStub = () => {
-  class LanguageServiceStub implements ILanguageService {
-    async findAll(): Promise<LanguageFindModel[]> {
-      return new Promise((resolve) =>
-        resolve([
-          {
-            id: 0,
-            name: 'any_name',
-          },
-        ])
-      )
-    }
-  }
-
-  return new LanguageServiceStub()
-}
+const mockLanguageServiceStub = (): LanguageProtocolService => ({
+  findAll: () =>
+    Promise.resolve([
+      {
+        id: 0,
+        name: 'any_name',
+      },
+    ]),
+})
 
 const makeSut = () => {
   const languageServiceStub = mockLanguageServiceStub()

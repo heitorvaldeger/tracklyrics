@@ -1,19 +1,13 @@
 import { test } from '@japa/runner'
-import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
-import { LanguageFindModel } from '#models/language-model/language-find-model'
+import { LanguageRepository } from '#repository/protocols/base-repository'
 import { LanguageService } from '#services/language-service'
 
-const mockLanguageEntityRepositoryStub = () => {
-  class LanguageRepositoryStub implements IFindAllRepository<LanguageFindModel> {
-    findAll(): Promise<LanguageFindModel[]> {
-      return new Promise((resolve) => resolve([]))
-    }
-  }
+const mockLanguageRepositoryStub = (): LanguageRepository => ({
+  findAll: () => Promise.resolve([]),
+})
 
-  return new LanguageRepositoryStub()
-}
 const makeSut = () => {
-  const fakeLanguageRepositoryStub = mockLanguageEntityRepositoryStub()
+  const fakeLanguageRepositoryStub = mockLanguageRepositoryStub()
   const sut = new LanguageService(fakeLanguageRepositoryStub)
 
   return { sut }

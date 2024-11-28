@@ -1,7 +1,7 @@
-import { UserRegisterRequest } from '#params/user-params/user-register-request'
+import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 import { faker } from '@faker-js/faker'
 
-export const mockUserRegisterRequest = (): UserRegisterRequest => ({
+export const mockUserRegisterRequest = (): RegisterProtocolService.Params => ({
   email: faker.internet.email(),
   username: faker.internet.username(),
   password: faker.internet.password(),

@@ -1,24 +1,23 @@
-import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
+import { VideoRepository } from '#repository/protocols/video-repository'
 import { inject } from '@adonisjs/core'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
-import { IAuthService } from '#services/interfaces/IAuthService'
-import { IVideoFavoriteService } from '#services/video/interfaces/IVideoFavoriteService'
-import { VideoRequestParams } from '#params/video-params/video-request-params'
+import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
+import { VideoFavoriteProtocolService } from '#services/video/protocols/video-favorite-protocol-service'
 import { randomUUID } from 'node:crypto'
 import _ from 'lodash'
-import { IFavoriteRepository } from '#repository/interfaces/IFavoriteRepository'
+import { FavoriteRepository } from '#repository/protocols/favorite-repository'
 import { ApplicationError } from '#helpers/types/ApplicationError'
-import { IVideoCurrentUserService } from './interfaces/IVideoCurrentUserService.js'
+import { VideoCurrentUserProtocolService } from './protocols/video-currentuser-protocol-service.js'
 
 @inject()
-export class VideoFavoriteService implements IVideoFavoriteService {
+export class VideoFavoriteService implements VideoFavoriteProtocolService {
   constructor(
-    private readonly videoRepository: IVideoRepository,
-    private readonly favoriteRepository: IFavoriteRepository,
-    private readonly authService: IAuthService,
-    private readonly videoCurrentUserService: IVideoCurrentUserService
+    private readonly videoRepository: VideoRepository,
+    private readonly favoriteRepository: FavoriteRepository,
+    private readonly authService: AuthProtocolService,
+    private readonly videoCurrentUserService: VideoCurrentUserProtocolService
   ) {}
 
   async addFavorite(videoUuid: string): Promise<IMethodResponse<ApplicationError | boolean>> {

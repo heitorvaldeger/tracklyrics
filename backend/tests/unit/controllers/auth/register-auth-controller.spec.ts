@@ -5,7 +5,7 @@ import AuthController from '#controllers/auth-controller'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
+import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 
 const makeSut = () => {
@@ -110,9 +110,7 @@ test.group('AuthController.register', (group) => {
     )
     const httpResponse = await sut.register(httpContext)
 
-    expect(httpResponse).toEqual(
-      unprocessable(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING.message)
-    )
+    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
   })
 
   test('should return 200 if create user return success', async ({ expect }) => {

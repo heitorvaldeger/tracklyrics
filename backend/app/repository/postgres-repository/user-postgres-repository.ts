@@ -1,14 +1,12 @@
-import User from '#models/user-model/user-lucid'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import { UserCreateAccessTokenParams } from '#params/user-params/user-create-access-token-params'
-import { UserCreateParams } from '#params/user-params/user-create-params'
-import { UserEmailUsernameFindModel } from '#params/user-params/user-email-username-find-params'
-import { IUserRepository } from '#repository/interfaces/IUserRepository'
+import { UserRepository } from '#repository/protocols/user-repository'
 import UserLucid from '#models/user-model/user-lucid'
 import { UserModel } from '#models/user-model/user-model'
 
-export class UserPostgresRepository implements IUserRepository {
-  async getUserByEmailOrUsername(payload: UserEmailUsernameFindModel): Promise<UserModel | null> {
+export class UserPostgresRepository implements UserRepository {
+  async getUserByEmailOrUsername(
+    payload: UserRepository.FindUserByEmailUsernameParams
+  ): Promise<UserModel | null> {
     const user = await UserLucid.query()
       .whereLike('email', payload.email ?? '')
       .orWhere('username', payload.username ?? '')
@@ -27,7 +25,7 @@ export class UserPostgresRepository implements IUserRepository {
     }
   }
 
-  async create(user: UserCreateParams): Promise<UserModel> {
+  async create(user: UserRepository.CreateParams): Promise<UserModel> {
     const { uuid, username, email } = await UserLucid.create(user)
     return {
       uuid,
@@ -36,7 +34,9 @@ export class UserPostgresRepository implements IUserRepository {
     }
   }
 
-  async createAccessToken(payload: UserCreateAccessTokenParams): Promise<UserAccessTokenModel> {
+  async createAccessToken(
+    payload: UserRepository.CreateAccessTokenParams
+  ): Promise<UserAccessTokenModel> {
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', payload.uuid)
     )

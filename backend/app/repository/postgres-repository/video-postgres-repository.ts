@@ -1,15 +1,13 @@
 import db from '@adonisjs/lucid/services/db'
-import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
-import { VideoFindParams } from '../../params/video-params/video-find-params.js'
+import { VideoRepository } from '#repository/protocols/video-repository'
 import { VideoFindModel } from '#models/video-model/video-find-model'
-import { VideoSaveParams } from '../../params/video-params/video-save-params.js'
 import { toSnakeCase } from '#helpers/to-snake-case'
 import { toCamelCase } from '#helpers/to-camel-case'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { DatabaseQueryBuilderContract } from '@adonisjs/lucid/types/querybuilder'
 import VideoLucid from '#models/video-model/video-lucid'
 
-export class VideoPostgresRepository implements IVideoRepository {
+export class VideoPostgresRepository implements VideoRepository {
   async find(uuid: string): Promise<VideoFindModel | null> {
     const qb = db
       .from('videos')
@@ -23,7 +21,7 @@ export class VideoPostgresRepository implements IVideoRepository {
     return video ? toCamelCase(video) : null
   }
 
-  async findBy(filters: Partial<VideoFindParams>): Promise<VideoFindModel[]> {
+  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoFindModel[]> {
     const qb = db
       .from('videos')
       .innerJoin('users', 'users.id', 'user_id')
@@ -37,7 +35,7 @@ export class VideoPostgresRepository implements IVideoRepository {
           query.from('users').where('uuid', value).select('id')
         })
       } else {
-        if (this.getParamValidToFindBy().includes(key as keyof VideoFindParams)) {
+        if (this.getParamValidToFindBy().includes(key as keyof VideoRepository.FindVideoParams)) {
           qb.where(key, value)
         }
       }
@@ -67,7 +65,7 @@ export class VideoPostgresRepository implements IVideoRepository {
     return !(await VideoLucid.query().where('uuid', videoUuid).first())
   }
 
-  async create(payload: VideoSaveParams): Promise<VideoSaveResultModel> {
+  async create(payload: VideoRepository.CreateVideoParams): Promise<VideoSaveResultModel> {
     await db.from('videos').knexQuery.insert(toSnakeCase(payload))
     const newVideo = await db
       .from('videos')
@@ -95,7 +93,7 @@ export class VideoPostgresRepository implements IVideoRepository {
     return toCamelCase<VideoSaveResultModel>(newVideo)
   }
 
-  async update(payload: Partial<VideoSaveParams>, uuid: string): Promise<boolean> {
+  async update(payload: VideoRepository.UpdateVideoParams, uuid: string): Promise<boolean> {
     await db.from('videos').where('uuid', uuid).update(toSnakeCase(payload))
     return !!(await db.from('videos').where('uuid', uuid).first())
   }

@@ -4,11 +4,11 @@ import { badRequest, serverError } from '#helpers/http'
 import { createOrUpdateVideoValidator, uuidVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
-import { IVideoCreateService } from '#services/video/interfaces/IVideoCreateService'
+import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
 
 @inject()
 export default class VideoCreateController {
-  constructor(private readonly videoCreateService: IVideoCreateService) {}
+  constructor(private readonly videoCreateService: VideoCreateProtocolService) {}
 
   async create({ request }: HttpContext) {
     try {
@@ -16,11 +16,15 @@ export default class VideoCreateController {
       const response = await this.videoCreateService.create(payload)
       return dispatch(response)
     } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
+      return dispatch({
+        isSuccess: false,
+        error,
+      })
+      // if (error instanceof errors.E_VALIDATION_ERROR) {
+      //   return badRequest(error.messages)
+      // }
 
-      return serverError(error as Error)
+      // return serverError(error as Error)
     }
   }
 }

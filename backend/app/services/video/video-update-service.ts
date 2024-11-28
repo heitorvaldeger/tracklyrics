@@ -1,22 +1,24 @@
-import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
+import { VideoRepository } from '#repository/protocols/video-repository'
 import { inject } from '@adonisjs/core'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
-import { IAuthService } from '#services/interfaces/IAuthService'
-import { IVideoUpdateService } from '#services/video/interfaces/IVideoUpdateService'
-import { VideoRequestParams } from '#params/video-params/video-request-params'
-import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
+import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
+import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
+import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
 
 @inject()
-export class VideoUpdateService implements IVideoUpdateService {
+export class VideoUpdateService implements VideoUpdateProtocolService {
   constructor(
-    private readonly videoRepository: IVideoRepository,
-    private readonly authService: IAuthService,
-    private readonly videoCurrentUserService: IVideoCurrentUserService
+    private readonly videoRepository: VideoRepository,
+    private readonly authService: AuthProtocolService,
+    private readonly videoCurrentUserService: VideoCurrentUserProtocolService
   ) {}
 
-  async update(payload: VideoRequestParams, uuid: string): Promise<IMethodResponse<boolean>> {
+  async update(
+    payload: VideoUpdateProtocolService.Params,
+    uuid: string
+  ): Promise<IMethodResponse<boolean>> {
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {
       return createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
     }

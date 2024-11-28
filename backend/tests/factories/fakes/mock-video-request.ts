@@ -1,11 +1,12 @@
-import { VideoRequestParams } from '../../../app/params/video-params/video-request-params.js'
 import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
+import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
+import { faker } from '@faker-js/faker'
 
-export const mockVideoRequest = (): VideoRequestParams => ({
+export const mockVideoRequest = (): VideoCreateProtocolService.Params => ({
   isDraft: false,
-  title: 'any_title',
-  artist: 'any_artist',
-  releaseYear: '0000',
+  title: faker.lorem.words(2),
+  artist: faker.lorem.words(2),
+  releaseYear: faker.string.numeric({ length: 4 }),
   linkYoutube: makeYoutubeUrl(),
   languageId: 0,
   genreId: 0,

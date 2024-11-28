@@ -2,9 +2,9 @@ import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { createSuccessResponse, createFailureResponse } from '#helpers/method-response'
 import { VideoUpdateService } from '#services/video/video-update-service'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
-import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/video/mock-video-current-user-service-stub'
+import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
+import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
@@ -45,7 +45,7 @@ test.group('Video Update Service', (group) => {
 
   test('should returns a error if link youtube already exists on update', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
-    stub(videoRepositoryStub, 'hasYoutubeLink').returns(new Promise((resolve) => resolve(true)))
+    stub(videoRepositoryStub, 'hasYoutubeLink').resolves(true)
     const video = await sut.update(mockVideoRequest(), faker.string.uuid())
     expect(video).toEqual(createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
   })

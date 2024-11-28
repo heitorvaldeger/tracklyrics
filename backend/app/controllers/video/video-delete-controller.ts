@@ -6,14 +6,14 @@ import {
   findByVideoValidator,
   uuidVideoValidator,
 } from '#validators/video-validator'
-import { IVideoService } from '#services/interfaces/IVideoService'
+import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
-import { IVideoDeleteService } from '#services/video/interfaces/IVideoDeleteService'
+import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
 
 @inject()
 export default class VideoDeleteController {
-  constructor(private readonly videoDeleteService: IVideoDeleteService) {}
+  constructor(private readonly videoDeleteService: VideoDeleteProtocolService) {}
 
   async delete({ request }: HttpContext) {
     try {
@@ -22,10 +22,10 @@ export default class VideoDeleteController {
       const deleted = await this.videoDeleteService.delete(uuid)
       return dispatch(deleted)
     } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return badRequest(error.messages)
-      }
-      return serverError(error)
+      return dispatch({
+        isSuccess: false,
+        error,
+      })
     }
   }
 }

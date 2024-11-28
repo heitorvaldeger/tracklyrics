@@ -1,5 +1,3 @@
-import { BaseModel } from '@adonisjs/lucid/orm'
-
 export type VideoSaveResultModel = {
   title: string
   artist: string

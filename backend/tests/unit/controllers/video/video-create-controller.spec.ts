@@ -1,13 +1,19 @@
 import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
-import { badRequest, noContent, serverError, unprocessable } from '#helpers/http'
+import { badRequest, noContent, ok, serverError, unprocessable } from '#helpers/http'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { createFailureResponse } from '#helpers/method-response'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
-import { mockVideoCreateServiceStub } from '#tests/factories/stubs/video/mock-video-create-service-stub'
 import VideoCreateController from '#controllers/video/video-create-controller'
+import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
+
+const videoRequest = mockVideoRequest()
+export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({
+  create: (payload: VideoCreateProtocolService.Params) =>
+    Promise.resolve(createSuccessResponse(videoRequest)),
+})
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(mockVideoRequest())
@@ -18,7 +24,7 @@ const makeSut = async () => {
   return { sut, httpContext, videoCreateServiceStub }
 }
 
-test.group('VideoController.create()', (group) => {
+test.group('VideoCreateController', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
@@ -184,7 +190,7 @@ test.group('VideoController.create()', (group) => {
     const { sut, httpContext } = await makeSut()
     const httpResponse = await sut.create(httpContext)
 
-    expect(httpResponse).toEqual(noContent())
+    expect(httpResponse).toEqual(ok(videoRequest))
   })
 
   test('should returns 500 if video create throws', async ({ expect }) => {
@@ -199,16 +205,12 @@ test.group('VideoController.create()', (group) => {
 
   test('should returns 422 if link youtube already exists', async ({ expect }) => {
     const { sut, httpContext, videoCreateServiceStub } = await makeSut()
-    stub(videoCreateServiceStub, 'create').returns(
-      new Promise((resolve) =>
-        resolve(createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
-      )
+    stub(videoCreateServiceStub, 'create').resolves(
+      createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
     )
 
     const httpResponse = await sut.create(httpContext)
 
-    expect(httpResponse).toEqual(
-      unprocessable(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS.message)
-    )
+    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
   })
 })

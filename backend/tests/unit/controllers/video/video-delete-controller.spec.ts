@@ -1,13 +1,17 @@
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { createFailureResponse } from '#helpers/method-response'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { faker } from '@faker-js/faker'
-import { mockVideoDeleteServiceStub } from '#tests/factories/stubs/video/mock-video-delete-service-stub'
 import VideoDeleteController from '#controllers/video/video-delete-controller'
+import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
+
+export const mockVideoDeleteServiceStub = (): VideoDeleteProtocolService => ({
+  delete: (uuid: string) => Promise.resolve(createSuccessResponse(true)),
+})
 
 const makeSut = () => {
   const httpContext = makeHttpRequest(
@@ -28,7 +32,7 @@ test.group('Video Delete Controller', (group) => {
     sinon.restore()
   })
 
-  test('should returns 204 if video was delete on success', async ({ expect }) => {
+  test('should returns 200 if video was delete on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     const httpResponse = await sut.delete(httpContext)
@@ -38,8 +42,8 @@ test.group('Video Delete Controller', (group) => {
 
   test('should returns 404 if a video not found', async ({ expect }) => {
     const { sut, httpContext, videoDeleteServiceStub } = makeSut()
-    stub(videoDeleteServiceStub, 'delete').returns(
-      new Promise((resolve) => resolve(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)))
+    stub(videoDeleteServiceStub, 'delete').resolves(
+      createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
@@ -47,7 +51,7 @@ test.group('Video Delete Controller', (group) => {
 
     const httpResponse = await sut.delete(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND.message))
+    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
   })
 
   test('should returns 400 if a invalid uuid is provided', async ({ expect }) => {

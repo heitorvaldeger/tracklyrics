@@ -1,19 +1,13 @@
 import { test } from '@japa/runner'
-import { IFindAllRepository } from '#repository/interfaces/IFindAllRepository'
-import { GenreFindModel } from '#models/genre-model/genre-find-model'
+import { GenreRepository } from '#repository/protocols/base-repository'
 import { GenreService } from '#services/genre-service'
 
-const mockGenreEntityRepositoryStub = () => {
-  class GenreRepositoryStub implements IFindAllRepository<GenreFindModel> {
-    findAll(): Promise<GenreFindModel[]> {
-      return new Promise((resolve) => resolve([]))
-    }
-  }
+const mockGenreRepositoryStub = (): GenreRepository => ({
+  findAll: () => Promise.resolve([]),
+})
 
-  return new GenreRepositoryStub()
-}
 const makeSut = () => {
-  const fakeGenreRepositoryStub = mockGenreEntityRepositoryStub()
+  const fakeGenreRepositoryStub = mockGenreRepositoryStub()
   const sut = new GenreService(fakeGenreRepositoryStub)
 
   return { sut }

@@ -1,64 +1,59 @@
 import { test } from '@japa/runner'
-import { AuthService } from '#services/auth-service'
-import { Authenticator } from '@adonisjs/auth'
-import sinon, { stub } from 'sinon'
-import { IUserRepository } from '#repository/interfaces/IUserRepository'
-import UserLucid from '#models/user-model/user-lucid'
-import { UserCreateParams } from '#params/user-params/user-create-params'
-import { UserModel } from '#models/user-model/user-model'
-import { UserCreateAccessTokenParams } from '#params/user-params/user-create-access-token-params'
-import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import { UserRegisterRequest } from '#params/user-params/user-register-request'
+import { AuthService } from '#services/auth/auth-service'
+import sinon, { SinonStub, stub } from 'sinon'
+import { UserRepository } from '#repository/protocols/user-repository'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
+import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
 
-export const mockVideoRepositoryStub = () => {
-  class UserRepositoryStub implements IUserRepository {
-    getUserByEmailOrUsername(payload: any): Promise<UserModel | null> {
-      return Promise.resolve(null)
-    }
-    create(user: UserCreateParams): Promise<UserModel> {
-      return Promise.resolve({
+export const mockUserRepositoryStub = () => {
+  const userRepositoryStub: UserRepository = {
+    getUserByEmailOrUsername: (payload: UserRepository.FindUserByEmailUsernameParams) =>
+      Promise.resolve(null),
+    create: (user: UserRepository.CreateParams) =>
+      Promise.resolve({
         uuid: 'any_uuid',
         username: 'any_username',
         email: 'any_email',
-      })
-    }
-    createAccessToken(payload: UserCreateAccessTokenParams): Promise<UserAccessTokenModel> {
-      return Promise.resolve({
+      }),
+    createAccessToken: (payload: UserRepository.CreateAccessTokenParams) =>
+      Promise.resolve({
         type: 'any_type',
         token: 'any_token',
-      })
-    }
+      }),
   }
 
-  return new UserRepositoryStub()
+  return userRepositoryStub
 }
 
 const makeSut = () => {
-  const userRepositoryStub = mockVideoRepositoryStub()
-  const sut = new AuthService(userRepositoryStub)
+  const authStrategyStub = sinon.createStubInstance(AuthAdonisStrategy)
+  authStrategyStub.getUserId.returns(1)
 
-  return { sut, userRepositoryStub }
+  const userRepositoryStub = mockUserRepositoryStub()
+  const sut = new AuthService(userRepositoryStub, authStrategyStub)
+
+  return { sut, userRepositoryStub, authStrategyStub }
 }
 
-test.group('AuthService', () => {
+test.group('Auth Service', (group) => {
+  group.each.teardown(() => {
+    sinon.reset()
+    sinon.restore()
+  })
+
   test('should returns a user id valid on getUserId', async ({ expect }) => {
-    const authenticator = sinon.createStubInstance(Authenticator)
-    stub(authenticator, 'user').value({
-      id: 1,
-    })
     const { sut } = makeSut()
 
-    sut.setAuth(authenticator)
     const userId = sut.getUserId()
 
     expect(userId).toBe(1)
   })
 
   test('should returns -1 on getUserId if auth property is null', async ({ expect }) => {
-    const { sut } = makeSut()
+    const { sut, authStrategyStub } = makeSut()
+    authStrategyStub.getUserId.returns(-1)
     const userId = sut.getUserId()
 
     expect(userId).toBe(-1)
@@ -79,13 +74,11 @@ test.group('AuthService', () => {
   test('should return a fail if user already using', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     const mockUser = mockUserRegisterRequest()
-    stub(userRepositoryStub, 'getUserByEmailOrUsername').returns(
-      Promise.resolve({
-        email: mockUser.email,
-        username: mockUser.username,
-        uuid: 'any_uuid',
-      })
-    )
+    stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
+      email: mockUser.email,
+      username: mockUser.username,
+      uuid: 'any_uuid',
+    })
 
     const userAccessToken = await sut.register(mockUser)
     expect(userAccessToken).toEqual(

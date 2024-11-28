@@ -1,3 +1,5 @@
+import GenreLucid from '#models/genre-model/genre-lucid'
+import { LanguageLucid } from '#models/language-model/language-lucid'
 import Favorite from '#models/lucid-orm/favorite'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
@@ -9,6 +11,8 @@ test.group('Video FindBy Route', (group) => {
     await Favorite.query().del()
     await VideoLucid.query().del()
     await UserLucid.query().del()
+    await GenreLucid.query().del()
+    await LanguageLucid.query().del()
   })
 
   test('/GET videos?{genreId} - should return a list videos if genreId is provided', async ({
@@ -37,7 +41,7 @@ test.group('Video FindBy Route', (group) => {
     expect(response.body().length).toBe(1)
   })
 
-  test('/GET videos - should return a list videos if nothing params is provided', async ({
+  test('/GET videos - should return a list videos if none params is provided', async ({
     client,
     expect,
   }) => {

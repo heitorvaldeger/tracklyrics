@@ -3,8 +3,8 @@ import { createSuccessResponse, createFailureResponse } from '#helpers/method-re
 import { VideoCreateService } from '#services/video/video-create-service'
 import { mockFakeVideoSaveResultModel } from '#tests/factories/fakes/index'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
-import { mockAuthServiceStub } from '#tests/factories/stubs/mock-auth-service-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/mock-video-repository-stub'
+import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
+import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
 import { test } from '@japa/runner'
 import { stub, spy } from 'sinon'
 
@@ -34,7 +34,7 @@ test.group('Video Create Service', () => {
 
   test('should return an error if link youtube already exists', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
-    stub(videoRepositoryStub, 'hasYoutubeLink').returns(new Promise((resolve) => resolve(true)))
+    stub(videoRepositoryStub, 'hasYoutubeLink').resolves(true)
     const videResponse = await sut.create(mockVideoRequest())
     expect(videResponse).toEqual(
       createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)

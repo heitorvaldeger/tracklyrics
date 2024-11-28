@@ -1,26 +1,31 @@
 import { ApplicationService } from '@adonisjs/core/types'
-import { IVideoService } from '#services/interfaces/IVideoService'
-import { IGenreService } from '#services/interfaces/IGenreService'
+import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
 import { GenreService } from '#services/genre-service'
 import { GenrePostgresRepository } from '#repository/postgres-repository/genre-postgres-repository'
-import { IVideoRepository } from '#repository/interfaces/IVideoRepository'
-import { VideoService } from '#services/video-service'
+import { VideoRepository } from '#repository/protocols/video-repository'
 import { VideoPostgresRepository } from '#repository/postgres-repository/video-postgres-repository'
-import { ILanguageService } from '#services/interfaces/ILanguageService'
+import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
 import { LanguageService } from '#services/language-service'
 import { LanguagePostgresRepository } from '#repository/postgres-repository/language-postgres-repository'
-import { IFavoriteRepository } from '#repository/interfaces/IFavoriteRepository'
+import { FavoriteRepository } from '#repository/protocols/favorite-repository'
 import { FavoritePostgresRepository } from '#repository/postgres-repository/favorite-postgres-repository'
-import { IVideoDeleteService } from '#services/video/interfaces/IVideoDeleteService'
-import { VideoDeleteService } from '#services/video/video-delete-service'
-import { IVideoCreateService } from '#services/video/interfaces/IVideoCreateService'
+import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
+import { AuthService } from '#services/auth/auth-service'
+import { UserRepository } from '#repository/protocols/user-repository'
+import { UserPostgresRepository } from '#repository/postgres-repository/user-postgres-repository'
+import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
+import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
+import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
+import { VideoFavoriteProtocolService } from '#services/video/protocols/video-favorite-protocol-service'
+import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
+import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
 import { VideoCreateService } from '#services/video/video-create-service'
-import { IVideoUpdateService } from '#services/video/interfaces/IVideoUpdateService'
-import { VideoUpdateService } from '#services/video/video-update-service'
-import { IVideoCurrentUserService } from '#services/video/interfaces/IVideoCurrentUserService'
 import { VideoCurrentUserService } from '#services/video/video-current-user-service'
-import { IVideoFavoriteService } from '#services/video/interfaces/IVideoFavoriteService'
+import { VideoDeleteService } from '#services/video/video-delete-service'
 import { VideoFavoriteService } from '#services/video/video-favorite-service'
+import { VideoFindService } from '#services/video/video-find-service'
+import { VideoUpdateService } from '#services/video/video-update-service'
+import { GenreRepository, LanguageRepository } from '#repository/protocols/base-repository'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -28,44 +33,28 @@ export default class AppProvider {
   register() {}
 
   async boot() {
-    this.app.container.bind(IVideoService, async () => {
-      return this.app.container.make(VideoService)
-    })
+    const diMap = [
+      { protocol: AuthProtocolService, implementation: AuthService },
+      { protocol: LanguageProtocolService, implementation: LanguageService },
+      { protocol: GenreProtocolService, implementation: GenreService },
+      { protocol: VideoFindProtocolService, implementation: VideoFindService },
+      { protocol: VideoDeleteProtocolService, implementation: VideoDeleteService },
+      { protocol: VideoCreateProtocolService, implementation: VideoCreateService },
+      { protocol: VideoUpdateProtocolService, implementation: VideoUpdateService },
+      { protocol: VideoFavoriteProtocolService, implementation: VideoFavoriteService },
+      { protocol: VideoCurrentUserProtocolService, implementation: VideoCurrentUserService },
 
-    this.app.container.bind(IVideoDeleteService, async () => {
-      return this.app.container.make(VideoDeleteService)
-    })
+      { protocol: VideoRepository, implementation: VideoPostgresRepository },
+      { protocol: FavoriteRepository, implementation: FavoritePostgresRepository },
+      { protocol: UserRepository, implementation: UserPostgresRepository },
+      { protocol: LanguageRepository, implementation: LanguagePostgresRepository },
+      { protocol: GenreRepository, implementation: GenrePostgresRepository },
+    ]
 
-    this.app.container.bind(IVideoCreateService, async () => {
-      return this.app.container.make(VideoCreateService)
-    })
-
-    this.app.container.bind(IVideoUpdateService, async () => {
-      return this.app.container.make(VideoUpdateService)
-    })
-
-    this.app.container.bind(IVideoCurrentUserService, async () => {
-      return this.app.container.make(VideoCurrentUserService)
-    })
-
-    this.app.container.bind(IVideoFavoriteService, async () => {
-      return this.app.container.make(VideoFavoriteService)
-    })
-
-    this.app.container.bind(IVideoRepository, async () => {
-      return this.app.container.make(VideoPostgresRepository)
-    })
-
-    this.app.container.bind(IFavoriteRepository, async () => {
-      return this.app.container.make(FavoritePostgresRepository)
-    })
-
-    this.app.container.bind(IGenreService, async () => {
-      return new GenreService(await this.app.container.make(GenrePostgresRepository))
-    })
-
-    this.app.container.bind(ILanguageService, async () => {
-      return new LanguageService(await this.app.container.make(LanguagePostgresRepository))
+    diMap.forEach(({ protocol, implementation }) => {
+      this.app.container.bind(protocol, async () => {
+        return this.app.container.make(implementation)
+      })
     })
   }
 
