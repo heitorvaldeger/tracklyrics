@@ -10,10 +10,6 @@ export const badRequest = (body: any): HttpResponse => ({
   body,
 })
 
-export const noContent = (): HttpResponse => ({
-  statusCode: 204,
-})
-
 export const serverError = (error: any): HttpResponse => ({
   statusCode: 500,
   body: error,
@@ -26,5 +22,10 @@ export const notFound = (body: any): HttpResponse => ({
 
 export const unprocessable = (body: any): HttpResponse => ({
   statusCode: 422,
+  body,
+})
+
+export const forbidden = (body: any): HttpResponse => ({
+  statusCode: 401,
   body,
 })

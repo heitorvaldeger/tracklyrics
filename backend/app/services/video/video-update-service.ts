@@ -6,13 +6,16 @@ import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
 import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
+import { GenreRepository, LanguageRepository } from '#repository/protocols/base-repository'
 
 @inject()
 export class VideoUpdateService implements VideoUpdateProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
     private readonly authService: AuthProtocolService,
-    private readonly videoCurrentUserService: VideoCurrentUserProtocolService
+    private readonly videoCurrentUserService: VideoCurrentUserProtocolService,
+    private readonly genreRepository: GenreRepository,
+    private readonly languageRepository: LanguageRepository
   ) {}
 
   async update(
@@ -24,6 +27,19 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
     }
     if (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(uuid)) {
       return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    }
+
+    const [genre, language] = await Promise.all([
+      this.genreRepository.findById(payload.genreId),
+      this.languageRepository.findById(payload.languageId),
+    ])
+
+    if (!genre) {
+      return createFailureResponse(APPLICATION_ERRORS.GENRE_NOT_FOUND)
+    }
+
+    if (!language) {
+      return createFailureResponse(APPLICATION_ERRORS.LANGUAGE_NOT_FOUND)
     }
 
     const isSuccess = await this.videoRepository.update(

@@ -7,4 +7,13 @@ export class GenrePostgresRepository implements GenreRepository {
     const genres: GenreFindModel[] = await db.from('genres').select(['id', 'name'])
     return genres
   }
+
+  async findById(genreId: number) {
+    const language: GenreFindModel | null = await db
+      .from('genres')
+      .where('id', genreId)
+      .select(['id', 'name'])
+      .first()
+    return language
+  }
 }

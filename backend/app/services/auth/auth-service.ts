@@ -39,7 +39,27 @@ export class AuthService implements AuthProtocolService, RegisterProtocolService
       ...rest,
     })
 
-    const userAccessToken = await this.userRepository.createAccessToken({ uuid })
+    const userAccessToken = await this.userRepository.createAccessToken(uuid)
+    return createSuccessResponse(userAccessToken)
+  }
+
+  async login({ email, password }: AuthProtocolService.Params) {
+    const user = await this.userRepository.getUserByEmailOrUsername({
+      email,
+    })
+
+    if (!user) {
+      return createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID)
+    }
+
+    const isPasswordValid = await hash.verify(user.password, password)
+    if (!isPasswordValid) {
+      return createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID)
+    }
+
+    await this.userRepository.deleteAllAccessToken(user.uuid)
+
+    const userAccessToken = await this.userRepository.createAccessToken(user.uuid)
     return createSuccessResponse(userAccessToken)
   }
 }

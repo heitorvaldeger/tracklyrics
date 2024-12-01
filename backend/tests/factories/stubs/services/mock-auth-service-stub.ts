@@ -25,6 +25,15 @@ export const mockAuthServiceStub = () => {
         token: 'any_token',
       })
     }
+
+    async login(
+      params: AuthProtocolService.Params
+    ): Promise<IMethodResponse<UserAccessTokenModel>> {
+      return createSuccessResponse({
+        type: 'any_type',
+        token: 'any_token',
+      })
+    }
   }
 
   return new AuthServiceStub()

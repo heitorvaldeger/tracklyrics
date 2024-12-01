@@ -8,18 +8,31 @@ import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
+import { mockGenreRepositoryStub } from '#tests/factories/stubs/repository/mock-genre-repository-stub'
+import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
   const authServiceStub = mockAuthServiceStub()
+  const genreRepositoryStub = mockGenreRepositoryStub()
+  const languageRepositoryStub = mockLanguageRepositoryStub()
   const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
   const sut = new VideoUpdateService(
     videoRepositoryStub,
     authServiceStub,
-    videoCurrentUserServiceStub
+    videoCurrentUserServiceStub,
+    genreRepositoryStub,
+    languageRepositoryStub
   )
 
-  return { sut, videoRepositoryStub, authServiceStub, videoCurrentUserServiceStub }
+  return {
+    sut,
+    videoRepositoryStub,
+    authServiceStub,
+    videoCurrentUserServiceStub,
+    genreRepositoryStub,
+    languageRepositoryStub,
+  }
 }
 
 test.group('Video Update Service', (group) => {
@@ -56,5 +69,19 @@ test.group('Video Update Service', (group) => {
     const video = await sut.update(mockVideoRequest(), faker.string.uuid())
 
     expect(video).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+  })
+
+  test('should return an error if genre not exist', async ({ expect }) => {
+    const { sut, genreRepositoryStub } = makeSut()
+    stub(genreRepositoryStub, 'findById').resolves(null)
+    const videoResponse = await sut.update(mockVideoRequest(), faker.string.uuid())
+    expect(videoResponse).toEqual(createFailureResponse(APPLICATION_ERRORS.GENRE_NOT_FOUND))
+  })
+
+  test('should return an error if language not exist', async ({ expect }) => {
+    const { sut, languageRepositoryStub } = makeSut()
+    stub(languageRepositoryStub, 'findById').resolves(null)
+    const videoResponse = await sut.update(mockVideoRequest(), faker.string.uuid())
+    expect(videoResponse).toEqual(createFailureResponse(APPLICATION_ERRORS.LANGUAGE_NOT_FOUND))
   })
 })

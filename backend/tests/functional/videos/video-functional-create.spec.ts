@@ -1,22 +1,10 @@
-import GenreLucid from '#models/genre-model/genre-lucid'
-import { LanguageLucid } from '#models/language-model/language-lucid'
-import Favorite from '#models/lucid-orm/favorite'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import UserLucid from '#models/user-model/user-lucid'
-import VideoLucid from '#models/video-model/video-lucid'
 import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
-import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
 test.group('Video Create Route', (group) => {
-  group.each.setup(async () => {
-    await Favorite.query().del()
-    await VideoLucid.query().del()
-    await UserLucid.query().del()
-    await GenreLucid.query().del()
-    await LanguageLucid.query().del()
-  })
-
   test('/POST videos/ - should return 200 on create if video create on success', async ({
     client,
     expect,
@@ -86,5 +74,31 @@ test.group('Video Create Route', (group) => {
 
     expect(response.status()).toBe(401)
     expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+  })
+
+  test('/POST videos/ - should return 422 on create if video youtube already exists', async ({
+    client,
+    expect,
+  }) => {
+    const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockVideoEntity()
+    const { genreId, languageId, ...httpRequest } = mockVideoRequest()
+
+    const accessToken = await UserLucid.accessTokens.create(
+      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    )
+    const accessTokenValue = accessToken.value!.release()
+
+    const response = await client
+      .post(`/videos`)
+      .fields({
+        ...httpRequest,
+        linkYoutube: fakeVideo.linkYoutube,
+        languageId: fakeLanguage.id,
+        genreId: fakeGenre.id,
+      })
+      .bearerToken(accessTokenValue)
+
+    expect(response.status()).toBe(422)
+    expect(response.body()).toEqual(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
   })
 })

@@ -5,4 +5,5 @@ export enum HttpStatusCode {
   OK = 200,
   NO_CONTENT = 204,
   UNPROCESSABLE_ENTITY = 422,
+  FORBIDDEN = 401,
 }

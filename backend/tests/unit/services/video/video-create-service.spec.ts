@@ -7,13 +7,23 @@ import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-s
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
 import { test } from '@japa/runner'
 import { stub, spy } from 'sinon'
+import { mockGenreRepositoryStub } from '#tests/factories/stubs/repository/mock-genre-repository-stub'
+import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const authServiceStub = mockAuthServiceStub()
-  const sut = new VideoCreateService(videoRepositoryStub, authServiceStub)
+  const genreRepositoryStub = mockGenreRepositoryStub()
+  const languageRepositoryStub = mockLanguageRepositoryStub()
 
-  return { sut, videoRepositoryStub, authServiceStub }
+  const authServiceStub = mockAuthServiceStub()
+  const sut = new VideoCreateService(
+    videoRepositoryStub,
+    authServiceStub,
+    genreRepositoryStub,
+    languageRepositoryStub
+  )
+
+  return { sut, videoRepositoryStub, authServiceStub, genreRepositoryStub, languageRepositoryStub }
 }
 
 test.group('Video Create Service', () => {
@@ -35,9 +45,23 @@ test.group('Video Create Service', () => {
   test('should return an error if link youtube already exists', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'hasYoutubeLink').resolves(true)
-    const videResponse = await sut.create(mockVideoRequest())
-    expect(videResponse).toEqual(
+    const videoResponse = await sut.create(mockVideoRequest())
+    expect(videoResponse).toEqual(
       createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
     )
+  })
+
+  test('should return an error if genre not exist', async ({ expect }) => {
+    const { sut, genreRepositoryStub } = makeSut()
+    stub(genreRepositoryStub, 'findById').resolves(null)
+    const videoResponse = await sut.create(mockVideoRequest())
+    expect(videoResponse).toEqual(createFailureResponse(APPLICATION_ERRORS.GENRE_NOT_FOUND))
+  })
+
+  test('should return an error if language not exist', async ({ expect }) => {
+    const { sut, languageRepositoryStub } = makeSut()
+    stub(languageRepositoryStub, 'findById').resolves(null)
+    const videoResponse = await sut.create(mockVideoRequest())
+    expect(videoResponse).toEqual(createFailureResponse(APPLICATION_ERRORS.LANGUAGE_NOT_FOUND))
   })
 })

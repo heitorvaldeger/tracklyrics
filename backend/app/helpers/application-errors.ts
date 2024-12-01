@@ -21,4 +21,16 @@ export const APPLICATION_ERRORS = {
     message: 'Email or username already in use. Please choose another.',
     httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
   },
+  GENRE_NOT_FOUND: {
+    message: 'Genre not found',
+    httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
+  },
+  LANGUAGE_NOT_FOUND: {
+    message: 'Genre not found',
+    httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
+  },
+  CREDENTIALS_INVALID: {
+    message: 'Invalid credentials',
+    httpCode: HttpStatusCode.FORBIDDEN,
+  },
 }

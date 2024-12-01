@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 import { test } from '@japa/runner'
-import { badRequest, noContent, ok, serverError, unprocessable } from '#helpers/http'
+import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'

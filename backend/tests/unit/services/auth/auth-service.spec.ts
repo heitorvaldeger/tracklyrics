@@ -6,22 +6,30 @@ import { createFailureResponse, createSuccessResponse } from '#helpers/method-re
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
+import hash from '@adonisjs/core/services/hash'
 
 export const mockUserRepositoryStub = () => {
   const userRepositoryStub: UserRepository = {
     getUserByEmailOrUsername: (payload: UserRepository.FindUserByEmailUsernameParams) =>
-      Promise.resolve(null),
+      Promise.resolve({
+        uuid: 'any_uuid',
+        username: 'any_username',
+        email: 'any_email',
+        password: 'any_password',
+      }),
     create: (user: UserRepository.CreateParams) =>
       Promise.resolve({
         uuid: 'any_uuid',
         username: 'any_username',
         email: 'any_email',
+        password: 'any_password',
       }),
-    createAccessToken: (payload: UserRepository.CreateAccessTokenParams) =>
+    createAccessToken: (userUuid: string) =>
       Promise.resolve({
         type: 'any_type',
         token: 'any_token',
       }),
+    deleteAllAccessToken: (userUuid: string) => Promise.resolve(),
   }
 
   return userRepositoryStub
@@ -59,8 +67,10 @@ test.group('Auth Service', (group) => {
     expect(userId).toBe(-1)
   })
 
-  test('should return a token if user was register on success', async ({ expect }) => {
-    const { sut } = makeSut()
+  test('should return a token on register if user was register on success', async ({ expect }) => {
+    const { sut, userRepositoryStub } = makeSut()
+
+    stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
 
     const userAccessToken = await sut.register(mockUserRegisterRequest())
     expect(userAccessToken).toEqual(
@@ -71,18 +81,57 @@ test.group('Auth Service', (group) => {
     )
   })
 
-  test('should return a fail if user already using', async ({ expect }) => {
+  test('should return a fail on register if user already using', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     const mockUser = mockUserRegisterRequest()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
       email: mockUser.email,
       username: mockUser.username,
       uuid: 'any_uuid',
+      password: 'any_password',
     })
 
     const userAccessToken = await sut.register(mockUser)
     expect(userAccessToken).toEqual(
       createFailureResponse(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING)
     )
+  })
+
+  test('should return a token on login if user is valid', async ({ expect }) => {
+    const { sut } = makeSut()
+    stub(hash, 'verify').resolves(true)
+
+    const userAccessToken = await sut.login({
+      email: 'any_email',
+      password: 'any_password',
+    })
+    expect(userAccessToken).toEqual(
+      createSuccessResponse({
+        type: 'any_type',
+        token: 'any_token',
+      })
+    )
+  })
+
+  test('should return a fail on login if user not found', async ({ expect }) => {
+    const { sut, userRepositoryStub } = makeSut()
+    stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
+
+    const userAccessToken = await sut.login({
+      email: 'any_email',
+      password: 'any_password',
+    })
+    expect(userAccessToken).toEqual(createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID))
+  })
+
+  test('should return a fail on login if password is not equal', async ({ expect }) => {
+    const { sut } = makeSut()
+    stub(hash, 'verify').resolves(false)
+
+    const userAccessToken = await sut.login({
+      email: 'any_email',
+      password: 'any_password',
+    })
+    expect(userAccessToken).toEqual(createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID))
   })
 })

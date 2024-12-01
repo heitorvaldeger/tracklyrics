@@ -2,11 +2,8 @@ import _ from 'lodash'
 import { test } from '@japa/runner'
 import { VideoPostgresRepository } from '#repository/postgres-repository/video-postgres-repository'
 import Video from '#models/video-model/video-lucid'
-import Favorite from '#models/lucid-orm/favorite'
 import { stub } from 'sinon'
 import db from '@adonisjs/lucid/services/db'
-import VideoLucid from '#models/video-model/video-lucid'
-import UserLucid from '#models/user-model/user-lucid'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { faker } from '@faker-js/faker'
 import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
@@ -41,12 +38,6 @@ const makeSut = async () => {
 }
 
 test.group('VideoPostgresRepository', (group) => {
-  group.each.setup(async () => {
-    await Favorite.query().del()
-    await VideoLucid.query().del()
-    await UserLucid.query().del()
-  })
-
   test('should return a list videos on findBy if params provided is empty', async ({ expect }) => {
     const { sut } = await makeSut()
 

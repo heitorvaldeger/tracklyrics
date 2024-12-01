@@ -6,6 +6,7 @@ import { mockUserEntity } from './mock-user-entity.js'
 import { LanguageLucid } from '#models/language-model/language-lucid'
 import GenreLucid from '#models/genre-model/genre-lucid'
 import UserLucid from '#models/user-model/user-lucid'
+import { makeYoutubeUrl } from '../makeYoutubeUrl.js'
 
 type MockVideoEntity = {
   fakeLanguage: LanguageLucid
@@ -25,7 +26,7 @@ export const mockVideoEntity = async (): Promise<MockVideoEntity> => {
     artist: faker.lorem.words(2),
     qtyViews: 0,
     releaseYear: faker.string.numeric({ length: 4 }),
-    linkYoutube: faker.internet.url(),
+    linkYoutube: makeYoutubeUrl(),
     uuid: faker.string.uuid(),
     languageId: fakeLanguage.id,
     genreId: fakeGenre.id,

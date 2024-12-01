@@ -1,8 +1,6 @@
 import { test } from '@japa/runner'
 import { UserPostgresRepository } from '#repository/postgres-repository/user-postgres-repository'
-import AuthAccessTokenLucid from '#models/auth-access-token-model/auth-access-token-lucid'
 import { randomUUID } from 'node:crypto'
-import VideoLucid from '#models/video-model/video-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 
 const makeSut = () => {
@@ -11,12 +9,6 @@ const makeSut = () => {
 }
 
 test.group('UserPostgresRepository', (group) => {
-  group.each.setup(async () => {
-    await VideoLucid.query().delete()
-    await UserLucid.query().delete()
-    await AuthAccessTokenLucid.query().delete()
-  })
-
   test('should return a user if email and username valid is provided', async ({ expect }) => {
     const { sut } = makeSut()
     const fakeUser = await UserLucid.create({
@@ -101,9 +93,7 @@ test.group('UserPostgresRepository', (group) => {
       firstName: 'valid_firstName',
       lastName: 'valid_lastName',
     })
-    const accessToken = await sut.createAccessToken({
-      uuid: fakeUser.uuid,
-    })
+    const accessToken = await sut.createAccessToken(fakeUser.uuid)
 
     expect(accessToken).toBeTruthy()
     expect(accessToken.type).toBe('auth_token')

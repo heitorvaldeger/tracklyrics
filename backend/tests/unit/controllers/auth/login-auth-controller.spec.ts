@@ -1,10 +1,8 @@
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
-import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
+import { badRequest, ok, serverError } from '#helpers/http'
 import AuthController from '#controllers/auth-controller'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { createFailureResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 
@@ -15,7 +13,7 @@ const makeSut = () => {
 
   return { sut, httpContext, authServiceStub }
 }
-test.group('AuthController.register', (group) => {
+test.group('AuthController.login', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
@@ -25,7 +23,7 @@ test.group('AuthController.register', (group) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({})
-    const httpResponse = await sut.register(httpContext)
+    const httpResponse = await sut.login(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -37,18 +35,6 @@ test.group('AuthController.register', (group) => {
           field: 'password',
           message: 'The password field must be defined',
         },
-        {
-          field: 'username',
-          message: 'The username field must be defined',
-        },
-        {
-          field: 'firstName',
-          message: 'The firstName field must be defined',
-        },
-        {
-          field: 'lastName',
-          message: 'The lastName field must be defined',
-        },
       ])
     )
   })
@@ -57,7 +43,7 @@ test.group('AuthController.register', (group) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request.body(), 'email').value('invalid_mail')
-    const httpResponse = await sut.register(httpContext)
+    const httpResponse = await sut.login(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -75,11 +61,8 @@ test.group('AuthController.register', (group) => {
     stub(httpContext.request, 'body').returns({
       email: 'valid_mail@mail.com',
       password: 'any',
-      username: 'any',
-      firstName: '',
-      lastName: '',
     })
-    const httpResponse = await sut.register(httpContext)
+    const httpResponse = await sut.login(httpContext)
 
     expect(httpResponse).toEqual(
       badRequest([
@@ -87,35 +70,13 @@ test.group('AuthController.register', (group) => {
           field: 'password',
           message: 'The password field must have at least 6 characters',
         },
-        {
-          field: 'username',
-          message: 'The username field must have at least 4 characters',
-        },
-        {
-          field: 'firstName',
-          message: 'The firstName field must have at least 1 characters',
-        },
-        {
-          field: 'lastName',
-          message: 'The lastName field must have at least 1 characters',
-        },
       ])
     )
   })
 
-  test('should return 422 if email provided already in use', async ({ expect }) => {
-    const { sut, httpContext, authServiceStub } = makeSut()
-    stub(authServiceStub, 'register').returns(
-      Promise.resolve(createFailureResponse(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
-    )
-    const httpResponse = await sut.register(httpContext)
-
-    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
-  })
-
-  test('should return 200 if create user return success', async ({ expect }) => {
+  test('should return 200 if create accessToken on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
-    const httpResponse = await sut.register(httpContext)
+    const httpResponse = await sut.login(httpContext)
 
     expect(httpResponse).toEqual(
       ok({
@@ -125,10 +86,10 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 500 if create user return throws', async ({ expect }) => {
+  test('should return 500 if create accessToken return throws', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
-    stub(authServiceStub, 'register').throws(new Error())
-    const httpResponse = await sut.register(httpContext)
+    stub(authServiceStub, 'login').throws(new Error())
+    const httpResponse = await sut.login(httpContext)
 
     expect(httpResponse).toEqual(serverError(new Error()))
   })

@@ -9,3 +9,10 @@ export const registerAuthValidator = vine.compile(
     lastName: vine.string().trim().minLength(1),
   })
 )
+
+export const loginAuthValidator = vine.compile(
+  vine.object({
+    email: vine.string().trim().email(),
+    password: vine.string().trim().minLength(6),
+  })
+)

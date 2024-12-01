@@ -1,10 +1,6 @@
 import { test } from '@japa/runner'
-import { LanguageRepository } from '#repository/protocols/base-repository'
 import { LanguageService } from '#services/language-service'
-
-const mockLanguageRepositoryStub = (): LanguageRepository => ({
-  findAll: () => Promise.resolve([]),
-})
+import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
 
 const makeSut = () => {
   const fakeLanguageRepositoryStub = mockLanguageRepositoryStub()

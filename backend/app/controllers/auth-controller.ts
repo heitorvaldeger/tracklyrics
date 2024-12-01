@@ -1,18 +1,34 @@
-import { badRequest, serverError } from '#helpers/http'
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import { registerAuthValidator } from '#validators/auth-validator'
-import { errors } from '@vinejs/vine'
+import { loginAuthValidator, registerAuthValidator } from '#validators/auth-validator'
 import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 import { dispatch } from '#helpers/dispatch'
+import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 
 @inject()
 export default class AuthController {
-  constructor(private readonly registerService: RegisterProtocolService) {}
+  constructor(
+    private readonly registerService: RegisterProtocolService,
+    private readonly authService: AuthProtocolService
+  ) {}
   async register({ request }: HttpContext) {
     try {
       const userData = await registerAuthValidator.validate(request.body())
       const response = await this.registerService.register(userData)
+
+      return dispatch(response)
+    } catch (error) {
+      return dispatch({
+        isSuccess: false,
+        error,
+      })
+    }
+  }
+
+  async login({ request }: HttpContext) {
+    try {
+      const userData = await loginAuthValidator.validate(request.body())
+      const response = await this.authService.login(userData)
 
       return dispatch(response)
     } catch (error) {

@@ -1,24 +1,10 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import GenreLucid from '#models/genre-model/genre-lucid'
-import { LanguageLucid } from '#models/language-model/language-lucid'
-import Favorite from '#models/lucid-orm/favorite'
 import UserLucid from '#models/user-model/user-lucid'
-import VideoLucid from '#models/video-model/video-lucid'
 import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
-import { now } from 'lodash'
 
 test.group('Video Delete Route', (group) => {
-  group.each.setup(async () => {
-    await Favorite.query().del()
-    await VideoLucid.query().del()
-    await UserLucid.query().del()
-    await GenreLucid.query().del()
-    await LanguageLucid.query().del()
-  })
-
   test('/DELETE videos/{uuid} - should return 404 if video not belong user uuid', async ({
     client,
     expect,

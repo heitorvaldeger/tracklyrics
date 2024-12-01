@@ -7,4 +7,13 @@ export class LanguagePostgresRepository implements LanguageRepository {
     const languages: LanguageFindModel[] = await db.from('languages').select(['id', 'name'])
     return languages
   }
+
+  async findById(languageId: number) {
+    const language: LanguageFindModel | null = await db
+      .from('languages')
+      .where('id', languageId)
+      .select(['id', 'name'])
+      .first()
+    return language
+  }
 }

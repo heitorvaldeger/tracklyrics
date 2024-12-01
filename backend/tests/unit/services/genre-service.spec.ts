@@ -1,10 +1,6 @@
 import { test } from '@japa/runner'
-import { GenreRepository } from '#repository/protocols/base-repository'
 import { GenreService } from '#services/genre-service'
-
-const mockGenreRepositoryStub = (): GenreRepository => ({
-  findAll: () => Promise.resolve([]),
-})
+import { mockGenreRepositoryStub } from '#tests/factories/stubs/repository/mock-genre-repository-stub'
 
 const makeSut = () => {
   const fakeGenreRepositoryStub = mockGenreRepositoryStub()

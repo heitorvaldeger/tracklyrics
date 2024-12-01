@@ -26,6 +26,7 @@ import { VideoFavoriteService } from '#services/video/video-favorite-service'
 import { VideoFindService } from '#services/video/video-find-service'
 import { VideoUpdateService } from '#services/video/video-update-service'
 import { GenreRepository, LanguageRepository } from '#repository/protocols/base-repository'
+import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -35,6 +36,7 @@ export default class AppProvider {
   async boot() {
     const diMap = [
       { protocol: AuthProtocolService, implementation: AuthService },
+      { protocol: RegisterProtocolService, implementation: AuthService },
       { protocol: LanguageProtocolService, implementation: LanguageService },
       { protocol: GenreProtocolService, implementation: GenreService },
       { protocol: VideoFindProtocolService, implementation: VideoFindService },

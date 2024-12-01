@@ -6,9 +6,8 @@ export abstract class UserRepository {
   abstract getUserByEmailOrUsername(
     payload: UserRepository.FindUserByEmailUsernameParams
   ): Promise<UserModel | null>
-  abstract createAccessToken(
-    payload: UserRepository.CreateAccessTokenParams
-  ): Promise<UserAccessTokenModel>
+  abstract createAccessToken(userUuid: string): Promise<UserAccessTokenModel>
+  abstract deleteAllAccessToken(userUuid: string): Promise<void>
 }
 
 export namespace UserRepository {
