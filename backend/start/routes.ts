@@ -9,6 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+const VideoFavoriteController = () => import('#controllers/video/video-favorite-controller')
 
 const LanguageController = () => import('#controllers/language-controller')
 const GenreController = () => import('#controllers/genre-controller')
@@ -25,8 +26,19 @@ router.get('/videos/:uuid', [VideoFindController, 'find'])
 router.get('/videos', [VideoFindController, 'findBy'])
 router
   .group(() => {
-    router.post('/videos', [VideoCreateController, 'create'])
-    router.delete('/videos/:uuid', [VideoDeleteController, 'delete'])
+    router
+      .group(() => {
+        router.post('', [VideoCreateController, 'create'])
+        router.delete(':uuid', [VideoDeleteController, 'delete'])
+      })
+      .prefix('videos')
+
+    router
+      .group(() => {
+        router.post(':uuid', [VideoFavoriteController, 'addFavorite'])
+        router.delete(':uuid', [VideoFavoriteController, 'removeFavorite'])
+      })
+      .prefix('favorites')
   })
   .use(
     middleware.auth({

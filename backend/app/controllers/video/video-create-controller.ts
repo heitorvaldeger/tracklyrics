@@ -1,7 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { errors } from '@vinejs/vine'
-import { badRequest, serverError } from '#helpers/http'
-import { createOrUpdateVideoValidator, uuidVideoValidator } from '#validators/video-validator'
+import { createOrUpdateVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
 import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
@@ -20,11 +18,6 @@ export default class VideoCreateController {
         isSuccess: false,
         error,
       })
-      // if (error instanceof errors.E_VALIDATION_ERROR) {
-      //   return badRequest(error.messages)
-      // }
-
-      // return serverError(error as Error)
     }
   }
 }

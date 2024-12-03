@@ -1,12 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { errors } from '@vinejs/vine'
-import { badRequest, serverError } from '#helpers/http'
-import {
-  createOrUpdateVideoValidator,
-  findByVideoValidator,
-  uuidVideoValidator,
-} from '#validators/video-validator'
-import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
+import { uuidVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
 import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'

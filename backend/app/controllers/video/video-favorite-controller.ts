@@ -1,6 +1,4 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { errors } from '@vinejs/vine'
-import { badRequest, serverError } from '#helpers/http'
 import { uuidVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
