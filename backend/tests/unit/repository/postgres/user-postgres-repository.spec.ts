@@ -99,4 +99,24 @@ test.group('UserPostgresRepository', (group) => {
     expect(accessToken.type).toBe('auth_token')
     expect(accessToken.token.startsWith('oat', 0)).toBeTruthy()
   })
+
+  test('should delete all tokens from user', async ({ expect }) => {
+    const { sut } = makeSut()
+    const uuid = randomUUID()
+
+    const fakeUser = await UserLucid.create({
+      uuid,
+      username: 'valid_username',
+      email: 'valid_mail@mail.com',
+      password: 'valid_password',
+      firstName: 'valid_firstName',
+      lastName: 'valid_lastName',
+    })
+    await UserLucid.accessTokens.create(fakeUser)
+    await sut.deleteAllAccessToken(fakeUser.uuid)
+
+    const accessTokens = await UserLucid.accessTokens.all(fakeUser)
+
+    expect(accessTokens.length).toBe(0)
+  })
 })
