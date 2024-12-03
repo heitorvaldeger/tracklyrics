@@ -8,6 +8,7 @@ import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
+import { mockFakeFavoriteModel } from '#tests/factories/fakes/mock-fake-video-model'
 
 const makeSut = () => {
   const favoriteRepositoryStub = mockFavoriteRepositoryStub()
@@ -79,5 +80,14 @@ test.group('Video Favorite Service', () => {
     const response = await sut.removeFavorite(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+  })
+
+  test('should return a list favorite videos by user logged', async ({ expect }) => {
+    const { sut } = makeSut()
+    const response = await sut.findFavoritesByUserLogged()
+
+    expect(response).toEqual(
+      createSuccessResponse([mockFakeFavoriteModel(), mockFakeFavoriteModel()])
+    )
   })
 })

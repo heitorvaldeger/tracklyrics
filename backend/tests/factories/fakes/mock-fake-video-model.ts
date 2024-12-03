@@ -12,3 +12,15 @@ export const mockFakeVideoModel = (): VideoFindModel => ({
   genre: 'any_genre',
   username: 'any_username',
 })
+
+export const mockFakeFavoriteModel = (): Omit<VideoFindModel, 'isDraft'> => ({
+  uuid: 'any_uuid',
+  title: 'any_title',
+  artist: 'any_artist',
+  linkYoutube: 'any_link',
+  qtyViews: 0,
+  releaseYear: 'any_year',
+  language: 'any_language',
+  genre: 'any_genre',
+  username: 'any_username',
+})

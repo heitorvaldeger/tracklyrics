@@ -14,6 +14,7 @@ import { VideoFavoriteProtocolService } from '#services/video/protocols/video-fa
 export const mockVideoFavoriteServiceStub = (): VideoFavoriteProtocolService => ({
   addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   removeFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
+  findFavoritesByUserLogged: () => Promise.resolve(createSuccessResponse([])),
 })
 const makeSut = async () => {
   const httpContext = makeHttpRequest(mockVideoRequest(), {

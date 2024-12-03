@@ -58,4 +58,11 @@ export class VideoFavoriteService implements VideoFavoriteProtocolService {
 
     return createSuccessResponse(removed)
   }
+
+  async findFavoritesByUserLogged(): Promise<IMethodResponse<any[]>> {
+    const userId = this.authService.getUserId()
+    const favorites = await this.favoriteRepository.findFavoritesByUser(userId)
+
+    return createSuccessResponse(favorites)
+  }
 }
