@@ -6,11 +6,11 @@ import { stub } from 'sinon'
 import db from '@adonisjs/lucid/services/db'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { faker } from '@faker-js/faker'
-import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 
 const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
 export const makeFake = async () => {
-  const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
+  const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
 
   const fakeFullVideo = {
     ...(fakeVideo.serialize() as Video),

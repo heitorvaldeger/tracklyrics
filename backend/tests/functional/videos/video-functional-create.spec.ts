@@ -1,6 +1,6 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
 import { test } from '@japa/runner'
 
@@ -9,7 +9,7 @@ test.group('Video Create Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeGenre, fakeLanguage } = await mockVideoEntity()
+    const { fakeUser, fakeGenre, fakeLanguage } = await mockLucidEntity()
     const httpRequest = mockVideoRequest()
 
     const accessToken = await UserLucid.accessTokens.create(
@@ -37,7 +37,7 @@ test.group('Video Create Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeLanguage } = await mockVideoEntity()
+    const { fakeUser, fakeLanguage } = await mockLucidEntity()
     const { genreId, artist, ...httpRequest } = mockVideoRequest()
 
     const accessToken = await UserLucid.accessTokens.create(
@@ -80,7 +80,7 @@ test.group('Video Create Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockVideoEntity()
+    const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockLucidEntity()
     const { genreId, languageId, ...httpRequest } = mockVideoRequest()
 
     const accessToken = await UserLucid.accessTokens.create(

@@ -1,15 +1,15 @@
 import { toCamelCase } from '#helpers/to-camel-case'
-import Favorite from '#models/lucid-orm/favorite'
+import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import { FavoriteRepository } from '#repository/protocols/favorite-repository'
 import db from '@adonisjs/lucid/services/db'
 
 export class FavoritePostgresRepository implements FavoriteRepository {
   async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
-    const favorite = await Favorite.query()
+    const favorite = await FavoriteLucid.query()
       .where('userId', userId)
       .where('videoId', videoId)
       .first()
-    const favoriteAdded = await Favorite.updateOrCreate(
+    const favoriteAdded = await FavoriteLucid.updateOrCreate(
       {
         videoId,
         userId,
@@ -24,8 +24,8 @@ export class FavoritePostgresRepository implements FavoriteRepository {
   }
 
   async removeFavorite(videoId: number, userId: number): Promise<boolean> {
-    await Favorite.query().where('videoId', videoId).where('userId', userId).delete()
-    return !(await Favorite.query().where('videoId', videoId).where('userId', userId).first())
+    await FavoriteLucid.query().where('videoId', videoId).where('userId', userId).delete()
+    return !(await FavoriteLucid.query().where('videoId', videoId).where('userId', userId).first())
   }
 
   async findFavoritesByUser(userId: number): Promise<any[]> {

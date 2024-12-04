@@ -35,6 +35,7 @@ router
 
     router
       .group(() => {
+        router.get('', [FavoriteController, 'findFavoritesByUserLogged'])
         router.post(':uuid', [FavoriteController, 'addFavorite'])
         router.delete(':uuid', [FavoriteController, 'removeFavorite'])
       })

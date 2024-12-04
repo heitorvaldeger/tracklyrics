@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class Favorite extends BaseModel {
+export default class FavoriteLucid extends BaseModel {
+  static table = 'favorites'
+
   @column({ isPrimary: true, serializeAs: null })
   declare id: number
 

@@ -1,5 +1,5 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { test } from '@japa/runner'
 
@@ -9,7 +9,7 @@ test.group('Video Find Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockVideoEntity()
+    const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
 
     const response = await client.get(`/videos/${fakeVideo.uuid}`)
 

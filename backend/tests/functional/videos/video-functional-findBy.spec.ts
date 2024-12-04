@@ -1,4 +1,4 @@
-import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { test } from '@japa/runner'
 
 test.group('Video FindBy Route', (group) => {
@@ -6,8 +6,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeGenre } = await mockVideoEntity()
-    await mockVideoEntity()
+    const { fakeGenre } = await mockLucidEntity()
+    await mockLucidEntity()
 
     const response = await client.get(`/videos?genreId=${fakeGenre.id}`)
 
@@ -19,8 +19,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockVideoEntity()
-    await mockVideoEntity()
+    const { fakeUser } = await mockLucidEntity()
+    await mockLucidEntity()
 
     const response = await client.get(`/videos?userUuid=${fakeUser.uuid}`)
 
@@ -32,8 +32,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    await mockVideoEntity()
-    await mockVideoEntity()
+    await mockLucidEntity()
+    await mockLucidEntity()
 
     const response = await client.get(`/videos`)
 
@@ -45,8 +45,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    await mockVideoEntity()
-    await mockVideoEntity()
+    await mockLucidEntity()
+    await mockLucidEntity()
 
     const response = await client.get(
       `/videos?userUuid=any_uuid&genreId=any_genre&languageId=any_language`

@@ -1,6 +1,6 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockVideoEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 import { test } from '@japa/runner'
 
@@ -9,8 +9,8 @@ test.group('Video Delete Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockVideoEntity()
-    const { fakeVideo } = await mockVideoEntity()
+    const { fakeUser } = await mockLucidEntity()
+    const { fakeVideo } = await mockLucidEntity()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -27,7 +27,7 @@ test.group('Video Delete Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockVideoEntity()
+    const { fakeUser, fakeVideo } = await mockLucidEntity()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -44,7 +44,7 @@ test.group('Video Delete Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockVideoEntity()
+    const { fakeUser } = await mockLucidEntity()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -63,7 +63,7 @@ test.group('Video Delete Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockVideoEntity()
+    const { fakeUser } = await mockLucidEntity()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)

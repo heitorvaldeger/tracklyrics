@@ -33,4 +33,16 @@ export default class FavoriteController {
       })
     }
   }
+
+  async findFavoritesByUserLogged() {
+    try {
+      const result = await this.favoriteService.findFavoritesByUserLogged()
+      return dispatch(result)
+    } catch (error) {
+      return dispatch({
+        isSuccess: false,
+        error,
+      })
+    }
+  }
 }

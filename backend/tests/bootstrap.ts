@@ -6,7 +6,7 @@ import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import testUtils from '@adonisjs/core/services/test_utils'
 import GenreLucid from '#models/genre-model/genre-lucid'
 import { LanguageLucid } from '#models/language-model/language-lucid'
-import Favorite from '#models/lucid-orm/favorite'
+import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
 
@@ -40,7 +40,7 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
   suite.onGroup((group) => {
     group.tap((test) => {
       test.setup(async () => {
-        await Favorite.query().del()
+        await FavoriteLucid.query().del()
         await VideoLucid.query().del()
         await UserLucid.query().del()
         await GenreLucid.query().del()

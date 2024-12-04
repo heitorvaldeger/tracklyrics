@@ -6,6 +6,7 @@ import { toCamelCase } from '#helpers/to-camel-case'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { DatabaseQueryBuilderContract } from '@adonisjs/lucid/types/querybuilder'
 import VideoLucid from '#models/video-model/video-lucid'
+import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 
 export class VideoPostgresRepository implements VideoRepository {
   async find(uuid: string): Promise<VideoFindModel | null> {
@@ -61,6 +62,11 @@ export class VideoPostgresRepository implements VideoRepository {
   }
 
   async delete(videoUuid: string): Promise<boolean> {
+    await FavoriteLucid.query()
+      .whereIn('video_id', (query) => {
+        query.from('videos').where('uuid', videoUuid).select('id')
+      })
+      .del()
     await VideoLucid.query().where('uuid', videoUuid).delete()
     return !(await VideoLucid.query().where('uuid', videoUuid).first())
   }

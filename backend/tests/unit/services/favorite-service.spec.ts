@@ -31,7 +31,7 @@ const makeSut = () => {
   }
 }
 
-test.group('Favorite Service', () => {
+test.group('FavoriteLucid Service', () => {
   test('should return success if a video was added to favorite', async ({ expect }) => {
     const { sut } = makeSut()
     const response = await sut.addFavorite(faker.string.uuid())

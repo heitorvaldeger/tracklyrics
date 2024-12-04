@@ -10,11 +10,13 @@ import { mockVideoRequest } from '../../factories/fakes/mock-video-request.js'
 import FavoriteController from '#controllers/favorite-controller'
 import { faker } from '@faker-js/faker'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
+import { mockFakeFavoriteModel } from '#tests/factories/fakes/mock-fake-video-model'
 
 const mockFavoriteServiceStub = (): FavoriteProtocolService => ({
   addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   removeFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
-  findFavoritesByUserLogged: () => Promise.resolve(createSuccessResponse([])),
+  findFavoritesByUserLogged: () =>
+    Promise.resolve(createSuccessResponse([mockFakeFavoriteModel(), mockFakeFavoriteModel()])),
 })
 const makeSut = async () => {
   const httpContext = makeHttpRequest(mockVideoRequest(), {
@@ -27,7 +29,7 @@ const makeSut = async () => {
   return { sut, httpContext, favoriteServiceStub }
 }
 
-test.group('Favorite Controller', (group) => {
+test.group('FavoriteLucid Controller', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
@@ -132,6 +134,24 @@ test.group('Favorite Controller', (group) => {
     stub(favoriteServiceStub, 'addFavorite').throws(new Error())
 
     const httpResponse = await sut.addFavorite(httpContext)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('should returns 200 on find favorites by user logged', async ({ expect }) => {
+    const { sut } = await makeSut()
+
+    const httpResponse = await sut.findFavoritesByUserLogged()
+
+    expect(httpResponse).toEqual(ok([mockFakeFavoriteModel(), mockFakeFavoriteModel()]))
+  })
+
+  test('should returns 500 if find favorites by user logged throws', async ({ expect }) => {
+    const { sut, favoriteServiceStub } = await makeSut()
+
+    stub(favoriteServiceStub, 'findFavoritesByUserLogged').throws(new Error())
+
+    const httpResponse = await sut.findFavoritesByUserLogged()
 
     expect(httpResponse).toEqual(serverError(new Error()))
   })
