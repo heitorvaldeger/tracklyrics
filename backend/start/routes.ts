@@ -9,7 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-const VideoFavoriteController = () => import('#controllers/video/video-favorite-controller')
+const FavoriteController = () => import('#controllers/favorite-controller')
 
 const LanguageController = () => import('#controllers/language-controller')
 const GenreController = () => import('#controllers/genre-controller')
@@ -35,8 +35,8 @@ router
 
     router
       .group(() => {
-        router.post(':uuid', [VideoFavoriteController, 'addFavorite'])
-        router.delete(':uuid', [VideoFavoriteController, 'removeFavorite'])
+        router.post(':uuid', [FavoriteController, 'addFavorite'])
+        router.delete(':uuid', [FavoriteController, 'removeFavorite'])
       })
       .prefix('favorites')
   })

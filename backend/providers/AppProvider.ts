@@ -16,13 +16,13 @@ import { UserPostgresRepository } from '#repository/postgres-repository/user-pos
 import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
 import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
 import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
-import { VideoFavoriteProtocolService } from '#services/video/protocols/video-favorite-protocol-service'
+import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
 import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
 import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
 import { VideoCreateService } from '#services/video/video-create-service'
 import { VideoCurrentUserService } from '#services/video/video-current-user-service'
 import { VideoDeleteService } from '#services/video/video-delete-service'
-import { VideoFavoriteService } from '#services/video/video-favorite-service'
+import { FavoriteService } from '#services/favorite-service'
 import { VideoFindService } from '#services/video/video-find-service'
 import { VideoUpdateService } from '#services/video/video-update-service'
 import { GenreRepository, LanguageRepository } from '#repository/protocols/base-repository'
@@ -43,7 +43,7 @@ export default class AppProvider {
       { protocol: VideoDeleteProtocolService, implementation: VideoDeleteService },
       { protocol: VideoCreateProtocolService, implementation: VideoCreateService },
       { protocol: VideoUpdateProtocolService, implementation: VideoUpdateService },
-      { protocol: VideoFavoriteProtocolService, implementation: VideoFavoriteService },
+      { protocol: FavoriteProtocolService, implementation: FavoriteService },
       { protocol: VideoCurrentUserProtocolService, implementation: VideoCurrentUserService },
 
       { protocol: VideoRepository, implementation: VideoPostgresRepository },

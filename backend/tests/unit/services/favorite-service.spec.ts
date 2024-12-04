@@ -1,6 +1,6 @@
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { createSuccessResponse, createFailureResponse } from '#helpers/method-response'
-import { VideoFavoriteService } from '#services/video/video-favorite-service'
+import { FavoriteService } from '#services/favorite-service'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 import { mockFavoriteRepositoryStub } from '#tests/factories/stubs/repository/mock-favorite-repository-stub'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
@@ -15,7 +15,7 @@ const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
   const authServiceStub = mockAuthServiceStub()
   const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
-  const sut = new VideoFavoriteService(
+  const sut = new FavoriteService(
     videoRepositoryStub,
     favoriteRepositoryStub,
     authServiceStub,
@@ -31,7 +31,7 @@ const makeSut = () => {
   }
 }
 
-test.group('Video Favorite Service', () => {
+test.group('Favorite Service', () => {
   test('should return success if a video was added to favorite', async ({ expect }) => {
     const { sut } = makeSut()
     const response = await sut.addFavorite(faker.string.uuid())

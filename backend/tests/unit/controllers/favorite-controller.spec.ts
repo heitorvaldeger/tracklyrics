@@ -6,12 +6,12 @@ import { createFailureResponse, createSuccessResponse } from '#helpers/method-re
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
-import VideoFavoriteController from '#controllers/video/video-favorite-controller'
+import { mockVideoRequest } from '../../factories/fakes/mock-video-request.js'
+import FavoriteController from '#controllers/favorite-controller'
 import { faker } from '@faker-js/faker'
-import { VideoFavoriteProtocolService } from '#services/video/protocols/video-favorite-protocol-service'
+import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
 
-export const mockVideoFavoriteServiceStub = (): VideoFavoriteProtocolService => ({
+const mockFavoriteServiceStub = (): FavoriteProtocolService => ({
   addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   removeFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   findFavoritesByUserLogged: () => Promise.resolve(createSuccessResponse([])),
@@ -21,13 +21,13 @@ const makeSut = async () => {
     uuid: randomUUID(),
   })
 
-  const videoFavoriteServiceStub = mockVideoFavoriteServiceStub()
-  const sut = new VideoFavoriteController(videoFavoriteServiceStub)
+  const favoriteServiceStub = mockFavoriteServiceStub()
+  const sut = new FavoriteController(favoriteServiceStub)
 
-  return { sut, httpContext, videoFavoriteServiceStub }
+  return { sut, httpContext, favoriteServiceStub }
 }
 
-test.group('Video Favorite Controller', (group) => {
+test.group('Favorite Controller', (group) => {
   group.each.teardown(() => {
     sinon.reset()
     sinon.restore()
@@ -53,8 +53,8 @@ test.group('Video Favorite Controller', (group) => {
   })
 
   test('should returns 404 if a video not found', async ({ expect }) => {
-    const { sut, httpContext, videoFavoriteServiceStub } = await makeSut()
-    stub(videoFavoriteServiceStub, 'removeFavorite').resolves(
+    const { sut, httpContext, favoriteServiceStub } = await makeSut()
+    stub(favoriteServiceStub, 'removeFavorite').resolves(
       createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
@@ -74,9 +74,9 @@ test.group('Video Favorite Controller', (group) => {
   })
 
   test('should returns 500 if video remove favorite throws', async ({ expect }) => {
-    const { sut, httpContext, videoFavoriteServiceStub } = await makeSut()
+    const { sut, httpContext, favoriteServiceStub } = await makeSut()
 
-    stub(videoFavoriteServiceStub, 'removeFavorite').throws(new Error())
+    stub(favoriteServiceStub, 'removeFavorite').throws(new Error())
 
     const httpResponse = await sut.removeFavorite(httpContext)
 
@@ -103,8 +103,8 @@ test.group('Video Favorite Controller', (group) => {
   })
 
   test('should returns 404 if return a video not found', async ({ expect }) => {
-    const { sut, httpContext, videoFavoriteServiceStub } = await makeSut()
-    stub(videoFavoriteServiceStub, 'addFavorite').resolves(
+    const { sut, httpContext, favoriteServiceStub } = await makeSut()
+    stub(favoriteServiceStub, 'addFavorite').resolves(
       createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
@@ -124,12 +124,12 @@ test.group('Video Favorite Controller', (group) => {
   })
 
   test('should returns 500 if video add favorite throws', async ({ expect }) => {
-    const { sut, httpContext, videoFavoriteServiceStub } = await makeSut()
+    const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: faker.string.uuid(),
     })
 
-    stub(videoFavoriteServiceStub, 'addFavorite').throws(new Error())
+    stub(favoriteServiceStub, 'addFavorite').throws(new Error())
 
     const httpResponse = await sut.addFavorite(httpContext)
 

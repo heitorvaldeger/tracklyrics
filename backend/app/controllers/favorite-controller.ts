@@ -2,16 +2,16 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { uuidVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
 import { dispatch } from '#helpers/dispatch'
-import { VideoFavoriteProtocolService } from '#services/video/protocols/video-favorite-protocol-service'
+import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
 
 @inject()
-export default class VideoFavoriteController {
-  constructor(private readonly videoFavoriteService: VideoFavoriteProtocolService) {}
+export default class FavoriteController {
+  constructor(private readonly favoriteService: FavoriteProtocolService) {}
 
   async addFavorite({ request }: HttpContext) {
     try {
       const { uuid } = await uuidVideoValidator.validate(request.params())
-      const added = await this.videoFavoriteService.addFavorite(uuid)
+      const added = await this.favoriteService.addFavorite(uuid)
       return dispatch(added)
     } catch (error) {
       return dispatch({
@@ -24,7 +24,7 @@ export default class VideoFavoriteController {
   async removeFavorite({ request }: HttpContext) {
     try {
       const { uuid } = await uuidVideoValidator.validate(request.params())
-      const result = await this.videoFavoriteService.removeFavorite(uuid)
+      const result = await this.favoriteService.removeFavorite(uuid)
       return dispatch(result)
     } catch (error) {
       return dispatch({

@@ -4,15 +4,15 @@ import { createFailureResponse, createSuccessResponse } from '#helpers/method-re
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { VideoFavoriteProtocolService } from '#services/video/protocols/video-favorite-protocol-service'
+import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
 import { randomUUID } from 'node:crypto'
 import _ from 'lodash'
 import { FavoriteRepository } from '#repository/protocols/favorite-repository'
 import { ApplicationError } from '#helpers/types/ApplicationError'
-import { VideoCurrentUserProtocolService } from './protocols/video-currentuser-protocol-service.js'
+import { VideoCurrentUserProtocolService } from './video/protocols/video-currentuser-protocol-service.js'
 
 @inject()
-export class VideoFavoriteService implements VideoFavoriteProtocolService {
+export class FavoriteService implements FavoriteProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
     private readonly favoriteRepository: FavoriteRepository,
