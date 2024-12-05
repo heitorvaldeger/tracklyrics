@@ -1,6 +1,7 @@
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import { UserRepository } from '#repository/protocols/user-repository'
+
+import { UserRepository } from '../../infra/db/protocols/user-repository.js'
 
 export abstract class RegisterProtocolService {
   abstract register(

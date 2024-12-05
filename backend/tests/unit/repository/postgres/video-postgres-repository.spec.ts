@@ -1,12 +1,14 @@
-import _ from 'lodash'
-import { test } from '@japa/runner'
-import { VideoPostgresRepository } from '#repository/postgres-repository/video-postgres-repository'
-import Video from '#models/video-model/video-lucid'
-import { stub } from 'sinon'
 import db from '@adonisjs/lucid/services/db'
-import { NilUUID } from '#tests/utils/NilUUID'
 import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
+import _ from 'lodash'
+import { stub } from 'sinon'
+
+import Video from '#models/video-model/video-lucid'
 import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
+import { NilUUID } from '#tests/utils/NilUUID'
+
+import { VideoPostgresRepository } from '../../../../app/infra/db/postgres/video-postgres-repository.js'
 
 const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
 export const makeFake = async () => {

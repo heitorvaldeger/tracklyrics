@@ -1,6 +1,8 @@
 import db from '@adonisjs/lucid/services/db'
+
 import { GenreFindModel } from '#models/genre-model/genre-find-model'
-import { GenreRepository } from '#repository/protocols/base-repository'
+
+import { GenreRepository } from '../protocols/base-repository.js'
 
 export class GenrePostgresRepository implements GenreRepository {
   async findAll(): Promise<GenreFindModel[]> {

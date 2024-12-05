@@ -1,14 +1,15 @@
+import { test } from '@japa/runner'
+import { spy, stub } from 'sinon'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { createSuccessResponse, createFailureResponse } from '#helpers/method-response'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoCreateService } from '#services/video/video-create-service'
 import { mockFakeVideoSaveResultModel } from '#tests/factories/fakes/index'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
-import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { test } from '@japa/runner'
-import { stub, spy } from 'sinon'
 import { mockGenreRepositoryStub } from '#tests/factories/stubs/repository/mock-genre-repository-stub'
 import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
+import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()

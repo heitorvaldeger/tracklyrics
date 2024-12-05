@@ -1,7 +1,9 @@
-import { VideoRepository } from '#repository/protocols/video-repository'
 import { inject } from '@adonisjs/core'
+
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
+
+import { VideoRepository } from '../../infra/db/protocols/video-repository.js'
 
 @inject()
 export class VideoCurrentUserService implements VideoCurrentUserProtocolService {

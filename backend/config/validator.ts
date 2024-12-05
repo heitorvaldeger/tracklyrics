@@ -1,6 +1,6 @@
 import { errors } from '@vinejs/vine'
-import { ErrorReporterContract, FieldContext } from '@vinejs/vine/types'
 import vine from '@vinejs/vine'
+import { ErrorReporterContract, FieldContext } from '@vinejs/vine/types'
 
 class JSONAPIErrorReporter implements ErrorReporterContract {
   /**

@@ -1,8 +1,10 @@
-import { test } from '@japa/runner'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
+
+import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
-import { FavoritePostgresRepository } from '#repository/postgres-repository/favorite-postgres-repository'
+
+import { FavoritePostgresRepository } from '../../../../app/infra/db/postgres/favorite-postgres-repository.js'
 
 const makeSut = async () => {
   const { fakeVideo, fakeGenre, fakeLanguage, fakeUser, fakeFavorite } = await mockLucidEntity()

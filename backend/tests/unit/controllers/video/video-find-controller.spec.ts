@@ -1,15 +1,16 @@
+import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
 import _ from 'lodash'
 import sinon, { stub } from 'sinon'
-import { test } from '@japa/runner'
+
 import VideoFindController from '#controllers/video/video-find-controller'
-import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
-import { createFailureResponse } from '#helpers/method-response'
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { NilUUID } from '#tests/utils/NilUUID'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { badRequest, notFound, ok, serverError } from '#helpers/http'
+import { createFailureResponse } from '#helpers/method-response'
 import { mockFakeVideoModel } from '#tests/factories/fakes/index'
-import { faker } from '@faker-js/faker'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
+import { NilUUID } from '#tests/utils/NilUUID'
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(

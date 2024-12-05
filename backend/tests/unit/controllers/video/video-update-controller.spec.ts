@@ -1,14 +1,16 @@
-import sinon, { stub } from 'sinon'
-import { test } from '@japa/runner'
-import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
-import { NilUUID } from '#tests/utils/NilUUID'
-import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
+
+import { test } from '@japa/runner'
+import sinon, { stub } from 'sinon'
+
 import VideoUpdateController from '#controllers/video/video-update-controller'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { badRequest, notFound, ok, serverError } from '#helpers/http'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
+import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { NilUUID } from '#tests/utils/NilUUID'
 
 const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
   update: (_payload: VideoUpdateProtocolService.Params, _uuid: string) =>

@@ -1,5 +1,6 @@
-import { ok } from '#helpers/http'
 import { inject } from '@adonisjs/core'
+
+import { ok } from '#helpers/http'
 import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
 
 @inject()

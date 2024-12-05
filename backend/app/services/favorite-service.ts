@@ -1,14 +1,17 @@
-import { VideoRepository } from '#repository/protocols/video-repository'
+import { randomUUID } from 'node:crypto'
+
 import { inject } from '@adonisjs/core'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import _ from 'lodash'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { ApplicationError } from '#helpers/types/ApplicationError'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
-import { randomUUID } from 'node:crypto'
-import _ from 'lodash'
-import { FavoriteRepository } from '#repository/protocols/favorite-repository'
-import { ApplicationError } from '#helpers/types/ApplicationError'
+
+import { FavoriteRepository } from '../infra/db/protocols/favorite-repository.js'
+import { VideoRepository } from '../infra/db/protocols/video-repository.js'
 import { VideoCurrentUserProtocolService } from './video/protocols/video-currentuser-protocol-service.js'
 
 @inject()

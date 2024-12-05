@@ -1,13 +1,14 @@
+import { test } from '@japa/runner'
 import _ from 'lodash'
 import sinon, { stub } from 'sinon'
-import { test } from '@japa/runner'
-import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { mockVideoRequest } from '../../../factories/fakes/mock-video-request.js'
+
 import VideoCreateController from '#controllers/video/video-create-controller'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
+import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 
 const videoRequest = mockVideoRequest()
 export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({

@@ -1,11 +1,10 @@
-import nodemailer from 'nodemailer'
-
 import { MailResponse } from '@adonisjs/mail'
 import type {
-  NodeMailerMessage,
-  MailTransportContract,
   MailManagerTransportFactory,
+  MailTransportContract,
+  NodeMailerMessage,
 } from '@adonisjs/mail/types'
+import nodemailer from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
 
 /**
@@ -26,30 +25,17 @@ export type MailTrapConfig = {
 export class MailTrapTransport implements MailTransportContract {
   constructor(private readonly config: MailTrapConfig) {}
 
-  private createNodemailerTransport(config: MailTrapConfig) {
-    return nodemailer.createTransport(nodemailer.createTransport(config))
-  }
-
   async send(
     message: NodeMailerMessage,
     config?: MailTrapConfig
   ): Promise<MailResponse<SMTPTransport.SentMessageInfo>> {
-    /**
-     * Create nodemailer transport
-     */
-    const transporter = this.createNodemailerTransport({
-      ...this.config,
+    const transporter = nodemailer.createTransport({
       ...config,
+      ...this.config,
     })
 
-    /**
-     * Send email
-     */
     const response = await transporter.sendMail(message)
 
-    /**
-     * Normalize response to an instance of the "MailResponse" class
-     */
     return new MailResponse(response.messageId, response.envelope, response)
   }
 }

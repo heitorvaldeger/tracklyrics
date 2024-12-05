@@ -1,9 +1,10 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import { loginAuthValidator, registerAuthValidator } from '#validators/auth-validator'
-import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+
 import { dispatch } from '#helpers/dispatch'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
+import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+import { loginAuthValidator, registerAuthValidator } from '#validators/auth-validator'
 
 @inject()
 export default class AuthController {

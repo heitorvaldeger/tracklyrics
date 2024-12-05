@@ -1,8 +1,9 @@
-import { test } from '@japa/runner'
-import sinon, { stub } from 'sinon'
-import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
 import { Authenticator } from '@adonisjs/auth'
 import { Authenticators } from '@adonisjs/auth/types'
+import { test } from '@japa/runner'
+import sinon, { stub } from 'sinon'
+
+import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
 
 const authMock = {
   user: { id: 1 },

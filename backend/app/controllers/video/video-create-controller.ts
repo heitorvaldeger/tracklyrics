@@ -1,8 +1,9 @@
-import type { HttpContext } from '@adonisjs/core/http'
-import { createOrUpdateVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
+import type { HttpContext } from '@adonisjs/core/http'
+
 import { dispatch } from '#helpers/dispatch'
 import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
+import { createOrUpdateVideoValidator } from '#validators/video-validator'
 
 @inject()
 export default class VideoCreateController {

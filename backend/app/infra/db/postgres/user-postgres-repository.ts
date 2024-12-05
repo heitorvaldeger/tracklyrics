@@ -1,7 +1,8 @@
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import { UserRepository } from '#repository/protocols/user-repository'
 import UserLucid from '#models/user-model/user-lucid'
 import { UserModel } from '#models/user-model/user-model'
+
+import { UserRepository } from '../protocols/user-repository.js'
 
 export class UserPostgresRepository implements UserRepository {
   async getUserByEmailOrUsername(

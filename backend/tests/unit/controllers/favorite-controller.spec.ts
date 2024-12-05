@@ -1,16 +1,18 @@
-import sinon, { stub } from 'sinon'
-import { test } from '@japa/runner'
-import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
-import { NilUUID } from '#tests/utils/NilUUID'
-import { mockVideoRequest } from '../../factories/fakes/mock-video-request.js'
-import FavoriteController from '#controllers/favorite-controller'
+
 import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
+import sinon, { stub } from 'sinon'
+
+import FavoriteController from '#controllers/favorite-controller'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { badRequest, notFound, ok, serverError } from '#helpers/http'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
 import { mockFakeFavoriteModel } from '#tests/factories/fakes/mock-fake-video-model'
+import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { NilUUID } from '#tests/utils/NilUUID'
 
 const mockFavoriteServiceStub = (): FavoriteProtocolService => ({
   addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),

@@ -1,6 +1,8 @@
 import db from '@adonisjs/lucid/services/db'
-import { LanguageRepository } from '#repository/protocols/base-repository'
+
 import { LanguageFindModel } from '#models/language-model/language-find-model'
+
+import { LanguageRepository } from '../protocols/base-repository.js'
 
 export class LanguagePostgresRepository implements LanguageRepository {
   async findAll() {

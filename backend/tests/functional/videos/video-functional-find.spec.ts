@@ -1,7 +1,8 @@
+import { test } from '@japa/runner'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { test } from '@japa/runner'
 
 const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
 test.group('Video Find Route', (group) => {

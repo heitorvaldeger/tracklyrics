@@ -1,12 +1,14 @@
 import db from '@adonisjs/lucid/services/db'
-import { VideoRepository } from '#repository/protocols/video-repository'
-import { VideoFindModel } from '#models/video-model/video-find-model'
-import { toSnakeCase } from '#helpers/to-snake-case'
-import { toCamelCase } from '#helpers/to-camel-case'
-import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { DatabaseQueryBuilderContract } from '@adonisjs/lucid/types/querybuilder'
-import VideoLucid from '#models/video-model/video-lucid'
+
+import { toCamelCase } from '#helpers/to-camel-case'
+import { toSnakeCase } from '#helpers/to-snake-case'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
+import { VideoFindModel } from '#models/video-model/video-find-model'
+import VideoLucid from '#models/video-model/video-lucid'
+import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
+
+import { VideoRepository } from '../protocols/video-repository.js'
 
 export class VideoPostgresRepository implements VideoRepository {
   async find(uuid: string): Promise<VideoFindModel | null> {

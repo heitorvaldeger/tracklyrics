@@ -1,7 +1,9 @@
+import db from '@adonisjs/lucid/services/db'
+
 import { toCamelCase } from '#helpers/to-camel-case'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
-import { FavoriteRepository } from '#repository/protocols/favorite-repository'
-import db from '@adonisjs/lucid/services/db'
+
+import { FavoriteRepository } from '../protocols/favorite-repository.js'
 
 export class FavoritePostgresRepository implements FavoriteRepository {
   async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {

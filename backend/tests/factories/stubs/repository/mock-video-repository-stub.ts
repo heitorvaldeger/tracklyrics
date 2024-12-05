@@ -1,5 +1,6 @@
-import { VideoRepository } from '#repository/protocols/video-repository'
 import { mockFakeVideoModel, mockFakeVideoSaveResultModel } from '#tests/factories/fakes/index'
+
+import { VideoRepository } from '../../../../app/infra/db/protocols/video-repository.js'
 
 export const mockVideoRepositoryStub = (): VideoRepository => ({
   find: (uuid: string) => Promise.resolve(mockFakeVideoModel()),

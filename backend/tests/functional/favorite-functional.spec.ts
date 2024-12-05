@@ -1,10 +1,11 @@
+import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { faker } from '@faker-js/faker'
-import { test } from '@japa/runner'
 
 test.group('FavoriteLucid Routes', (group) => {
   test('/POST favorites/{uuid} - should return 200 if video add favorite on success', async ({

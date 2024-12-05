@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+
 import UserLucid from '#models/user-model/user-lucid'
 
 export const mockUserEntity = async (email?: string, username?: string) => {

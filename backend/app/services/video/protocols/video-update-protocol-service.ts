@@ -1,4 +1,5 @@
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
+
 import { VideoCreateProtocolService } from './video-create-protocol-service.js'
 
 export abstract class VideoUpdateProtocolService {

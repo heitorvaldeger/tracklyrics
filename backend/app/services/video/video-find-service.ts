@@ -1,11 +1,13 @@
-import { VideoRepository } from '#repository/protocols/video-repository'
 import { inject } from '@adonisjs/core'
-import { VideoFindProtocolService } from './protocols/video-find-protocol-service.js'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import _ from 'lodash'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { VideoFindModel } from '#models/video-model/video-find-model'
-import _ from 'lodash'
+
+import { VideoRepository } from '../../infra/db/protocols/video-repository.js'
+import { VideoFindProtocolService } from './protocols/video-find-protocol-service.js'
 
 @inject()
 export class VideoFindService implements VideoFindProtocolService {

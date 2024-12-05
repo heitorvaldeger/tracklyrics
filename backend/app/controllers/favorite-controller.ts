@@ -1,8 +1,9 @@
-import type { HttpContext } from '@adonisjs/core/http'
-import { uuidVideoValidator } from '#validators/video-validator'
 import { inject } from '@adonisjs/core'
+import type { HttpContext } from '@adonisjs/core/http'
+
 import { dispatch } from '#helpers/dispatch'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
+import { uuidVideoValidator } from '#validators/video-validator'
 
 @inject()
 export default class FavoriteController {

@@ -1,5 +1,6 @@
-import LanguageController from '#controllers/language-controller'
 import { test } from '@japa/runner'
+
+import LanguageController from '#controllers/language-controller'
 import { ok } from '#helpers/http'
 import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
 

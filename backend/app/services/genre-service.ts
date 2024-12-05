@@ -1,7 +1,9 @@
 import { inject } from '@adonisjs/core'
-import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
+
 import { GenreFindModel } from '#models/genre-model/genre-find-model'
-import { GenreRepository } from '#repository/protocols/base-repository'
+import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
+
+import { GenreRepository } from '../infra/db/protocols/base-repository.js'
 
 @inject()
 export class GenreService implements GenreProtocolService {

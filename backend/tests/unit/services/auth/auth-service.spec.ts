@@ -1,12 +1,14 @@
-import { test } from '@japa/runner'
-import { AuthService } from '#services/auth/auth-service'
-import sinon, { SinonStub, stub } from 'sinon'
-import { UserRepository } from '#repository/protocols/user-repository'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
-import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
 import hash from '@adonisjs/core/services/hash'
+import { test } from '@japa/runner'
+import sinon, { SinonStub, stub } from 'sinon'
+
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { AuthService } from '#services/auth/auth-service'
+import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
+import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
+
+import { UserRepository } from '../../../../app/infra/db/protocols/user-repository.js'
 
 export const mockUserRepositoryStub = () => {
   const userRepositoryStub: UserRepository = {

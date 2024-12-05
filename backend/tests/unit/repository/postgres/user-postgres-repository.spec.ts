@@ -1,7 +1,10 @@
-import { test } from '@japa/runner'
-import { UserPostgresRepository } from '#repository/postgres-repository/user-postgres-repository'
 import { randomUUID } from 'node:crypto'
+
+import { test } from '@japa/runner'
+
 import UserLucid from '#models/user-model/user-lucid'
+
+import { UserPostgresRepository } from '../../../../app/infra/db/postgres/user-postgres-repository.js'
 
 const makeSut = () => {
   const sut = new UserPostgresRepository()

@@ -1,7 +1,9 @@
 import { inject } from '@adonisjs/core'
-import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
+
 import { LanguageFindModel } from '#models/language-model/language-find-model'
-import { LanguageRepository } from '#repository/protocols/base-repository'
+import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
+
+import { LanguageRepository } from '../infra/db/protocols/base-repository.js'
 
 @inject()
 export class LanguageService implements LanguageProtocolService {

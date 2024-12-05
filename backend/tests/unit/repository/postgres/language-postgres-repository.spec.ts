@@ -1,7 +1,9 @@
-import _ from 'lodash'
 import { test } from '@japa/runner'
-import { LanguagePostgresRepository } from '#repository/postgres-repository/language-postgres-repository'
+import _ from 'lodash'
+
 import { mockLanguageEntity } from '#tests/factories/fakes/index'
+
+import { LanguagePostgresRepository } from '../../../../app/infra/db/postgres/language-postgres-repository.js'
 
 const makeSut = () => {
   const sut = new LanguagePostgresRepository()

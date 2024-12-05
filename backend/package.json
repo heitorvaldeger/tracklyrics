@@ -39,7 +39,7 @@
     "#config/*": "./config/*.js",
     "#helpers/*": "./app/helpers/*.js",
     "#interfaces/*": "./app/interfaces/*.js",
-    "#repository/*": "./app/repository/*.js",
+    "#infra/*": "./app/infra/*.js",
     "#enums/*": "./app/enums/*.js",
     "#params/*": "./app/params/*.js"
   },
@@ -65,6 +65,8 @@
     "@types/sinon": "^17.0.3",
     "c8": "^10.1.2",
     "eslint": "^9.9.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "hot-hook": "^0.2.6",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",

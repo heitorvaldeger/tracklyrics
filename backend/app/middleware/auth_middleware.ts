@@ -1,11 +1,11 @@
-import type { HttpContext } from '@adonisjs/core/http'
-import type { NextFn } from '@adonisjs/core/types/http'
 import type { Authenticators } from '@adonisjs/auth/types'
-import { AuthService } from '#services/auth/auth-service'
 import { inject } from '@adonisjs/core'
+import type { HttpContext } from '@adonisjs/core/http'
+import app from '@adonisjs/core/services/app'
+import type { NextFn } from '@adonisjs/core/types/http'
+
 import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import app from '@adonisjs/core/services/app'
 
 /**
  * Auth middleware is used authenticate HTTP requests and deny

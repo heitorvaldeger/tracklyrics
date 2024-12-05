@@ -1,5 +1,6 @@
-import { LanguageLucid } from '#models/language-model/language-lucid'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
+
+import { LanguageLucid } from '#models/language-model/language-lucid'
 
 export default class extends BaseSeeder {
   static environment = ['development']

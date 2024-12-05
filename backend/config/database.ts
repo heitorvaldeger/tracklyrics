@@ -1,6 +1,7 @@
-import env from '#start/env'
-import pg from 'pg'
 import { defineConfig } from '@adonisjs/lucid'
+import pg from 'pg'
+
+import env from '#start/env'
 
 pg.types.setTypeParser(pg.types.builtins.INT8, Number.parseInt)
 pg.types.setTypeParser(pg.types.builtins.NUMERIC, Number.parseFloat)

@@ -1,5 +1,6 @@
-import GenreController from '#controllers/genre-controller'
 import { test } from '@japa/runner'
+
+import GenreController from '#controllers/genre-controller'
 import { ok } from '#helpers/http'
 import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
 

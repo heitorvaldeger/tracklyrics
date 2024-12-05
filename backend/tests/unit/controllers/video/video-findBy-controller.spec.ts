@@ -1,12 +1,13 @@
-import _ from 'lodash'
 import { test } from '@japa/runner'
+import _ from 'lodash'
+import { spy, stub } from 'sinon'
+
 import VideoFindController from '#controllers/video/video-find-controller'
-import { stub, spy } from 'sinon'
 import { badRequest, ok, serverError } from '#helpers/http'
-import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { NilUUID } from '#tests/utils/NilUUID'
 import { mockFakeVideoModel } from '#tests/factories/fakes/index'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
+import { NilUUID } from '#tests/utils/NilUUID'
 
 const makeSut = () => {
   const videoServiceStub = mockVideoFindServiceStub()

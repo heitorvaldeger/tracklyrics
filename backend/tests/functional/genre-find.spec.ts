@@ -1,5 +1,6 @@
-import GenreLucid from '#models/genre-model/genre-lucid'
 import { test } from '@japa/runner'
+
+import GenreLucid from '#models/genre-model/genre-lucid'
 
 test.group('Genre Routes', (group) => {
   test('/GET genres - should return 200 on load genres success', async ({ client, expect }) => {

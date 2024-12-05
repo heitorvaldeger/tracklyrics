@@ -1,5 +1,6 @@
-import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 import { faker } from '@faker-js/faker'
+
+import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 
 export const mockUserRegisterRequest = (): RegisterProtocolService.Params => ({
   email: faker.internet.email(),

@@ -1,12 +1,13 @@
-import { expect } from '@japa/expect'
-import { apiClient } from '@japa/api-client'
 import app from '@adonisjs/core/services/app'
-import type { Config } from '@japa/runner/types'
-import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import testUtils from '@adonisjs/core/services/test_utils'
+import { apiClient } from '@japa/api-client'
+import { expect } from '@japa/expect'
+import { pluginAdonisJS } from '@japa/plugin-adonisjs'
+import type { Config } from '@japa/runner/types'
+
+import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import GenreLucid from '#models/genre-model/genre-lucid'
 import { LanguageLucid } from '#models/language-model/language-lucid'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
 

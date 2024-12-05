@@ -1,9 +1,10 @@
-import { test } from '@japa/runner'
-import { VideoFindService } from '#services/video/video-find-service'
-import { createSuccessResponse } from '#helpers/method-response'
-import _ from 'lodash'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
 import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
+import _ from 'lodash'
+
+import { createSuccessResponse } from '#helpers/method-response'
+import { VideoFindService } from '#services/video/video-find-service'
+import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()

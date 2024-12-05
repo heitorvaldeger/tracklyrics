@@ -1,6 +1,7 @@
-import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
 import _ from 'lodash'
+
 import { createSuccessResponse } from '#helpers/method-response'
+import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
 import { mockFakeVideoModel } from '#tests/factories/fakes/mock-fake-video-model'
 
 export const mockVideoFindServiceStub = (): VideoFindProtocolService => ({

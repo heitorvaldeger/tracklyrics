@@ -1,7 +1,9 @@
-import _ from 'lodash'
 import { test } from '@japa/runner'
-import { GenrePostgresRepository } from '#repository/postgres-repository/genre-postgres-repository'
+import _ from 'lodash'
+
 import { mockGenreEntity } from '#tests/factories/fakes/index'
+
+import { GenrePostgresRepository } from '../../../../app/infra/db/postgres/genre-postgres-repository.js'
 
 const makeSut = () => {
   const sut = new GenrePostgresRepository()

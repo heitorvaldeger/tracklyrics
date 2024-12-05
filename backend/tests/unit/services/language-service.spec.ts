@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+
 import { LanguageService } from '#services/language-service'
 import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
 

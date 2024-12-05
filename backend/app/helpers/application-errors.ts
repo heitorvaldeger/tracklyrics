@@ -1,4 +1,4 @@
-import { HttpStatusCode } from '../enums/HttpStatusCode.js'
+import { HttpStatusCode } from '#enums/http-status-code'
 
 export const APPLICATION_ERRORS = {
   VIDEO_NOT_FOUND: {

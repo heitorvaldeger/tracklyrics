@@ -1,5 +1,6 @@
-import GenreLucid from '#models/genre-model/genre-lucid'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
+
+import GenreLucid from '#models/genre-model/genre-lucid'
 
 export default class extends BaseSeeder {
   async run() {

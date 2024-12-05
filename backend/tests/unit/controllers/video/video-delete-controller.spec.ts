@@ -1,13 +1,14 @@
-import sinon, { stub } from 'sinon'
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
+import sinon, { stub } from 'sinon'
+
+import VideoDeleteController from '#controllers/video/video-delete-controller'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { NilUUID } from '#tests/utils/NilUUID'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { faker } from '@faker-js/faker'
-import VideoDeleteController from '#controllers/video/video-delete-controller'
 import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
+import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { NilUUID } from '#tests/utils/NilUUID'
 
 export const mockVideoDeleteServiceStub = (): VideoDeleteProtocolService => ({
   delete: (uuid: string) => Promise.resolve(createSuccessResponse(true)),

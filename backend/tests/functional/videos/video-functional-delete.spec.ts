@@ -1,8 +1,9 @@
+import { test } from '@japa/runner'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import UserLucid from '#models/user-model/user-lucid'
 import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
-import { test } from '@japa/runner'
 
 test.group('Video Delete Route', (group) => {
   test('/DELETE videos/{uuid} - should return 404 if video not belong user uuid', async ({

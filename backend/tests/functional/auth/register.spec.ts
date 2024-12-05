@@ -1,5 +1,6 @@
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { test } from '@japa/runner'
+
+import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 
 test.group('Auth Register Route', () => {
   test('/POST register/ - should return 200 on register user with success', async ({

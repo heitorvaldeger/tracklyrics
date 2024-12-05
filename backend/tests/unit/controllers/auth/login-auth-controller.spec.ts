@@ -1,12 +1,13 @@
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
-import { badRequest, forbidden, ok, serverError } from '#helpers/http'
+
 import AuthController from '#controllers/auth-controller'
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { badRequest, forbidden, ok, serverError } from '#helpers/http'
+import { createFailureResponse } from '#helpers/method-response'
+import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
-import { createFailureResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
 
 const makeSut = () => {
   const httpContext = makeHttpRequest(mockUserRegisterRequest())

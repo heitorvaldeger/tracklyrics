@@ -1,14 +1,17 @@
-import { inject } from '@adonisjs/core'
-import { AuthProtocolService } from '../protocols/auth-protocol-service.js'
-import { RegisterProtocolService } from '../protocols/register-protocol-service.js'
-import hash from '@adonisjs/core/services/hash'
-import { UserRepository } from '#repository/protocols/user-repository'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import { randomUUID } from 'node:crypto'
+
+import { inject } from '@adonisjs/core'
+import hash from '@adonisjs/core/services/hash'
+
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import { AuthStrategy } from './strategy/auth-strategy.js'
+import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
+import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+
+import { UserRepository } from '../../infra/db/protocols/user-repository.js'
 
 @inject()
 export class AuthService implements AuthProtocolService, RegisterProtocolService {

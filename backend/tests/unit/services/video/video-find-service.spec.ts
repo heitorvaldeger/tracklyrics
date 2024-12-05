@@ -1,12 +1,13 @@
-import { test } from '@japa/runner'
-import { stub } from 'sinon'
-import { VideoFindService } from '#services/video/video-find-service'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import _ from 'lodash'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { mockFakeVideoModel } from '#tests/factories/fakes/index'
 import { faker } from '@faker-js/faker'
+import { test } from '@japa/runner'
+import _ from 'lodash'
+import { stub } from 'sinon'
+
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { VideoFindService } from '#services/video/video-find-service'
+import { mockFakeVideoModel } from '#tests/factories/fakes/index'
+import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()

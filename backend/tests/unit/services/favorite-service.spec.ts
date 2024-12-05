@@ -1,14 +1,15 @@
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { createSuccessResponse, createFailureResponse } from '#helpers/method-response'
-import { FavoriteService } from '#services/favorite-service'
-import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
-import { mockFavoriteRepositoryStub } from '#tests/factories/stubs/repository/mock-favorite-repository-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
+
+import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { FavoriteService } from '#services/favorite-service'
 import { mockFakeFavoriteModel } from '#tests/factories/fakes/mock-fake-video-model'
+import { mockFavoriteRepositoryStub } from '#tests/factories/stubs/repository/mock-favorite-repository-stub'
+import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
+import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
 
 const makeSut = () => {
   const favoriteRepositoryStub = mockFavoriteRepositoryStub()

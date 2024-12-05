@@ -1,6 +1,7 @@
 import { defineConfig } from '@adonisjs/mail'
-import env from '#start/env'
+
 import { mailTrapTransport } from '#services/externals/mail/mailtrap-transport'
+import env from '#start/env'
 
 const mailConfig = defineConfig({
   default: 'mailTrap',

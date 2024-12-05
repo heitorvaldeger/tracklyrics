@@ -1,8 +1,9 @@
+import { test } from '@japa/runner'
+
 import { APPLICATION_ERRORS } from '#helpers/application-errors'
 import UserLucid from '#models/user-model/user-lucid'
 import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
 import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
-import { test } from '@japa/runner'
 
 test.group('Video Create Route', (group) => {
   test('/POST videos/ - should return 200 on create if video create on success', async ({
