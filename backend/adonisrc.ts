@@ -38,6 +38,7 @@ export default defineConfig({
     () => import('@adonisjs/auth/auth_provider'),
     () => import('#providers/AppProvider'),
     () => import('@adonisjs/mail/mail_provider'),
+    () => import('@adonisjs/redis/redis_provider'),
   ],
 
   /*

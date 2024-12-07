@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { VideoFindProtocolService } from '#services/video/protocols/video-find-protocol-service'
+import { VideoFindProtocolService } from '#services/protocols/video/video-find-protocol-service'
 import { findByVideoValidator, uuidVideoValidator } from '#validators/video-validator'
 
 @inject()

@@ -5,25 +5,27 @@ import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import FavoriteController from '#controllers/favorite-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
-import { mockFakeFavoriteModel } from '#tests/factories/fakes/mock-fake-video-model'
-import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockFavoriteModel } from '#tests/factories/mocks/mock-video-model'
 import { NilUUID } from '#tests/utils/NilUUID'
 
 const mockFavoriteServiceStub = (): FavoriteProtocolService => ({
   addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   removeFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   findFavoritesByUserLogged: () =>
-    Promise.resolve(createSuccessResponse([mockFakeFavoriteModel(), mockFakeFavoriteModel()])),
+    Promise.resolve(createSuccessResponse([mockFavoriteModel(), mockFavoriteModel()])),
 })
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(mockVideoRequest(), {
-    uuid: randomUUID(),
-  })
+  const httpContext = makeHttpRequest(
+    {},
+    {
+      uuid: randomUUID(),
+    }
+  )
 
   const favoriteServiceStub = mockFavoriteServiceStub()
   const sut = new FavoriteController(favoriteServiceStub)
@@ -31,12 +33,7 @@ const makeSut = async () => {
   return { sut, httpContext, favoriteServiceStub }
 }
 
-test.group('FavoriteLucid Controller', (group) => {
-  group.each.teardown(() => {
-    sinon.reset()
-    sinon.restore()
-  })
-
+test.group('Favorite Controller', () => {
   test('should returns 400 if invalid video uuid is provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
@@ -59,7 +56,7 @@ test.group('FavoriteLucid Controller', (group) => {
   test('should returns 404 if a video not found', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(favoriteServiceStub, 'removeFavorite').resolves(
-      createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
@@ -67,7 +64,7 @@ test.group('FavoriteLucid Controller', (group) => {
 
     const httpResponse = await sut.removeFavorite(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
   test('should returns 200 if video was remove favorite on success', async ({ expect }) => {
@@ -109,7 +106,7 @@ test.group('FavoriteLucid Controller', (group) => {
   test('should returns 404 if return a video not found', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(favoriteServiceStub, 'addFavorite').resolves(
-      createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
@@ -117,7 +114,7 @@ test.group('FavoriteLucid Controller', (group) => {
 
     const httpResponse = await sut.addFavorite(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
   test('should returns 200 if video was add favorite on success', async ({ expect }) => {
@@ -145,7 +142,7 @@ test.group('FavoriteLucid Controller', (group) => {
 
     const httpResponse = await sut.findFavoritesByUserLogged()
 
-    expect(httpResponse).toEqual(ok([mockFakeFavoriteModel(), mockFakeFavoriteModel()]))
+    expect(httpResponse).toEqual(ok([mockFavoriteModel(), mockFavoriteModel()]))
   })
 
   test('should returns 500 if find favorites by user logged throws', async ({ expect }) => {

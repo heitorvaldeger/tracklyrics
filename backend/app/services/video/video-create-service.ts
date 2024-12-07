@@ -2,21 +2,21 @@ import { randomUUID } from 'node:crypto'
 
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
+import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
+import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
-import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
-
-import { GenreRepository, LanguageRepository } from '../../infra/db/protocols/base-repository.js'
-import { VideoRepository } from '../../infra/db/protocols/video-repository.js'
+import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
 
 @inject()
 export class VideoCreateService implements VideoCreateProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
-    private readonly authService: AuthProtocolService,
+    private readonly authStrategy: AuthStrategy,
     private readonly genreRepository: GenreRepository,
     private readonly languageRepository: LanguageRepository
   ) {}
@@ -27,7 +27,7 @@ export class VideoCreateService implements VideoCreateProtocolService {
     const uuid = randomUUID()
 
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {
-      return createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
+      return createFailureResponse(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS)
     }
 
     const [genre, language] = await Promise.all([
@@ -36,18 +36,18 @@ export class VideoCreateService implements VideoCreateProtocolService {
     ])
 
     if (!genre) {
-      return createFailureResponse(APPLICATION_ERRORS.GENRE_NOT_FOUND)
+      return createFailureResponse(APPLICATION_MESSAGES.GENRE_NOT_FOUND)
     }
 
     if (!language) {
-      return createFailureResponse(APPLICATION_ERRORS.LANGUAGE_NOT_FOUND)
+      return createFailureResponse(APPLICATION_MESSAGES.LANGUAGE_NOT_FOUND)
     }
 
     const newVideo = await this.videoRepository.create({
       ...payload,
       languageId: payload.languageId,
       genreId: payload.genreId,
-      userId: this.authService.getUserId(),
+      userId: this.authStrategy.getUserId(),
       uuid,
     })
 

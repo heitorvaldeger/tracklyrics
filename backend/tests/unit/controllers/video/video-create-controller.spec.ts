@@ -1,14 +1,13 @@
 import { test } from '@japa/runner'
-import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 
 import VideoCreateController from '#controllers/video/video-create-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
-import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoRequest } from '#tests/factories/mocks/mock-video-request'
 
 const videoRequest = mockVideoRequest()
 export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({
@@ -17,7 +16,7 @@ export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({
 })
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(mockVideoRequest())
+  const httpContext = makeHttpRequest(videoRequest)
 
   const videoCreateServiceStub = mockVideoCreateServiceStub()
   const sut = new VideoCreateController(videoCreateServiceStub)
@@ -207,11 +206,11 @@ test.group('VideoCreateController', (group) => {
   test('should returns 422 if link youtube already exists', async ({ expect }) => {
     const { sut, httpContext, videoCreateServiceStub } = await makeSut()
     stub(videoCreateServiceStub, 'create').resolves(
-      createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
+      createFailureResponse(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS)
     )
 
     const httpResponse = await sut.create(httpContext)
 
-    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
+    expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS))
   })
 })

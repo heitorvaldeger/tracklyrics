@@ -1,19 +1,18 @@
 import { inject } from '@adonisjs/core'
 
-import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
-
-import { VideoRepository } from '../../infra/db/protocols/video-repository.js'
+import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
+import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
 
 @inject()
 export class VideoCurrentUserService implements VideoCurrentUserProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
-    private readonly authService: AuthProtocolService
+    private readonly authStrategy: AuthStrategy
   ) {}
 
   async isNotVideoOwnedByCurrentUser(videoUuid: string): Promise<boolean> {
-    const userId = this.authService.getUserId()
+    const userId = this.authStrategy.getUserId()
     const userIdFromVideo = await this.videoRepository.getUserId(videoUuid)
 
     return userIdFromVideo !== userId

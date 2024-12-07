@@ -1,16 +1,19 @@
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, forbidden, ok, serverError } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 
 const makeSut = () => {
-  const httpContext = makeHttpRequest(mockUserRegisterRequest())
+  const httpContext = makeHttpRequest({
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+  })
   const authServiceStub = mockAuthServiceStub()
   const sut = new AuthController(authServiceStub, authServiceStub)
 
@@ -92,11 +95,11 @@ test.group('AuthController.login', (group) => {
   test('should return 401 if invalid credentials is provided', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'login').resolves(
-      createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID)
+      createFailureResponse(APPLICATION_MESSAGES.CREDENTIALS_INVALID)
     )
     const httpResponse = await sut.login(httpContext)
 
-    expect(httpResponse).toEqual(forbidden(APPLICATION_ERRORS.CREDENTIALS_INVALID))
+    expect(httpResponse).toEqual(forbidden(APPLICATION_MESSAGES.CREDENTIALS_INVALID))
   })
 
   test('should return 500 if create accessToken return throws', async ({ expect }) => {

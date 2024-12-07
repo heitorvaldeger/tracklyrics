@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 
-import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 
 test.group('Video FindBy Route', (group) => {
   test('/GET videos?{genreId} - should return a list videos if genreId is provided', async ({

@@ -1,9 +1,11 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
-import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
+import { mockVideoRequest } from '#tests/factories/mocks/mock-video-request'
+
+const httpRequest = mockVideoRequest()
 
 test.group('Video Create Route', (group) => {
   test('/POST videos/ - should return 200 on create if video create on success', async ({
@@ -11,7 +13,6 @@ test.group('Video Create Route', (group) => {
     expect,
   }) => {
     const { fakeUser, fakeGenre, fakeLanguage } = await mockLucidEntity()
-    const httpRequest = mockVideoRequest()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -39,7 +40,7 @@ test.group('Video Create Route', (group) => {
     expect,
   }) => {
     const { fakeUser, fakeLanguage } = await mockLucidEntity()
-    const { genreId, artist, ...httpRequest } = mockVideoRequest()
+    const { genreId, artist, ...rest } = httpRequest
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -49,7 +50,7 @@ test.group('Video Create Route', (group) => {
     const response = await client
       .post(`/videos`)
       .fields({
-        ...httpRequest,
+        ...rest,
         languageId: fakeLanguage.id,
       })
       .bearerToken(accessTokenValue)
@@ -82,7 +83,7 @@ test.group('Video Create Route', (group) => {
     expect,
   }) => {
     const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockLucidEntity()
-    const { genreId, languageId, ...httpRequest } = mockVideoRequest()
+    const { genreId, languageId, ...rest } = httpRequest
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -92,7 +93,7 @@ test.group('Video Create Route', (group) => {
     const response = await client
       .post(`/videos`)
       .fields({
-        ...httpRequest,
+        ...rest,
         linkYoutube: fakeVideo.linkYoutube,
         languageId: fakeLanguage.id,
         genreId: fakeGenre.id,
@@ -100,6 +101,6 @@ test.group('Video Create Route', (group) => {
       .bearerToken(accessTokenValue)
 
     expect(response.status()).toBe(422)
-    expect(response.body()).toEqual(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS)
   })
 })

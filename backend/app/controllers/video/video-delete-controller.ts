@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
+import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
 import { uuidVideoValidator } from '#validators/video-validator'
 
 @inject()

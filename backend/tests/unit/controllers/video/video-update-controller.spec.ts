@@ -4,12 +4,12 @@ import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import VideoUpdateController from '#controllers/video/video-update-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
-import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoRequest } from '#tests/factories/mocks/mock-video-request'
 import { NilUUID } from '#tests/utils/NilUUID'
 
 const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
@@ -212,7 +212,7 @@ test.group('Video Update Controller', (group) => {
   test('should returns 404 if a video return not found', async ({ expect }) => {
     const { sut, httpContext, videoUpdateServiceStub } = await makeSut()
     stub(videoUpdateServiceStub, 'update').resolves(
-      createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
@@ -220,7 +220,7 @@ test.group('Video Update Controller', (group) => {
 
     const httpResponse = await sut.update(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
   test('should returns 200 if video updated on success', async ({ expect }) => {

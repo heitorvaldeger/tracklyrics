@@ -4,8 +4,8 @@ import { spy, stub } from 'sinon'
 
 import VideoFindController from '#controllers/video/video-find-controller'
 import { badRequest, ok, serverError } from '#helpers/http'
-import { mockFakeVideoModel } from '#tests/factories/fakes/index'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
 import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
 import { NilUUID } from '#tests/utils/NilUUID'
 
@@ -20,7 +20,7 @@ test.group('VideoFindController.findBy()', () => {
   test('should returns 200 if return a list videos on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     const httpResponse = await sut.findBy(httpContext)
-    expect(httpResponse).toEqual(ok([mockFakeVideoModel()]))
+    expect(httpResponse).toEqual(ok([mockVideoModel()]))
   })
 
   test('should calls VideoFindService findBy with correct values', async ({ expect }) => {

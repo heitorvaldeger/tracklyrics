@@ -1,14 +1,22 @@
+import { UserEmailStatus } from '#enums/user-email-status'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
-import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-
-import { UserRepository } from '../../infra/db/protocols/user-repository.js'
 
 export abstract class RegisterProtocolService {
   abstract register(
     payload: RegisterProtocolService.Params
-  ): Promise<IMethodResponse<UserAccessTokenModel>>
+  ): Promise<IMethodResponse<RegisterProtocolService.UserRegisterModel>>
 }
 
 export namespace RegisterProtocolService {
-  export type Params = Omit<UserRepository.CreateParams, 'uuid'>
+  export type Params = {
+    email: string
+    username: string
+    password: string
+    firstName: string
+    lastName: string
+  }
+  export type UserRegisterModel = {
+    uuid: string
+    emailStatus?: UserEmailStatus
+  }
 }

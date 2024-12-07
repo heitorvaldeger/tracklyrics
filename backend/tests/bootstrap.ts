@@ -1,9 +1,11 @@
 import app from '@adonisjs/core/services/app'
 import testUtils from '@adonisjs/core/services/test_utils'
+import mail from '@adonisjs/mail/services/main'
 import { apiClient } from '@japa/api-client'
 import { expect } from '@japa/expect'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import type { Config } from '@japa/runner/types'
+import Sinon from 'sinon'
 
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import GenreLucid from '#models/genre-model/genre-lucid'
@@ -41,6 +43,9 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
   suite.onGroup((group) => {
     group.tap((test) => {
       test.setup(async () => {
+        mail.fake()
+        Sinon.reset()
+        Sinon.restore()
         await FavoriteLucid.query().del()
         await VideoLucid.query().del()
         await UserLucid.query().del()

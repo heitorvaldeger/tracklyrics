@@ -2,7 +2,6 @@ import { MailResponse } from '@adonisjs/mail'
 import nodemailer from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
 
-import { MailTrapConfig } from '#infra/mail/nodemailer/protocols/mailtrap-config-protocol'
 import {
   MailManagerTransportFactory,
   MailTransportContract,
@@ -13,25 +12,39 @@ import {
  * Transport implementation
  */
 export class MailTrapTransport implements MailTransportContract {
-  constructor(private readonly config: MailTrapConfig) {}
+  constructor(private readonly config: MailTrapTransport.Config) {}
 
   async send(
     message: NodeMailerMessage,
-    config?: MailTrapConfig
+    config?: MailTrapTransport.Config
   ): Promise<MailResponse<SMTPTransport.SentMessageInfo>> {
     const transporter = nodemailer.createTransport({
-      ...config,
       ...this.config,
+      ...config,
     })
 
-    const response = await transporter.sendMail(message)
+    const response = await transporter.sendMail({
+      ...message,
+    })
 
     return new MailResponse(response.messageId, response.envelope, response)
   }
 }
 
-export function mailTrapTransport(config: MailTrapConfig): MailManagerTransportFactory {
-  return () => {
-    return new MailTrapTransport(config)
+export const mailTrapTransport =
+  (config: MailTrapTransport.Config): MailManagerTransportFactory =>
+  () =>
+    new MailTrapTransport({
+      ...config,
+    })
+
+export namespace MailTrapTransport {
+  export type Config = {
+    host: string
+    port: number
+    auth: {
+      user: string
+      pass: string
+    }
   }
 }

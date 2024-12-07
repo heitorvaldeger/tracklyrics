@@ -3,10 +3,10 @@ import { test } from '@japa/runner'
 import _ from 'lodash'
 import { stub } from 'sinon'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoFindService } from '#services/video/video-find-service'
-import { mockFakeVideoModel } from '#tests/factories/fakes/index'
+import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
 
 const makeSut = () => {
@@ -22,7 +22,7 @@ test.group('VideoFindService.find()', () => {
 
     const video = await sut.find(faker.string.uuid())
 
-    expect(video).toEqual(createSuccessResponse(mockFakeVideoModel()))
+    expect(video).toEqual(createSuccessResponse(mockVideoModel()))
   })
 
   test('should return an error if a video not found', async ({ expect }) => {
@@ -30,6 +30,6 @@ test.group('VideoFindService.find()', () => {
     stub(videoRepositoryStub, 'find').resolves(null)
     const video = await sut.find(faker.string.uuid())
 
-    expect(video).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(video).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 })

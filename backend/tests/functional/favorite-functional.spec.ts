@@ -1,10 +1,8 @@
-import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
+import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 
 test.group('FavoriteLucid Routes', (group) => {
@@ -58,7 +56,7 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.post(`favorites/${NilUUID}`).bearerToken(accessTokenValue)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
   })
 
   test('/POST favorites/{uuid} - should return 401 on add favorite if user unauthorized', async ({
@@ -123,7 +121,7 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.delete(`favorites/${NilUUID}`).bearerToken(accessTokenValue)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
   })
 
   test('/DELETE favorites/{uuid} - should return 401 on remove favorite if user unauthorized', async ({

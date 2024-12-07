@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoDeleteService } from '#services/video/video-delete-service'
 import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
@@ -34,7 +34,7 @@ test.group('Video Delete Service', (group) => {
     stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
     const response = await sut.delete(faker.string.uuid())
 
-    expect(response).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
   test('should return an error if video not belong from user', async ({ expect }) => {
@@ -42,6 +42,6 @@ test.group('Video Delete Service', (group) => {
     stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
     const response = await sut.delete(faker.string.uuid())
 
-    expect(response).toEqual(createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 })

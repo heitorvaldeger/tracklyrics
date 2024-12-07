@@ -1,10 +1,9 @@
 export abstract class AuthProtocolService {
-  abstract getUserId(): number
-  abstract login(params: AuthProtocolService.Params): any
+  abstract login(params: AuthProtocolService.LoginParams): any
 }
 
 export namespace AuthProtocolService {
-  export type Params = {
+  export type LoginParams = {
     email: string
     password: string
   }

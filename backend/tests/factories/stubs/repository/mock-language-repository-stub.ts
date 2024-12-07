@@ -1,4 +1,4 @@
-import { LanguageRepository } from '../../../../app/infra/db/protocols/base-repository.js'
+import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
 
 export const mockLanguageRepositoryStub = (): LanguageRepository => ({
   findAll: () => Promise.resolve([]),

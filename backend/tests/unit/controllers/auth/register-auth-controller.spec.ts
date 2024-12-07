@@ -2,15 +2,16 @@ import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { UserEmailStatus } from '#enums/user-email-status'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockRegisterRequest } from '#tests/factories/mocks/mock-register-request'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 
 const makeSut = () => {
-  const httpContext = makeHttpRequest(mockUserRegisterRequest())
+  const httpContext = makeHttpRequest(mockRegisterRequest())
   const authServiceStub = mockAuthServiceStub()
   const sut = new AuthController(authServiceStub, authServiceStub)
 
@@ -107,11 +108,13 @@ test.group('AuthController.register', (group) => {
   test('should return 422 if email provided already in use', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'register').returns(
-      Promise.resolve(createFailureResponse(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
+      Promise.resolve(createFailureResponse(APPLICATION_MESSAGES.EMAIL_OR_USERNAME_ALREADY_USING))
     )
     const httpResponse = await sut.register(httpContext)
 
-    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
+    expect(httpResponse).toEqual(
+      unprocessable(APPLICATION_MESSAGES.EMAIL_OR_USERNAME_ALREADY_USING)
+    )
   })
 
   test('should return 200 if create user return success', async ({ expect }) => {
@@ -120,8 +123,8 @@ test.group('AuthController.register', (group) => {
 
     expect(httpResponse).toEqual(
       ok({
-        type: 'any_type',
-        token: 'any_token',
+        uuid: 'any_uuid',
+        emailStatus: UserEmailStatus.UNVERIFIED,
       })
     )
   })

@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 
 const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
@@ -46,6 +46,6 @@ test.group('Video Find Route', (group) => {
     const response = await client.get(`/videos/${NilUUID}`)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
   })
 })

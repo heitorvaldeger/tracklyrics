@@ -2,6 +2,8 @@ import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+import { UserEmailStatus } from '#enums/user-email-status'
+
 export default class UserLucid extends BaseModel {
   static table = 'users'
   static accessTokens = DbAccessTokensProvider.forModel(UserLucid, {
@@ -34,6 +36,9 @@ export default class UserLucid extends BaseModel {
 
   @column()
   declare lastName: string
+
+  @column()
+  declare emailStatus: UserEmailStatus
 
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare createdAt: DateTime

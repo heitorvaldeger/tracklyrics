@@ -1,20 +1,20 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { IMethodResponse } from '#helpers/types/IMethodResponse'
-import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
-import { VideoUpdateProtocolService } from '#services/video/protocols/video-update-protocol-service'
-
-import { GenreRepository, LanguageRepository } from '../../infra/db/protocols/base-repository.js'
-import { VideoRepository } from '../../infra/db/protocols/video-repository.js'
+import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
+import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
+import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
+import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
+import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
 
 @inject()
 export class VideoUpdateService implements VideoUpdateProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
-    private readonly authService: AuthProtocolService,
+    private readonly authStrategy: AuthStrategy,
     private readonly videoCurrentUserService: VideoCurrentUserProtocolService,
     private readonly genreRepository: GenreRepository,
     private readonly languageRepository: LanguageRepository
@@ -25,10 +25,10 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
     uuid: string
   ): Promise<IMethodResponse<boolean>> {
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {
-      return createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
+      return createFailureResponse(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS)
     }
     if (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(uuid)) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     }
 
     const [genre, language] = await Promise.all([
@@ -37,11 +37,11 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
     ])
 
     if (!genre) {
-      return createFailureResponse(APPLICATION_ERRORS.GENRE_NOT_FOUND)
+      return createFailureResponse(APPLICATION_MESSAGES.GENRE_NOT_FOUND)
     }
 
     if (!language) {
-      return createFailureResponse(APPLICATION_ERRORS.LANGUAGE_NOT_FOUND)
+      return createFailureResponse(APPLICATION_MESSAGES.LANGUAGE_NOT_FOUND)
     }
 
     const isSuccess = await this.videoRepository.update(
@@ -49,7 +49,7 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
         ...payload,
         languageId: payload.languageId,
         genreId: payload.genreId,
-        userId: this.authService.getUserId(),
+        userId: this.authStrategy.getUserId(),
       },
       uuid
     )
