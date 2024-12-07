@@ -1,23 +1,13 @@
 import { MailResponse } from '@adonisjs/mail'
-import type {
-  MailManagerTransportFactory,
-  MailTransportContract,
-  NodeMailerMessage,
-} from '@adonisjs/mail/types'
 import nodemailer from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
 
-/**
- * Configuration accepted by the transport
- */
-export type MailTrapConfig = {
-  host: string
-  port: number
-  auth: {
-    user: string
-    pass: string
-  }
-}
+import { MailTrapConfig } from '#infra/mail/nodemailer/protocols/mailtrap-config-protocol'
+import {
+  MailManagerTransportFactory,
+  MailTransportContract,
+  NodeMailerMessage,
+} from '#infra/mail/nodemailer/protocols/nodemailer-protocol'
 
 /**
  * Transport implementation
