@@ -22,14 +22,14 @@ test.group('Video Delete Service', (group) => {
     sinon.restore()
   })
 
-  test('should return success if a video deleted on success', async ({ expect }) => {
+  test('it must return success if a video deleted on success', async ({ expect }) => {
     const { sut } = makeSut()
     const response = await sut.delete(faker.string.uuid())
 
     expect(response).toEqual(createSuccessResponse(true))
   })
 
-  test('should return an error if video not exists', async ({ expect }) => {
+  test('it must return an error if video not exists', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
     stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
     const response = await sut.delete(faker.string.uuid())
@@ -37,7 +37,7 @@ test.group('Video Delete Service', (group) => {
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
-  test('should return an error if video not belong from user', async ({ expect }) => {
+  test('it must return an error if video not belong from user', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
     stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
     const response = await sut.delete(faker.string.uuid())

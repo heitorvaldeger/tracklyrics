@@ -14,7 +14,7 @@ const makeSut = async () => {
 }
 
 test.group('FavoritePostgresRepository', () => {
-  test('should return true if video added or updated to favorite on success', async ({
+  test('it must return true if video added or updated to favorite on success', async ({
     expect,
   }) => {
     const { sut, fakeVideo } = await makeSut()
@@ -23,21 +23,21 @@ test.group('FavoritePostgresRepository', () => {
     expect(added).toBeTruthy()
   })
 
-  test('should return true if favorite already exists', async ({ expect }) => {
+  test('it must return true if favorite already exists', async ({ expect }) => {
     const { sut, fakeVideo } = await makeSut()
     const favoriteUuid = faker.string.uuid()
     const added = await sut.addFavorite(fakeVideo.id, fakeVideo.userId, favoriteUuid)
     expect(added).toBeTruthy()
   })
 
-  test('should return true if video removed to favorite on success', async ({ expect }) => {
+  test('it must return true if video removed to favorite on success', async ({ expect }) => {
     const { sut, fakeVideo } = await makeSut()
 
     const response = await sut.removeFavorite(fakeVideo.id, fakeVideo.userId)
     expect(response).toBeTruthy()
   })
 
-  test('should return a list favorite videos by user', async ({ expect }) => {
+  test('it must return a list favorite videos by user', async ({ expect }) => {
     const { sut, fakeVideo, fakeGenre, fakeLanguage, fakeUser } = await makeSut()
     const entity2 = await mockLucidEntity()
     const entity3 = await mockLucidEntity()

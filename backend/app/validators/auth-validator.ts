@@ -16,3 +16,10 @@ export const loginAuthValidator = vine.compile(
     password: vine.string().trim().minLength(6),
   })
 )
+
+export const validateEmailValidator = vine.compile(
+  vine.object({
+    email: vine.string().trim().email(),
+    codeOTP: vine.string().trim().fixedLength(6),
+  })
+)

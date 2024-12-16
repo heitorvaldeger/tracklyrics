@@ -1,4 +1,4 @@
 export abstract class OTPAdapter {
-  abstract create(id: string): Promise<string>
-  abstract validate(token: string): Promise<boolean>
+  abstract createOTP(id: string): Promise<string>
+  abstract validateOTP(token: string): Promise<boolean>
 }

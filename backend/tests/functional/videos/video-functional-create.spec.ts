@@ -8,7 +8,7 @@ import { mockVideoRequest } from '#tests/factories/mocks/mock-video-request'
 const httpRequest = mockVideoRequest()
 
 test.group('Video Create Route', (group) => {
-  test('/POST videos/ - should return 200 on create if video create on success', async ({
+  test('/POST videos/ - it must return 200 on create if video create on success', async ({
     client,
     expect,
   }) => {
@@ -35,7 +35,7 @@ test.group('Video Create Route', (group) => {
     expect(response.body().releaseYear).toBe(httpRequest.releaseYear)
   })
 
-  test('/POST videos/ - should return 400 on create if any param is invalid', async ({
+  test('/POST videos/ - it must return 400 on create if any param is invalid', async ({
     client,
     expect,
   }) => {
@@ -68,7 +68,7 @@ test.group('Video Create Route', (group) => {
     ])
   })
 
-  test('/POST videos/ - should return 401 on create if user unauthorized', async ({
+  test('/POST videos/ - it must return 401 on create if user unauthorized', async ({
     client,
     expect,
   }) => {
@@ -78,7 +78,7 @@ test.group('Video Create Route', (group) => {
     expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
   })
 
-  test('/POST videos/ - should return 422 on create if video youtube already exists', async ({
+  test('/POST videos/ - it must return 422 on create if video youtube already exists', async ({
     client,
     expect,
   }) => {

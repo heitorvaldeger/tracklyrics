@@ -1,8 +1,9 @@
 import { ApplicationService } from '@adonisjs/core/types'
 
-import { OTPAuthAdapter } from '#infra/crypto/otpauth-adapter'
+import { CryptoAdapter } from '#infra/crypto/crypto-adapter'
+import { HashAdapter } from '#infra/crypto/protocols/hash-adapter'
 import { OTPAdapter } from '#infra/crypto/protocols/otp-adapter'
-import { RedisAdapter } from '#infra/db/cache/protocols/redis-adapter'
+import { CacheAdapter } from '#infra/db/cache/protocols/cache-adapter'
 import { RedisAdonisAdapter } from '#infra/db/cache/redis-adonis-adapter'
 import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
 import { GenrePostgresRepository } from '#infra/db/repository/postgres/genre-postgres-repository'
@@ -58,9 +59,10 @@ export default class AppProvider {
       { protocol: LanguageRepository, implementation: LanguagePostgresRepository },
       { protocol: GenreRepository, implementation: GenrePostgresRepository },
 
-      { protocol: OTPAdapter, implementation: OTPAuthAdapter },
+      { protocol: OTPAdapter, implementation: CryptoAdapter },
+      { protocol: HashAdapter, implementation: CryptoAdapter },
 
-      { protocol: RedisAdapter, implementation: RedisAdonisAdapter },
+      { protocol: CacheAdapter, implementation: RedisAdonisAdapter },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {

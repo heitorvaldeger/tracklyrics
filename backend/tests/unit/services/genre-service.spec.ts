@@ -11,7 +11,7 @@ const makeSut = () => {
 }
 
 test.group('GenreService.findAll', () => {
-  test('should returns a list of genres with on success', async ({ expect }) => {
+  test('it must returns a list of genres with on success', async ({ expect }) => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.findAll()

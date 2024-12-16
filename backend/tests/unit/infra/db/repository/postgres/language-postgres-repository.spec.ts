@@ -10,7 +10,7 @@ const makeSut = () => {
 }
 
 test.group('LanguagePostgresRepository', (group) => {
-  test('should returns a list of languages with on success', async ({ expect }) => {
+  test('it must returns a list of languages with on success', async ({ expect }) => {
     const fakeLanguage = (await mockLanguageEntity()).serialize()
     const { sut } = makeSut()
 
@@ -19,7 +19,7 @@ test.group('LanguagePostgresRepository', (group) => {
     expect(languages).toEqual([fakeLanguage])
   })
 
-  test('should return a language if language id exists', async ({ expect }) => {
+  test('it must return a language if language id exists', async ({ expect }) => {
     const fakeLanguage = await mockLanguageEntity()
     const { sut } = makeSut()
 
@@ -28,7 +28,7 @@ test.group('LanguagePostgresRepository', (group) => {
     expect(language).toEqual(fakeLanguage.serialize())
   })
 
-  test('should return null if language id not exists', async ({ expect }) => {
+  test('it must return null if language id not exists', async ({ expect }) => {
     const { sut } = makeSut()
 
     const language = await sut.findById(-1)

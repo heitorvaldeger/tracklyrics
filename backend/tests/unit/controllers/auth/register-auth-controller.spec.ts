@@ -23,7 +23,7 @@ test.group('AuthController.register', (group) => {
     sinon.restore()
   })
 
-  test('should return 400 if required fields is not provided', async ({ expect }) => {
+  test('it must return 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({})
@@ -55,7 +55,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 400 if email provided is invalid', async ({ expect }) => {
+  test('it must return 400 if email provided is invalid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request.body(), 'email').value('invalid_mail')
@@ -71,7 +71,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 400 if fields provided is less than length valid', async ({ expect }) => {
+  test('it must return 400 if fields provided is less than length valid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({
@@ -105,7 +105,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 422 if email provided already in use', async ({ expect }) => {
+  test('it must return 422 if email provided already in use', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'register').returns(
       Promise.resolve(createFailureResponse(APPLICATION_MESSAGES.EMAIL_OR_USERNAME_ALREADY_USING))
@@ -117,7 +117,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 200 if create user return success', async ({ expect }) => {
+  test('it must return 200 if create user return success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     const httpResponse = await sut.register(httpContext)
 
@@ -129,7 +129,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 500 if create user return throws', async ({ expect }) => {
+  test('it must return 500 if create user return throws', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'register').throws(new Error())
     const httpResponse = await sut.register(httpContext)

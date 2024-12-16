@@ -9,7 +9,7 @@ const makeSut = () => {
 }
 
 test.group('GenrePostgresRepository', (group) => {
-  test('should returns a list of genres with on success', async ({ expect }) => {
+  test('it must returns a list of genres with on success', async ({ expect }) => {
     const fakeGenre = (await mockGenreEntity()).serialize()
     const { sut } = makeSut()
 
@@ -18,7 +18,7 @@ test.group('GenrePostgresRepository', (group) => {
     expect(genres).toEqual([fakeGenre])
   })
 
-  test('should return a genre if genre id exists', async ({ expect }) => {
+  test('it must return a genre if genre id exists', async ({ expect }) => {
     const fakeGenre = await mockGenreEntity()
     const { sut } = makeSut()
 
@@ -27,7 +27,7 @@ test.group('GenrePostgresRepository', (group) => {
     expect(genre).toEqual(fakeGenre.serialize())
   })
 
-  test('should return null if genre id not exists', async ({ expect }) => {
+  test('it must return null if genre id not exists', async ({ expect }) => {
     const { sut } = makeSut()
 
     const genre = await sut.findById(-1)

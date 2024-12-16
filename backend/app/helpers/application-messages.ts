@@ -37,6 +37,18 @@ export const APPLICATION_MESSAGES = {
     message: 'Your email address is pending of validation',
     httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
   },
+  EMAIL_HAS_BEEN_VERIFIED: {
+    message: 'Your email address has been verified',
+    httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
+  },
+  EMAIL_INVALID: {
+    message: 'Your email address is invalid',
+    httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
+  },
+  CODE_OTP_INVALID: {
+    message: 'Code OTP is invalid',
+    httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
+  },
   TOKEN_INVALID: {
     message: 'Token is invalid',
     httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,

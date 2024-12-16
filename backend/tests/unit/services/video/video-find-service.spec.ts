@@ -17,7 +17,7 @@ const makeSut = () => {
 }
 
 test.group('VideoFindService.find()', () => {
-  test('should return an video on success', async ({ expect }) => {
+  test('it must return an video on success', async ({ expect }) => {
     const { sut } = makeSut()
 
     const video = await sut.find(faker.string.uuid())
@@ -25,7 +25,7 @@ test.group('VideoFindService.find()', () => {
     expect(video).toEqual(createSuccessResponse(mockVideoModel()))
   })
 
-  test('should return an error if a video not found', async ({ expect }) => {
+  test('it must return an error if a video not found', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'find').resolves(null)
     const video = await sut.find(faker.string.uuid())

@@ -39,7 +39,7 @@ const makeSut = async () => {
 }
 
 test.group('VideoPostgresRepository', (group) => {
-  test('should return a list videos on findBy if params provided is empty', async ({ expect }) => {
+  test('it must return a list videos on findBy if params provided is empty', async ({ expect }) => {
     const { sut } = await makeSut()
 
     const videos = await sut.findBy({})
@@ -48,7 +48,9 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos.length).toBe(1)
   })
 
-  test('should return a list videos on findBy if genreId param is provided', async ({ expect }) => {
+  test('it must return a list videos on findBy if genreId param is provided', async ({
+    expect,
+  }) => {
     const { sut, fakeFullVideo } = await makeSut()
 
     const videos = await sut.findBy({ genreId: fakeFullVideo.genreId })
@@ -58,7 +60,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos).toEqual([_.omit(fakeFullVideo, fieldsToOmit)])
   })
 
-  test('should return a list videos on findBy if languageId param is provided', async ({
+  test('it must return a list videos on findBy if languageId param is provided', async ({
     expect,
   }) => {
     const { sut, fakeFullVideo } = await makeSut()
@@ -70,7 +72,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos).toEqual([_.omit(fakeFullVideo, fieldsToOmit)])
   })
 
-  test('should returns a list videos on findBy if userUuid param is provided', async ({
+  test('it must returns a list videos on findBy if userUuid param is provided', async ({
     expect,
   }) => {
     const { sut, fakeFullVideo, fakeUserUuid } = await makeSut()
@@ -85,28 +87,28 @@ test.group('VideoPostgresRepository', (group) => {
     expect(firstItem.username).toEqual(fakeFullVideo.username)
   })
 
-  test('should return a video on find', async ({ expect }) => {
+  test('it must return a video on find', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const video = await sut.find(fakeFullVideo.uuid)
 
     expect(video).toEqual(_.omit(fakeFullVideo, fieldsToOmit))
   })
 
-  test('should return null on find if uuid param is invalid', async ({ expect }) => {
+  test('it must return null on find if uuid param is invalid', async ({ expect }) => {
     const { sut } = await makeSut()
     const video = await sut.find(NilUUID)
 
     expect(video).toBeFalsy()
   })
 
-  test('should returns true if link youtube already exists', async ({ expect }) => {
+  test('it must returns true if link youtube already exists', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const hasYoutubeLink = await sut.hasYoutubeLink(fakeFullVideo.linkYoutube)
 
     expect(hasYoutubeLink).toBeTruthy()
   })
 
-  test('should return a list videos on findBy if param provided not exists in filter', async ({
+  test('it must return a list videos on findBy if param provided not exists in filter', async ({
     expect,
   }) => {
     const { sut } = await makeSut()
@@ -120,7 +122,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos.length).toBe(1)
   })
 
-  test('should return a list videos on findBy if any param value provided is null', async ({
+  test('it must return a list videos on findBy if any param value provided is null', async ({
     expect,
   }) => {
     const { sut } = await makeSut()
@@ -134,14 +136,14 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos.length).toBe(1)
   })
 
-  test('should return success if a video deleted on success', async ({ expect }) => {
+  test('it must return success if a video deleted on success', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const isSuccess = await sut.delete(fakeFullVideo.uuid)
 
     expect(isSuccess).toBeTruthy()
   })
 
-  test('should return success if a video updated on success', async ({ expect }) => {
+  test('it must return success if a video updated on success', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
 
     const video = await sut.update(
@@ -154,7 +156,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(video).toBeTruthy()
   })
 
-  test('should return success if a video created on success', async ({ expect }) => {
+  test('it must return success if a video created on success', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {
       ..._.omit(fakeFullVideo, ['language', 'genre', 'username', 'id']),
@@ -165,7 +167,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(newVideo).toEqual(fakePayload)
   })
 
-  test('should throws an error on create', async ({ expect }) => {
+  test('it must throws an error on create', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
     const fakePayload = {
       ..._.omit(fakeFullVideo, ['language', 'genre', 'username', 'id']),
@@ -190,28 +192,28 @@ test.group('VideoPostgresRepository', (group) => {
     )
   })
 
-  test('should return a video id if videoUuid valid is provided', async ({ expect }) => {
+  test('it must return a video id if videoUuid valid is provided', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
 
     const videoId = await sut.getVideoId(fakeFullVideo.uuid)
     expect(videoId).toBe(fakeFullVideo.id)
   })
 
-  test('should return a user id if userUuid valid is provided', async ({ expect }) => {
+  test('it must return a user id if userUuid valid is provided', async ({ expect }) => {
     const { sut, fakeFullVideo } = await makeSut()
 
     const userId = await sut.getUserId(fakeFullVideo.uuid)
     expect(userId).toBe(fakeFullVideo.userId)
   })
 
-  test('should return null if videoUuid invalid is provided', async ({ expect }) => {
+  test('it must return null if videoUuid invalid is provided', async ({ expect }) => {
     const { sut } = await makeSut()
 
     const videoId = await sut.getVideoId(NilUUID)
     expect(videoId).toBeFalsy()
   })
 
-  test('should return null if userUuid invalid is provided', async ({ expect }) => {
+  test('it must return null if userUuid invalid is provided', async ({ expect }) => {
     const { sut } = await makeSut()
 
     const userId = await sut.getUserId(NilUUID)

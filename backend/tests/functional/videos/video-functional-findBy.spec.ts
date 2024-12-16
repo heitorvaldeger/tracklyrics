@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 
 test.group('Video FindBy Route', (group) => {
-  test('/GET videos?{genreId} - should return a list videos if genreId is provided', async ({
+  test('/GET videos?{genreId} - it must return a list videos if genreId is provided', async ({
     client,
     expect,
   }) => {
@@ -16,7 +16,7 @@ test.group('Video FindBy Route', (group) => {
     expect(response.body().length).toBe(1)
   })
 
-  test('/GET videos?{userUuid} - should return a list videos if userUuid is provided', async ({
+  test('/GET videos?{userUuid} - it must return a list videos if userUuid is provided', async ({
     client,
     expect,
   }) => {
@@ -29,7 +29,7 @@ test.group('Video FindBy Route', (group) => {
     expect(response.body().length).toBe(1)
   })
 
-  test('/GET videos - should return a list videos if none params is provided', async ({
+  test('/GET videos - it must return a list videos if none params is provided', async ({
     client,
     expect,
   }) => {
@@ -42,7 +42,7 @@ test.group('Video FindBy Route', (group) => {
     expect(response.body().length).toBe(2)
   })
 
-  test('/GET videos - should return 400 if invalid params is provided', async ({
+  test('/GET videos - it must return 400 if invalid params is provided', async ({
     client,
     expect,
   }) => {

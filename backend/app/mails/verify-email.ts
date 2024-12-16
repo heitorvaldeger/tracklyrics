@@ -15,9 +15,10 @@ export class VerifyEmail extends BaseMail {
    * the email is sent or queued.
    */
   prepare() {
+    this.message.to(this.params.email)
     this.message.text(`Hello ${this.params.username},
 
-    Thank you for registering with [Company/Platform Name]! To ensure the security of your account, we need to verify your email address.
+    Thank you for registering with TrackLyrics! To ensure the security of your account, we need to verify your email address.
 
     Your OTP code is: ${this.params.codeOTP}
     Please enter this code in the verification field on our website or app.
@@ -27,13 +28,14 @@ export class VerifyEmail extends BaseMail {
     If you need assistance, feel free to contact our support team at [support email].
 
     Best regards,
-    The [Company Name] Team`)
+    The TrackLyrics Team`)
   }
 }
 
 namespace VerifyEmail {
   export type Params = {
     username: string
+    email: string
     codeOTP: string
   }
 }

@@ -9,7 +9,7 @@ const makeSut = () => {
 }
 
 test.group('Redis Adonis', () => {
-  test('should set a value with success', async ({ expect }) => {
+  test('it must set a value with success', async ({ expect }) => {
     await redis.flushall()
     const { sut } = makeSut()
 

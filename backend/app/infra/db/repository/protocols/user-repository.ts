@@ -9,6 +9,7 @@ export abstract class UserRepository {
   ): Promise<UserModel | null>
   abstract createAccessToken(userUuid: string): Promise<UserAccessTokenModel>
   abstract deleteAllAccessToken(userUuid: string): Promise<void>
+  abstract updateEmailStatus(userUuid: string): Promise<void>
 }
 
 export namespace UserRepository {

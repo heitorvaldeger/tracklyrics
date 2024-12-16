@@ -21,7 +21,7 @@ const makeSut = () => {
   return { sut }
 }
 test.group('LanguageController.findAll', () => {
-  test('should returns a list of languages with on success', async ({ expect }) => {
+  test('it must returns a list of languages with on success', async ({ expect }) => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.findAll()

@@ -59,4 +59,10 @@ export class UserPostgresRepository implements UserRepository {
       await UserLucid.accessTokens.delete(user, token.identifier)
     })
   }
+
+  async updateEmailStatus(userUuid: string): Promise<void> {
+    await UserLucid.query().where('uuid', userUuid).update({
+      emailStatus: UserEmailStatus.VERIFIED,
+    })
+  }
 }

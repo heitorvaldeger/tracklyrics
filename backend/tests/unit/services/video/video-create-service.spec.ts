@@ -29,14 +29,14 @@ const makeSut = () => {
 }
 
 test.group('Video Create Service', () => {
-  test('should return success if a video created on success', async ({ expect }) => {
+  test('it must return success if a video created on success', async ({ expect }) => {
     const { sut } = makeSut()
     const videoResponse = await sut.create(videoRequest)
 
     expect(videoResponse).toEqual(createSuccessResponse(mockFakeVideoSaveResultModel()))
   })
 
-  test('should return userId valid on call AuthService getUserId', async ({ expect }) => {
+  test('it must return userId valid on call AuthService getUserId', async ({ expect }) => {
     const { sut, authStrategyStub } = makeSut()
     authStrategyStub.getUserId.returns(0)
     await sut.create(videoRequest)
@@ -44,7 +44,7 @@ test.group('Video Create Service', () => {
     expect(authStrategyStub.getUserId.returned(0)).toBeTruthy()
   })
 
-  test('should return an error if link youtube already exists', async ({ expect }) => {
+  test('it must return an error if link youtube already exists', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'hasYoutubeLink').resolves(true)
     const videoResponse = await sut.create(videoRequest)
@@ -53,14 +53,14 @@ test.group('Video Create Service', () => {
     )
   })
 
-  test('should return an error if genre not exist', async ({ expect }) => {
+  test('it must return an error if genre not exist', async ({ expect }) => {
     const { sut, genreRepositoryStub } = makeSut()
     stub(genreRepositoryStub, 'findById').resolves(null)
     const videoResponse = await sut.create(videoRequest)
     expect(videoResponse).toEqual(createFailureResponse(APPLICATION_MESSAGES.GENRE_NOT_FOUND))
   })
 
-  test('should return an error if language not exist', async ({ expect }) => {
+  test('it must return an error if language not exist', async ({ expect }) => {
     const { sut, languageRepositoryStub } = makeSut()
     stub(languageRepositoryStub, 'findById').resolves(null)
     const videoResponse = await sut.create(videoRequest)

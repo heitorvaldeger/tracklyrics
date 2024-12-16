@@ -1,10 +1,12 @@
 import { inject } from '@adonisjs/core'
+import hash from '@adonisjs/core/services/hash'
 import * as OTPAuth from 'otpauth'
 
+import { HashAdapter } from '#infra/crypto/protocols/hash-adapter'
 import { OTPAdapter } from '#infra/crypto/protocols/otp-adapter'
 
 @inject()
-export class OTPAuthAdapter implements OTPAdapter {
+export class CryptoAdapter implements OTPAdapter, HashAdapter {
   private readonly totp
   constructor() {
     this.totp = new OTPAuth.TOTP({
@@ -16,12 +18,20 @@ export class OTPAuthAdapter implements OTPAdapter {
     })
   }
 
-  create(id: string): Promise<string> {
+  createOTP(id: string): Promise<string> {
     this.totp.label = id
     return Promise.resolve(this.totp.generate())
   }
 
-  validate(token: string): Promise<boolean> {
+  validateOTP(token: string): Promise<boolean> {
     return Promise.resolve(this.totp.validate({ token, window: 1 }) === 1)
+  }
+
+  async createHash(value: string): Promise<string> {
+    return await hash.make(value)
+  }
+
+  async validateHash(hashedValue: string, plainValue: string): Promise<boolean> {
+    return await hash.verify(hashedValue, plainValue)
   }
 }
