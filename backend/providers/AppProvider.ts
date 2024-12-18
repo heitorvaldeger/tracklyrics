@@ -8,21 +8,31 @@ import { RedisAdonisAdapter } from '#infra/db/cache/redis-adonis-adapter'
 import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
 import { GenrePostgresRepository } from '#infra/db/repository/postgres/genre-postgres-repository'
 import { LanguagePostgresRepository } from '#infra/db/repository/postgres/language-postgres-repository'
+import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
 import { UserPostgresRepository } from '#infra/db/repository/postgres/user-postgres-repository'
+import { VideoPlayCountPostgresRepository } from '#infra/db/repository/postgres/video-play-count-postgres-repository'
 import { VideoPostgresRepository } from '#infra/db/repository/postgres/video-postgres-repository'
 import { FavoriteRepository } from '#infra/db/repository/protocols/favorite-repository'
 import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
 import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
+import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
 import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { VideoPlayCountRepository } from '#infra/db/repository/protocols/video-play-count-repository'
 import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
 import { AuthService } from '#services/auth/auth-service'
 import { FavoriteService } from '#services/favorite-service'
+import { GameService } from '#services/game-service'
 import { GenreService } from '#services/genre-service'
 import { LanguageService } from '#services/language-service'
+import { LyricFindService } from '#services/lyric/lyric-find-service'
+import { LyricSaveService } from '#services/lyric/lyric-save-service'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
+import { GameProtocolService } from '#services/protocols/game-protocol-service'
 import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
 import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
+import { LyricFindProtocolService } from '#services/protocols/lyric/lyric-find-protocol-service'
+import { LyricSaveProtocolService } from '#services/protocols/lyric/lyric-save-protocol-service'
 import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
 import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
@@ -52,12 +62,17 @@ export default class AppProvider {
       { protocol: VideoUpdateProtocolService, implementation: VideoUpdateService },
       { protocol: FavoriteProtocolService, implementation: FavoriteService },
       { protocol: VideoCurrentUserProtocolService, implementation: VideoCurrentUserService },
+      { protocol: LyricSaveProtocolService, implementation: LyricSaveService },
+      { protocol: LyricFindProtocolService, implementation: LyricFindService },
+      { protocol: GameProtocolService, implementation: GameService },
 
       { protocol: VideoRepository, implementation: VideoPostgresRepository },
       { protocol: FavoriteRepository, implementation: FavoritePostgresRepository },
       { protocol: UserRepository, implementation: UserPostgresRepository },
       { protocol: LanguageRepository, implementation: LanguagePostgresRepository },
       { protocol: GenreRepository, implementation: GenrePostgresRepository },
+      { protocol: VideoPlayCountRepository, implementation: VideoPlayCountPostgresRepository },
+      { protocol: LyricRepository, implementation: LyricPostgresRepository },
 
       { protocol: OTPAdapter, implementation: CryptoAdapter },
       { protocol: HashAdapter, implementation: CryptoAdapter },

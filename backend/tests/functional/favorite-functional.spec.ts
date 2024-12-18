@@ -6,7 +6,10 @@ import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-enti
 import { NilUUID } from '#tests/utils/NilUUID'
 
 test.group('FavoriteLucid Routes', (group) => {
-  test('/POST favorites/{uuid} - it must return 200 if video add favorite on success', async ({
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+  test('/POST favorites/{uuid} - return 200 if video add favorite on success', async ({
     client,
     expect,
   }) => {
@@ -23,7 +26,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()).toBeTruthy()
   })
 
-  test('/POST favorites/{uuid} - it must return 400 on add favorite if video uuid invalid is provided', async ({
+  test('/POST favorites/{uuid} - return 400 on add favorite if video uuid invalid is provided', async ({
     client,
     expect,
   }) => {
@@ -42,7 +45,7 @@ test.group('FavoriteLucid Routes', (group) => {
     ])
   })
 
-  test('/POST favorites/{uuid} - it must return 404 on add favorite if video not exists', async ({
+  test('/POST favorites/{uuid} - return 404 on add favorite if video not exists', async ({
     client,
     expect,
   }) => {
@@ -59,7 +62,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
   })
 
-  test('/POST favorites/{uuid} - it must return 401 on add favorite if user unauthorized', async ({
+  test('/POST favorites/{uuid} - return 401 on add favorite if user unauthorized', async ({
     client,
     expect,
   }) => {
@@ -69,7 +72,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
   })
 
-  test('/DELETE favorites/{uuid} - it must return 200 if video remove favorite on success', async ({
+  test('/DELETE favorites/{uuid} - return 200 if video remove favorite on success', async ({
     client,
     expect,
   }) => {
@@ -88,7 +91,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()).toBeTruthy()
   })
 
-  test('/DELETE favorites/{uuid} - it must return 400 on remove favorite if video uuid invalid is provided', async ({
+  test('/DELETE favorites/{uuid} - return 400 on remove favorite if video uuid invalid is provided', async ({
     client,
     expect,
   }) => {
@@ -107,7 +110,7 @@ test.group('FavoriteLucid Routes', (group) => {
     ])
   })
 
-  test('/DELETE favorites/{uuid} - it must return 404 on remove favorite if video not exists', async ({
+  test('/DELETE favorites/{uuid} - return 404 on remove favorite if video not exists', async ({
     client,
     expect,
   }) => {
@@ -124,7 +127,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
   })
 
-  test('/DELETE favorites/{uuid} - it must return 401 on remove favorite if user unauthorized', async ({
+  test('/DELETE favorites/{uuid} - return 401 on remove favorite if user unauthorized', async ({
     client,
     expect,
   }) => {
@@ -134,7 +137,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
   })
 
-  test('/GET favorites - it must return 200 on find a list favorite videos by user logged', async ({
+  test('/GET favorites - return 200 on find a list favorite videos by user logged', async ({
     client,
     expect,
   }) => {
@@ -154,7 +157,7 @@ test.group('FavoriteLucid Routes', (group) => {
     expect(response.body()[0].artist).toBe(fakeVideo.artist)
   })
 
-  test('/GET favorites - it must return 401 on find a list favorite videos by user logged if user unauthorized', async ({
+  test('/GET favorites - return 401 on find a list favorite videos by user logged if user unauthorized', async ({
     client,
     expect,
   }) => {

@@ -1,10 +1,10 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { MethodResponse } from '#helpers/types/method-response'
 
 export abstract class RegisterProtocolService {
   abstract register(
     payload: RegisterProtocolService.Params
-  ): Promise<IMethodResponse<RegisterProtocolService.UserRegisterModel>>
+  ): Promise<MethodResponse<RegisterProtocolService.UserRegisterModel>>
 }
 
 export namespace RegisterProtocolService {

@@ -55,6 +55,7 @@ const mockHashAdapterStub = (): HashAdapter => ({
 const mockCacheAdapter = (): CacheAdapter => ({
   set: (key, value) => Promise.resolve(),
   get: (key: string) => Promise.resolve('any_value'),
+  delete: (key: string) => Promise.resolve(),
 })
 
 const makeSut = () => {
@@ -67,8 +68,11 @@ const makeSut = () => {
   return { sut, userRepositoryStub, cacheAdapterStub, otpAdapterStub, hashAdapterStub }
 }
 
-test.group('Auth Service', () => {
-  test('it must return success on register if user not exist', async ({ expect }) => {
+test.group('Auth Service', (group) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+  test('return success on register if user not exist', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
     const userRegisterModel = await sut.register(mockRegisterRequest())
@@ -80,7 +84,7 @@ test.group('Auth Service', () => {
     )
   })
 
-  test('it must return fail on register if user email has been verified', async ({ expect }) => {
+  test('return fail on register if user email has been verified', async ({ expect }) => {
     const { sut } = makeSut()
     const mockUser = mockRegisterRequest()
 
@@ -90,7 +94,7 @@ test.group('Auth Service', () => {
     )
   })
 
-  test('it must return success on register if user exist and email has been unverified', async ({
+  test('return success on register if user exist and email has been unverified', async ({
     expect,
   }) => {
     const { sut, userRepositoryStub } = makeSut()
@@ -112,7 +116,7 @@ test.group('Auth Service', () => {
     )
   })
 
-  test('it must return a token on login if user is valid', async ({ expect }) => {
+  test('return a token on login if user is valid', async ({ expect }) => {
     const { sut } = makeSut()
     stub(hash, 'verify').resolves(true)
 
@@ -128,7 +132,7 @@ test.group('Auth Service', () => {
     )
   })
 
-  test('it must return fail on login if user not found', async ({ expect }) => {
+  test('return fail on login if user not found', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
 
@@ -139,7 +143,7 @@ test.group('Auth Service', () => {
     expect(userAccessToken).toEqual(createFailureResponse(APPLICATION_MESSAGES.CREDENTIALS_INVALID))
   })
 
-  test('it must return fail on login if password is not equal', async ({ expect }) => {
+  test('return fail on login if password is not equal', async ({ expect }) => {
     const { sut, hashAdapterStub } = makeSut()
     stub(hashAdapterStub, 'validateHash').resolves(false)
 
@@ -150,7 +154,7 @@ test.group('Auth Service', () => {
     expect(userAccessToken).toEqual(createFailureResponse(APPLICATION_MESSAGES.CREDENTIALS_INVALID))
   })
 
-  test('it must return fail on login if email is pending validation', async ({ expect }) => {
+  test('return fail on login if email is pending validation', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     const mockUser = mockRegisterRequest()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
@@ -170,9 +174,7 @@ test.group('Auth Service', () => {
     )
   })
 
-  test('it must return fail on validate email if user email has been verified', async ({
-    expect,
-  }) => {
+  test('return fail on validate email if user email has been verified', async ({ expect }) => {
     const { sut } = makeSut()
     const { email } = mockRegisterRequest()
 
@@ -183,7 +185,7 @@ test.group('Auth Service', () => {
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.EMAIL_HAS_BEEN_VERIFIED))
   })
 
-  test('it must return fail on validate email if user not exists', async ({ expect }) => {
+  test('return fail on validate email if user not exists', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     const { email } = mockRegisterRequest()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
@@ -195,7 +197,7 @@ test.group('Auth Service', () => {
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.EMAIL_INVALID))
   })
 
-  test('it must return fail on validate email if user not exists', async ({ expect }) => {
+  test('return fail on validate email if user not exists', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     const { email } = mockRegisterRequest()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
@@ -207,7 +209,7 @@ test.group('Auth Service', () => {
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.EMAIL_INVALID))
   })
 
-  test('it must return fail on validate email if code OTP is not equal', async ({ expect }) => {
+  test('return fail on validate email if code OTP is not equal', async ({ expect }) => {
     const { sut, cacheAdapterStub, userRepositoryStub } = makeSut()
     const { email, username } = mockRegisterRequest()
 
@@ -227,7 +229,7 @@ test.group('Auth Service', () => {
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.CODE_OTP_INVALID))
   })
 
-  test('it must call UserRepository.updateEmailStatus on validate email with correct values', async ({
+  test('call UserRepository.updateEmailStatus on validate email with correct values', async ({
     expect,
   }) => {
     const { sut, userRepositoryStub } = makeSut()
@@ -250,7 +252,7 @@ test.group('Auth Service', () => {
     expect(updateEmailStatusSpy.calledWith('any_uuid')).toBeTruthy()
   })
 
-  test('it must return success on validate email', async ({ expect }) => {
+  test('return success on validate email', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     const { email, username } = mockRegisterRequest()
 

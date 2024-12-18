@@ -5,10 +5,11 @@ import _ from 'lodash'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { ApplicationError } from '#helpers/types/ApplicationError'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { ApplicationError } from '#helpers/types/application-error'
+import { MethodResponse } from '#helpers/types/method-response'
 import { FavoriteRepository } from '#infra/db/repository/protocols/favorite-repository'
 import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
+import { VideoFindModel } from '#models/video-model/video-find-model'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
 import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
@@ -22,7 +23,7 @@ export class FavoriteService implements FavoriteProtocolService {
     private readonly videoCurrentUserService: VideoCurrentUserProtocolService
   ) {}
 
-  async addFavorite(videoUuid: string): Promise<IMethodResponse<ApplicationError | boolean>> {
+  async addFavorite(videoUuid: string): Promise<MethodResponse<boolean | ApplicationError>> {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     const userId = this.authStrategy.getUserId()
     if (
@@ -42,7 +43,7 @@ export class FavoriteService implements FavoriteProtocolService {
     return createSuccessResponse(added)
   }
 
-  async removeFavorite(videoUuid: string): Promise<IMethodResponse<boolean>> {
+  async removeFavorite(videoUuid: string): Promise<MethodResponse<boolean>> {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     const userId = this.authStrategy.getUserId()
     if (
@@ -61,7 +62,7 @@ export class FavoriteService implements FavoriteProtocolService {
     return createSuccessResponse(removed)
   }
 
-  async findFavoritesByUserLogged(): Promise<IMethodResponse<any[]>> {
+  async findFavoritesByUserLogged(): Promise<MethodResponse<VideoFindModel[] | ApplicationError>> {
     const userId = this.authStrategy.getUserId()
     const favorites = await this.favoriteRepository.findFavoritesByUser(userId)
 

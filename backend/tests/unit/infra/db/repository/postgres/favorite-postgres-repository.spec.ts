@@ -3,7 +3,12 @@ import { test } from '@japa/runner'
 
 import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
+import VideoLucid from '#models/video-model/video-lucid'
+import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
+import { mockGenreEntity } from '#tests/factories/mocks/entities/mock-genre-entity'
+import { mockLanguageEntity } from '#tests/factories/mocks/entities/mock-language-entity'
 import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
+import { mockUserEntity } from '#tests/factories/mocks/entities/mock-user-entity'
 
 const makeSut = async () => {
   const { fakeVideo, fakeGenre, fakeLanguage, fakeUser, fakeFavorite } = await mockLucidEntity()
@@ -14,19 +19,33 @@ const makeSut = async () => {
 }
 
 test.group('FavoritePostgresRepository', () => {
-  test('it must return true if video added or updated to favorite on success', async ({
-    expect,
-  }) => {
-    const { sut, fakeVideo } = await makeSut()
+  test('it must return true if video added to favorite on success', async ({ expect }) => {
+    const fakeLanguage = await mockLanguageEntity()
+    const fakeGenre = await mockGenreEntity()
+    const fakeUser = await mockUserEntity()
 
-    const added = await sut.addFavorite(fakeVideo.id, fakeVideo.userId, faker.string.uuid())
+    const fakeVideo = await VideoLucid.create({
+      isDraft: false,
+      title: faker.lorem.words(2),
+      artist: faker.lorem.words(2),
+      releaseYear: faker.string.numeric({ length: 4 }),
+      linkYoutube: makeYoutubeUrl(),
+      uuid: faker.string.uuid(),
+      languageId: fakeLanguage.id,
+      genreId: fakeGenre.id,
+      userId: fakeUser.id,
+    })
+
+    const { sut } = await makeSut()
+
+    const added = await sut.addFavorite(fakeVideo.id, fakeUser.id, faker.string.uuid())
     expect(added).toBeTruthy()
   })
 
   test('it must return true if favorite already exists', async ({ expect }) => {
-    const { sut, fakeVideo } = await makeSut()
-    const favoriteUuid = faker.string.uuid()
-    const added = await sut.addFavorite(fakeVideo.id, fakeVideo.userId, favoriteUuid)
+    const { sut, fakeVideo, fakeFavorite } = await makeSut()
+
+    const added = await sut.addFavorite(fakeVideo.id, fakeVideo.userId, fakeFavorite.uuid)
     expect(added).toBeTruthy()
   })
 

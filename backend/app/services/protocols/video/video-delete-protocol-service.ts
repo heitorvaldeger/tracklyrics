@@ -1,5 +1,5 @@
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { MethodResponse } from '#helpers/types/method-response'
 
 export abstract class VideoDeleteProtocolService {
-  abstract delete(uuid: string): Promise<IMethodResponse<boolean>>
+  abstract delete(uuid: string): Promise<MethodResponse<boolean>>
 }

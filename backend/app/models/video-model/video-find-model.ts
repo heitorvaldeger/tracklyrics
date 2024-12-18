@@ -1,11 +1,10 @@
 export type VideoFindModel = {
-  isDraft: boolean
   title: string
   artist: string
-  releaseYear: string
   linkYoutube: string
+  releaseYear: string
   uuid: string
-  language: string
   genre: string
+  language: string
   username: string
 }

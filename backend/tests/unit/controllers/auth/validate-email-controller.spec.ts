@@ -24,8 +24,12 @@ const makeSut = () => {
 
   return { sut, httpContext, authServiceStub }
 }
-test.group('AuthController.validateEmail', () => {
-  test('it must return 400 if required fields is not provided', async ({ expect }) => {
+test.group('AuthController.validateEmail', (group) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+
+  test('return 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({})
@@ -45,7 +49,7 @@ test.group('AuthController.validateEmail', () => {
     )
   })
 
-  test('it must return 400 if email provided is invalid', async ({ expect }) => {
+  test('return 400 if email provided is invalid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request.body(), 'email').value('invalid_mail')
@@ -61,7 +65,7 @@ test.group('AuthController.validateEmail', () => {
     )
   })
 
-  test('it must return 400 if codeOTP is not equal than length valid', async ({ expect }) => {
+  test('return 400 if codeOTP is not equal than length valid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request.body(), 'codeOTP').value('123')
@@ -77,9 +81,7 @@ test.group('AuthController.validateEmail', () => {
     )
   })
 
-  test('it must return 422 if user already exist and email status is verified', async ({
-    expect,
-  }) => {
+  test('return 422 if user already exist and email status is verified', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'validateEmail').returns(
       Promise.resolve(createFailureResponse(APPLICATION_MESSAGES.EMAIL_HAS_BEEN_VERIFIED))
@@ -89,7 +91,7 @@ test.group('AuthController.validateEmail', () => {
     expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.EMAIL_HAS_BEEN_VERIFIED))
   })
 
-  test('it must return 422 if user not exist', async ({ expect }) => {
+  test('return 422 if user not exist', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'validateEmail').returns(
       Promise.resolve(createFailureResponse(APPLICATION_MESSAGES.EMAIL_INVALID))
@@ -99,7 +101,7 @@ test.group('AuthController.validateEmail', () => {
     expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.EMAIL_INVALID))
   })
 
-  test('it must return 422 if code OTP is invalid', async ({ expect }) => {
+  test('return 422 if code OTP is invalid', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'validateEmail').returns(
       Promise.resolve(createFailureResponse(APPLICATION_MESSAGES.CODE_OTP_INVALID))
@@ -109,7 +111,7 @@ test.group('AuthController.validateEmail', () => {
     expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.CODE_OTP_INVALID))
   })
 
-  test('it must return 200 if validate email with success', async ({ expect }) => {
+  test('return 200 if validate email with success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     const httpResponse = await sut.validateEmail(httpContext)
 
@@ -121,7 +123,7 @@ test.group('AuthController.validateEmail', () => {
     )
   })
 
-  test('it must return 500 if validate email return throws', async ({ expect }) => {
+  test('return 500 if validate email return throws', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'validateEmail').throws(new Error())
     const httpResponse = await sut.validateEmail(httpContext)

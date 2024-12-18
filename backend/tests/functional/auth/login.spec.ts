@@ -7,10 +7,11 @@ import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
 
 test.group('Auth Login Route', (group) => {
-  test('/POST login/ - it must return 200 on login user with success', async ({
-    client,
-    expect,
-  }) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+
+  test('/POST login/ - return 200 on login user with success', async ({ client, expect }) => {
     const password = faker.internet.password()
     const fakeUser = await UserLucid.create({
       username: faker.internet.username(),
@@ -31,17 +32,14 @@ test.group('Auth Login Route', (group) => {
     expect(response.body().token).toBeTruthy()
   })
 
-  test('/POST login/ - it must return 400 on login if any param is invalid', async ({
-    client,
-    expect,
-  }) => {
+  test('/POST login/ - return 400 on login if any param is invalid', async ({ client, expect }) => {
     const response = await client.post(`/login`).fields({})
 
     expect(response.status()).toBe(400)
     expect(Array.isArray(response.body())).toBeTruthy()
   })
 
-  test('/POST login/ - it must return 401 on login if credentials is invalid', async ({
+  test('/POST login/ - return 401 on login if credentials is invalid', async ({
     client,
     expect,
   }) => {
@@ -54,7 +52,7 @@ test.group('Auth Login Route', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.CREDENTIALS_INVALID)
   })
 
-  test('/POST login/ - it must return 401 on login if password is not equal', async ({
+  test('/POST login/ - return 401 on login if password is not equal', async ({
     client,
     expect,
   }) => {
@@ -77,7 +75,7 @@ test.group('Auth Login Route', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.CREDENTIALS_INVALID)
   })
 
-  test('/POST login/ - it must return 422 on login if email user is unverified', async ({
+  test('/POST login/ - return 422 on login if email user is unverified', async ({
     client,
     expect,
   }) => {

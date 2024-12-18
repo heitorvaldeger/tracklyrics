@@ -8,7 +8,7 @@ import {
   loginAuthValidator,
   registerAuthValidator,
   validateEmailValidator,
-} from '#validators/auth-validator'
+} from '#validators/vinejs/auth-validator'
 
 @inject()
 export default class AuthController {

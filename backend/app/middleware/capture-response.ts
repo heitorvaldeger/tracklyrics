@@ -14,9 +14,15 @@ export default class CaptureResponseMiddleware {
     await next()
 
     const { statusCode, body } = response.getBody()
-
-    if (statusCode && body) {
-      response.status(statusCode).json(body)
+    if (statusCode) {
+      if (statusCode === 500) {
+        response.status(statusCode).json({
+          message: body.message,
+          stack: body.stack,
+        })
+      } else {
+        response.status(statusCode).json(body)
+      }
     }
   }
 }

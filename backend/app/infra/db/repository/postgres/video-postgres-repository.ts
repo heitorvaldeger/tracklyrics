@@ -4,27 +4,39 @@ import { DatabaseQueryBuilderContract } from '@adonisjs/lucid/types/querybuilder
 import { toCamelCase } from '#helpers/to-camel-case'
 import { toSnakeCase } from '#helpers/to-snake-case'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
+import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import { VideoFindModel } from '#models/video-model/video-find-model'
+import { VideoListFindModel } from '#models/video-model/video-list-find-model'
 import VideoLucid from '#models/video-model/video-lucid'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
+import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
 
 import { VideoRepository } from '../protocols/video-repository.js'
 
 export class VideoPostgresRepository implements VideoRepository {
   async find(uuid: string): Promise<VideoFindModel | null> {
-    const qb = db
+    const video: VideoFindModel | null = await db
       .from('videos')
       .where('videos.uuid', uuid)
       .innerJoin('users', 'users.id', 'user_id')
       .innerJoin('languages', 'languages.id', 'language_id')
       .innerJoin('genres', 'genres.id', 'genre_id')
-
-    const video: VideoFindModel | null = await this.selectFind(qb).first()
+      .select(
+        'title',
+        'artist',
+        'link_youtube',
+        'videos.uuid',
+        'release_year',
+        'genres.name as genre',
+        'languages.name as language',
+        'users.username as username'
+      )
+      .first()
 
     return video ? toCamelCase(video) : null
   }
 
-  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoFindModel[]> {
+  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoListFindModel[]> {
     const qb = db
       .from('videos')
       .innerJoin('users', 'users.id', 'user_id')
@@ -44,9 +56,16 @@ export class VideoPostgresRepository implements VideoRepository {
       }
     }
 
-    const videos: VideoFindModel[] = await this.selectFind(qb)
+    const videos: VideoListFindModel[] = await qb.select(
+      'title',
+      'artist',
+      'videos.uuid',
+      'release_year',
+      'languages.name as language',
+      'users.username as username'
+    )
 
-    return this.mapperVideoList(videos)
+    return videos.map((video) => toCamelCase(video))
   }
 
   async getVideoId(videoUuid: string): Promise<number | null> {
@@ -65,6 +84,16 @@ export class VideoPostgresRepository implements VideoRepository {
 
   async delete(videoUuid: string): Promise<boolean> {
     await FavoriteLucid.query()
+      .whereIn('video_id', (query) => {
+        query.from('videos').where('uuid', videoUuid).select('id')
+      })
+      .del()
+    await LyricLucid.query()
+      .whereIn('video_id', (query) => {
+        query.from('videos').where('uuid', videoUuid).select('id')
+      })
+      .del()
+    await VideoPlayCountLucid.query()
       .whereIn('video_id', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
@@ -105,25 +134,7 @@ export class VideoPostgresRepository implements VideoRepository {
     return !!(await db.from('videos').where('uuid', uuid).first())
   }
 
-  private mapperVideoList(videos: VideoFindModel[]) {
-    return videos.map((video) => toCamelCase(video))
-  }
-
   private getParamValidToFindBy(): Array<string> {
     return ['language_id', 'genre_id', 'user_uuid']
-  }
-
-  private selectFind(qb: DatabaseQueryBuilderContract<any>) {
-    return qb.select(
-      'title',
-      'artist',
-      'videos.uuid',
-      'release_year',
-      'link_youtube',
-      'is_draft',
-      'languages.name as language',
-      'genres.name as genre',
-      'users.username as username'
-    )
   }
 }

@@ -9,7 +9,7 @@ import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockVideoRequest } from '#tests/factories/mocks/mock-video-request'
+import { mockVideoCreateOrUpdateRequest } from '#tests/factories/mocks/mock-video-request'
 import { NilUUID } from '#tests/utils/NilUUID'
 
 const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
@@ -18,7 +18,7 @@ const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
 })
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(mockVideoRequest(), {
+  const httpContext = makeHttpRequest(mockVideoCreateOrUpdateRequest(), {
     uuid: randomUUID(),
   })
 
@@ -28,13 +28,12 @@ const makeSut = async () => {
   return { sut, httpContext, videoUpdateServiceStub }
 }
 
-test.group('Video Update Controller', (group) => {
-  group.each.teardown(() => {
-    sinon.reset()
-    sinon.restore()
+test.group('VideoUpdateController', (group) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
   })
 
-  test('it must returns 400 if isDraft is not boolean', async ({ expect }) => {
+  test('returns 400 if isDraft is not boolean', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     stub(httpContext.request.body(), 'isDraft').value('any_value')
@@ -50,7 +49,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if required fields is not provided', async ({ expect }) => {
+  test('returns 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request, 'body').returns({
       isDraft: false,
@@ -87,7 +86,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if releseYear not contains four length', async ({ expect }) => {
+  test('returns 400 if releseYear not contains four length', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'releaseYear').value('00000')
 
@@ -103,7 +102,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if releseYear is not string numeric', async ({ expect }) => {
+  test('returns 400 if releseYear is not string numeric', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'releaseYear').value('abcd')
 
@@ -119,7 +118,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if fields not contains most three characteres', async ({ expect }) => {
+  test('returns 400 if fields not contains most three characteres', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
     stub(httpContext.request, 'body').returns({
@@ -144,7 +143,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if fields are empty', async ({ expect }) => {
+  test('returns 400 if fields are empty', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
     stub(httpContext.request, 'body').returns({
@@ -174,7 +173,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if linkYoutube is not link valid', async ({ expect }) => {
+  test('returns 400 if linkYoutube is not link valid', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'linkYoutube').value('any_link')
 
@@ -190,7 +189,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 400 if invalid uuid is provided', async ({ expect }) => {
+  test('returns 400 if invalid uuid is provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     stub(httpContext.request, 'params').returns({
@@ -209,7 +208,7 @@ test.group('Video Update Controller', (group) => {
     )
   })
 
-  test('it must returns 404 if a video return not found', async ({ expect }) => {
+  test('returns 404 if a video return not found', async ({ expect }) => {
     const { sut, httpContext, videoUpdateServiceStub } = await makeSut()
     stub(videoUpdateServiceStub, 'update').resolves(
       createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
@@ -223,14 +222,14 @@ test.group('Video Update Controller', (group) => {
     expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
-  test('it must returns 200 if video updated on success', async ({ expect }) => {
+  test('returns 200 if video updated on success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.update(httpContext)
     expect(httpResponse).toEqual(ok(true))
   })
 
-  test('it must returns 500 if video update throws', async ({ expect }) => {
+  test('returns 500 if video update throws', async ({ expect }) => {
     const { sut, httpContext, videoUpdateServiceStub } = await makeSut()
 
     stub(videoUpdateServiceStub, 'update').throws(new Error())

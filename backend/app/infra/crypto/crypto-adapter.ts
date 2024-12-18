@@ -13,7 +13,7 @@ export class CryptoAdapter implements OTPAdapter, HashAdapter {
       issuer: 'ACME',
       algorithm: 'SHA1',
       digits: 6,
-      period: 600,
+      period: 600, // 10 Minutes
       secret: new OTPAuth.Secret(),
     })
   }

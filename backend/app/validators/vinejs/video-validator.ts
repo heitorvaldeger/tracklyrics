@@ -19,12 +19,6 @@ export const createOrUpdateVideoValidator = vine.compile(
   })
 )
 
-export const uuidVideoValidator = vine.compile(
-  vine.object({
-    uuid: vine.string().trim().uuid(),
-  })
-)
-
 export const findByVideoValidator = vine.compile(
   vine.object({
     genreId: vine.number().positive().optional(),

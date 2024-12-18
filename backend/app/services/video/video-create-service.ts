@@ -4,7 +4,7 @@ import { inject } from '@adonisjs/core'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { MethodResponse } from '#helpers/types/method-response'
 import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
 import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
 import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
@@ -23,7 +23,7 @@ export class VideoCreateService implements VideoCreateProtocolService {
 
   async create(
     payload: VideoCreateProtocolService.Params
-  ): Promise<IMethodResponse<VideoSaveResultModel>> {
+  ): Promise<MethodResponse<VideoSaveResultModel>> {
     const uuid = randomUUID()
 
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {

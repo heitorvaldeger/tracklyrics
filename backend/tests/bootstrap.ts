@@ -10,8 +10,10 @@ import Sinon from 'sinon'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import GenreLucid from '#models/genre-model/genre-lucid'
 import { LanguageLucid } from '#models/language-model/language-lucid'
+import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
+import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
 
 /**
  * This file is imported by the "bin/test.ts" entrypoint file
@@ -42,11 +44,13 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
 export const configureSuite: Config['configureSuite'] = (suite) => {
   suite.onGroup((group) => {
     group.tap((test) => {
-      test.setup(async () => {
+      test.teardown(async () => {
         mail.fake()
         Sinon.reset()
         Sinon.restore()
+        await LyricLucid.query().del()
         await FavoriteLucid.query().del()
+        await VideoPlayCountLucid.query().del()
         await VideoLucid.query().del()
         await UserLucid.query().del()
         await GenreLucid.query().del()

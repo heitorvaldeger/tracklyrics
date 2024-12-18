@@ -1,7 +1,10 @@
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { MethodResponse } from '#helpers/types/method-response'
+import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 
 export abstract class VideoCreateProtocolService {
-  abstract create(payload: VideoCreateProtocolService.Params): Promise<IMethodResponse<any>>
+  abstract create(
+    payload: VideoCreateProtocolService.Params
+  ): Promise<MethodResponse<VideoSaveResultModel>>
 }
 
 export namespace VideoCreateProtocolService {

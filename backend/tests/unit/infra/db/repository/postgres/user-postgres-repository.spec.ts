@@ -12,7 +12,11 @@ const makeSut = () => {
 }
 
 test.group('UserPostgresRepository', (group) => {
-  test('it must return a user if email and username valid is provided', async ({ expect }) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+
+  test('return a user if email and username valid is provided', async ({ expect }) => {
     const { sut } = makeSut()
     const fakeUser = await UserLucid.create({
       username: 'valid_username',
@@ -31,7 +35,7 @@ test.group('UserPostgresRepository', (group) => {
     expect(user?.email).toBe(fakeUser.email)
   })
 
-  test('it must return a user if email or username valid is provided', async ({ expect }) => {
+  test('return a user if email or username valid is provided', async ({ expect }) => {
     const { sut } = makeSut()
     const fakeUser = await UserLucid.create({
       username: 'valid_username',
@@ -50,7 +54,7 @@ test.group('UserPostgresRepository', (group) => {
     expect(user?.email).toBe(fakeUser.email)
   })
 
-  test('it must return a null if email and username not valid is provided', async ({ expect }) => {
+  test('return a null if email and username not valid is provided', async ({ expect }) => {
     const { sut } = makeSut()
     const user = await sut.getUserByEmailOrUsername({
       username: 'any_username',
@@ -60,14 +64,14 @@ test.group('UserPostgresRepository', (group) => {
     expect(user).toBeFalsy()
   })
 
-  test('it must return a null if email and username is not provided', async ({ expect }) => {
+  test('return a null if email and username is not provided', async ({ expect }) => {
     const { sut } = makeSut()
     const user = await sut.getUserByEmailOrUsername({})
 
     expect(user).toBeFalsy()
   })
 
-  test('it must return a user if created on success', async ({ expect }) => {
+  test('return a user if created on success', async ({ expect }) => {
     const { sut } = makeSut()
     const uuid = randomUUID()
     const fakeUser = {
@@ -86,7 +90,7 @@ test.group('UserPostgresRepository', (group) => {
     expect(user.emailStatus).toBe(UserEmailStatus.UNVERIFIED)
   })
 
-  test('it must return a valid token if successful', async ({ expect }) => {
+  test('return a valid token if successful', async ({ expect }) => {
     const { sut } = makeSut()
     const uuid = randomUUID()
 
@@ -105,7 +109,7 @@ test.group('UserPostgresRepository', (group) => {
     expect(accessToken.token.startsWith('oat', 0)).toBeTruthy()
   })
 
-  test('it must delete all tokens from user', async ({ expect }) => {
+  test('delete all tokens from user', async ({ expect }) => {
     const { sut } = makeSut()
     const uuid = randomUUID()
 
@@ -125,7 +129,7 @@ test.group('UserPostgresRepository', (group) => {
     expect(accessTokens.length).toBe(0)
   })
 
-  test('it must update email status from user', async ({ expect }) => {
+  test('update email status from user', async ({ expect }) => {
     const { sut } = makeSut()
     const uuid = randomUUID()
 

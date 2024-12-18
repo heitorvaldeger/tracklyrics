@@ -6,12 +6,14 @@ import mail from '@adonisjs/mail/services/main'
 import { UserEmailStatus } from '#enums/user-email-status'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { ApplicationError } from '#helpers/types/application-error'
+import { MethodResponse } from '#helpers/types/method-response'
 import { HashAdapter } from '#infra/crypto/protocols/hash-adapter'
 import { OTPAdapter } from '#infra/crypto/protocols/otp-adapter'
 import { CacheAdapter } from '#infra/db/cache/protocols/cache-adapter'
 import { UserRepository } from '#infra/db/repository/protocols/user-repository'
 import { VerifyEmail } from '#mails/verify-email'
+import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 import { UserModel } from '#models/user-model/user-model'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
@@ -27,7 +29,7 @@ export class AuthService implements AuthProtocolService, RegisterProtocolService
 
   async register(
     payload: RegisterProtocolService.Params
-  ): Promise<IMethodResponse<RegisterProtocolService.UserRegisterModel>> {
+  ): Promise<MethodResponse<RegisterProtocolService.UserRegisterModel>> {
     const { password, email, username, ...rest } = payload
 
     const user = await this.userRepository.getUserByEmailOrUsername({ email, username })
@@ -59,7 +61,7 @@ export class AuthService implements AuthProtocolService, RegisterProtocolService
       })
     )
 
-    await this.cacheAdapter.set(`${newUser.uuid}_${newUser.email}`, codeOTP)
+    await this.cacheAdapter.set(`${newUser.uuid}_${newUser.email}`, codeOTP, 600)
 
     return createSuccessResponse({
       uuid: newUser.uuid,
@@ -67,7 +69,12 @@ export class AuthService implements AuthProtocolService, RegisterProtocolService
     })
   }
 
-  async login({ email, password }: AuthProtocolService.LoginParams) {
+  async login({
+    email,
+    password,
+  }: AuthProtocolService.LoginParams): Promise<
+    MethodResponse<UserAccessTokenModel | ApplicationError>
+  > {
     const user = await this.userRepository.getUserByEmailOrUsername({
       email,
     })
@@ -101,13 +108,15 @@ export class AuthService implements AuthProtocolService, RegisterProtocolService
       return createFailureResponse(APPLICATION_MESSAGES.EMAIL_INVALID)
     }
 
-    const codeOTPFromCache = await this.cacheAdapter.get(`${user.uuid}_${user.email}`)
+    const cacheKey = `${user.uuid}_${user.email}`
+    const codeOTPFromCache = await this.cacheAdapter.get(cacheKey)
     const isCodeOTPValid = codeOTPFromCache === codeOTP
     if (!codeOTPFromCache || !isCodeOTPValid) {
       return createFailureResponse(APPLICATION_MESSAGES.CODE_OTP_INVALID)
     }
 
     await this.userRepository.updateEmailStatus(user.uuid)
+    await this.cacheAdapter.delete(cacheKey)
     return createSuccessResponse({
       uuid: user.uuid,
       emailStatus: UserEmailStatus.VERIFIED,

@@ -3,7 +3,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
-import { uuidVideoValidator } from '#validators/video-validator'
+import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()
 export default class FavoriteController {
@@ -11,7 +11,7 @@ export default class FavoriteController {
 
   async addFavorite({ request }: HttpContext) {
     try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
+      const { uuid } = await uuidValidator.validate(request.params())
       const added = await this.favoriteService.addFavorite(uuid)
       return dispatch(added)
     } catch (error) {
@@ -24,7 +24,7 @@ export default class FavoriteController {
 
   async removeFavorite({ request }: HttpContext) {
     try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
+      const { uuid } = await uuidValidator.validate(request.params())
       const result = await this.favoriteService.removeFavorite(uuid)
       return dispatch(result)
     } catch (error) {

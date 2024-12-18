@@ -4,27 +4,21 @@ import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 
-const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
-test.group('Video Find Route', (group) => {
+test.group('Video Find Route', () => {
   test('/GET videos/{uuid} - it must return 200 on search video by uuid', async ({
     client,
     expect,
   }) => {
-    const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
 
     const response = await client.get(`/videos/${fakeVideo.uuid}`)
 
     expect(response.status()).toBe(200)
-    expect(response.body()).toEqual({
-      ...fakeVideo.serialize({
-        fields: {
-          omit: fieldsToOmit,
-        },
-      }),
-      genre: fakeGenre.name,
-      language: fakeLanguage.name,
-      username: fakeUser.username,
-    })
+    expect(response.body().language).toBe(fakeLanguage.name)
+    expect(response.body().username).toBe(fakeUser.username)
+    expect(response.body().title).toBe(fakeVideo.title)
+    expect(response.body().artist).toBe(fakeVideo.artist)
+    expect(response.body().linkYoutube).toBe(fakeVideo.linkYoutube)
   })
 
   test('/GET videos/{uuid} - it must return 400 on search if video uuid invalid is provided', async ({

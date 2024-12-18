@@ -7,7 +7,11 @@ import { RedisAdonisAdapter } from '#infra/db/cache/redis-adonis-adapter'
 import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 
 test.group('Auth Validate Email Route', (group) => {
-  test('/POST validate-email - it must return 200 on validate email with success', async ({
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+
+  test('/POST validate-email - return 200 on validate email with success', async ({
     client,
     expect,
   }) => {
@@ -28,7 +32,7 @@ test.group('Auth Validate Email Route', (group) => {
     expect(response.body().emailStatus).toBe(UserEmailStatus.VERIFIED)
   })
 
-  test('/POST validate-email - it must return 400 on validate email if any field is invalid', async ({
+  test('/POST validate-email - return 400 on validate email if any field is invalid', async ({
     client,
     expect,
   }) => {
@@ -38,7 +42,7 @@ test.group('Auth Validate Email Route', (group) => {
     expect(Array.isArray(response.body())).toBeTruthy()
   })
 
-  test('/POST validate-email - it must return 400 on validate email if any field is invalid', async ({
+  test('/POST validate-email - return 400 on validate email if any field is invalid', async ({
     client,
     expect,
   }) => {
@@ -56,7 +60,7 @@ test.group('Auth Validate Email Route', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.EMAIL_HAS_BEEN_VERIFIED)
   })
 
-  test('/POST validate-email - it must return 422 on validate email if email has been verified', async ({
+  test('/POST validate-email - return 422 on validate email if email has been verified', async ({
     client,
     expect,
   }) => {
@@ -69,7 +73,7 @@ test.group('Auth Validate Email Route', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.EMAIL_INVALID)
   })
 
-  test('/POST validate-email - it must return 400 on validate email if user not exist', async ({
+  test('/POST validate-email - return 400 on validate email if user not exist', async ({
     client,
     expect,
   }) => {
@@ -82,7 +86,7 @@ test.group('Auth Validate Email Route', (group) => {
     expect(response.body()).toEqual(APPLICATION_MESSAGES.EMAIL_INVALID)
   })
 
-  test('/POST validate-email - it must return 400 on validate email if user not exist', async ({
+  test('/POST validate-email - return 400 on validate email if user not exist', async ({
     client,
     expect,
   }) => {
