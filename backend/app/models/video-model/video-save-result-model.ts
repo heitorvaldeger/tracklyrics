@@ -3,7 +3,6 @@ export type VideoSaveResultModel = {
   artist: string
   releaseYear: string
   linkYoutube: string
-  qtyViews: number
   languageId: number
   genreId: number
   userId: number

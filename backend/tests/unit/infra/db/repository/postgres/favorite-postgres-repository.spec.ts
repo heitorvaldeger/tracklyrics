@@ -67,7 +67,6 @@ test.group('FavoritePostgresRepository', () => {
       uuid: fakeVideo.uuid,
       releaseYear: fakeVideo.releaseYear,
       linkYoutube: fakeVideo.linkYoutube,
-      qtyViews: fakeVideo.qtyViews,
       language: fakeLanguage.name,
       genre: fakeGenre.name,
       username: fakeUser.username,

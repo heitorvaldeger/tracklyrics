@@ -27,7 +27,6 @@ export const mockLucidEntity = async (): Promise<MockLucidEntity> => {
     isDraft: false,
     title: faker.lorem.words(2),
     artist: faker.lorem.words(2),
-    qtyViews: 0,
     releaseYear: faker.string.numeric({ length: 4 }),
     linkYoutube: makeYoutubeUrl(),
     uuid: faker.string.uuid(),

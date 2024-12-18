@@ -10,5 +10,4 @@ export const mockFakeVideoSaveResultModel = (): VideoSaveResultModel => ({
   title: 'any_title',
   userId: 0,
   uuid: 'any_uuid',
-  qtyViews: 0,
 })

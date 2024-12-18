@@ -44,7 +44,6 @@ export class FavoritePostgresRepository implements FavoriteRepository {
         'videos.uuid',
         'videos.release_year',
         'videos.link_youtube',
-        'videos.qty_views',
         'languages.name as language',
         'genres.name as genre',
         'users.username as username'
