@@ -2,8 +2,8 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
-import { uuidVideoValidator } from '#validators/video-validator'
+import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
+import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()
 export default class VideoDeleteController {
@@ -11,7 +11,7 @@ export default class VideoDeleteController {
 
   async delete({ request }: HttpContext) {
     try {
-      const { uuid } = await uuidVideoValidator.validate(request.params())
+      const { uuid } = await uuidValidator.validate(request.params())
 
       const deleted = await this.videoDeleteService.delete(uuid)
       return dispatch(deleted)

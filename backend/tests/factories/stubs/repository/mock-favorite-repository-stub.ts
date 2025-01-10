@@ -1,10 +1,8 @@
-import { mockFakeFavoriteModel } from '#tests/factories/fakes/mock-fake-video-model'
-
-import { FavoriteRepository } from '../../../../app/infra/db/protocols/favorite-repository.js'
+import { FavoriteRepository } from '#infra/db/repository/protocols/favorite-repository'
+import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
 
 export const mockFavoriteRepositoryStub = (): FavoriteRepository => ({
   addFavorite: (videoId: number, userId: number) => Promise.resolve(true),
   removeFavorite: (videoId: number, userId: number) => Promise.resolve(true),
-  findFavoritesByUser: (userId: number) =>
-    Promise.resolve([mockFakeFavoriteModel(), mockFakeFavoriteModel()]),
+  findFavoritesByUser: (userId: number) => Promise.resolve([mockVideoModel(), mockVideoModel()]),
 })

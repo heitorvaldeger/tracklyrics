@@ -1,16 +1,19 @@
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, forbidden, ok, serverError } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 
 const makeSut = () => {
-  const httpContext = makeHttpRequest(mockUserRegisterRequest())
+  const httpContext = makeHttpRequest({
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+  })
   const authServiceStub = mockAuthServiceStub()
   const sut = new AuthController(authServiceStub, authServiceStub)
 
@@ -22,7 +25,7 @@ test.group('AuthController.login', (group) => {
     sinon.restore()
   })
 
-  test('should return 400 if required fields is not provided', async ({ expect }) => {
+  test('it must return 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({})
@@ -42,7 +45,7 @@ test.group('AuthController.login', (group) => {
     )
   })
 
-  test('should return 400 if email provided is invalid', async ({ expect }) => {
+  test('it must return 400 if email provided is invalid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request.body(), 'email').value('invalid_mail')
@@ -58,7 +61,7 @@ test.group('AuthController.login', (group) => {
     )
   })
 
-  test('should return 400 if fields provided is less than length valid', async ({ expect }) => {
+  test('it must return 400 if fields provided is less than length valid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({
@@ -77,7 +80,7 @@ test.group('AuthController.login', (group) => {
     )
   })
 
-  test('should return 200 if create accessToken on success', async ({ expect }) => {
+  test('it must return 200 if create accessToken on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     const httpResponse = await sut.login(httpContext)
 
@@ -89,17 +92,17 @@ test.group('AuthController.login', (group) => {
     )
   })
 
-  test('should return 401 if invalid credentials is provided', async ({ expect }) => {
+  test('it must return 401 if invalid credentials is provided', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'login').resolves(
-      createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID)
+      createFailureResponse(APPLICATION_MESSAGES.CREDENTIALS_INVALID)
     )
     const httpResponse = await sut.login(httpContext)
 
-    expect(httpResponse).toEqual(forbidden(APPLICATION_ERRORS.CREDENTIALS_INVALID))
+    expect(httpResponse).toEqual(forbidden(APPLICATION_MESSAGES.CREDENTIALS_INVALID))
   })
 
-  test('should return 500 if create accessToken return throws', async ({ expect }) => {
+  test('it must return 500 if create accessToken return throws', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'login').throws(new Error())
     const httpResponse = await sut.login(httpContext)

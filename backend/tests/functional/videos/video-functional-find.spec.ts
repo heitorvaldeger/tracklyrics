@@ -1,33 +1,27 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
-import { mockLucidEntity } from '#tests/factories/fakes/mock-video-entity'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
 import { NilUUID } from '#tests/utils/NilUUID'
 
-const fieldsToOmit = ['userId', 'languageId', 'genreId', 'id']
-test.group('Video Find Route', (group) => {
-  test('/GET videos/{uuid} - should return 200 on search video by uuid', async ({
+test.group('Video Find Route', () => {
+  test('/GET videos/{uuid} - it must return 200 on search video by uuid', async ({
     client,
     expect,
   }) => {
-    const { fakeGenre, fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
 
     const response = await client.get(`/videos/${fakeVideo.uuid}`)
 
     expect(response.status()).toBe(200)
-    expect(response.body()).toEqual({
-      ...fakeVideo.serialize({
-        fields: {
-          omit: fieldsToOmit,
-        },
-      }),
-      genre: fakeGenre.name,
-      language: fakeLanguage.name,
-      username: fakeUser.username,
-    })
+    expect(response.body().language).toBe(fakeLanguage.name)
+    expect(response.body().username).toBe(fakeUser.username)
+    expect(response.body().title).toBe(fakeVideo.title)
+    expect(response.body().artist).toBe(fakeVideo.artist)
+    expect(response.body().linkYoutube).toBe(fakeVideo.linkYoutube)
   })
 
-  test('/GET videos/{uuid} - should return 400 on search if video uuid invalid is provided', async ({
+  test('/GET videos/{uuid} - it must return 400 on search if video uuid invalid is provided', async ({
     client,
     expect,
   }) => {
@@ -39,13 +33,13 @@ test.group('Video Find Route', (group) => {
     ])
   })
 
-  test('/GET videos/{uuid} - should return 404 on search if video uuid not exists', async ({
+  test('/GET videos/{uuid} - it must return 404 on search if video uuid not exists', async ({
     client,
     expect,
   }) => {
     const response = await client.get(`/videos/${NilUUID}`)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
   })
 })

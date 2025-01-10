@@ -1,8 +1,12 @@
-import { HttpResponse } from './types/HttpResponse.js'
+import { HttpResponse } from './types/http-response.js'
 
 export const ok = (body: any): HttpResponse => ({
   statusCode: 200,
   body,
+})
+
+export const notContent = (): HttpResponse => ({
+  statusCode: 204,
 })
 
 export const badRequest = (body: any): HttpResponse => ({

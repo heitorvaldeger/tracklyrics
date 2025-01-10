@@ -10,6 +10,10 @@
 import router from '@adonisjs/core/services/router'
 
 import { middleware } from '#start/kernel'
+
+const LyricSaveController = () => import('#controllers/lyric/lyric-save-controller')
+const LyricFindController = () => import('#controllers/lyric/lyric-find-controller')
+const GameController = () => import('#controllers/game-controller')
 const FavoriteController = () => import('#controllers/favorite-controller')
 
 const LanguageController = () => import('#controllers/language-controller')
@@ -21,19 +25,38 @@ const AuthController = () => import('#controllers/auth-controller')
 
 router.post('/login', [AuthController, 'login'])
 router.post('/register', [AuthController, 'register'])
+router.post('/validate-email', [AuthController, 'validateEmail'])
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
-router.get('/videos/:uuid', [VideoFindController, 'find'])
-router.get('/videos', [VideoFindController, 'findBy'])
+
 router
   .group(() => {
+    router.get(':uuid', [VideoFindController, 'find'])
+    router.get('', [VideoFindController, 'findBy'])
+    router.get(':uuid/lyrics', [LyricFindController, 'find'])
     router
       .group(() => {
         router.post('', [VideoCreateController, 'create'])
         router.delete(':uuid', [VideoDeleteController, 'delete'])
+        router.post(':uuid/lyrics', [LyricSaveController, 'save'])
       })
-      .prefix('videos')
+      .use(
+        middleware.auth({
+          guards: ['api'],
+        })
+      )
+  })
+  .prefix('videos')
 
+router
+  .group(() => {
+    router.put(':uuid/play', [GameController, 'play'])
+    router.get(':uuid/modes', [GameController, 'getModes'])
+  })
+  .prefix('game')
+
+router
+  .group(() => {
     router
       .group(() => {
         router.get('', [FavoriteController, 'findFavoritesByUserLogged'])

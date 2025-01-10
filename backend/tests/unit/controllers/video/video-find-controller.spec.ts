@@ -4,11 +4,11 @@ import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 
 import VideoFindController from '#controllers/video/video-find-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { mockFakeVideoModel } from '#tests/factories/fakes/index'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
 import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
 import { NilUUID } from '#tests/utils/NilUUID'
 
@@ -26,23 +26,22 @@ const makeSut = async () => {
 }
 
 test.group('VideoFindController.find()', (group) => {
-  group.each.teardown(() => {
-    sinon.reset()
-    sinon.restore()
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
   })
 
-  test('should returns 200 if return a video on success', async ({ expect }) => {
+  test('returns 200 if return a video on success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.find(httpContext)
 
-    expect(httpResponse).toEqual(ok(mockFakeVideoModel()))
+    expect(httpResponse).toEqual(ok(mockVideoModel()))
   })
 
-  test('should returns 404 if a video not found', async ({ expect }) => {
+  test('returns 404 if a video not found', async ({ expect }) => {
     const { sut, httpContext, videoServiceStub } = await makeSut()
     stub(videoServiceStub, 'find').resolves(
-      createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
@@ -50,10 +49,10 @@ test.group('VideoFindController.find()', (group) => {
 
     const httpResponse = await sut.find(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
-  test('should returns 400 if a invalid uuid is provided', async ({ expect }) => {
+  test('returns 400 if a invalid uuid is provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: 'invalid_uuid',
@@ -71,7 +70,7 @@ test.group('VideoFindController.find()', (group) => {
     )
   })
 
-  test('should returns 500 if video find throws', async ({ expect }) => {
+  test('returns 500 if video find throws', async ({ expect }) => {
     const { sut, httpContext, videoServiceStub } = await makeSut()
     stub(videoServiceStub, 'find').throws(new Error())
 

@@ -1,68 +1,125 @@
 import { randomUUID } from 'node:crypto'
 
 import { inject } from '@adonisjs/core'
-import hash from '@adonisjs/core/services/hash'
+import mail from '@adonisjs/mail/services/main'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { UserEmailStatus } from '#enums/user-email-status'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
+import { ApplicationError } from '#helpers/types/application-error'
+import { MethodResponse } from '#helpers/types/method-response'
+import { HashAdapter } from '#infra/crypto/protocols/hash-adapter'
+import { OTPAdapter } from '#infra/crypto/protocols/otp-adapter'
+import { CacheAdapter } from '#infra/db/cache/protocols/cache-adapter'
+import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { VerifyEmail } from '#mails/verify-email'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { UserModel } from '#models/user-model/user-model'
 import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
 import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
-
-import { UserRepository } from '../../infra/db/protocols/user-repository.js'
 
 @inject()
 export class AuthService implements AuthProtocolService, RegisterProtocolService {
   constructor(
     private readonly userRepository: UserRepository,
-    private authStrategy: AuthStrategy
+    private readonly otpAdapter: OTPAdapter,
+    private readonly hashAdapter: HashAdapter,
+    private readonly cacheAdapter: CacheAdapter
   ) {}
-
-  getUserId(): number {
-    return this.authStrategy.getUserId()
-  }
 
   async register(
     payload: RegisterProtocolService.Params
-  ): Promise<IMethodResponse<UserAccessTokenModel>> {
+  ): Promise<MethodResponse<RegisterProtocolService.UserRegisterModel>> {
     const { password, email, username, ...rest } = payload
-    const passwordHashed = await hash.make(password)
 
-    if (await this.userRepository.getUserByEmailOrUsername({ email, username })) {
-      return createFailureResponse(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING)
+    const user = await this.userRepository.getUserByEmailOrUsername({ email, username })
+    if (user && user.emailStatus === UserEmailStatus.VERIFIED) {
+      return createFailureResponse(APPLICATION_MESSAGES.EMAIL_OR_USERNAME_ALREADY_USING)
     }
 
-    const { uuid } = await this.userRepository.create({
-      uuid: randomUUID(),
-      email,
-      username,
-      password: passwordHashed,
-      ...rest,
-    })
+    let newUser = user as UserModel
 
-    const userAccessToken = await this.userRepository.createAccessToken(uuid)
-    return createSuccessResponse(userAccessToken)
+    if (!user) {
+      const passwordHashed = await this.hashAdapter.createHash(password)
+      newUser = await this.userRepository.create({
+        uuid: randomUUID(),
+        email,
+        username,
+        password: passwordHashed,
+        emailStatus: UserEmailStatus.UNVERIFIED,
+        ...rest,
+      })
+    }
+
+    const codeOTP = await this.otpAdapter.createOTP(newUser.uuid)
+
+    await mail.send(
+      new VerifyEmail({
+        email,
+        username,
+        codeOTP,
+      })
+    )
+
+    await this.cacheAdapter.set(`${newUser.uuid}_${newUser.email}`, codeOTP, 600)
+
+    return createSuccessResponse({
+      uuid: newUser.uuid,
+      emailStatus: newUser.emailStatus,
+    })
   }
 
-  async login({ email, password }: AuthProtocolService.Params) {
+  async login({
+    email,
+    password,
+  }: AuthProtocolService.LoginParams): Promise<
+    MethodResponse<UserAccessTokenModel | ApplicationError>
+  > {
     const user = await this.userRepository.getUserByEmailOrUsername({
       email,
     })
 
     if (!user) {
-      return createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID)
+      return createFailureResponse(APPLICATION_MESSAGES.CREDENTIALS_INVALID)
     }
 
-    const isPasswordValid = await hash.verify(user.password, password)
+    if (user && user.emailStatus === UserEmailStatus.UNVERIFIED) {
+      return createFailureResponse(APPLICATION_MESSAGES.EMAIL_PENDING_VALIDATION)
+    }
+
+    const isPasswordValid = await this.hashAdapter.validateHash(user.password, password)
     if (!isPasswordValid) {
-      return createFailureResponse(APPLICATION_ERRORS.CREDENTIALS_INVALID)
+      return createFailureResponse(APPLICATION_MESSAGES.CREDENTIALS_INVALID)
     }
 
     await this.userRepository.deleteAllAccessToken(user.uuid)
 
     const userAccessToken = await this.userRepository.createAccessToken(user.uuid)
     return createSuccessResponse(userAccessToken)
+  }
+
+  async validateEmail({ email, codeOTP }: AuthProtocolService.ValidateEmailParams) {
+    const user = await this.userRepository.getUserByEmailOrUsername({ email })
+    if (user && user.emailStatus === UserEmailStatus.VERIFIED) {
+      return createFailureResponse(APPLICATION_MESSAGES.EMAIL_HAS_BEEN_VERIFIED)
+    }
+
+    if (!user) {
+      return createFailureResponse(APPLICATION_MESSAGES.EMAIL_INVALID)
+    }
+
+    const cacheKey = `${user.uuid}_${user.email}`
+    const codeOTPFromCache = await this.cacheAdapter.get(cacheKey)
+    const isCodeOTPValid = codeOTPFromCache === codeOTP
+    if (!codeOTPFromCache || !isCodeOTPValid) {
+      return createFailureResponse(APPLICATION_MESSAGES.CODE_OTP_INVALID)
+    }
+
+    await this.userRepository.updateEmailStatus(user.uuid)
+    await this.cacheAdapter.delete(cacheKey)
+    return createSuccessResponse({
+      uuid: user.uuid,
+      emailStatus: UserEmailStatus.VERIFIED,
+    })
   }
 }

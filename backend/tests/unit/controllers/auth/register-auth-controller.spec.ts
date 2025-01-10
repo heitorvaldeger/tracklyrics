@@ -2,15 +2,16 @@ import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { UserEmailStatus } from '#enums/user-email-status'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { mockUserRegisterRequest } from '#tests/factories/fakes/mock-user-register-request'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockRegisterRequest } from '#tests/factories/mocks/mock-register-request'
 import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
 
 const makeSut = () => {
-  const httpContext = makeHttpRequest(mockUserRegisterRequest())
+  const httpContext = makeHttpRequest(mockRegisterRequest())
   const authServiceStub = mockAuthServiceStub()
   const sut = new AuthController(authServiceStub, authServiceStub)
 
@@ -22,7 +23,7 @@ test.group('AuthController.register', (group) => {
     sinon.restore()
   })
 
-  test('should return 400 if required fields is not provided', async ({ expect }) => {
+  test('it must return 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({})
@@ -54,7 +55,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 400 if email provided is invalid', async ({ expect }) => {
+  test('it must return 400 if email provided is invalid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request.body(), 'email').value('invalid_mail')
@@ -70,7 +71,7 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 400 if fields provided is less than length valid', async ({ expect }) => {
+  test('it must return 400 if fields provided is less than length valid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     stub(httpContext.request, 'body').returns({
@@ -104,29 +105,31 @@ test.group('AuthController.register', (group) => {
     )
   })
 
-  test('should return 422 if email provided already in use', async ({ expect }) => {
+  test('it must return 422 if email provided already in use', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'register').returns(
-      Promise.resolve(createFailureResponse(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
+      Promise.resolve(createFailureResponse(APPLICATION_MESSAGES.EMAIL_OR_USERNAME_ALREADY_USING))
     )
     const httpResponse = await sut.register(httpContext)
 
-    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.EMAIL_OR_USERNAME_ALREADY_USING))
+    expect(httpResponse).toEqual(
+      unprocessable(APPLICATION_MESSAGES.EMAIL_OR_USERNAME_ALREADY_USING)
+    )
   })
 
-  test('should return 200 if create user return success', async ({ expect }) => {
+  test('it must return 200 if create user return success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     const httpResponse = await sut.register(httpContext)
 
     expect(httpResponse).toEqual(
       ok({
-        type: 'any_type',
-        token: 'any_token',
+        uuid: 'any_uuid',
+        emailStatus: UserEmailStatus.UNVERIFIED,
       })
     )
   })
 
-  test('should return 500 if create user return throws', async ({ expect }) => {
+  test('it must return 500 if create user return throws', async ({ expect }) => {
     const { sut, httpContext, authServiceStub } = makeSut()
     stub(authServiceStub, 'register').throws(new Error())
     const httpResponse = await sut.register(httpContext)

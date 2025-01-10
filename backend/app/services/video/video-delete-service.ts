@@ -1,12 +1,11 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { IMethodResponse } from '#helpers/types/IMethodResponse'
-import { VideoCurrentUserProtocolService } from '#services/video/protocols/video-currentuser-protocol-service'
-import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
-
-import { VideoRepository } from '../../infra/db/protocols/video-repository.js'
+import { MethodResponse } from '#helpers/types/method-response'
+import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
+import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
+import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
 
 @inject()
 export class VideoDeleteService implements VideoDeleteProtocolService {
@@ -15,9 +14,9 @@ export class VideoDeleteService implements VideoDeleteProtocolService {
     private readonly videoCurrentUserService: VideoCurrentUserProtocolService
   ) {}
 
-  async delete(uuid: string): Promise<IMethodResponse<boolean>> {
+  async delete(uuid: string): Promise<MethodResponse<boolean>> {
     if (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(uuid)) {
-      return createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     }
 
     const isSuccess = await this.videoRepository.delete(uuid)

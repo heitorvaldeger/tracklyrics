@@ -1,5 +1,0 @@
-export * from '#tests/factories/fakes/mock-fake-video-model'
-export * from '#tests/factories/fakes/mock-fake-video-save-result-model'
-export * from '#tests/factories/fakes/mock-genre-entity'
-export * from '#tests/factories/fakes/mock-language-entity'
-export * from '#tests/factories/fakes/mock-user-entity'

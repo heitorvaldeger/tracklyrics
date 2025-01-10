@@ -13,8 +13,12 @@ const makeSut = () => {
   return { sut, videoRepositoryStub }
 }
 
-test.group('VideoFindService.findBy()', () => {
-  test('should returns a empty list of videos with on success', async ({ expect }) => {
+test.group('VideoFindService.findBy()', (group) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
+  })
+
+  test('returns a empty list of videos with on success', async ({ expect }) => {
     const { sut } = makeSut()
 
     const video = await sut.findBy({})
@@ -22,21 +26,21 @@ test.group('VideoFindService.findBy()', () => {
     expect(video).toEqual(createSuccessResponse([]))
   })
 
-  test('should returns a list videos returns on find by genre', async ({ expect }) => {
+  test('returns a list videos returns on find by genre', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({ genreId: 0 })
 
     expect(video).toEqual(createSuccessResponse([]))
   })
 
-  test('should returns a list videos returns on find by language', async ({ expect }) => {
+  test('returns a list videos returns on find by language', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({ languageId: 0 })
 
     expect(video).toEqual(createSuccessResponse([]))
   })
 
-  test('should returns a list videos returns on find by user uuid', async ({ expect }) => {
+  test('returns a list videos returns on find by user uuid', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({
       userUuid: faker.string.uuid(),

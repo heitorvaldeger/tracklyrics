@@ -1,23 +1,26 @@
 import { test } from '@japa/runner'
-import _ from 'lodash'
 import sinon, { stub } from 'sinon'
 
 import VideoCreateController from '#controllers/video/video-create-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoCreateProtocolService } from '#services/video/protocols/video-create-protocol-service'
-import { mockVideoRequest } from '#tests/factories/fakes/mock-video-request'
+import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import {
+  mockVideoCreateOrUpdateRequest,
+  mockVideoCreateOrUpdateResponse,
+} from '#tests/factories/mocks/mock-video-request'
 
-const videoRequest = mockVideoRequest()
+const videoRequest = mockVideoCreateOrUpdateRequest()
+const videoResponse = mockVideoCreateOrUpdateResponse()
 export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({
   create: (payload: VideoCreateProtocolService.Params) =>
-    Promise.resolve(createSuccessResponse(videoRequest)),
+    Promise.resolve(createSuccessResponse(videoResponse)),
 })
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(mockVideoRequest())
+  const httpContext = makeHttpRequest(videoRequest)
 
   const videoCreateServiceStub = mockVideoCreateServiceStub()
   const sut = new VideoCreateController(videoCreateServiceStub)
@@ -26,12 +29,11 @@ const makeSut = async () => {
 }
 
 test.group('VideoCreateController', (group) => {
-  group.each.teardown(() => {
-    sinon.reset()
-    sinon.restore()
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
   })
 
-  test('should returns 400 if isDraft is not a boolean', async ({ expect }) => {
+  test('returns 400 if isDraft is not a boolean', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'isDraft').value('any_value')
 
@@ -47,7 +49,7 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 400 if required fields is not provided', async ({ expect }) => {
+  test('returns 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request, 'body').returns({
       isDraft: false,
@@ -84,7 +86,7 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 400 if releseYear not contains four length', async ({ expect }) => {
+  test('returns 400 if releseYear not contains four length', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'releaseYear').value('00000')
 
@@ -100,7 +102,7 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 400 if releseYear is not string numeric', async ({ expect }) => {
+  test('returns 400 if releseYear is not string numeric', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'releaseYear').value('abcd')
 
@@ -116,7 +118,7 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 400 if fields not contains most three characteres', async ({ expect }) => {
+  test('returns 400 if fields not contains most three characteres', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
     stub(httpContext.request, 'body').returns({
@@ -141,7 +143,7 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 400 if string fields is empty', async ({ expect }) => {
+  test('returns 400 if string fields is empty', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpBody = httpContext.request.body()
     stub(httpContext.request, 'body').returns({
@@ -171,7 +173,7 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 400 if linkYoutube is not valid link', async ({ expect }) => {
+  test('returns 400 if linkYoutube is not valid link', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     stub(httpContext.request.body(), 'linkYoutube').value('any_link')
 
@@ -187,14 +189,14 @@ test.group('VideoCreateController', (group) => {
     )
   })
 
-  test('should returns 200 if video created on success', async ({ expect }) => {
+  test('returns 200 if video created on success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
     const httpResponse = await sut.create(httpContext)
 
-    expect(httpResponse).toEqual(ok(videoRequest))
+    expect(httpResponse).toEqual(ok(videoResponse))
   })
 
-  test('should returns 500 if video create throws', async ({ expect }) => {
+  test('returns 500 if video create throws', async ({ expect }) => {
     const { sut, httpContext, videoCreateServiceStub } = await makeSut()
 
     stub(videoCreateServiceStub, 'create').throws(new Error())
@@ -204,14 +206,14 @@ test.group('VideoCreateController', (group) => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  test('should returns 422 if link youtube already exists', async ({ expect }) => {
+  test('returns 422 if link youtube already exists', async ({ expect }) => {
     const { sut, httpContext, videoCreateServiceStub } = await makeSut()
     stub(videoCreateServiceStub, 'create').resolves(
-      createFailureResponse(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS)
+      createFailureResponse(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS)
     )
 
     const httpResponse = await sut.create(httpContext)
 
-    expect(httpResponse).toEqual(unprocessable(APPLICATION_ERRORS.YOUTUBE_LINK_ALREADY_EXISTS))
+    expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS))
   })
 })

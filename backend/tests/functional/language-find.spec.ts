@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import { LanguageLucid } from '#models/language-model/language-lucid'
 
 test.group('Language Routes', (group) => {
-  test('/GET languages - should return 200 on load languages success', async ({
+  test('/GET languages - it must return 200 on load languages success', async ({
     client,
     expect,
   }) => {

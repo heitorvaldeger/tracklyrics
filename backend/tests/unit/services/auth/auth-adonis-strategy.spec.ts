@@ -15,14 +15,14 @@ test.group('Auth Adonis Strategy', (group) => {
     sinon.restore()
   })
 
-  test('should returns a user id on getUserId', async ({ expect }) => {
+  test('it must returns a user id on getUserId', async ({ expect }) => {
     const sut = new AuthAdonisStrategy(authMock)
     const userId = sut.getUserId()
 
     expect(userId).toBe(1)
   })
 
-  test('should returns -1 on getUserId if auth property is null', async ({ expect }) => {
+  test('it must returns -1 on getUserId if auth property is null', async ({ expect }) => {
     stub(authMock, 'user').value({})
     const sut = new AuthAdonisStrategy(authMock)
     const userId = sut.getUserId()

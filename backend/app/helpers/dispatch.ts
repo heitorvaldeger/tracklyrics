@@ -1,14 +1,24 @@
 import { errors } from '@vinejs/vine'
 
 import { HttpStatusCode } from '#enums/http-status-code'
-import { badRequest, forbidden, notFound, ok, serverError, unprocessable } from '#helpers/http'
+import {
+  badRequest,
+  forbidden,
+  notContent,
+  notFound,
+  ok,
+  serverError,
+  unprocessable,
+} from '#helpers/http'
 
-import { IMethodResponse } from './types/IMethodResponse.js'
+import { MethodResponse } from './types/method-response.js'
 
-export const dispatch = ({ isSuccess, error, value }: IMethodResponse<any>) => {
+export const dispatch = ({ isSuccess, error, value }: MethodResponse<any>) => {
   if (isSuccess) {
     if (value) {
       return ok(value)
+    } else {
+      return notContent()
     }
   }
 

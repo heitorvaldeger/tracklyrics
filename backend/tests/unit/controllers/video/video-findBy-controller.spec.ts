@@ -4,8 +4,8 @@ import { spy, stub } from 'sinon'
 
 import VideoFindController from '#controllers/video/video-find-controller'
 import { badRequest, ok, serverError } from '#helpers/http'
-import { mockFakeVideoModel } from '#tests/factories/fakes/index'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
 import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
 import { NilUUID } from '#tests/utils/NilUUID'
 
@@ -16,14 +16,18 @@ const makeSut = () => {
   return { sut, videoServiceStub, httpContext }
 }
 
-test.group('VideoFindController.findBy()', () => {
-  test('should returns 200 if return a list videos on success', async ({ expect }) => {
-    const { sut, httpContext } = makeSut()
-    const httpResponse = await sut.findBy(httpContext)
-    expect(httpResponse).toEqual(ok([mockFakeVideoModel()]))
+test.group('VideoFindController.findBy()', (group) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
   })
 
-  test('should calls VideoFindService findBy with correct values', async ({ expect }) => {
+  test('returns 200 if return a list videos on success', async ({ expect }) => {
+    const { sut, httpContext } = makeSut()
+    const httpResponse = await sut.findBy(httpContext)
+    expect(httpResponse).toEqual(ok([mockVideoModel()]))
+  })
+
+  test('calls VideoFindService findBy with correct values', async ({ expect }) => {
     const { sut, httpContext, videoServiceStub } = makeSut()
     const findBySpy = spy(videoServiceStub, 'findBy')
     stub(httpContext.request, 'qs').returns({
@@ -42,7 +46,7 @@ test.group('VideoFindController.findBy()', () => {
     ).toBeTruthy()
   })
 
-  test('should returns 400 if invalid params is provided', async ({ expect }) => {
+  test('returns 400 if invalid params is provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(httpContext.request, 'qs').returns({
       genreId: 'any_id',
@@ -69,7 +73,7 @@ test.group('VideoFindController.findBy()', () => {
     )
   })
 
-  test('should returns 500 if video findBy return throws', async ({ expect }) => {
+  test('returns 500 if video findBy return throws', async ({ expect }) => {
     const { sut, videoServiceStub, httpContext } = makeSut()
     stub(videoServiceStub, 'findBy').throws(new Error())
     const httpResponse = await sut.findBy(httpContext)

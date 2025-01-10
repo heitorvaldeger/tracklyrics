@@ -17,9 +17,6 @@ export default class VideoLucid extends BaseModel {
   declare artist: string
 
   @column()
-  declare qtyViews: number
-
-  @column()
   declare releaseYear: string
 
   @column()

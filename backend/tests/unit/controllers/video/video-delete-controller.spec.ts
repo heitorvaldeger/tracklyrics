@@ -3,10 +3,10 @@ import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import VideoDeleteController from '#controllers/video/video-delete-controller'
-import { APPLICATION_ERRORS } from '#helpers/application-errors'
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoDeleteProtocolService } from '#services/video/protocols/video-delete-protocol-service'
+import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
 import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import { NilUUID } from '#tests/utils/NilUUID'
 
@@ -27,13 +27,11 @@ const makeSut = () => {
   return { sut, httpContext, videoDeleteServiceStub }
 }
 
-test.group('Video Delete Controller', (group) => {
-  group.each.teardown(() => {
-    sinon.reset()
-    sinon.restore()
+test.group('VideoDeleteController', (group) => {
+  group.tap((t) => {
+    t.options.title = `it must ${t.options.title}`
   })
-
-  test('should returns 200 if video was delete on success', async ({ expect }) => {
+  test('returns 200 if video was delete on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     const httpResponse = await sut.delete(httpContext)
@@ -41,10 +39,10 @@ test.group('Video Delete Controller', (group) => {
     expect(httpResponse).toEqual(ok(true))
   })
 
-  test('should returns 404 if a video not found', async ({ expect }) => {
+  test('returns 404 if a video not found', async ({ expect }) => {
     const { sut, httpContext, videoDeleteServiceStub } = makeSut()
     stub(videoDeleteServiceStub, 'delete').resolves(
-      createFailureResponse(APPLICATION_ERRORS.VIDEO_NOT_FOUND)
+      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     )
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
@@ -52,10 +50,10 @@ test.group('Video Delete Controller', (group) => {
 
     const httpResponse = await sut.delete(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_ERRORS.VIDEO_NOT_FOUND))
+    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })
 
-  test('should returns 400 if a invalid uuid is provided', async ({ expect }) => {
+  test('returns 400 if a invalid uuid is provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: 'invalid_uuid',
@@ -73,7 +71,7 @@ test.group('Video Delete Controller', (group) => {
     )
   })
 
-  test('should returns 500 if video delete throws', async ({ expect }) => {
+  test('returns 500 if video delete throws', async ({ expect }) => {
     const { sut, httpContext, videoDeleteServiceStub } = makeSut()
 
     stub(videoDeleteServiceStub, 'delete').throws(new Error())
