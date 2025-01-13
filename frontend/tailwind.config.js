@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
@@ -50,7 +52,10 @@ export default {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
-  		}
+  		},
+			fontFamily: {
+				'sans': ['"Nunito Sans"'],
+			}
   	}
   },
   plugins: [require("tailwindcss-animate")],
