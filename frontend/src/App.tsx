@@ -1,8 +1,8 @@
-import { RegisterView } from "./views/register"
+import { AppRoutes } from "./routes"
 
 function App() {
   return (
-    <RegisterView />
+    <AppRoutes />
   )
 }
 
