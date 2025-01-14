@@ -65,6 +65,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos[0].username).toBe(fakeUser.username)
     expect(videos[0].title).toBe(fakeVideo.title)
     expect(videos[0].artist).toBe(fakeVideo.artist)
+    expect(videos[0].linkYoutube).toBe(fakeVideo.linkYoutube)
   })
 
   test('return a list videos on findBy if languageId param is provided', async ({ expect }) => {
@@ -99,6 +100,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(video?.username).toEqual(fakeUser.username)
     expect(video?.title).toBe(fakeVideo.title)
     expect(video?.artist).toBe(fakeVideo.artist)
+    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
   })
 
   test('return null on find if uuid param is invalid', async ({ expect }) => {

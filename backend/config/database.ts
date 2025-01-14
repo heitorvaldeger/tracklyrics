@@ -1,14 +1,11 @@
 import { defineConfig } from '@adonisjs/lucid'
-import { DateTime } from 'luxon'
 import pg from 'pg'
 
 import env from '#start/env'
 
 pg.types.setTypeParser(pg.types.builtins.INT8, Number.parseInt)
 pg.types.setTypeParser(pg.types.builtins.NUMERIC, Number.parseFloat)
-pg.types.setTypeParser(pg.types.builtins.DATE, (value) => {
-  return DateTime.fromSQL(value).setZone('UTC').toSQLDate()
-})
+
 const dbConfig = defineConfig({
   connection: 'postgres',
   connections: {
