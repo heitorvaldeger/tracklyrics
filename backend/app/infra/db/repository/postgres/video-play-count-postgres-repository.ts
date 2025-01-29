@@ -13,7 +13,7 @@ export class VideoPlayCountPostgresRepository implements VideoPlayCountRepositor
     const query = db
       .from('video_play_counts')
       .where('video_id', videoId)
-      .whereRaw('created_at::date = ?', [currentDateTime.toFormat('yyyy-MM-dd')])
+      .whereRaw('DATE(created_at) = ?', [currentDateTime.toFormat('yyyy-MM-dd')])
     if (!(await query.first())) {
       await db.table('video_play_counts').insert(
         toSnakeCase({

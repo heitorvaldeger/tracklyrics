@@ -4,7 +4,7 @@ import { VideoSaveResultModel } from '#models/video-model/video-save-result-mode
 
 export abstract class VideoRepository {
   abstract find(uuid: string): Promise<VideoFindModel | null>
-  abstract findBy(filters: VideoRepository.FindVideoParams): Promise<VideoListFindModel[]>
+  abstract findBy(filters: VideoRepository.FindVideoParams): Promise<VideoFindModel[]>
   abstract getVideoId(videoUuid: string): Promise<number | null>
   abstract getUserId(videoUuid: string): Promise<number | null>
   abstract delete(uuid: string): Promise<boolean>
