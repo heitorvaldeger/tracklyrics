@@ -6,6 +6,7 @@ import { toSnakeCase } from '#helpers/to-snake-case'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import { VideoFindModel } from '#models/video-model/video-find-model'
+import { VideoListFindModel } from '#models/video-model/video-list-find-model'
 import VideoLucid from '#models/video-model/video-lucid'
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
@@ -35,7 +36,7 @@ export class VideoPostgresRepository implements VideoRepository {
     return video ? toCamelCase(video) : null
   }
 
-  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoFindModel[]> {
+  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoListFindModel[]> {
     const qb = db
       .from('videos')
       .innerJoin('users', 'users.id', 'user_id')
@@ -55,12 +56,11 @@ export class VideoPostgresRepository implements VideoRepository {
       }
     }
 
-    const videos: VideoFindModel[] = await qb.select(
+    const videos: VideoListFindModel[] = await qb.select(
       'title',
       'artist',
       'videos.uuid',
       'release_year',
-      'link_youtube',
       'languages.name as language',
       'users.username as username'
     )

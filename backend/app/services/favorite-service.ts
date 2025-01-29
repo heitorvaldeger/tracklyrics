@@ -4,7 +4,6 @@ import { inject } from '@adonisjs/core'
 import _ from 'lodash'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { getYoutubeThumbnail } from '#helpers/get-youtube-thumbnail'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { ApplicationError } from '#helpers/types/application-error'
 import { MethodResponse } from '#helpers/types/method-response'
@@ -65,12 +64,8 @@ export class FavoriteService implements FavoriteProtocolService {
 
   async findFavoritesByUserLogged(): Promise<MethodResponse<VideoFindModel[] | ApplicationError>> {
     const userId = this.authStrategy.getUserId()
-    const videos = await this.favoriteRepository.findFavoritesByUser(userId)
+    const favorites = await this.favoriteRepository.findFavoritesByUser(userId)
 
-    const videosWithThumbnail = videos.map((video) => ({
-      ...video,
-      thumbnail: getYoutubeThumbnail(video.linkYoutube),
-    }))
-    return createSuccessResponse(videosWithThumbnail)
+    return createSuccessResponse(favorites)
   }
 }

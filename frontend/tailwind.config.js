@@ -54,7 +54,7 @@ export default {
   			}
   		},
 			fontFamily: {
-				'sans': ['Nunito'],
+				'sans': ['"Nunito Sans"'],
 			}
   	}
   },
