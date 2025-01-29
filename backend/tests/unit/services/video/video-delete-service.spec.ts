@@ -5,8 +5,8 @@ import sinon, { stub } from 'sinon'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoDeleteService } from '#services/video/video-delete-service'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
+import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoCurrentUserServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()

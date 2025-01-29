@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 import { VideoPlayCountPostgresRepository } from '#infra/db/repository/postgres/video-play-count-postgres-repository'
 import VideoLucid from '#models/video-model/video-lucid'
 import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
 
 const makeSut = async () => {
   const { fakeVideo, fakeVideoPlayCount } = await mockLucidEntity()

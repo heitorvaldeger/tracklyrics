@@ -8,9 +8,9 @@ import { MethodResponse } from '#helpers/types/method-response'
 import { VideoPlayCountRepository } from '#infra/db/repository/protocols/video-play-count-repository'
 import { GameService } from '#services/game-service'
 import { GameProtocolService } from '#services/protocols/game-protocol-service'
-import { makeGameModesStub } from '#tests/factories/makeGameModesResponse'
-import { mockLyricRepositoryStub } from '#tests/factories/stubs/repository/mock-lyric-repository-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
+import { mockLyricRepositoryStub } from '#tests/__mocks__/stubs/mock-lyric-stub'
+import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const mockVideoPlayCountRepositoryStub = (): VideoPlayCountRepository => ({
   increment: (videoId: number) => Promise.resolve(),
@@ -59,7 +59,7 @@ test.group('GameService', (group) => {
     const { totalWords, beginner, intermediate, advanced, specialist } =
       response.value as GameProtocolService.ModesResponse
 
-    const { beginnerPercent, intermediatePercent, advancedPercent } = makeGameModesStub()
+    const { beginnerPercent, intermediatePercent, advancedPercent } = mockGameModesData
     const mockTotalWords = lyrics.reduce((acc, lyric) => {
       return acc + lyric.line.length
     }, 0)

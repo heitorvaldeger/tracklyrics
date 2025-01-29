@@ -25,7 +25,7 @@ export default class AuthMiddleware {
       guards?: (keyof Authenticators)[]
     } = {}
   ) {
-    await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
+    await ctx.auth.authenticateUsing(options.guards)
     app.container.bind(AuthStrategy, async () => {
       return new AuthAdonisStrategy(ctx.auth)
     })

@@ -6,11 +6,11 @@ import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
 import {
   mockVideoCreateOrUpdateRequest,
   mockVideoCreateOrUpdateResponse,
-} from '#tests/factories/mocks/mock-video-request'
+} from '#tests/__mocks__/mock-video-request'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const videoRequest = mockVideoCreateOrUpdateRequest()
 const videoResponse = mockVideoCreateOrUpdateResponse()

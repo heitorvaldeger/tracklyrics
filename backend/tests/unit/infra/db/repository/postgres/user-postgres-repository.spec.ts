@@ -5,6 +5,7 @@ import { test } from '@japa/runner'
 import { UserEmailStatus } from '#enums/user-email-status'
 import { UserPostgresRepository } from '#infra/db/repository/postgres/user-postgres-repository'
 import UserLucid from '#models/user-model/user-lucid'
+import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
 
 const makeSut = () => {
   const sut = new UserPostgresRepository()
@@ -146,5 +147,47 @@ test.group('UserPostgresRepository', (group) => {
     const userUpdated = await UserLucid.query().where('uuid', fakeUser.uuid).first()
 
     expect(userUpdated?.emailStatus).toBe(UserEmailStatus.VERIFIED)
+  })
+
+  test('return null on getUserByEmailWithoutPassword if emailAddress is not provided', async ({
+    expect,
+  }) => {
+    const { sut } = makeSut()
+
+    const user = await sut.getUserByEmailWithoutPassword('')
+    expect(user).toBeFalsy()
+  })
+
+  test('return user on getUserByEmailWithoutPassword if emailAddress is provided', async ({
+    expect,
+  }) => {
+    const { sut } = makeSut()
+
+    const fakeUser = await UserLucid.create({
+      uuid: randomUUID(),
+      username: 'valid_username',
+      email: 'valid_mail@mail.com',
+      password: 'valid_password',
+      firstName: 'valid_firstName',
+      lastName: 'valid_lastName',
+    })
+
+    const { uuid, username, email, emailStatus, firstName, lastName } = (
+      await UserLucid.findBy('uuid', fakeUser.uuid)
+    )?.serialize({
+      fields: {
+        omit: ['password'],
+      },
+    }) as UserWithoutPasswordModel
+
+    const user = await sut.getUserByEmailWithoutPassword('valid_mail@mail.com')
+    expect(user).toEqual({
+      uuid,
+      username,
+      email,
+      emailStatus,
+      firstName,
+      lastName,
+    })
   })
 })

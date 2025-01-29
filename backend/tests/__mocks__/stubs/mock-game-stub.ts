@@ -1,4 +1,7 @@
-export const makeGameModesStub = () => ({
+import { createSuccessResponse } from '#helpers/method-response'
+import { GameProtocolService } from '#services/protocols/game-protocol-service'
+
+export const mockGameModesData = {
   beginnerPercent: 15,
   intermediatePercent: 30,
   advancedPercent: 60,
@@ -22,4 +25,9 @@ export const makeGameModesStub = () => ({
       totalFillWords: Number(((100 * 0) / 100).toFixed()),
     },
   },
+}
+
+export const mockGameServiceStub = (): GameProtocolService => ({
+  play: (videoUuid: string) => Promise.resolve(createSuccessResponse()),
+  getModes: (videoUuid: string) => Promise.resolve(createSuccessResponse(mockGameModesData.stub)),
 })

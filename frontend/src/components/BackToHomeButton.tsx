@@ -6,7 +6,7 @@ export const BackToHomeButton = () => {
   const navigate = useNavigate()
 
   return (
-    <Button onClick={() => navigate("/")} className="rounded-3xl bg-transparent mx-2 my-4" variant="outline">
+    <Button onClick={() => navigate("/")} className="rounded-3xl bg-transparent my-4 w-[150px]" variant="outline">
       <FaChevronLeft />
       Back to home
     </Button>

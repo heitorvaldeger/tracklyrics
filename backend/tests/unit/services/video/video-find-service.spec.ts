@@ -6,8 +6,7 @@ import { stub } from 'sinon'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoFindService } from '#services/video/video-find-service'
-import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
@@ -22,7 +21,7 @@ test.group('VideoFindService.find()', () => {
 
     const video = await sut.find(faker.string.uuid())
 
-    expect(video).toEqual(createSuccessResponse(mockVideoModel()))
+    expect(video).toEqual(createSuccessResponse(mockVideoData))
   })
 
   test('it must return an error if a video not found', async ({ expect }) => {

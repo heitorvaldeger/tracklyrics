@@ -7,10 +7,9 @@ import GameController from '#controllers/game-controller'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { makeGameModesStub } from '#tests/factories/makeGameModesResponse'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockGameServiceStub } from '#tests/factories/stubs/services/mock-game-service-stub'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockGameModesData, mockGameServiceStub } from '#tests/__mocks__/stubs/mock-game-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(
@@ -68,7 +67,7 @@ test.group('GameController.getModes()', (group) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.getModes(httpContext)
-    expect(httpResponse).toEqual(ok(makeGameModesStub().stub))
+    expect(httpResponse).toEqual(ok(mockGameModesData.stub))
   })
 
   test('return 500 if get modes throws', async ({ expect }) => {

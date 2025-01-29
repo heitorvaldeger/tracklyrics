@@ -4,10 +4,10 @@ import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { badRequest, forbidden, ok, serverError } from '#helpers/http'
+import { badRequest, ok, serverError, unauthorized } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
+import { mockAuthServiceStub } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
   const httpContext = makeHttpRequest({
@@ -99,7 +99,7 @@ test.group('AuthController.login', (group) => {
     )
     const httpResponse = await sut.login(httpContext)
 
-    expect(httpResponse).toEqual(forbidden(APPLICATION_MESSAGES.CREDENTIALS_INVALID))
+    expect(httpResponse).toEqual(unauthorized(APPLICATION_MESSAGES.CREDENTIALS_INVALID))
   })
 
   test('it must return 500 if create accessToken return throws', async ({ expect }) => {

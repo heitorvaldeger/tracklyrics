@@ -5,18 +5,18 @@ import sinon, { stub } from 'sinon'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoUpdateService } from '#services/video/video-update-service'
-import { mockAuthStrategy } from '#tests/factories/mocks/mock-auth-strategy'
-import { mockVideoCreateOrUpdateRequest } from '#tests/factories/mocks/mock-video-request'
-import { mockGenreRepositoryStub } from '#tests/factories/stubs/repository/mock-genre-repository-stub'
-import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
+import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
+import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
+import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
+import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoCurrentUserServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const videoRequest = mockVideoCreateOrUpdateRequest()
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const authStrategyStub = mockAuthStrategy()
+  const authStrategyStub = mockAuthStrategyStub()
   const genreRepositoryStub = mockGenreRepositoryStub()
   const languageRepositoryStub = mockLanguageRepositoryStub()
   const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()

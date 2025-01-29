@@ -7,8 +7,8 @@ import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 export const mockVideoDeleteServiceStub = (): VideoDeleteProtocolService => ({
   delete: (uuid: string) => Promise.resolve(createSuccessResponse(true)),

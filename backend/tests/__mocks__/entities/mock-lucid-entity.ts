@@ -9,10 +9,10 @@ import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
 import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
-import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
-import { mockGenreEntity } from '#tests/factories/mocks/entities/mock-genre-entity'
-import { mockLanguageEntity } from '#tests/factories/mocks/entities/mock-language-entity'
-import { mockUserEntity } from '#tests/factories/mocks/entities/mock-user-entity'
+import { mockGenreEntity } from '#tests/__mocks__/entities/mock-genre-entity'
+import { mockLanguageEntity } from '#tests/__mocks__/entities/mock-language-entity'
+import { mockUserEntity } from '#tests/__mocks__/entities/mock-user-entity'
+import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
 type MockLucidEntity = {
   fakeLanguage: LanguageLucid

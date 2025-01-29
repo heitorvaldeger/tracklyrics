@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 
 import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
-import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
+import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
 export const mockVideoCreateOrUpdateRequest = (): VideoCreateProtocolService.Params => ({
   isDraft: false,

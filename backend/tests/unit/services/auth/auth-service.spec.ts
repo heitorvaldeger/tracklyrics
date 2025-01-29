@@ -1,6 +1,6 @@
 import hash from '@adonisjs/core/services/hash'
 import { test } from '@japa/runner'
-import Sinon, { stub } from 'sinon'
+import { stub } from 'sinon'
 
 import { UserEmailStatus } from '#enums/user-email-status'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
@@ -8,39 +8,9 @@ import { createFailureResponse, createSuccessResponse } from '#helpers/method-re
 import { HashAdapter } from '#infra/crypto/protocols/hash-adapter'
 import { OTPAdapter } from '#infra/crypto/protocols/otp-adapter'
 import { CacheAdapter } from '#infra/db/cache/protocols/cache-adapter'
-import { UserRepository } from '#infra/db/repository/protocols/user-repository'
 import { AuthService } from '#services/auth/auth-service'
-import { mockRegisterRequest } from '#tests/factories/mocks/mock-register-request'
-
-export const mockUserRepositoryStub = () => {
-  const userRepositoryStub: UserRepository = {
-    getUserByEmailOrUsername: (payload: UserRepository.FindUserByEmailUsernameParams) =>
-      Promise.resolve({
-        uuid: 'any_uuid',
-        username: 'any_username',
-        email: 'any_email',
-        password: 'any_password',
-        emailStatus: UserEmailStatus.VERIFIED,
-      }),
-    create: (user: UserRepository.CreateParams) =>
-      Promise.resolve({
-        uuid: 'any_uuid',
-        username: 'any_username',
-        email: 'any_email',
-        password: 'any_password',
-        emailStatus: UserEmailStatus.UNVERIFIED,
-      }),
-    createAccessToken: (userUuid: string) =>
-      Promise.resolve({
-        type: 'any_type',
-        token: 'any_token',
-      }),
-    deleteAllAccessToken: (userUuid: string) => Promise.resolve(),
-    updateEmailStatus: (userUuid: string) => Promise.resolve(),
-  }
-
-  return userRepositoryStub
-}
+import { mockAuthRegisterData } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { mockUserRepositoryStub } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const mockOTPAdapterStub = (): OTPAdapter => ({
   createOTP: (id) => Promise.resolve('any_value'),
@@ -75,7 +45,7 @@ test.group('Auth Service', (group) => {
   test('return success on register if user not exist', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
-    const userRegisterModel = await sut.register(mockRegisterRequest())
+    const userRegisterModel = await sut.register(mockAuthRegisterData())
     expect(userRegisterModel).toEqual(
       createSuccessResponse({
         uuid: 'any_uuid',
@@ -86,7 +56,7 @@ test.group('Auth Service', (group) => {
 
   test('return fail on register if user email has been verified', async ({ expect }) => {
     const { sut } = makeSut()
-    const mockUser = mockRegisterRequest()
+    const mockUser = mockAuthRegisterData()
 
     const userRegisterModel = await sut.register(mockUser)
     expect(userRegisterModel).toEqual(
@@ -98,7 +68,7 @@ test.group('Auth Service', (group) => {
     expect,
   }) => {
     const { sut, userRepositoryStub } = makeSut()
-    const mockUser = mockRegisterRequest()
+    const mockUser = mockAuthRegisterData()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
       email: mockUser.email,
       username: mockUser.username,
@@ -156,7 +126,7 @@ test.group('Auth Service', (group) => {
 
   test('return fail on login if email is pending validation', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
-    const mockUser = mockRegisterRequest()
+    const mockUser = mockAuthRegisterData()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
       email: mockUser.email,
       username: mockUser.username,
@@ -176,7 +146,7 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if user email has been verified', async ({ expect }) => {
     const { sut } = makeSut()
-    const { email } = mockRegisterRequest()
+    const { email } = mockAuthRegisterData()
 
     const response = await sut.validateEmail({
       email,
@@ -187,7 +157,7 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if user not exists', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
-    const { email } = mockRegisterRequest()
+    const { email } = mockAuthRegisterData()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
 
     const response = await sut.validateEmail({
@@ -199,7 +169,7 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if user not exists', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
-    const { email } = mockRegisterRequest()
+    const { email } = mockAuthRegisterData()
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves(null)
 
     const response = await sut.validateEmail({
@@ -211,7 +181,7 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if code OTP is not equal', async ({ expect }) => {
     const { sut, cacheAdapterStub, userRepositoryStub } = makeSut()
-    const { email, username } = mockRegisterRequest()
+    const { email, username } = mockAuthRegisterData()
 
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
       email,
@@ -233,7 +203,7 @@ test.group('Auth Service', (group) => {
     expect,
   }) => {
     const { sut, userRepositoryStub } = makeSut()
-    const { email, username } = mockRegisterRequest()
+    const { email, username } = mockAuthRegisterData()
 
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
       email,
@@ -254,7 +224,7 @@ test.group('Auth Service', (group) => {
 
   test('return success on validate email', async ({ expect }) => {
     const { sut, userRepositoryStub } = makeSut()
-    const { email, username } = mockRegisterRequest()
+    const { email, username } = mockAuthRegisterData()
 
     stub(userRepositoryStub, 'getUserByEmailOrUsername').resolves({
       email,

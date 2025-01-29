@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
 import { LanguageService } from '#services/language-service'
-import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
+import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
 
 const makeSut = () => {
   const fakeLanguageRepositoryStub = mockLanguageRepositoryStub()

@@ -1,9 +1,9 @@
 import { UserEmailStatus } from '#enums/user-email-status'
+import { UserRepository } from '#infra/db/repository/protocols/user-repository'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 import UserLucid from '#models/user-model/user-lucid'
 import { UserModel } from '#models/user-model/user-model'
-
-import { UserRepository } from '../protocols/user-repository.js'
+import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
 
 export class UserPostgresRepository implements UserRepository {
   async getUserByEmailOrUsername(
@@ -27,6 +27,21 @@ export class UserPostgresRepository implements UserRepository {
       password,
       emailStatus,
     }
+  }
+
+  async getUserByEmailWithoutPassword(
+    emailAddress: string
+  ): Promise<UserWithoutPasswordModel | null> {
+    const user = await UserLucid.findBy('email', emailAddress)
+    if (!user) {
+      return null
+    }
+
+    return user.serialize({
+      fields: {
+        omit: ['password'],
+      },
+    }) as UserWithoutPasswordModel
   }
 
   async create(user: UserRepository.CreateParams): Promise<UserModel> {

@@ -4,10 +4,11 @@ import { stub } from 'sinon'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { LyricFindService } from '#services/lyric/lyric-find-service'
-import { LyricSaveService } from '#services/lyric/lyric-save-service'
-import { mockLyricRepositoryStub } from '#tests/factories/stubs/repository/mock-lyric-repository-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
+import {
+  mockLyricFindResponseData,
+  mockLyricRepositoryStub,
+} from '#tests/__mocks__/stubs/mock-lyric-stub'
+import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
@@ -21,21 +22,6 @@ const makeSut = () => {
   }
 }
 
-const lyricsSaveResponse = [
-  {
-    seq: 1,
-    startTime: '00:00:00',
-    endTime: '00:00:00',
-    line: 'any_line',
-  },
-  {
-    seq: 2,
-    startTime: '00:00:00',
-    endTime: '00:00:00',
-    line: 'any_line',
-  },
-]
-
 test.group('LyricFindService', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
@@ -45,7 +31,7 @@ test.group('LyricFindService', (group) => {
     const { sut } = makeSut()
     const response = await sut.find('any_uuid')
 
-    expect(response).toEqual(createSuccessResponse(lyricsSaveResponse))
+    expect(response).toEqual(createSuccessResponse(mockLyricFindResponseData))
   })
 
   test('return an error if videoId not exist', async ({ expect }) => {

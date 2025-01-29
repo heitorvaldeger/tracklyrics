@@ -8,9 +8,9 @@ import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockVideoCreateOrUpdateRequest } from '#tests/factories/mocks/mock-video-request'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
   update: (_payload: VideoUpdateProtocolService.Params, _uuid: string) =>

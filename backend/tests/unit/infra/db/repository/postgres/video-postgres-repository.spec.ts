@@ -12,8 +12,8 @@ import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
 import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = async () => {
   const sut = new VideoPostgresRepository()

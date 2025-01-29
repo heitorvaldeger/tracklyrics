@@ -7,10 +7,9 @@ import VideoFindController from '#controllers/video/video-find-controller'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
-import { mockVideoFindServiceStub } from '#tests/factories/stubs/services/mock-video-find-service-stub'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockVideoData, mockVideoFindServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(
@@ -35,7 +34,7 @@ test.group('VideoFindController.find()', (group) => {
 
     const httpResponse = await sut.find(httpContext)
 
-    expect(httpResponse).toEqual(ok(mockVideoModel()))
+    expect(httpResponse).toEqual(ok(mockVideoData))
   })
 
   test('returns 404 if a video not found', async ({ expect }) => {

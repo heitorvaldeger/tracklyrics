@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import sinon, { spy, stub } from 'sinon'
 
 import CaptureResponseMiddleware from '#middleware/capture-response'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
   const sut = new CaptureResponseMiddleware()

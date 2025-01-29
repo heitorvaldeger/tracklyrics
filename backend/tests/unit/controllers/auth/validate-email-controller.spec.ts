@@ -7,9 +7,8 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockRegisterRequest } from '#tests/factories/mocks/mock-register-request'
-import { mockAuthServiceStub } from '#tests/factories/stubs/services/mock-auth-service-stub'
+import { mockAuthServiceStub } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const mockRequest = {
   email: faker.internet.email(),

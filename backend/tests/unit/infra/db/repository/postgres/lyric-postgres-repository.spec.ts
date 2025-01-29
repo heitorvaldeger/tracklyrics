@@ -7,7 +7,7 @@ import { toCamelCase } from '#helpers/to-camel-case'
 import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
 import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
 import { LyricLucid } from '#models/lyric-model/lyric-lucid'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
 
 const makeSut = () => {
   const sut = new LyricPostgresRepository()

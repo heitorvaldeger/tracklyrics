@@ -4,11 +4,11 @@ import { test } from '@japa/runner'
 import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
-import { makeYoutubeUrl } from '#tests/factories/makeYoutubeUrl'
-import { mockGenreEntity } from '#tests/factories/mocks/entities/mock-genre-entity'
-import { mockLanguageEntity } from '#tests/factories/mocks/entities/mock-language-entity'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
-import { mockUserEntity } from '#tests/factories/mocks/entities/mock-user-entity'
+import { mockGenreEntity } from '#tests/__mocks__/entities/mock-genre-entity'
+import { mockLanguageEntity } from '#tests/__mocks__/entities/mock-language-entity'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockUserEntity } from '#tests/__mocks__/entities/mock-user-entity'
+import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
 const makeSut = async () => {
   const { fakeVideo, fakeGenre, fakeLanguage, fakeUser, fakeFavorite } = await mockLucidEntity()
