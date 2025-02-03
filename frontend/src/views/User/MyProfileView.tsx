@@ -13,7 +13,7 @@ export const MyProfileView = () => {
         </Avatar>
         <div className="flex flex-col">
           <span className="font-bold text-lg">Heitor Valdeger</span>
-          <span className="font-light text-sm text-gray-500 opacity-50">heitorvaldeger97@gmail.com</span>
+          <span className="font-light text-xs md:text-sm text-gray-500 opacity-50">heitorvaldeger97@gmail.com</span>
         </div>
       </div>
 
@@ -25,23 +25,23 @@ export const MyProfileView = () => {
             Edit
           </Button>
         </header>
-        <div className="grid grid-cols-2">
-          <div className="flex flex-col gap-2">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
             <Label className="text-slate-400 font-bold opacity-50">First Name</Label>
             <span className="text-slate-500 font-bold text-sm opacity-60">Heitor</span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <Label className="text-slate-400 font-bold opacity-50">Last Name</Label>
             <span className="text-slate-500 font-bold text-sm opacity-60">Valdeger</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2">
-          <div className="flex flex-col gap-2">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
             <Label className="text-slate-400 font-bold opacity-50">E-mail</Label>
             <span className="text-slate-500 font-bold text-sm opacity-60">heitorvaldeger97@gmail.com</span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <Label className="text-slate-400 font-bold opacity-50">Username</Label>
             <span className="text-slate-500 font-bold text-sm opacity-60">heitorvaldeger</span>
           </div>
@@ -50,7 +50,7 @@ export const MyProfileView = () => {
 
       <div className="border border-gray-200 rounded p-4 flex flex-col gap-3">
         <header className="flex items-center justify-between font-bold">Change Password</header>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <Label className="text-slate-400 font-bold opacity-50">Your Password</Label>
           <span className="text-slate-500 font-bold text-sm opacity-60">*********</span>
         </div>

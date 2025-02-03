@@ -1,41 +1,17 @@
-import * as zod from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router";
 import { BackToHomeButton } from "@/components/BackToHomeButton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { createNewAccountValidationSchema } from "./validations";
-
-type CreateNewAccountData = zod.infer<typeof createNewAccountValidationSchema>;
+import { useRegisterViewModel } from "@/view-models/registerViewModel";
 
 export const RegisterView = () => {
-  const navigate = useNavigate();
-  const form = useForm<CreateNewAccountData>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
-    },
-    resolver: zodResolver(createNewAccountValidationSchema),
-    shouldUnregister: false
-  });
-
-  const handleCreateNewAccount = (data: CreateNewAccountData) => {
-    console.log(data);
-  };
-
-  console.log(form.formState.errors)
+  const { navigate, form, handleCreateNewAccount, isPending } = useRegisterViewModel();
 
   return (
-    <div className="bg-white h-screen flex flex-col m-auto w-[450px]">
+    <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto">
       <BackToHomeButton />
       <Card className="rounded-3xl">
         <Form {...form}>
@@ -147,8 +123,8 @@ export const RegisterView = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col items-start gap-1">
-              <Button tabIndex={7} className="w-full bg-teal-500 hover:bg-teal-800 font-bold">
-                Register
+              <Button tabIndex={7} disabled={isPending} className="w-full bg-teal-500 hover:bg-teal-800 font-bold">
+                {isPending ? <AiOutlineLoading3Quarters className="animate-spin" /> : "Register"}
               </Button>
 
               <div className="flex items-center">
