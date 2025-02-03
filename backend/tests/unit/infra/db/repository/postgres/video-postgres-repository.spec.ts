@@ -12,8 +12,8 @@ import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
 import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = async () => {
   const sut = new VideoPostgresRepository()
@@ -65,6 +65,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos[0].username).toBe(fakeUser.username)
     expect(videos[0].title).toBe(fakeVideo.title)
     expect(videos[0].artist).toBe(fakeVideo.artist)
+    expect(videos[0].linkYoutube).toBe(fakeVideo.linkYoutube)
   })
 
   test('return a list videos on findBy if languageId param is provided', async ({ expect }) => {
@@ -99,6 +100,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(video?.username).toEqual(fakeUser.username)
     expect(video?.title).toBe(fakeVideo.title)
     expect(video?.artist).toBe(fakeVideo.artist)
+    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
   })
 
   test('return null on find if uuid param is invalid', async ({ expect }) => {

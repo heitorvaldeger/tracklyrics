@@ -31,7 +31,7 @@ export const APPLICATION_MESSAGES = {
   },
   CREDENTIALS_INVALID: {
     message: 'Invalid credentials',
-    httpCode: HttpStatusCode.FORBIDDEN,
+    httpCode: HttpStatusCode.UNAUTHORIZED,
   },
   EMAIL_PENDING_VALIDATION: {
     message: 'Your email address is pending of validation',
@@ -51,6 +51,14 @@ export const APPLICATION_MESSAGES = {
   },
   TOKEN_INVALID: {
     message: 'Token is invalid',
+    httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
+  },
+  UNAUTHORIZED: {
+    message: 'Unauthorized access',
+    httpCode: HttpStatusCode.UNAUTHORIZED,
+  },
+  USER_NOTFOUND: {
+    message: 'User not found',
     httpCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
   },
 }

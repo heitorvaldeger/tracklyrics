@@ -4,7 +4,7 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { CryptoAdapter } from '#infra/crypto/crypto-adapter'
 import { RedisAdonisAdapter } from '#infra/db/cache/redis-adonis-adapter'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
 
 test.group('Auth Validate Email Route', (group) => {
   group.tap((t) => {

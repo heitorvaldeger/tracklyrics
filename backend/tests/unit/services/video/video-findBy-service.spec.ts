@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 import { createSuccessResponse } from '#helpers/method-response'
 import { VideoFindService } from '#services/video/video-find-service'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()

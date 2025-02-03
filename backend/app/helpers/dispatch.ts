@@ -3,11 +3,11 @@ import { errors } from '@vinejs/vine'
 import { HttpStatusCode } from '#enums/http-status-code'
 import {
   badRequest,
-  forbidden,
   notContent,
   notFound,
   ok,
   serverError,
+  unauthorized,
   unprocessable,
 } from '#helpers/http'
 
@@ -31,8 +31,8 @@ export const dispatch = ({ isSuccess, error, value }: MethodResponse<any>) => {
       return unprocessable(error)
     case HttpStatusCode.NOT_FOUND:
       return notFound(error)
-    case HttpStatusCode.FORBIDDEN:
-      return forbidden(error)
+    case HttpStatusCode.UNAUTHORIZED:
+      return unauthorized(error)
     default:
       return serverError(error)
   }

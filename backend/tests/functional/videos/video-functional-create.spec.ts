@@ -2,8 +2,8 @@ import { test } from '@japa/runner'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
-import { mockVideoCreateOrUpdateRequest } from '#tests/factories/mocks/mock-video-request'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
 const httpRequest = mockVideoCreateOrUpdateRequest()
 

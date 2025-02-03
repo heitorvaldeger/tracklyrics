@@ -8,7 +8,11 @@ import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
 export class AuthAdonisStrategy implements AuthStrategy {
   constructor(private readonly auth: Authenticator<Authenticators>) {}
 
-  getUserId(): number {
+  getUserId() {
     return this.auth.user?.id ?? -1
+  }
+
+  getUserEmail() {
+    return this.auth.user?.email
   }
 }

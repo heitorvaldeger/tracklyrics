@@ -34,11 +34,13 @@ import { LanguageProtocolService } from '#services/protocols/language-protocol-s
 import { LyricFindProtocolService } from '#services/protocols/lyric/lyric-find-protocol-service'
 import { LyricSaveProtocolService } from '#services/protocols/lyric/lyric-save-protocol-service'
 import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+import { UserProtocolService } from '#services/protocols/user-protocol-service'
 import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
 import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
 import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
 import { VideoFindProtocolService } from '#services/protocols/video/video-find-protocol-service'
 import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
+import { UserService } from '#services/user-service'
 import { VideoCreateService } from '#services/video/video-create-service'
 import { VideoCurrentUserService } from '#services/video/video-current-user-service'
 import { VideoDeleteService } from '#services/video/video-delete-service'
@@ -65,6 +67,7 @@ export default class AppProvider {
       { protocol: LyricSaveProtocolService, implementation: LyricSaveService },
       { protocol: LyricFindProtocolService, implementation: LyricFindService },
       { protocol: GameProtocolService, implementation: GameService },
+      { protocol: UserProtocolService, implementation: UserService },
 
       { protocol: VideoRepository, implementation: VideoPostgresRepository },
       { protocol: FavoriteRepository, implementation: FavoritePostgresRepository },
@@ -73,6 +76,7 @@ export default class AppProvider {
       { protocol: GenreRepository, implementation: GenrePostgresRepository },
       { protocol: VideoPlayCountRepository, implementation: VideoPlayCountPostgresRepository },
       { protocol: LyricRepository, implementation: LyricPostgresRepository },
+      { protocol: UserRepository, implementation: UserPostgresRepository },
 
       { protocol: OTPAdapter, implementation: CryptoAdapter },
       { protocol: HashAdapter, implementation: CryptoAdapter },

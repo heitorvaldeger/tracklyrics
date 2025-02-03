@@ -29,7 +29,7 @@ export const unprocessable = (body: any): HttpResponse => ({
   body,
 })
 
-export const forbidden = (body: any): HttpResponse => ({
+export const unauthorized = (body: any): HttpResponse => ({
   statusCode: 401,
   body,
 })

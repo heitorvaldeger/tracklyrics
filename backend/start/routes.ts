@@ -22,6 +22,7 @@ const VideoFindController = () => import('#controllers/video/video-find-controll
 const VideoCreateController = () => import('#controllers/video/video-create-controller')
 const VideoDeleteController = () => import('#controllers/video/video-delete-controller')
 const AuthController = () => import('#controllers/auth-controller')
+const UserController = () => import('#controllers/user-controller')
 
 router.post('/login', [AuthController, 'login'])
 router.post('/register', [AuthController, 'register'])
@@ -64,6 +65,20 @@ router
         router.delete(':uuid', [FavoriteController, 'removeFavorite'])
       })
       .prefix('favorites')
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+
+router
+  .group(() => {
+    router
+      .group(() => {
+        router.get('', [UserController, 'getFullInfoByUserLogged'])
+      })
+      .prefix('users')
   })
   .use(
     middleware.auth({

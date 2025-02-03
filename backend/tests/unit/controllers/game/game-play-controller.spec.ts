@@ -7,9 +7,9 @@ import GameController from '#controllers/game-controller'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notContent, notFound, serverError } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockGameServiceStub } from '#tests/factories/stubs/services/mock-game-service-stub'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockGameServiceStub } from '#tests/__mocks__/stubs/mock-game-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = async () => {
   const httpContext = makeHttpRequest(

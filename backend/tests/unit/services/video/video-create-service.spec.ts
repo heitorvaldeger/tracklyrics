@@ -3,20 +3,33 @@ import { spy, stub } from 'sinon'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { VideoCreateService } from '#services/video/video-create-service'
-import { mockAuthStrategy } from '#tests/factories/mocks/mock-auth-strategy'
-import { mockVideoCreateOrUpdateRequest } from '#tests/factories/mocks/mock-video-request'
-import { mockFakeVideoSaveResultModel } from '#tests/factories/mocks/mock-video-save-result-model'
-import { mockGenreRepositoryStub } from '#tests/factories/stubs/repository/mock-genre-repository-stub'
-import { mockLanguageRepositoryStub } from '#tests/factories/stubs/repository/mock-language-repository-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
+import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
+import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
+import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
+import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const videoRequest = mockVideoCreateOrUpdateRequest()
+
+const mockFakeVideoSaveResultModel = (): VideoSaveResultModel => ({
+  artist: 'any_artist',
+  genreId: 0,
+  isDraft: false,
+  languageId: 0,
+  linkYoutube: 'any_link',
+  releaseYear: 'any_year',
+  title: 'any_title',
+  userId: 0,
+  uuid: 'any_uuid',
+})
+
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
   const genreRepositoryStub = mockGenreRepositoryStub()
   const languageRepositoryStub = mockLanguageRepositoryStub()
-  const authStrategyStub = mockAuthStrategy()
+  const authStrategyStub = mockAuthStrategyStub()
 
   const sut = new VideoCreateService(
     videoRepositoryStub,

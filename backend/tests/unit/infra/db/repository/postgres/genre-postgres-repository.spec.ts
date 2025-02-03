@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
 import { GenrePostgresRepository } from '#infra/db/repository/postgres/genre-postgres-repository'
-import { mockGenreEntity } from '#tests/factories/mocks/entities/mock-genre-entity'
+import { mockGenreEntity } from '#tests/__mocks__/entities/mock-genre-entity'
 
 const makeSut = () => {
   const sut = new GenrePostgresRepository()

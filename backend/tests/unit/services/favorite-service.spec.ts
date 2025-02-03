@@ -5,16 +5,15 @@ import { stub } from 'sinon'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { FavoriteService } from '#services/favorite-service'
-import { mockAuthStrategy } from '#tests/factories/mocks/mock-auth-strategy'
-import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
-import { mockFavoriteRepositoryStub } from '#tests/factories/stubs/repository/mock-favorite-repository-stub'
-import { mockVideoRepositoryStub } from '#tests/factories/stubs/repository/mock-video-repository-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/factories/stubs/services/mock-video-current-user-service-stub'
+import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockFavoriteRepositoryStub } from '#tests/__mocks__/stubs/mock-favorite-stub'
+import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoCurrentUserServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const favoriteRepositoryStub = mockFavoriteRepositoryStub()
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const authStrategyStub = mockAuthStrategy()
+  const authStrategyStub = mockAuthStrategyStub()
   const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
   const sut = new FavoriteService(
     videoRepositoryStub,
@@ -90,6 +89,6 @@ test.group('FavoriteService', (group) => {
     const { sut } = makeSut()
     const response = await sut.findFavoritesByUserLogged()
 
-    expect(response).toEqual(createSuccessResponse([mockVideoModel(), mockVideoModel()]))
+    expect(response).toEqual(createSuccessResponse([mockVideoData, mockVideoData]))
   })
 })

@@ -2,23 +2,17 @@ import { randomUUID } from 'node:crypto'
 
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
-import sinon, { stub } from 'sinon'
+import { stub } from 'sinon'
 
 import FavoriteController from '#controllers/favorite-controller'
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
-import { makeHttpRequest } from '#tests/factories/makeHttpRequest'
-import { mockVideoModel } from '#tests/factories/mocks/mock-video-model'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { createFailureResponse } from '#helpers/method-response'
+import { mockFavoriteServiceStub } from '#tests/__mocks__/stubs/mock-favorite-stub'
+import { mockVideoData } from '#tests/__mocks__/stubs/mock-video-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
-const mockFavoriteServiceStub = (): FavoriteProtocolService => ({
-  addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
-  removeFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
-  findFavoritesByUserLogged: () =>
-    Promise.resolve(createSuccessResponse([mockVideoModel(), mockVideoModel()])),
-})
 const makeSut = async () => {
   const httpContext = makeHttpRequest(
     {},
@@ -146,7 +140,7 @@ test.group('FavoriteController', (group) => {
 
     const httpResponse = await sut.findFavoritesByUserLogged()
 
-    expect(httpResponse).toEqual(ok([mockVideoModel(), mockVideoModel()]))
+    expect(httpResponse).toEqual(ok([mockVideoData, mockVideoData]))
   })
 
   test('returns 500 if find favorites by user logged throws', async ({ expect }) => {

@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 test.group('Video Find Route', () => {
   test('/GET videos/{uuid} - it must return 200 on search video by uuid', async ({

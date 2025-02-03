@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
 
 import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { makeGameModesStub } from '#tests/factories/makeGameModesResponse'
-import { mockLucidEntity } from '#tests/factories/mocks/entities/mock-lucid-entity'
-import { NilUUID } from '#tests/utils/NilUUID'
+import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
+import { NilUUID } from '#tests/__utils__/NilUUID'
 
 test.group('Game Routes', (group) => {
   test('/PUT game/{uuid}/play - return 204 if video play on success', async ({
@@ -47,24 +47,22 @@ test.group('Game Routes', (group) => {
     const totalWords = fakeLyrics.reduce((acc, value) => acc + value.line.length, 0)
     expect(response.status()).toBe(200)
     expect(response.body().beginner).toEqual({
-      percent: makeGameModesStub().beginnerPercent,
-      totalFillWords: Number(((totalWords * makeGameModesStub().beginnerPercent) / 100).toFixed()),
+      percent: mockGameModesData.beginnerPercent,
+      totalFillWords: Number(((totalWords * mockGameModesData.beginnerPercent) / 100).toFixed()),
     })
     expect(response.body().intermediate).toEqual({
-      percent: makeGameModesStub().intermediatePercent,
+      percent: mockGameModesData.intermediatePercent,
       totalFillWords: Number(
-        ((totalWords * makeGameModesStub().intermediatePercent) / 100).toFixed()
+        ((totalWords * mockGameModesData.intermediatePercent) / 100).toFixed()
       ),
     })
     expect(response.body().advanced).toEqual({
-      percent: makeGameModesStub().advancedPercent,
-      totalFillWords: Number(((totalWords * makeGameModesStub().advancedPercent) / 100).toFixed()),
+      percent: mockGameModesData.advancedPercent,
+      totalFillWords: Number(((totalWords * mockGameModesData.advancedPercent) / 100).toFixed()),
     })
     expect(response.body().specialist).toEqual({
-      percent: makeGameModesStub().specialistPercent,
-      totalFillWords: Number(
-        ((totalWords * makeGameModesStub().specialistPercent) / 100).toFixed()
-      ),
+      percent: mockGameModesData.specialistPercent,
+      totalFillWords: Number(((totalWords * mockGameModesData.specialistPercent) / 100).toFixed()),
     })
   })
 
