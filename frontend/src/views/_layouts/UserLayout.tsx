@@ -39,7 +39,7 @@ export const UserLayout = () => {
           </DropdownMenu>
         </div>
       </AppBar>
-      <div className="w-3/4 px-2 md:px-0 md:w-3/5 2xl:w-2/4 mx-auto py-6">
+      <div className="w-3/4 px-2 md:px-0 md:w-3/5 2xl:w-2/4 mx-auto py-6 flex-1">
         <Outlet />
       </div>
       <AppFooter />

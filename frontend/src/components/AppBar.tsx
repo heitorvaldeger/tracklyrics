@@ -21,7 +21,7 @@ export const AppBar = ({ children }: React.PropsWithChildren) => {
   const { genres, languages } = useAppViewModel()
 
   return (
-    <div className="w-full h-12 flex justify-center bg-gray-50">
+    <div className="w-full flex justify-center bg-gray-50 py-2">
       <div className="w-full flex">
         <div className="w-1/4 mx-2 bg-gray-200 flex justify-center items-center cursor-pointer" onClick={() => navigate("/")}>
           Logo
@@ -69,7 +69,7 @@ export const AppBar = ({ children }: React.PropsWithChildren) => {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <Input id="searchVideo" placeholder="Search song or artist" className="my-auto"/>
+        <Input id="searchVideo" placeholder="Search song or artist" className="my-auto shadow-none"/>
         {children}
       </div>
     </div>

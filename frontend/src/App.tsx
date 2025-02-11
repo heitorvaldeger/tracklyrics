@@ -10,7 +10,7 @@ const queryClient = new QueryClient()
 
 function App() {
   return (
-    <div className="w-full h-full mx-auto">
+    <div className="w-full h-screen flex flex-col mx-auto">
       <QueryClientProvider client={queryClient}>
         <UserAuthProvider>
           <AppRoutes />
