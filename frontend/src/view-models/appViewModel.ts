@@ -13,7 +13,7 @@ export const useAppViewModel = () => {
   const { data: languages } = useQuery({
     queryKey: ["languages"],
     queryFn: ({ signal }) => languageService({ signal }),
-    staleTime: ONE_DAY
+    staleTime: ONE_DAY,
   })
 
   return {

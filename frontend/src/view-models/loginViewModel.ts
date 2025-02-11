@@ -1,5 +1,4 @@
 import { useToast } from "@/hooks/use-toast";
-import { handleAxiosError } from "@/lib/utils";
 import { loginService } from "@/services/auth-service";
 import { vineResolver } from "@hookform/resolvers/vine";
 import { useForm } from "react-hook-form";
@@ -9,6 +8,8 @@ import vine from "@vinejs/vine";
 import { useMutation } from "@tanstack/react-query";
 import { Login } from "@/models/login";
 import { useUserAuth } from "@/contexts/UserAuthContext";
+import { AxiosError, HttpStatusCode } from "axios";
+import { APIErrors } from "@/constants/api-errors";
 
 const loginValidationSchema = vine.compile(
   vine.object({
@@ -30,11 +31,23 @@ export const useLoginViewModel = () => {
       navigate("/")
     },
     onError: (error: Error) => {
-      const { message } = handleAxiosError(error, form)
-      toast({
-        description: message,
-        variant: "destructive",
-      })
+      if (error instanceof AxiosError) {
+        const { status, response } = error;
+        if (status === HttpStatusCode.BadRequest) {
+          const apiErrors = response?.data
+          apiErrors.forEach((apiError: any) => form.setError(apiError.field, {
+            type: "custom",
+            message: apiError.message
+          }))
+        }
+
+        toast({
+          description: `Erro ${status}: ${APIErrors[status ?? 0]}`,
+          variant: "destructive"
+        })
+      } else {
+        console.log(error)
+      }
     }
   })
   
