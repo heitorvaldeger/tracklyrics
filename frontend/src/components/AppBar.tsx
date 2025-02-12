@@ -3,8 +3,6 @@
 import React from "react"
 import { IoMusicalNotes, IoEarth } from "react-icons/io5"
 
-import { genres } from "@/__mocks__/genres"
-import { languages } from "@/__mocks__/languages"
 import {
   NavigationMenu, 
   NavigationMenuTrigger, 
@@ -16,12 +14,14 @@ import {
   Input
 } from "@/components/ui"
 import { useNavigate } from "react-router"
+import { useAppViewModel } from "@/view-models/appViewModel"
 
 export const AppBar = ({ children }: React.PropsWithChildren) => {
   const navigate = useNavigate()
+  const { genres, languages } = useAppViewModel()
 
   return (
-    <div className="w-full h-12 flex justify-center bg-gray-50">
+    <div className="w-full flex justify-center bg-gray-50 py-2">
       <div className="w-full flex">
         <div className="w-1/4 mx-2 bg-gray-200 flex justify-center items-center cursor-pointer" onClick={() => navigate("/")}>
           Logo
@@ -36,7 +36,7 @@ export const AppBar = ({ children }: React.PropsWithChildren) => {
               <NavigationMenuContent>
                 <ScrollArea className="h-96 w-auto rounded-md border p-4">
                   <ul className="grid gap-3 p-4 sm:w-[300px] md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {genres.map((genre) => (
+                    {genres?.map((genre) => (
                       <ListItem
                         key={genre.id}
                         title={genre.name}
@@ -56,7 +56,7 @@ export const AppBar = ({ children }: React.PropsWithChildren) => {
               <NavigationMenuContent>
                 <ScrollArea className="h-96 w-auto rounded-md border p-4">
                   <ul className="grid gap-3 p-4 sm:w-[300px] md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {languages.map((language) => (
+                    {languages?.map((language) => (
                       <ListItem
                         key={language.id}
                         title={language.name}
@@ -69,7 +69,7 @@ export const AppBar = ({ children }: React.PropsWithChildren) => {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <Input id="searchVideo" placeholder="Search song or artist" className="my-auto"/>
+        <Input id="searchVideo" placeholder="Search song or artist" className="my-auto shadow-none"/>
         {children}
       </div>
     </div>
