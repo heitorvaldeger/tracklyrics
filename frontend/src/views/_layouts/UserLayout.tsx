@@ -8,12 +8,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AppFooter } from "@/components/AppFooter"
+import { useUserAuth } from "@/contexts/UserAuthContext"
 
 export const UserLayout = () => {
   const navigate = useNavigate()
+  const { logoutUser } = useUserAuth()
+
+  const handleLogoutUser = () => {
+    logoutUser()
+    navigate("/")
+  }
 
   return (
-    <>
+    <div className="w-full min-h-screen flex flex-col mx-auto relative">
       <AppBar>
         <div className="w-full flex justify-end items-center">
           <DropdownMenu>
@@ -24,18 +31,18 @@ export const UserLayout = () => {
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mx-3">
-              <DropdownMenuItem onClick={() => navigate("/my-profile")}>My Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>My Profile</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate("/lyrics")}>My Lyrics</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate("/favorites")}>My Favorites</DropdownMenuItem>
-              <DropdownMenuItem>Log Out</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogoutUser}>Log Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </AppBar>
-      <div className="w-3/5 2xl:w-2/4 mx-auto py-6">
+      <div className="w-3/4 px-2 md:px-0 md:w-3/5 2xl:w-2/4 mx-auto py-6 flex-1">
         <Outlet />
       </div>
       <AppFooter />
-    </>
+    </div>
   )
 }

@@ -1,6 +1,5 @@
 import { FaChartLine, FaChevronDown } from "react-icons/fa"
 import { 
-  Button, 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
@@ -23,11 +22,9 @@ export const CarouselTopLyrics = () => {
           <FaChartLine size={20} />
           <p className="text-xl">Top Lyrics</p>
           <DropdownMenu>
-            <DropdownMenuTrigger className="focus:outline-none">
-              <Button className="bg-teal-500 mx-2">
-                Last Week
-                <FaChevronDown />
-              </Button>
+            <DropdownMenuTrigger className="focus:outline-none bg-teal-500 mx-2 flex gap-2 justify-center items-center px-2 text-white py-2 rounded pointer text-sm">
+              Last Week
+              <FaChevronDown size={14} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mx-3">
               <DropdownMenuItem>Last Month</DropdownMenuItem>
