@@ -12,7 +12,7 @@ export const mockVideoData: VideoFindModel & {
   title: 'any_title',
   artist: 'any_artist',
   linkYoutube: 'https://www.youtube.com/watch?v=93b9XX0GMGK',
-  thumbnail: 'https://img.youtube.com/vi/93b9XX0GMGK/maxresdefault.jpg',
+  thumbnail: 'https://img.youtube.com/vi/93b9XX0GMGK/hqdefault.jpg',
   releaseYear: 'any_year',
   language: 'any_language',
   genre: 'any_genre',

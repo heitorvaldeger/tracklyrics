@@ -10,6 +10,9 @@ export class LanguageLucid extends BaseModel {
   @column()
   declare name: string
 
+  @column()
+  declare flagCountry: string
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare createdAt: DateTime
 
