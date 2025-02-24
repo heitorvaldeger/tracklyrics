@@ -10,9 +10,11 @@ test.group('Language Routes', (group) => {
     const languages = await LanguageLucid.createMany([
       {
         name: 'English',
+        flagCountry: 'US',
       },
       {
         name: 'Portuguese',
+        flagCountry: 'BR',
       },
     ])
     const response = await client.get('/languages')
