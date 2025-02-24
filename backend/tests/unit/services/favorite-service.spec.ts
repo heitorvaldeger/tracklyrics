@@ -8,13 +8,13 @@ import { FavoriteService } from '#services/favorite-service'
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockFavoriteRepositoryStub } from '#tests/__mocks__/stubs/mock-favorite-stub'
 import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoUserLoggedServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const favoriteRepositoryStub = mockFavoriteRepositoryStub()
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const authStrategyStub = mockAuthStrategyStub()
-  const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
+  const { authStrategyStub } = mockAuthStrategyStub()
+  const videoCurrentUserServiceStub = mockVideoUserLoggedServiceStub()
   const sut = new FavoriteService(
     videoRepositoryStub,
     favoriteRepositoryStub,
@@ -54,7 +54,7 @@ test.group('FavoriteService', (group) => {
 
   test('return an error if video not belong from user', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
-    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
     const response = await sut.addFavorite(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
@@ -79,7 +79,7 @@ test.group('FavoriteService', (group) => {
 
   test('return an error if video not belong from user', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
-    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
     const response = await sut.removeFavorite(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))

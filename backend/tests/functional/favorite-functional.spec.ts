@@ -69,7 +69,7 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.post(`favorites/${NilUUID}`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 
   test('/DELETE favorites/{uuid} - return 200 if video remove favorite on success', async ({
@@ -134,7 +134,7 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.delete(`favorites/${NilUUID}`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 
   test('/GET favorites - return 200 on find a list favorite videos by user logged', async ({
@@ -164,6 +164,6 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.get(`favorites`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 })

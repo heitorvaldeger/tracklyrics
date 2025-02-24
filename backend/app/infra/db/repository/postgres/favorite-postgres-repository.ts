@@ -1,34 +1,48 @@
 import db from '@adonisjs/lucid/services/db'
 
 import { toCamelCase } from '#helpers/to-camel-case'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
+import { toSnakeCase } from '#helpers/to-snake-case'
 import { VideoFindModel } from '#models/video-model/video-find-model'
 
 import { FavoriteRepository } from '../protocols/favorite-repository.js'
 
 export class FavoritePostgresRepository implements FavoriteRepository {
   async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
-    const favorite = await FavoriteLucid.query()
-      .where('userId', userId)
-      .where('videoId', videoId)
-      .first()
-    const favoriteAdded = await FavoriteLucid.updateOrCreate(
-      {
-        videoId,
-        userId,
-      },
-      {
-        videoId,
-        userId,
-        uuid: favorite?.uuid ? favorite.uuid : favoriteUuid,
-      }
-    )
-    return favoriteAdded.$isPersisted
+    const favoriteQuery = db.from('favorites').where('user_id', userId).where('video_id', videoId)
+
+    const hasFavorite = !!(await favoriteQuery.first())
+
+    const favoritesUpdatedOrInserted = hasFavorite
+      ? await db
+          .from('favorites')
+          .where('user_id', userId)
+          .where('video_id', videoId)
+          .returning('uuid')
+          .update(
+            toSnakeCase({
+              videoId,
+              userId,
+              updatedAt: new Date().toISOString(),
+            })
+          )
+      : await db
+          .table('favorites')
+          .returning('uuid')
+          .insert(
+            toSnakeCase({
+              videoId,
+              userId,
+              uuid: favoriteUuid,
+              createdAt: new Date().toISOString(),
+            })
+          )
+
+    return !!favoritesUpdatedOrInserted.length
   }
 
   async removeFavorite(videoId: number, userId: number): Promise<boolean> {
-    await FavoriteLucid.query().where('videoId', videoId).where('userId', userId).delete()
-    return !(await FavoriteLucid.query().where('videoId', videoId).where('userId', userId).first())
+    await db.from('favorites').where('video_id', videoId).where('user_id', userId).delete()
+    return !(await db.from('favorites').where('video_id', videoId).where('user_id', userId).first())
   }
 
   async findFavoritesByUser(userId: number): Promise<VideoFindModel[]> {

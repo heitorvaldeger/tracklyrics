@@ -101,7 +101,7 @@ test.group('LyricSaveController', (group) => {
     )
   })
 
-  test('return 400 if any line with startTime more then endTime is provided', async ({
+  test('return 400 if any lyric provided with startTime is more then endTime', async ({
     expect,
   }) => {
     const { sut, httpContext } = await makeSut()
@@ -159,6 +159,27 @@ test.group('LyricSaveController', (group) => {
 
   test('return 200 if video save with success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
+
+    const httpResponse = await sut.save(httpContext)
+    expect(httpResponse).toEqual(
+      ok({
+        countLyricsInserted: 1,
+      })
+    )
+  })
+
+  test('return 200 on video save if seconds in startTime is more than seconds in endTime', async ({
+    expect,
+  }) => {
+    const { sut, httpContext } = await makeSut()
+
+    stub(httpContext.request, 'body').returns([
+      {
+        startTime: '00:02:10',
+        endTime: '00:03:00',
+        line: 'any_lyric',
+      },
+    ])
 
     const httpResponse = await sut.save(httpContext)
     expect(httpResponse).toEqual(

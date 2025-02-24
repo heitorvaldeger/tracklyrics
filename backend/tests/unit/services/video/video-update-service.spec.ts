@@ -10,16 +10,16 @@ import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-
 import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
 import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoUserLoggedServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const videoRequest = mockVideoCreateOrUpdateRequest()
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const authStrategyStub = mockAuthStrategyStub()
+  const { authStrategyStub } = mockAuthStrategyStub()
   const genreRepositoryStub = mockGenreRepositoryStub()
   const languageRepositoryStub = mockLanguageRepositoryStub()
-  const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
+  const videoCurrentUserServiceStub = mockVideoUserLoggedServiceStub()
   const sut = new VideoUpdateService(
     videoRepositoryStub,
     authStrategyStub,
@@ -67,7 +67,7 @@ test.group('Video Update Service', (group) => {
 
   test('returns a error if video not exists', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
-    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
     const video = await sut.update(videoRequest, faker.string.uuid())
 
     expect(video).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))

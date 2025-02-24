@@ -87,7 +87,7 @@ test.group('Lyric Save Route', () => {
     const response = await client.post(`videos/${NilUUID}/lyrics`).fields({})
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 
   test('/POST videos/:uuid/lyrics - it must return 404 if video not belong user uuid', async ({

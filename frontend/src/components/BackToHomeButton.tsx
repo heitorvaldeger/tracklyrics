@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router"
-import { Button } from "@/components/ui"
+import { Button } from "@/components/ui/_index"
 import { FaChevronLeft } from "react-icons/fa"
 
 export const BackToHomeButton = () => {

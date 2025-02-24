@@ -4,18 +4,18 @@ import { LanguageService } from '#services/language-service'
 import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
 
 const makeSut = () => {
-  const fakeLanguageRepositoryStub = mockLanguageRepositoryStub()
-  const sut = new LanguageService(fakeLanguageRepositoryStub)
+  const languageRepositoryStub = mockLanguageRepositoryStub()
+  const sut = new LanguageService(languageRepositoryStub)
 
-  return { sut }
+  return { sut, languageRepositoryStub }
 }
 
 test.group('LanguageService.findAll', () => {
   test('it must returns a list of languages with on success', async ({ expect }) => {
-    const { sut } = makeSut()
+    const { sut, languageRepositoryStub } = makeSut()
 
     const languages = await sut.findAll()
 
-    expect(languages).toEqual([])
+    expect(languages).toEqual(languageRepositoryStub.languages)
   })
 })

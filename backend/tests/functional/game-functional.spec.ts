@@ -44,7 +44,7 @@ test.group('Game Routes', (group) => {
 
     const response = await client.get(`game/${fakeVideo.uuid}/modes`)
 
-    const totalWords = fakeLyrics.reduce((acc, value) => acc + value.line.length, 0)
+    const totalWords = fakeLyrics.reduce((acc, value) => acc + value.line.split(' ').length, 0)
     expect(response.status()).toBe(200)
     expect(response.body().beginner).toEqual({
       percent: mockGameModesData.beginnerPercent,

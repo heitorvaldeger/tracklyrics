@@ -6,14 +6,14 @@ import googleIcon from "@/assets/images/google-icon.svg";
 import facebookIcon from "@/assets/images/facebook-icon.svg";
 import { BackToHomeButton } from "@/components/BackToHomeButton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useLoginViewModel } from "@/view-models/loginViewModel";
+import { useLogin } from "@/hooks/use-login";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export const LoginView = () => {
-  const { form, handleLogin, navigate, isLoading } = useLoginViewModel();
+  const { form, handleLogin, navigate, isLoading } = useLogin();
 
   return (
-    <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto">
+    <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto px-4">
       <BackToHomeButton />
       <Card className="rounded-3xl">
         <Form {...form}>

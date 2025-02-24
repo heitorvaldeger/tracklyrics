@@ -10,6 +10,8 @@ import { MyProfileView } from "@/views/User/MyProfileView"
 import { useUserAuth } from "@/contexts/UserAuthContext"
 import { PropsWithChildren } from "react"
 import { VideoSearchView } from "@/views/VideoSearchView"
+import { GameModesView } from "@/views/Game/GameModesView"
+import { AddVideoView } from "@/views/AddVideoView"
 
 type RouteMiddlewareProps = {
   isAllowed?: boolean
@@ -35,11 +37,13 @@ export const AppRoutes = () => {
         <Route element={isAllowed ? <UserLayout/> : <DefaultLayout />}>
           <Route index element={<HomeView />}/>
           <Route path="/search/:genreId" element={<VideoSearchView />}/>
+          <Route path="/game/:videoUuid/modes" element={<GameModesView />}/>
         </Route>
         <Route path="register" element={!isAllowed ? <RegisterView /> : <RouteMiddleware/>}/>
         <Route path="login" element={!isAllowed ? <LoginView /> : <RouteMiddleware/>}/>
 
         <Route element={<RouteMiddleware isAllowed={isAllowed} />}>
+          <Route path="/video/add" element={<AddVideoView/>} />
           <Route element={<UserLayout/>}>
             <Route path="favorites" element={<FavoritesView />}/>
             <Route path="lyrics" element={<LyricsView />}/>

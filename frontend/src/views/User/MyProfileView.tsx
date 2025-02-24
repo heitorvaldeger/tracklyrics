@@ -1,10 +1,10 @@
-import { Button, Label } from "@/components/ui"
+import { Button, Label } from "@/components/ui/_index"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { FaPencil } from "react-icons/fa6"
-import { useMyProfileViewModel } from "@/view-models/myProfileViewModel"
+import { useMyProfile } from "@/hooks/use-my-profile"
 
 export const MyProfileView = () => {
-  const { userFullInfo, userNameInitials } = useMyProfileViewModel()
+  const { userFullInfo, userNameInitials } = useMyProfile()
 
   return (
     <div className="flex flex-col gap-4">

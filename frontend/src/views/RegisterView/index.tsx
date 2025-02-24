@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BackToHomeButton } from "@/components/BackToHomeButton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useRegisterViewModel } from "@/view-models/registerViewModel";
+import { useRegister } from "@/hooks/use-register";
 
 export const RegisterView = () => {
-  const { navigate, form, handleCreateNewAccount, isLoading } = useRegisterViewModel();
+  const { navigate, form, handleCreateNewAccount, isLoading } = useRegister();
 
   return (
     <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto">

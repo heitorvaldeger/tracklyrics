@@ -10,6 +10,7 @@ const mockLanguageServiceStub = (): LanguageProtocolService => ({
       {
         id: 0,
         name: 'any_name',
+        flagCountry: 'BR',
       },
     ]),
 })
@@ -31,6 +32,7 @@ test.group('LanguageController.findAll', () => {
         {
           id: 0,
           name: 'any_name',
+          flagCountry: 'BR',
         },
       ])
     )

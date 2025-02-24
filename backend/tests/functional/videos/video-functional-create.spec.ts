@@ -75,7 +75,7 @@ test.group('Video Create Route', (group) => {
     const response = await client.post(`/videos`).fields({})
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 
   test('/POST videos/ - it must return 422 on create if video youtube already exists', async ({

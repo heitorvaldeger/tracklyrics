@@ -5,7 +5,7 @@ import {
   CarouselItem, 
   CarouselNext, 
   CarouselPrevious
-} from "@/components/ui"
+} from "@/components/ui/_index"
 
 import { videos } from "@/__mocks__/videos"
 import { CardVideo } from "@/components/CardVideo"

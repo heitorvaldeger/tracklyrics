@@ -15,4 +15,8 @@ export class AuthAdonisStrategy implements AuthStrategy {
   getUserEmail() {
     return this.auth.user?.email
   }
+
+  getUserUuid() {
+    return this.auth.user?.uuid
+  }
 }

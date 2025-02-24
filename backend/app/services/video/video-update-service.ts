@@ -7,15 +7,15 @@ import { GenreRepository } from '#infra/db/repository/protocols/genre-repository
 import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
 import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
 import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
 
 @inject()
 export class VideoUpdateService implements VideoUpdateProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
     private readonly authStrategy: AuthStrategy,
-    private readonly videoCurrentUserService: VideoCurrentUserProtocolService,
+    private readonly videoCurrentUserService: VideoUserLoggedProtocolService,
     private readonly genreRepository: GenreRepository,
     private readonly languageRepository: LanguageRepository
   ) {}
@@ -27,7 +27,7 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {
       return createFailureResponse(APPLICATION_MESSAGES.YOUTUBE_LINK_ALREADY_EXISTS)
     }
-    if (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(uuid)) {
+    if (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(uuid)) {
       return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
     }
 

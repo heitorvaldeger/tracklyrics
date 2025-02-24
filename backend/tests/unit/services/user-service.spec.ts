@@ -10,10 +10,10 @@ import { mockUserRepositoryStub } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const makeSut = () => {
   const fakeUserRepositoryStub = mockUserRepositoryStub()
-  const fakeAuthStrategy = mockAuthStrategyStub()
-  const sut = new UserService(fakeUserRepositoryStub, fakeAuthStrategy)
+  const { authStrategyStub } = mockAuthStrategyStub()
+  const sut = new UserService(fakeUserRepositoryStub, authStrategyStub)
 
-  return { sut, fakeAuthStrategy, fakeUserRepositoryStub }
+  return { sut, authStrategyStub, fakeUserRepositoryStub }
 }
 
 test.group('UserService.getFullInfoByUserLogged', (group) => {
@@ -22,9 +22,9 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
   })
 
   test('return user unauthenticated if email provided is invalid', async ({ expect }) => {
-    const { sut, fakeAuthStrategy } = makeSut()
+    const { sut, authStrategyStub } = makeSut()
 
-    fakeAuthStrategy.getUserEmail.returns(undefined)
+    authStrategyStub.getUserEmail.returns(undefined)
     const httpResponse = await sut.getFullInfoByUserLogged()
 
     expect(httpResponse).toEqual(createFailureResponse(APPLICATION_MESSAGES.UNAUTHORIZED))
@@ -57,8 +57,8 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
   })
 
   test('return true if AuthStrategy.getUserEmail method was called', async ({ expect }) => {
-    const { sut, fakeAuthStrategy } = makeSut()
-    const getUserEmail = fakeAuthStrategy.getUserEmail
+    const { sut, authStrategyStub } = makeSut()
+    const getUserEmail = authStrategyStub.getUserEmail
     await sut.getFullInfoByUserLogged()
 
     expect(getUserEmail.called).toBeTruthy()

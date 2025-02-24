@@ -35,11 +35,7 @@ async function compareTime(value: unknown, options: Options, field: FieldContext
 
   if (isTimeOneFormatInvalid || isTimeTwoFormatInvalid) return
 
-  const [h1, m1, s1] = timeOne.split(':').map(Number)
-  const [h2, m2, s2] = timeTwo.split(':').map(Number)
-
-  const isInvalid =
-    options.operation === 'less' ? h1 < h2 || m1 < m2 || s1 < s2 : h1 > h2 || m1 > m2 || s1 > s2
+  const isInvalid = options.operation === 'less' ? timeOne < timeTwo : timeOne > timeTwo
   if (isInvalid) {
     field.report(
       options.operation === 'less'

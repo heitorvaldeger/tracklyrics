@@ -1,8 +1,8 @@
 import { createSuccessResponse } from '#helpers/method-response'
 import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
 import { VideoFindModel } from '#models/video-model/video-find-model'
-import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
 import { VideoFindProtocolService } from '#services/protocols/video/video-find-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
 import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
 
 export const mockVideoData: VideoFindModel & {
@@ -12,7 +12,18 @@ export const mockVideoData: VideoFindModel & {
   title: 'any_title',
   artist: 'any_artist',
   linkYoutube: 'https://www.youtube.com/watch?v=93b9XX0GMGK',
-  thumbnail: 'https://img.youtube.com/vi/93b9XX0GMGK/maxresdefault.jpg',
+  thumbnail: 'https://img.youtube.com/vi/93b9XX0GMGK/hqdefault.jpg',
+  releaseYear: 'any_year',
+  language: 'any_language',
+  genre: 'any_genre',
+  username: 'any_username',
+}
+
+export const mockVideoDataWithoutThumbnail: VideoFindModel = {
+  uuid: 'any_uuid',
+  title: 'any_title',
+  artist: 'any_artist',
+  linkYoutube: 'https://www.youtube.com/watch?v=93b9XX0GMGK',
   releaseYear: 'any_year',
   language: 'any_language',
   genre: 'any_genre',
@@ -20,8 +31,9 @@ export const mockVideoData: VideoFindModel & {
 }
 
 export const mockVideoRepositoryStub = (): VideoRepository => ({
-  find: (uuid: string) => Promise.resolve(mockVideoData),
-  findBy: (filters: VideoRepository.FindVideoParams) => Promise.resolve([]),
+  find: (uuid: string) => Promise.resolve(mockVideoDataWithoutThumbnail),
+  findBy: (filters: VideoRepository.FindVideoParams) =>
+    Promise.resolve([mockVideoDataWithoutThumbnail]),
   getVideoId: (uuid: string) => Promise.resolve(1),
   getUserId: (uuid: string) => Promise.resolve(0),
   delete: (uuid: string) => Promise.resolve(true),
@@ -37,6 +49,7 @@ export const mockVideoFindServiceStub = (): VideoFindProtocolService => ({
     Promise.resolve(createSuccessResponse([mockVideoData])),
 })
 
-export const mockVideoCurrentUserServiceStub = (): VideoCurrentUserProtocolService => ({
-  isNotVideoOwnedByCurrentUser: (uuid: string) => Promise.resolve(false),
+export const mockVideoUserLoggedServiceStub = (): VideoUserLoggedProtocolService => ({
+  isNotVideoOwnedByUserLogged: (uuid: string) => Promise.resolve(false),
+  getVideosByUserLogged: () => Promise.resolve(createSuccessResponse([mockVideoData])),
 })

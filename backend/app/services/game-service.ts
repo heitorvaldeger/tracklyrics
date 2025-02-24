@@ -28,7 +28,7 @@ export class GameService implements GameProtocolService {
 
     const lyrics = await this.lyricRepository.find(videoId)
     const totalWords = lyrics.reduce((acc, value) => {
-      return acc + value.line.length
+      return acc + value.line.split(' ').length
     }, 0)
 
     const beginnerModePercent = 15

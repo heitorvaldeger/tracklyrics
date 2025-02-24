@@ -84,6 +84,6 @@ test.group('Video Delete Route', (group) => {
     const response = await client.delete(`/videos/${NilUUID}`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 })

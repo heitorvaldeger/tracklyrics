@@ -21,6 +21,7 @@ const GenreController = () => import('#controllers/genre-controller')
 const VideoFindController = () => import('#controllers/video/video-find-controller')
 const VideoCreateController = () => import('#controllers/video/video-create-controller')
 const VideoDeleteController = () => import('#controllers/video/video-delete-controller')
+const VideoUserLoggedController = () => import('#controllers/video/video-user-logged-controller')
 const AuthController = () => import('#controllers/auth-controller')
 const UserController = () => import('#controllers/user-controller')
 
@@ -77,8 +78,9 @@ router
     router
       .group(() => {
         router.get('', [UserController, 'getFullInfoByUserLogged'])
+        router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
       })
-      .prefix('users')
+      .prefix('user')
   })
   .use(
     middleware.auth({

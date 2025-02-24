@@ -61,7 +61,7 @@ test.group('GameService', (group) => {
 
     const { beginnerPercent, intermediatePercent, advancedPercent } = mockGameModesData
     const mockTotalWords = lyrics.reduce((acc, lyric) => {
-      return acc + lyric.line.length
+      return acc + lyric.line.split(' ').length
     }, 0)
 
     expect(totalWords).toBe(mockTotalWords)

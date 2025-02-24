@@ -1,6 +1,4 @@
 import { faker } from '@faker-js/faker'
-import { now } from 'lodash'
-import { DateTime } from 'luxon'
 
 import FavoriteLucid from '#models/favorite-model/favorite-lucid'
 import GenreLucid from '#models/genre-model/genre-lucid'
@@ -8,7 +6,6 @@ import { LanguageLucid } from '#models/language-model/language-lucid'
 import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import UserLucid from '#models/user-model/user-lucid'
 import VideoLucid from '#models/video-model/video-lucid'
-import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
 import { mockGenreEntity } from '#tests/__mocks__/entities/mock-genre-entity'
 import { mockLanguageEntity } from '#tests/__mocks__/entities/mock-language-entity'
 import { mockUserEntity } from '#tests/__mocks__/entities/mock-user-entity'
@@ -21,7 +18,6 @@ type MockLucidEntity = {
   fakeVideo: VideoLucid
   fakeFavorite: FavoriteLucid
   fakeLyrics: LyricLucid[]
-  fakeVideoPlayCount: VideoPlayCountLucid
 }
 
 export const mockLucidEntity = async (): Promise<MockLucidEntity> => {
@@ -45,10 +41,6 @@ export const mockLucidEntity = async (): Promise<MockLucidEntity> => {
     videoId: fakeVideo.id,
     userId: fakeUser.id,
     uuid: faker.string.uuid(),
-  })
-
-  const fakeVideoPlayCount = await VideoPlayCountLucid.create({
-    videoId: fakeVideo.id,
   })
 
   const fakeLyrics = await LyricLucid.createMany([
@@ -75,6 +67,5 @@ export const mockLucidEntity = async (): Promise<MockLucidEntity> => {
     fakeVideo,
     fakeFavorite,
     fakeLyrics,
-    fakeVideoPlayCount,
   }
 }

@@ -1,8 +1,13 @@
 import { CardVideo } from "@/components/CardVideo";
-import { useVideoSearchViewModel } from "@/view-models/videoSearchViewModel";
+import { useVideoSearch } from "@/hooks/use-video-search";
+import { NotFoundView } from "../NotFoundView";
 
 export const VideoSearchView = () => {
-  const { videos, genreSelected } = useVideoSearchViewModel()
+  const { videos, genreSelected } = useVideoSearch()
+
+  if (!genreSelected) {
+    return <NotFoundView />
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -12,6 +17,7 @@ export const VideoSearchView = () => {
           <span className="font-light">lyrics</span>
         </div>
       )}
+
       <div className="grid w-full gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center md:place-items-start">
         {
           videos && videos.length > 0 ?

@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 
+import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
 import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
 
@@ -8,10 +9,10 @@ test.group('User Routes', (group) => {
     client,
     expect,
   }) => {
-    const response = await client.get('/users')
+    const response = await client.get('user')
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
   })
 
   test('/GET user information - it must return 200 on get user information with success', async ({
@@ -25,7 +26,7 @@ test.group('User Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.get('/users').bearerToken(accessTokenValue)
+    const response = await client.get('user').bearerToken(accessTokenValue)
 
     const body = response.body()
 

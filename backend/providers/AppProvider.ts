@@ -36,16 +36,16 @@ import { LyricSaveProtocolService } from '#services/protocols/lyric/lyric-save-p
 import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
 import { UserProtocolService } from '#services/protocols/user-protocol-service'
 import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
-import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
 import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
 import { VideoFindProtocolService } from '#services/protocols/video/video-find-protocol-service'
 import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
 import { UserService } from '#services/user-service'
 import { VideoCreateService } from '#services/video/video-create-service'
-import { VideoCurrentUserService } from '#services/video/video-current-user-service'
 import { VideoDeleteService } from '#services/video/video-delete-service'
 import { VideoFindService } from '#services/video/video-find-service'
 import { VideoUpdateService } from '#services/video/video-update-service'
+import { VideoUserLoggedService } from '#services/video/video-user-logged-service'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -63,7 +63,7 @@ export default class AppProvider {
       { protocol: VideoCreateProtocolService, implementation: VideoCreateService },
       { protocol: VideoUpdateProtocolService, implementation: VideoUpdateService },
       { protocol: FavoriteProtocolService, implementation: FavoriteService },
-      { protocol: VideoCurrentUserProtocolService, implementation: VideoCurrentUserService },
+      { protocol: VideoUserLoggedProtocolService, implementation: VideoUserLoggedService },
       { protocol: LyricSaveProtocolService, implementation: LyricSaveService },
       { protocol: LyricFindProtocolService, implementation: LyricFindService },
       { protocol: GameProtocolService, implementation: GameService },

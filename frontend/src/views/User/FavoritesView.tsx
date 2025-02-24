@@ -1,8 +1,8 @@
 import { CardVideo } from "@/components/CardVideo"
-import { useFavoriteViewModel } from "@/view-models/favoriteViewModel"
+import { useFavorite } from "@/hooks/use-favorite"
 
 export const FavoritesView = () => {
-  const { favorites, removeVideoFromFavorites } = useFavoriteViewModel()
+  const { favorites, removeVideoFromFavorites } = useFavorite()
 
   return (
     <div className="flex flex-col gap-4">

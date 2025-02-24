@@ -1,9 +1,10 @@
 import { FaCalendar, FaYoutube, FaUser } from "react-icons/fa"
 import { FaXmark, FaPencil } from "react-icons/fa6"
-import { Button, Card, CardContent } from "@/components/ui"
+import { Button, Card, CardContent } from "@/components/ui/_index"
 import usFlag from "@/assets/images/flags/us.svg"
 import { Video } from "@/models/video"
 import { formatDistanceToNowStrict } from "date-fns"
+import { useNavigate } from "react-router"
 
 type CardVideoProps = {
   video: Video,
@@ -14,9 +15,14 @@ type CardVideoProps = {
 }
 
 export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
+  const navigate = useNavigate()
   const releaseYearByExtended = formatDistanceToNowStrict(new Date(video.releaseYear, 1, 1), {
     addSuffix: true
   })
+
+  const handleTitleClick = (videoUuid: string) => {
+    navigate(`/game/${videoUuid}/modes`)
+  }
 
   return (
     <Card className="sm:w-2/3 md:w-full rounded-lg flex flex-col">
@@ -51,7 +57,13 @@ export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
 
         <div className="px-2 py-2">
           <div className="flex items-center justify-between">
-            <p className="text-ellipsis overflow-hidden whitespace-nowrap">{video.title}</p>
+            <Button
+              className="text-ellipsis overflow-hidden whitespace-nowrap text-teal-500 p-0 text-md font-bold"
+              variant="link"
+              onClick={() => handleTitleClick(video.uuid)}
+            >
+              {video.title}
+            </Button>
             <img src={usFlag} width={20} className="rounded-sm" />
           </div>
           <p className="text-sm font-light" >{video.artist}</p>

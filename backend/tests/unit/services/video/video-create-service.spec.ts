@@ -29,7 +29,7 @@ const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
   const genreRepositoryStub = mockGenreRepositoryStub()
   const languageRepositoryStub = mockLanguageRepositoryStub()
-  const authStrategyStub = mockAuthStrategyStub()
+  const { authStrategyStub } = mockAuthStrategyStub()
 
   const sut = new VideoCreateService(
     videoRepositoryStub,

@@ -1,13 +1,13 @@
 import { Outlet, useNavigate } from "react-router"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { AppBar } from "@/components/AppBar"
+import { Header } from "@/components/Header"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { AppFooter } from "@/components/AppFooter"
+import { Footer } from "@/components/Footer"
 import { useUserAuth } from "@/contexts/UserAuthContext"
 
 export const UserLayout = () => {
@@ -21,7 +21,7 @@ export const UserLayout = () => {
 
   return (
     <div className="w-full min-h-screen flex flex-col mx-auto relative">
-      <AppBar>
+      <Header>
         <div className="w-full flex justify-end items-center">
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none">
@@ -38,11 +38,11 @@ export const UserLayout = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </AppBar>
-      <div className="w-3/4 px-2 md:px-0 md:w-3/5 2xl:w-2/4 mx-auto py-6 flex-1">
+      </Header>
+      <div className="w-3/4 px-2 md:px-0 md:w-3/5 2xl:w-2/4 mx-auto py-6 flex-1 pb-40">
         <Outlet />
       </div>
-      <AppFooter />
+      <Footer />
     </div>
   )
 }

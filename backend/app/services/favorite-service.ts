@@ -13,7 +13,7 @@ import { VideoRepository } from '#infra/db/repository/protocols/video-repository
 import { VideoFindModel } from '#models/video-model/video-find-model'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
 import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
-import { VideoCurrentUserProtocolService } from '#services/protocols/video/video-currentuser-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
 
 @inject()
 export class FavoriteService implements FavoriteProtocolService {
@@ -21,14 +21,14 @@ export class FavoriteService implements FavoriteProtocolService {
     private readonly videoRepository: VideoRepository,
     private readonly favoriteRepository: FavoriteRepository,
     private readonly authStrategy: AuthStrategy,
-    private readonly videoCurrentUserService: VideoCurrentUserProtocolService
+    private readonly videoCurrentUserService: VideoUserLoggedProtocolService
   ) {}
 
   async addFavorite(videoUuid: string): Promise<MethodResponse<boolean | ApplicationError>> {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     const userId = this.authStrategy.getUserId()
     if (
-      (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(videoUuid)) ||
+      (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) ||
       _.isNull(videoId) ||
       _.isNull(userId)
     ) {
@@ -48,7 +48,7 @@ export class FavoriteService implements FavoriteProtocolService {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     const userId = this.authStrategy.getUserId()
     if (
-      (await this.videoCurrentUserService.isNotVideoOwnedByCurrentUser(videoUuid)) ||
+      (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) ||
       _.isNull(videoId) ||
       _.isNull(userId)
     ) {
