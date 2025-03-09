@@ -1,14 +1,14 @@
 import { test } from '@japa/runner'
 
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
 test.group('Video FindBy Route', (group) => {
   test('/GET videos?{genreId} - it must return a list videos if genreId is provided', async ({
     client,
     expect,
   }) => {
-    const { fakeGenre } = await mockLucidEntity()
-    await mockLucidEntity()
+    const { fakeGenre } = await mockAllTables()
+    await mockAllTables()
 
     const response = await client.get(`/videos?genreId=${fakeGenre.id}`)
 
@@ -20,8 +20,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
-    await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
+    await mockAllTables()
 
     const response = await client.get(`/videos?userUuid=${fakeUser.uuid}`)
 
@@ -33,8 +33,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    await mockLucidEntity()
-    await mockLucidEntity()
+    await mockAllTables()
+    await mockAllTables()
 
     const response = await client.get(`/videos`)
 
@@ -46,8 +46,8 @@ test.group('Video FindBy Route', (group) => {
     client,
     expect,
   }) => {
-    await mockLucidEntity()
-    await mockLucidEntity()
+    await mockAllTables()
+    await mockAllTables()
 
     const response = await client.get(
       `/videos?userUuid=any_uuid&genreId=any_genre&languageId=any_language`

@@ -2,9 +2,9 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import AuthController from '#controllers/auth-controller'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
 import { mockAuthServiceStub } from '#tests/__mocks__/stubs/mock-auth-stub'
@@ -19,7 +19,7 @@ const mockRequest = {
 const makeSut = () => {
   const httpContext = makeHttpRequest(mockRequest)
   const authServiceStub = mockAuthServiceStub()
-  const sut = new AuthController(authServiceStub, authServiceStub)
+  const sut = new AuthController(authServiceStub)
 
   return { sut, httpContext, authServiceStub }
 }

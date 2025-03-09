@@ -1,12 +1,12 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { LyricFindResponse } from '#models/lyric-model/lyric-find-response'
-import { LyricFindProtocolService } from '#services/protocols/lyric/lyric-find-protocol-service'
+import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { LyricFindResponse } from '#models/lyric-metadata'
+import { LyricFindProtocolService } from '#services/_protocols/lyric/lyric-find-protocol-service'
 
 @inject()
 export class LyricFindService implements LyricFindProtocolService {

@@ -1,13 +1,13 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { LyricSaveResponse } from '#models/lyric-model/lyric-save-response'
-import { LyricSaveProtocolService } from '#services/protocols/lyric/lyric-save-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
+import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { LyricSaveResult } from '#models/lyric-save-result'
+import { LyricSaveProtocolService } from '#services/_protocols/lyric/lyric-save-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
 
 @inject()
 export class LyricSaveService implements LyricSaveProtocolService {
@@ -19,7 +19,7 @@ export class LyricSaveService implements LyricSaveProtocolService {
 
   async save(
     params: LyricSaveProtocolService.LyricParamsToInsert
-  ): Promise<MethodResponse<LyricSaveResponse>> {
+  ): Promise<MethodResponse<LyricSaveResult>> {
     const { videoUuid, lyrics } = params
     if (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) {
       return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)

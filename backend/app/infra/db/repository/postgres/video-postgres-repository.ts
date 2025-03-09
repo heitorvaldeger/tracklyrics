@@ -1,20 +1,16 @@
 import db from '@adonisjs/lucid/services/db'
-import { DatabaseQueryBuilderContract } from '@adonisjs/lucid/types/querybuilder'
 
-import { toCamelCase } from '#helpers/to-camel-case'
-import { toSnakeCase } from '#helpers/to-snake-case'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
-import { LyricLucid } from '#models/lyric-model/lyric-lucid'
-import { VideoFindModel } from '#models/video-model/video-find-model'
-import VideoLucid from '#models/video-model/video-lucid'
-import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
-import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
+import { Video } from '#models/video'
+import { VideoMetadata } from '#models/video-metadata'
+import { VideoCreateInput, VideoSaveResult, VideoUpdateInput } from '#models/video-save'
+import { toSnakeCase } from '#utils/index'
+import { toCamelCase } from '#utils/index'
 
-import { VideoRepository } from '../protocols/video-repository.js'
+import { VideoRepository } from '../_protocols/video-repository.js'
 
 export class VideoPostgresRepository implements VideoRepository {
-  async find(uuid: string): Promise<VideoFindModel | null> {
-    const video: VideoFindModel | null = await db
+  async find(uuid: string): Promise<VideoMetadata | null> {
+    const video: VideoMetadata | null = await db
       .from('videos')
       .where('videos.uuid', uuid)
       .innerJoin('users', 'users.id', 'user_id')
@@ -35,7 +31,7 @@ export class VideoPostgresRepository implements VideoRepository {
     return video ? toCamelCase(video) : null
   }
 
-  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoFindModel[]> {
+  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoMetadata[]> {
     const qb = db
       .from('videos')
       .innerJoin('users', 'users.id', 'user_id')
@@ -55,12 +51,13 @@ export class VideoPostgresRepository implements VideoRepository {
       }
     }
 
-    const videos: VideoFindModel[] = await qb.select(
+    const videos: VideoMetadata[] = await qb.select(
       'title',
       'artist',
       'videos.uuid',
       'release_year',
       'link_youtube',
+      'genres.name as genre',
       'languages.name as language',
       'users.username as username'
     )
@@ -69,13 +66,13 @@ export class VideoPostgresRepository implements VideoRepository {
   }
 
   async getVideoId(videoUuid: string): Promise<number | null> {
-    const video = await VideoLucid.findBy('uuid', videoUuid)
+    const video: Video | null = await db.from('videos').where('uuid', videoUuid).first()
     return video ? video.id : null
   }
 
   async getUserId(videoUuid: string): Promise<number | null> {
-    const video = await VideoLucid.findBy('uuid', videoUuid)
-    return video ? video.userId : null
+    const video: Video | null = await db.from('videos').where('uuid', videoUuid).first()
+    return video ? toCamelCase(video).userId : null
   }
 
   async hasYoutubeLink(link: string): Promise<boolean> {
@@ -83,26 +80,31 @@ export class VideoPostgresRepository implements VideoRepository {
   }
 
   async delete(videoUuid: string): Promise<boolean> {
-    await FavoriteLucid.query()
+    await db
+      .from('favorites')
       .whereIn('video_id', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
       .del()
-    await LyricLucid.query()
+    await db
+      .from('lyrics')
       .whereIn('video_id', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
       .del()
-    await VideoPlayCountLucid.query()
+
+    await db
+      .from('video_play_counts')
       .whereIn('video_id', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
       .del()
-    await VideoLucid.query().where('uuid', videoUuid).delete()
-    return !(await VideoLucid.query().where('uuid', videoUuid).first())
+
+    await db.from('videos').where('uuid', videoUuid).delete()
+    return !(await db.from('videos').where('uuid', videoUuid).first())
   }
 
-  async create(payload: VideoRepository.CreateVideoParams): Promise<VideoSaveResultModel> {
+  async create(payload: VideoCreateInput): Promise<VideoSaveResult> {
     await db.from('videos').knexQuery.insert(toSnakeCase(payload))
     const newVideo = await db
       .from('videos')
@@ -126,10 +128,10 @@ export class VideoPostgresRepository implements VideoRepository {
       )
     }
 
-    return toCamelCase<VideoSaveResultModel>(newVideo)
+    return toCamelCase<VideoSaveResult>(newVideo)
   }
 
-  async update(payload: VideoRepository.UpdateVideoParams, uuid: string): Promise<boolean> {
+  async update(payload: VideoUpdateInput, uuid: string): Promise<boolean> {
     await db.from('videos').where('uuid', uuid).update(toSnakeCase(payload))
     return !!(await db.from('videos').where('uuid', uuid).first())
   }

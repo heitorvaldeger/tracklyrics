@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { LyricSaveProtocolService } from '#services/protocols/lyric/lyric-save-protocol-service'
+import { LyricSaveProtocolService } from '#services/_protocols/lyric/lyric-save-protocol-service'
 import { lyricSaveValidator } from '#validators/vinejs/lyric-save-validator'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 

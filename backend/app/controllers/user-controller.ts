@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 
 import { dispatch } from '#helpers/dispatch'
-import { UserProtocolService } from '#services/protocols/user-protocol-service'
+import { UserProtocolService } from '#services/_protocols/user-protocol-service'
 
 @inject()
 export default class UserController {

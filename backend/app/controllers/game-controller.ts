@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { GameProtocolService } from '#services/protocols/game-protocol-service'
+import { GameProtocolService } from '#services/_protocols/game-protocol-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()

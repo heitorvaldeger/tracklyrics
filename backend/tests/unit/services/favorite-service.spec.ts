@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { FavoriteService } from '#services/favorite-service'
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'

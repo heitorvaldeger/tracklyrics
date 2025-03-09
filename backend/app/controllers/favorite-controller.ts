@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
+import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()

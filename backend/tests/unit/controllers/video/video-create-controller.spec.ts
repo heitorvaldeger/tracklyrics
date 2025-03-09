@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import VideoCreateController from '#controllers/video/video-create-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unprocessable } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
+import { VideoCreateProtocolService } from '#services/_protocols/video/video-create-protocol-service'
 import {
   mockVideoCreateOrUpdateRequest,
   mockVideoCreateOrUpdateResponse,

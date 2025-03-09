@@ -2,8 +2,8 @@ import { test } from '@japa/runner'
 import _ from 'lodash'
 import { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import VideoUserLoggedController from '#controllers/video/video-user-logged-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { ok, unauthorized } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
 import {

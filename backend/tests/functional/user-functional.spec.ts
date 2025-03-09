@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
 test.group('User Routes', (group) => {
   test('/GET user information - it must return 401 on get user information if user unauthorized', async ({
@@ -19,7 +19,7 @@ test.group('User Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)

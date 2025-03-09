@@ -1,11 +1,11 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoDeleteProtocolService } from '#services/_protocols/video/video-delete-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
 
 @inject()
 export class VideoDeleteService implements VideoDeleteProtocolService {

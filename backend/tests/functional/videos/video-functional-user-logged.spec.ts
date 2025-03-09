@@ -1,15 +1,15 @@
 import { test } from '@japa/runner'
 
-import { getYoutubeThumbnail } from '#helpers/get-youtube-thumbnail'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { getYoutubeThumbnail } from '#utils/index'
 
 test.group('Video User Logged Route', () => {
   test('/GET user/my-lyrics - it must return 200 if user authenticated is provided', async ({
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo, fakeLanguage, fakeGenre } = await mockLucidEntity()
+    const { fakeUser, fakeVideo, fakeLanguage, fakeGenre } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)

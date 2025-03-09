@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
@@ -10,7 +10,7 @@ test.group('Game Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeVideo } = await mockLucidEntity()
+    const { fakeVideo } = await mockAllTables()
 
     const response = await client.put(`game/${fakeVideo.uuid}/play`)
 
@@ -40,7 +40,7 @@ test.group('Game Routes', (group) => {
   })
 
   test('/GET game/{uuid}/modes - return 200 with modes on success', async ({ client, expect }) => {
-    const { fakeVideo, fakeLyrics } = await mockLucidEntity()
+    const { fakeVideo, fakeLyrics } = await mockAllTables()
 
     const response = await client.get(`game/${fakeVideo.uuid}/modes`)
 

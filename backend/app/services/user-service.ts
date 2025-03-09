@@ -1,12 +1,12 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
+import { UserProtocolService } from '#services/_protocols/user-protocol-service'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import { UserProtocolService } from '#services/protocols/user-protocol-service'
 
 @inject()
 export class UserService implements UserProtocolService {

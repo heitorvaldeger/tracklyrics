@@ -1,14 +1,14 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
-import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
+import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
+import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoUpdateProtocolService } from '#services/_protocols/video/video-update-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import { VideoUpdateProtocolService } from '#services/protocols/video/video-update-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
 
 @inject()
 export class VideoUpdateService implements VideoUpdateProtocolService {

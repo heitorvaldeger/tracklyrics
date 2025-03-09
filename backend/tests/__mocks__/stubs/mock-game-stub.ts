@@ -1,5 +1,5 @@
 import { createSuccessResponse } from '#helpers/method-response'
-import { GameProtocolService } from '#services/protocols/game-protocol-service'
+import { GameProtocolService } from '#services/_protocols/game-protocol-service'
 
 export const mockGameModesData = {
   beginnerPercent: 15,

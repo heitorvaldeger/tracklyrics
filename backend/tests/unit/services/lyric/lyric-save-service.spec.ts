@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { LyricSaveService } from '#services/lyric/lyric-save-service'
 import { mockLyricRepositoryStub } from '#tests/__mocks__/stubs/mock-lyric-stub'

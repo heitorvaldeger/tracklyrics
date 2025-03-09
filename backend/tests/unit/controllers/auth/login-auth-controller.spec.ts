@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import AuthController from '#controllers/auth-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, ok, serverError, unauthorized } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
 import { mockAuthServiceStub } from '#tests/__mocks__/stubs/mock-auth-stub'
@@ -15,7 +15,7 @@ const makeSut = () => {
     password: faker.internet.password(),
   })
   const authServiceStub = mockAuthServiceStub()
-  const sut = new AuthController(authServiceStub, authServiceStub)
+  const sut = new AuthController(authServiceStub)
 
   return { sut, httpContext, authServiceStub }
 }

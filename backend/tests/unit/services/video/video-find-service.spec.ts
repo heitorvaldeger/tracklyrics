@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import _ from 'lodash'
 import { stub } from 'sinon'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { VideoFindService } from '#services/video/video-find-service'
 import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'

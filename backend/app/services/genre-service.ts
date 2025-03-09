@@ -1,14 +1,17 @@
 import { inject } from '@adonisjs/core'
 
-import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
-import { GenreFindModel } from '#models/genre-model/genre-find-model'
-import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
+import { createSuccessResponse } from '#helpers/method-response'
+import { MethodResponse } from '#helpers/types/method-response'
+import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
+import { Genre } from '#models/genre'
+import { GenreProtocolService } from '#services/_protocols/genre-protocol-service'
 
 @inject()
 export class GenreService implements GenreProtocolService {
   constructor(private readonly genreRepository: GenreRepository) {}
 
-  async findAll(): Promise<GenreFindModel[]> {
-    return await this.genreRepository.findAll()
+  async findAll(): Promise<MethodResponse<Genre[]>> {
+    const genres = await this.genreRepository.findAll()
+    return createSuccessResponse(genres)
   }
 }

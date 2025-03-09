@@ -1,6 +1,6 @@
 import { createSuccessResponse } from '#helpers/method-response'
-import { FavoriteRepository } from '#infra/db/repository/protocols/favorite-repository'
-import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
+import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
+import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
 import { mockVideoData } from '#tests/__mocks__/stubs/mock-video-stub'
 
 export const mockFavoriteRepositoryStub = (): FavoriteRepository => ({

@@ -2,16 +2,19 @@ import { test } from '@japa/runner'
 
 import GenreController from '#controllers/genre-controller'
 import { ok } from '#helpers/http'
-import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
+import { createSuccessResponse } from '#helpers/method-response'
+import { GenreProtocolService } from '#services/_protocols/genre-protocol-service'
 
 const mockGenreServiceStub = (): GenreProtocolService => ({
   findAll: () =>
-    Promise.resolve([
-      {
-        id: 0,
-        name: 'any_name',
-      },
-    ]),
+    Promise.resolve(
+      createSuccessResponse([
+        {
+          id: 0,
+          name: 'any_name',
+        },
+      ])
+    ),
 })
 
 const makeSut = () => {

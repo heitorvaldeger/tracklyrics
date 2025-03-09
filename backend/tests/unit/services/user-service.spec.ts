@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { UserService } from '#services/user-service'
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'

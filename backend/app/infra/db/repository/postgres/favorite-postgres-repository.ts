@@ -1,10 +1,10 @@
 import db from '@adonisjs/lucid/services/db'
 
-import { toCamelCase } from '#helpers/to-camel-case'
-import { toSnakeCase } from '#helpers/to-snake-case'
-import { VideoFindModel } from '#models/video-model/video-find-model'
+import { VideoMetadata } from '#models/video-metadata'
+import { toSnakeCase } from '#utils/index'
+import { toCamelCase } from '#utils/index'
 
-import { FavoriteRepository } from '../protocols/favorite-repository.js'
+import { FavoriteRepository } from '../_protocols/favorite-repository.js'
 
 export class FavoritePostgresRepository implements FavoriteRepository {
   async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
@@ -45,8 +45,8 @@ export class FavoritePostgresRepository implements FavoriteRepository {
     return !(await db.from('favorites').where('video_id', videoId).where('user_id', userId).first())
   }
 
-  async findFavoritesByUser(userId: number): Promise<VideoFindModel[]> {
-    const favorites: VideoFindModel[] = await db
+  async findFavoritesByUser(userId: number): Promise<VideoMetadata[]> {
+    const favorites: VideoMetadata[] = await db
       .from('favorites')
       .where('favorites.user_id', userId)
       .innerJoin('videos', 'videos.id', 'favorites.video_id')

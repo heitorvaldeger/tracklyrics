@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 import { dispatch } from '#helpers/dispatch'
-import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
+import { VideoCreateProtocolService } from '#services/_protocols/video/video-create-protocol-service'
 import { createOrUpdateVideoValidator } from '#validators/vinejs/video-validator'
 
 @inject()

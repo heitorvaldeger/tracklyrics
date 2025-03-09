@@ -2,11 +2,11 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import VideoDeleteController from '#controllers/video/video-delete-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoDeleteProtocolService } from '#services/protocols/video/video-delete-protocol-service'
+import { VideoDeleteProtocolService } from '#services/_protocols/video/video-delete-protocol-service'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 

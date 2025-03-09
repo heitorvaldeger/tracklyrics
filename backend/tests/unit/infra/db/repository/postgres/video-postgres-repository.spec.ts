@@ -5,14 +5,12 @@ import _ from 'lodash'
 import { stub } from 'sinon'
 
 import { VideoPostgresRepository } from '#infra/db/repository/postgres/video-postgres-repository'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
-import GenreLucid from '#models/genre-model/genre-lucid'
-import { LanguageLucid } from '#models/language-model/language-lucid'
-import { LyricLucid } from '#models/lyric-model/lyric-lucid'
+import { Favorite } from '#models/favorite'
+import { Genre } from '#models/genre'
+import { Language } from '#models/language'
 import UserLucid from '#models/user-model/user-lucid'
-import VideoLucid from '#models/video-model/video-lucid'
-import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { Video } from '#models/video'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = async () => {
@@ -22,24 +20,20 @@ const makeSut = async () => {
 }
 
 test.group('VideoPostgresRepository', (group) => {
-  let fakeGenre: GenreLucid
-  let fakeLanguage: LanguageLucid
+  let fakeGenre: Genre
+  let fakeLanguage: Language
   let fakeUser: UserLucid
-  let fakeVideo: VideoLucid
+  let fakeVideo: Video
   let fakeVideoToCreate: any
+  let fakeFavorite: Favorite
   group.each.setup(async () => {
-    let lucidEntity = await mockLucidEntity()
+    let lucidEntity = await mockAllTables()
     fakeGenre = lucidEntity.fakeGenre
     fakeLanguage = lucidEntity.fakeLanguage
     fakeUser = lucidEntity.fakeUser
     fakeVideo = lucidEntity.fakeVideo
-    fakeVideoToCreate = {
-      ...fakeVideo.serialize({
-        fields: {
-          omit: ['userId', 'languageId', 'genreId'],
-        },
-      }),
-    }
+    fakeFavorite = lucidEntity.fakeFavorite
+    fakeVideoToCreate = _.omit(fakeVideo, ['userId', 'languageId', 'genreId', 'id'])
   })
 
   group.tap((t) => {
@@ -155,16 +149,17 @@ test.group('VideoPostgresRepository', (group) => {
   }) => {
     const { sut } = await makeSut()
     const isDeleted = await sut.delete(fakeVideo.uuid)
-    const favoritesCount = await FavoriteLucid.query().where('videoId', fakeVideo.id).select()
-    const lyricsCount = await LyricLucid.query().where('videoId', fakeVideo.id).select()
-    const videoPlayCountLucid = await VideoPlayCountLucid.query()
-      .where('videoId', fakeVideo.id)
-      .select()
+    const favoritesCount = await db.from('favorites').where('video_id', fakeVideo.id).count('*')
+    const lyricsCount = await db.from('lyrics').where('video_id', fakeVideo.id).count('id')
+    const videoPlayCount = await db
+      .from('video_play_counts')
+      .where('video_id', fakeVideo.id)
+      .count('id')
 
     expect(isDeleted).toBeTruthy()
-    expect(favoritesCount.length).toBe(0)
-    expect(lyricsCount.length).toBe(0)
-    expect(videoPlayCountLucid.length).toBe(0)
+    expect(favoritesCount[0].count).toBe(0)
+    expect(lyricsCount[0].count).toBe(0)
+    expect(videoPlayCount[0].count).toBe(0)
   })
 
   test('return success if a video updated on success', async ({ expect }) => {

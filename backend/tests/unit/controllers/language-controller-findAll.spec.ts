@@ -2,17 +2,20 @@ import { test } from '@japa/runner'
 
 import LanguageController from '#controllers/language-controller'
 import { ok } from '#helpers/http'
-import { LanguageProtocolService } from '#services/protocols/language-protocol-service'
+import { createSuccessResponse } from '#helpers/method-response'
+import { LanguageProtocolService } from '#services/_protocols/language-protocol-service'
 
 const mockLanguageServiceStub = (): LanguageProtocolService => ({
   findAll: () =>
-    Promise.resolve([
-      {
-        id: 0,
-        name: 'any_name',
-        flagCountry: 'BR',
-      },
-    ]),
+    Promise.resolve(
+      createSuccessResponse([
+        {
+          id: 0,
+          name: 'any_name',
+          flagCountry: 'BR',
+        },
+      ])
+    ),
 })
 
 const makeSut = () => {

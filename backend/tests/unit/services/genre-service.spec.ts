@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 
+import { createSuccessResponse } from '#helpers/method-response'
 import { GenreService } from '#services/genre-service'
 import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
 
@@ -16,6 +17,6 @@ test.group('GenreService.findAll', () => {
 
     const httpResponse = await sut.findAll()
 
-    expect(httpResponse).toEqual([])
+    expect(httpResponse).toEqual(createSuccessResponse([]))
   })
 })

@@ -1,13 +1,13 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { getYoutubeThumbnail } from '#helpers/get-youtube-thumbnail'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { VideoFindModel } from '#models/video-model/video-find-model'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoMetadata } from '#models/video-metadata'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
+import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
 export class VideoUserLoggedService implements VideoUserLoggedProtocolService {
@@ -23,7 +23,7 @@ export class VideoUserLoggedService implements VideoUserLoggedProtocolService {
     return userIdFromVideo !== userId
   }
 
-  async getVideosByUserLogged(): Promise<MethodResponse<VideoFindModel[]>> {
+  async getVideosByUserLogged(): Promise<MethodResponse<VideoMetadata[]>> {
     const userUuid = this.authStrategy.getUserUuid()
     if (!userUuid) {
       return createFailureResponse(APPLICATION_MESSAGES.UNAUTHORIZED)

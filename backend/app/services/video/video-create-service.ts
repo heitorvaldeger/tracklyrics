@@ -2,15 +2,15 @@ import { randomUUID } from 'node:crypto'
 
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { GenreRepository } from '#infra/db/repository/protocols/genre-repository'
-import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
+import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
+import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoSaveResult } from '#models/video-save'
+import { VideoCreateProtocolService } from '#services/_protocols/video/video-create-protocol-service'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
 
 @inject()
 export class VideoCreateService implements VideoCreateProtocolService {
@@ -23,7 +23,7 @@ export class VideoCreateService implements VideoCreateProtocolService {
 
   async create(
     payload: VideoCreateProtocolService.Params
-  ): Promise<MethodResponse<VideoSaveResultModel>> {
+  ): Promise<MethodResponse<VideoSaveResult>> {
     const uuid = randomUUID()
 
     if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {

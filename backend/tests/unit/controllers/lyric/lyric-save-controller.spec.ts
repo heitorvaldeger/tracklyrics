@@ -4,11 +4,11 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import LyricSaveController from '#controllers/lyric/lyric-save-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { badRequest, notFound, ok, serverError } from '#helpers/http'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { LyricSaveProtocolService } from '#services/protocols/lyric/lyric-save-protocol-service'
+import { LyricSaveProtocolService } from '#services/_protocols/lyric/lyric-save-protocol-service'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 

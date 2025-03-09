@@ -1,17 +1,17 @@
 import db from '@adonisjs/lucid/services/db'
 
-import { GenreFindModel } from '#models/genre-model/genre-find-model'
+import { Genre } from '#models/genre'
 
-import { GenreRepository } from '../protocols/genre-repository.js'
+import { GenreRepository } from '../_protocols/genre-repository.js'
 
 export class GenrePostgresRepository implements GenreRepository {
-  async findAll(): Promise<GenreFindModel[]> {
-    const genres: GenreFindModel[] = await db.from('genres').select(['id', 'name'])
+  async findAll(): Promise<Genre[]> {
+    const genres: Genre[] = await db.from('genres').select(['id', 'name'])
     return genres
   }
 
   async findById(genreId: number) {
-    const language: GenreFindModel | null = await db
+    const language: Genre | null = await db
       .from('genres')
       .where('id', genreId)
       .select(['id', 'name'])

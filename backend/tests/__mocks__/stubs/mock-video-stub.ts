@@ -1,11 +1,12 @@
 import { createSuccessResponse } from '#helpers/method-response'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { VideoFindModel } from '#models/video-model/video-find-model'
-import { VideoFindProtocolService } from '#services/protocols/video/video-find-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoMetadata } from '#models/video-metadata'
+import { VideoCreateInput, VideoUpdateInput } from '#models/video-save'
+import { VideoFindProtocolService } from '#services/_protocols/video/video-find-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
 import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
 
-export const mockVideoData: VideoFindModel & {
+export const mockVideoData: VideoMetadata & {
   thumbnail: string
 } = {
   uuid: 'any_uuid',
@@ -19,7 +20,7 @@ export const mockVideoData: VideoFindModel & {
   username: 'any_username',
 }
 
-export const mockVideoDataWithoutThumbnail: VideoFindModel = {
+export const mockVideoDataWithoutThumbnail: VideoMetadata = {
   uuid: 'any_uuid',
   title: 'any_title',
   artist: 'any_artist',
@@ -37,9 +38,8 @@ export const mockVideoRepositoryStub = (): VideoRepository => ({
   getVideoId: (uuid: string) => Promise.resolve(1),
   getUserId: (uuid: string) => Promise.resolve(0),
   delete: (uuid: string) => Promise.resolve(true),
-  create: (params: VideoRepository.CreateVideoParams) =>
-    Promise.resolve(mockFakeVideoSaveResultModel()),
-  update: (params: VideoRepository.UpdateVideoParams, uuid: string) => Promise.resolve(true),
+  create: (params: VideoCreateInput) => Promise.resolve(mockFakeVideoSaveResultModel()),
+  update: (params: VideoUpdateInput, uuid: string) => Promise.resolve(true),
   hasYoutubeLink: (link: string) => Promise.resolve(false),
 })
 

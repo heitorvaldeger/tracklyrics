@@ -2,8 +2,7 @@ import { faker } from '@faker-js/faker'
 
 import { UserEmailStatus } from '#enums/user-email-status'
 import { createSuccessResponse } from '#helpers/method-response'
-import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+import { AuthProtocolService } from '#services/_protocols/auth-protocol-service'
 
 export const mockAuthRegisterData = (): {
   email: string
@@ -24,8 +23,8 @@ export const mockAuthRegisterData = (): {
   }
 }
 
-export const mockAuthServiceStub = (): RegisterProtocolService & AuthProtocolService => ({
-  register: (params: RegisterProtocolService.Params) =>
+export const mockAuthServiceStub = (): AuthProtocolService => ({
+  register: (params: AuthProtocolService.RegisterParams) =>
     Promise.resolve(
       createSuccessResponse({
         uuid: 'any_uuid',

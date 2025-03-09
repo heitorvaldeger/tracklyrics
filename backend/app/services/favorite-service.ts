@@ -3,17 +3,17 @@ import { randomUUID } from 'node:crypto'
 import { inject } from '@adonisjs/core'
 import _ from 'lodash'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { getYoutubeThumbnail } from '#helpers/get-youtube-thumbnail'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { ApplicationError } from '#helpers/types/application-error'
 import { MethodResponse } from '#helpers/types/method-response'
-import { FavoriteRepository } from '#infra/db/repository/protocols/favorite-repository'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { VideoFindModel } from '#models/video-model/video-find-model'
+import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoMetadata } from '#models/video-metadata'
+import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
-import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/protocols/video/video-user-logged-protocol-service'
+import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
 export class FavoriteService implements FavoriteProtocolService {
@@ -63,7 +63,7 @@ export class FavoriteService implements FavoriteProtocolService {
     return createSuccessResponse(removed)
   }
 
-  async findFavoritesByUserLogged(): Promise<MethodResponse<VideoFindModel[] | ApplicationError>> {
+  async findFavoritesByUserLogged(): Promise<MethodResponse<VideoMetadata[] | ApplicationError>> {
     const userId = this.authStrategy.getUserId()
     const videos = await this.favoriteRepository.findFavoritesByUser(userId)
 

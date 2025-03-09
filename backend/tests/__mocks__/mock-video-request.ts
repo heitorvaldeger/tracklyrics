@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 
-import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
-import { VideoCreateProtocolService } from '#services/protocols/video/video-create-protocol-service'
+import { VideoSaveResult } from '#models/video-save'
+import { VideoCreateProtocolService } from '#services/_protocols/video/video-create-protocol-service'
 import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
 export const mockVideoCreateOrUpdateRequest = (): VideoCreateProtocolService.Params => ({
@@ -14,7 +14,7 @@ export const mockVideoCreateOrUpdateRequest = (): VideoCreateProtocolService.Par
   genreId: 0,
 })
 
-export const mockVideoCreateOrUpdateResponse = (): VideoSaveResultModel => ({
+export const mockVideoCreateOrUpdateResponse = (): VideoSaveResult => ({
   isDraft: false,
   title: faker.lorem.words(2),
   artist: faker.lorem.words(2),

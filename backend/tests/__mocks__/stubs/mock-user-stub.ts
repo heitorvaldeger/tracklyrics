@@ -1,8 +1,8 @@
 import { UserEmailStatus } from '#enums/user-email-status'
 import { createSuccessResponse } from '#helpers/method-response'
-import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
-import { UserProtocolService } from '#services/protocols/user-protocol-service'
+import { UserProtocolService } from '#services/_protocols/user-protocol-service'
 
 export const mockUserWithoutPasswordData: UserWithoutPasswordModel = {
   uuid: 'any_uuid',

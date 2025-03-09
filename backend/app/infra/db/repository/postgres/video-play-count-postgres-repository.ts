@@ -2,9 +2,9 @@ import db from '@adonisjs/lucid/services/db'
 import _ from 'lodash'
 import { DateTime } from 'luxon'
 
-import { toSnakeCase } from '#helpers/to-snake-case'
+import { toSnakeCase } from '#utils/index'
 
-import { VideoPlayCountRepository } from '../protocols/video-play-count-repository.js'
+import { VideoPlayCountRepository } from '../_protocols/video-play-count-repository.js'
 
 export class VideoPlayCountPostgresRepository implements VideoPlayCountRepository {
   async increment(videoId: number): Promise<void> {

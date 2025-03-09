@@ -1,6 +1,6 @@
 import { errors } from '@vinejs/vine'
 
-import { HttpStatusCode } from '#enums/http-status-code'
+import { HTTP_STATUS_CODE } from '#constants/http-status-code'
 import {
   badRequest,
   notContent,
@@ -27,11 +27,11 @@ export const dispatch = ({ isSuccess, error, value }: MethodResponse<any>) => {
   }
 
   switch (error?.httpCode) {
-    case HttpStatusCode.UNPROCESSABLE_ENTITY:
+    case HTTP_STATUS_CODE.UNPROCESSABLE_ENTITY:
       return unprocessable(error)
-    case HttpStatusCode.NOT_FOUND:
+    case HTTP_STATUS_CODE.NOT_FOUND:
       return notFound(error)
-    case HttpStatusCode.UNAUTHORIZED:
+    case HTTP_STATUS_CODE.UNAUTHORIZED:
       return unauthorized(error)
     default:
       return serverError(error)

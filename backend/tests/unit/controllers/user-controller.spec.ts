@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import UserController from '#controllers/user-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { ok, unauthorized, unprocessable } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
 import {

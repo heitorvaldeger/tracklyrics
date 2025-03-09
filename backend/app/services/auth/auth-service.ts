@@ -3,23 +3,22 @@ import { randomUUID } from 'node:crypto'
 import { inject } from '@adonisjs/core'
 import mail from '@adonisjs/mail/services/main'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { ApplicationError } from '#helpers/types/application-error'
 import { MethodResponse } from '#helpers/types/method-response'
-import { HashAdapter } from '#infra/crypto/protocols/hash-adapter'
-import { OTPAdapter } from '#infra/crypto/protocols/otp-adapter'
-import { CacheAdapter } from '#infra/db/cache/protocols/cache-adapter'
-import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { HashAdapter } from '#infra/crypto/_protocols/hash-adapter'
+import { OTPAdapter } from '#infra/crypto/_protocols/otp-adapter'
+import { CacheAdapter } from '#infra/db/cache/_protocols/cache-adapter'
+import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
 import { VerifyEmail } from '#mails/verify-email'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 import { UserModel } from '#models/user-model/user-model'
-import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+import { AuthProtocolService } from '#services/_protocols/auth-protocol-service'
 
 @inject()
-export class AuthService implements AuthProtocolService, RegisterProtocolService {
+export class AuthService implements AuthProtocolService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly otpAdapter: OTPAdapter,
@@ -28,8 +27,8 @@ export class AuthService implements AuthProtocolService, RegisterProtocolService
   ) {}
 
   async register(
-    payload: RegisterProtocolService.Params
-  ): Promise<MethodResponse<RegisterProtocolService.UserRegisterModel>> {
+    payload: AuthProtocolService.RegisterParams
+  ): Promise<MethodResponse<AuthProtocolService.UserRegisterModel>> {
     const { password, email, username, ...rest } = payload
 
     const user = await this.userRepository.getUserByEmailOrUsername({ email, username })

@@ -1,0 +1,21 @@
+import { VideoMetadata } from '#models/video-metadata'
+import { VideoCreateInput, VideoSaveResult, VideoUpdateInput } from '#models/video-save'
+
+export abstract class VideoRepository {
+  abstract find(uuid: string): Promise<VideoMetadata | null>
+  abstract findBy(filters: VideoRepository.FindVideoParams): Promise<VideoMetadata[]>
+  abstract getVideoId(videoUuid: string): Promise<number | null>
+  abstract getUserId(videoUuid: string): Promise<number | null>
+  abstract delete(uuid: string): Promise<boolean>
+  abstract create(payload: VideoCreateInput): Promise<VideoSaveResult>
+  abstract update(payload: VideoUpdateInput, uuid: string): Promise<boolean>
+  abstract hasYoutubeLink(link: string): Promise<boolean>
+}
+
+export namespace VideoRepository {
+  export type FindVideoParams = Partial<{
+    genreId: number
+    languageId: number
+    userUuid: string
+  }>
+}

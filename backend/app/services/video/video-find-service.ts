@@ -1,20 +1,19 @@
 import { inject } from '@adonisjs/core'
 import _ from 'lodash'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { getYoutubeThumbnail } from '#helpers/get-youtube-thumbnail'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { MethodResponse } from '#helpers/types/method-response'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
-import { VideoFindModel } from '#models/video-model/video-find-model'
-import { VideoListFindModel } from '#models/video-model/video-list-find-model'
-import { VideoFindProtocolService } from '#services/protocols/video/video-find-protocol-service'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { VideoMetadata } from '#models/video-metadata'
+import { VideoFindProtocolService } from '#services/_protocols/video/video-find-protocol-service'
+import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
 export class VideoFindService implements VideoFindProtocolService {
   constructor(private readonly videoRepository: VideoRepository) {}
 
-  async find(uuid: string): Promise<MethodResponse<VideoFindModel | null>> {
+  async find(uuid: string): Promise<MethodResponse<VideoMetadata | null>> {
     const video = await this.videoRepository.find(uuid)
     if (!video) {
       return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
@@ -30,7 +29,7 @@ export class VideoFindService implements VideoFindProtocolService {
 
   async findBy(
     filters: Partial<VideoRepository.FindVideoParams>
-  ): Promise<MethodResponse<VideoFindModel[]>> {
+  ): Promise<MethodResponse<VideoMetadata[]>> {
     const videos = await this.videoRepository.findBy(filters)
 
     const videosWithThumbnail = videos.map((video) => ({

@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 
+import { createSuccessResponse } from '#helpers/method-response'
 import { LanguageService } from '#services/language-service'
 import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
 
@@ -16,6 +17,6 @@ test.group('LanguageService.findAll', () => {
 
     const languages = await sut.findAll()
 
-    expect(languages).toEqual(languageRepositoryStub.languages)
+    expect(languages).toEqual(createSuccessResponse(languageRepositoryStub.languages))
   })
 })

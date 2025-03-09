@@ -1,29 +1,17 @@
 import { test } from '@japa/runner'
 import { spy, stub } from 'sinon'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
 import { VideoCreateService } from '#services/video/video-create-service'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
+import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
 import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const videoRequest = mockVideoCreateOrUpdateRequest()
-
-const mockFakeVideoSaveResultModel = (): VideoSaveResultModel => ({
-  artist: 'any_artist',
-  genreId: 0,
-  isDraft: false,
-  languageId: 0,
-  linkYoutube: 'any_link',
-  releaseYear: 'any_year',
-  title: 'any_title',
-  userId: 0,
-  uuid: 'any_uuid',
-})
 
 const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()

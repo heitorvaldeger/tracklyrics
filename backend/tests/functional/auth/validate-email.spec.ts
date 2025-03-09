@@ -1,10 +1,10 @@
 import { test } from '@japa/runner'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { CryptoAdapter } from '#infra/crypto/crypto-adapter'
-import { RedisAdonisAdapter } from '#infra/db/cache/redis-adonis-adapter'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { Crypto } from '#infra/crypto/crypto'
+import { RedisAdonis } from '#infra/db/cache/redis-adonis'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
 test.group('Auth Validate Email Route', (group) => {
   group.tap((t) => {
@@ -15,9 +15,9 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
-    const redisAdapter = new RedisAdonisAdapter()
-    const otpAdapter = new CryptoAdapter()
+    const { fakeUser } = await mockAllTables()
+    const redisAdapter = new RedisAdonis()
+    const otpAdapter = new Crypto()
 
     const codeOTP = await otpAdapter.createOTP(fakeUser.uuid)
     await redisAdapter.set(`${fakeUser.uuid}_${fakeUser.email}`, codeOTP)
@@ -46,7 +46,7 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     fakeUser.emailStatus = UserEmailStatus.VERIFIED
     fakeUser.save()
@@ -90,9 +90,9 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
-    const redisAdapter = new RedisAdonisAdapter()
-    const otpAdapter = new CryptoAdapter()
+    const { fakeUser } = await mockAllTables()
+    const redisAdapter = new RedisAdonis()
+    const otpAdapter = new Crypto()
 
     const codeOTP = await otpAdapter.createOTP(fakeUser.uuid)
     await redisAdapter.set(`${fakeUser.uuid}_${fakeUser.email}`, codeOTP)

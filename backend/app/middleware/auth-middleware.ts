@@ -5,8 +5,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import type { NextFn } from '@adonisjs/core/types/http'
 
-import { HttpStatusCode } from '#enums/http-status-code'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
+import { HTTP_STATUS_CODE } from '#constants/http-status-code'
 import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
 import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
 
@@ -37,7 +37,7 @@ export default class AuthMiddleware {
     } catch (error) {
       if (error instanceof errors.E_UNAUTHORIZED_ACCESS) {
         return ctx.response
-          .status(HttpStatusCode.UNAUTHORIZED)
+          .status(HTTP_STATUS_CODE.UNAUTHORIZED)
           .send(APPLICATION_MESSAGES.UNAUTHORIZED)
       }
       // console.log(error)

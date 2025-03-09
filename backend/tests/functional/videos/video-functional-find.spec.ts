@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
 test.group('Video Find Route', () => {
@@ -9,7 +9,7 @@ test.group('Video Find Route', () => {
     client,
     expect,
   }) => {
-    const { fakeLanguage, fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeLanguage, fakeUser, fakeVideo } = await mockAllTables()
 
     const response = await client.get(`/videos/${fakeVideo.uuid}`)
 

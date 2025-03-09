@@ -1,15 +1,23 @@
 import { inject } from '@adonisjs/core'
 
+import { dispatch } from '#helpers/dispatch'
 import { ok } from '#helpers/http'
-import { GenreProtocolService } from '#services/protocols/genre-protocol-service'
+import { GenreProtocolService } from '#services/_protocols/genre-protocol-service'
 
 @inject()
 export default class GenreController {
   constructor(private readonly genreService: GenreProtocolService) {}
 
   async findAll() {
-    const genres = await this.genreService.findAll()
+    try {
+      const genres = await this.genreService.findAll()
 
-    return ok(genres)
+      return dispatch(genres)
+    } catch (error) {
+      return dispatch({
+        isSuccess: false,
+        error,
+      })
+    }
   }
 }

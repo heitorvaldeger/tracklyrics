@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
 const httpRequest = mockVideoCreateOrUpdateRequest()
@@ -12,7 +12,7 @@ test.group('Video Create Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeGenre, fakeLanguage } = await mockLucidEntity()
+    const { fakeUser, fakeGenre, fakeLanguage } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -39,7 +39,7 @@ test.group('Video Create Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeLanguage } = await mockLucidEntity()
+    const { fakeUser, fakeLanguage } = await mockAllTables()
     const { genreId, artist, ...rest } = httpRequest
 
     const accessToken = await UserLucid.accessTokens.create(
@@ -82,7 +82,7 @@ test.group('Video Create Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockLucidEntity()
+    const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockAllTables()
     const { genreId, languageId, ...rest } = httpRequest
 
     const accessToken = await UserLucid.accessTokens.create(

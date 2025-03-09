@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
-test.group('FavoriteLucid Routes', (group) => {
+test.group('Favorite Routes', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
@@ -13,7 +13,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeUser, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -30,7 +30,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -49,7 +49,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -76,7 +76,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeUser, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -95,7 +95,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -114,7 +114,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -141,7 +141,7 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeUser, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)

@@ -2,10 +2,10 @@ import { test } from '@japa/runner'
 import { TOTP } from 'otpauth'
 import { stub } from 'sinon'
 
-import { CryptoAdapter } from '#infra/crypto/crypto-adapter'
+import { Crypto } from '#infra/crypto/crypto'
 
 const makeSut = () => {
-  const sut = new CryptoAdapter()
+  const sut = new Crypto()
   return { sut }
 }
 

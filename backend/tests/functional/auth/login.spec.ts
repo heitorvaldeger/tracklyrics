@@ -2,8 +2,8 @@ import hash from '@adonisjs/core/services/hash'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
 
 test.group('Auth Login Route', (group) => {
