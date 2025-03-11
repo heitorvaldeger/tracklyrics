@@ -1,18 +1,8 @@
-import { FaChartLine, FaChevronDown } from "react-icons/fa"
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger, 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselNext, 
-  CarouselPrevious
-} from "@/components/ui/_index"
+import { FaChartLine, FaChevronDown } from "react-icons/fa";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/_index";
 
-import { videos } from "@/__mocks__/videos"
-import { CardVideo } from "./CardVideo"
+import { videos } from "@/__mocks__/videos";
+import { CardVideo } from "../../../components/card-video";
 
 export const CarouselTopLyrics = () => {
   return (
@@ -43,7 +33,7 @@ export const CarouselTopLyrics = () => {
           className="w-full"
         >
           <CarouselContent>
-            {videos.map(video => (
+            {videos.map((video) => (
               <CarouselItem className="md:basis-1/2 lg:basis-1/3" key={video.uuid}>
                 <CardVideo video={video} />
               </CarouselItem>
@@ -54,5 +44,5 @@ export const CarouselTopLyrics = () => {
         </Carousel>
       </div>
     </>
-  )
-}
+  );
+};

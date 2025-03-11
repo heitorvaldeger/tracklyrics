@@ -1,30 +1,30 @@
-import { SWRConfig } from "swr"
+import { SWRConfig } from "swr";
 import { Toaster } from "react-hot-toast";
-import { AppRoutes } from "./routes"
-import { UserAuthProvider } from "./contexts/UserAuthContext"
-import { GenreLanguageProvider } from "./contexts/GenreLanguageContext"
+import { AppRoutes } from "./routes";
+import { UserAuthProvider } from "./contexts/UserAuthContext";
 import { GenreProvider } from "./contexts/GenreContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
-function App() {
+import "./index.css";
+export const App = () => {
   return (
-    <SWRConfig value={{
-      onErrorRetry: () => {
-        return
-      }
-    }}>
-      <UserAuthProvider>
-        <GenreLanguageProvider>
+    <div className="w-full min-h-screen flex flex-col mx-auto relative">
+      <SWRConfig
+        value={{
+          onErrorRetry: () => {
+            return;
+          },
+        }}
+      >
+        <UserAuthProvider>
           <GenreProvider>
             <LanguageProvider>
               <AppRoutes />
               <Toaster />
             </LanguageProvider>
           </GenreProvider>
-        </GenreLanguageProvider>
-      </UserAuthProvider>
-    </SWRConfig>
-  )
-}
-
-export default App
+        </UserAuthProvider>
+      </SWRConfig>
+    </div>
+  );
+};

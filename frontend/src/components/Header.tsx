@@ -8,19 +8,17 @@ import { useNavigate } from "react-router";
 import { ListItemLanguage } from "./ui/navigation-list-item-language";
 import { useGenre } from "@/contexts/GenreContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Logo } from "./logo";
 
 export const Header = ({ children }: React.PropsWithChildren) => {
   const navigate = useNavigate();
-  const { genres } = useGenre()
-  const { languages, currentLanguage, handleSetLanguageClick, getLanguageImage } =
-    useLanguage();
-  
+  const { genres } = useGenre();
+  const { languages, currentLanguage, handleSetLanguageClick, getLanguageImage } = useLanguage();
+
   return (
     <div className="w-full flex justify-center py-2">
       <div className="w-full flex gap-2 h-11">
-        <div className="w-1/4 mx-2 bg-gray-200 flex justify-center items-center cursor-pointer" onClick={() => navigate("/")}>
-          Logo
-        </div>
+        <Logo />
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -41,35 +39,27 @@ export const Header = ({ children }: React.PropsWithChildren) => {
 
             <NavigationMenuItem>
               <NavigationMenuTrigger className="font-light gap-1 bg-transparent">
-                {
-                  currentLanguage ? (
-                    <div className="flex gap-3 items-center">
-                      <div className="flex flex-col justify-start items-start">
-                        <p className="text-xs">Learning</p>
-                        <p className="text-md font-bold">{currentLanguage.name}</p>
-                      </div>
-                      {
-                        currentLanguage.flagCountry && (
-                          <img src={getLanguageImage(currentLanguage.flagCountry)} width={32} className="rounded" />
-                        )
-                      }
+                {currentLanguage ? (
+                  <div className="flex gap-3 items-center">
+                    <div className="flex flex-col justify-start items-start">
+                      <p className="text-xs">Learning</p>
+                      <p className="text-md font-bold">{currentLanguage.name}</p>
                     </div>
-                  ) : (
-                    <>
-                      <IoEarth size={12} />
-                      Languages
-                    </>
-                  )
-                }
+                    {currentLanguage.flagCountry && <img src={getLanguageImage(currentLanguage.flagCountry)} width={32} className="rounded" />}
+                  </div>
+                ) : (
+                  <>
+                    <IoEarth size={12} />
+                    Languages
+                  </>
+                )}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ScrollArea className="h-96 w-auto rounded-md border p-4">
                   <ul className="grid gap-3 w-[200px]">
                     {languages?.map(({ id, name, flagCountry }) => (
                       <ListItemLanguage key={id} title={name} onClick={() => handleSetLanguageClick(id)}>
-                        {flagCountry && (
-                          <img src={getLanguageImage(flagCountry)} alt={flagCountry} width={36} className="rounded" />
-                        )}
+                        {flagCountry && <img src={getLanguageImage(flagCountry)} alt={flagCountry} width={36} className="rounded" />}
                       </ListItemLanguage>
                     ))}
                   </ul>

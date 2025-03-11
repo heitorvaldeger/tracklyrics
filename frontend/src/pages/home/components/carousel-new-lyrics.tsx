@@ -1,14 +1,8 @@
 import { MdFiberNew } from "react-icons/md";
-import {
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselNext, 
-  CarouselPrevious
-} from "@/components/ui/_index"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/_index";
 
-import { videos } from "@/__mocks__/videos"
-import { CardVideo } from "@/components/CardVideo"
+import { videos } from "@/__mocks__/videos";
+import { CardVideo } from "@/components/card-video";
 
 export const CarouselNewLyrics = () => {
   return (
@@ -26,7 +20,7 @@ export const CarouselNewLyrics = () => {
           className="w-full"
         >
           <CarouselContent>
-            {videos.map(video => (
+            {videos.map((video) => (
               <CarouselItem className="md:basis-1/2 lg:basis-1/3" key={video.uuid}>
                 <CardVideo video={video} />
               </CarouselItem>
@@ -37,5 +31,5 @@ export const CarouselNewLyrics = () => {
         </Carousel>
       </div>
     </>
-  )
-}
+  );
+};

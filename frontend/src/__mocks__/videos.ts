@@ -11,7 +11,7 @@ export const videos: Video[] = [
     language: "English",
     genre: "Country",
     username: "heitorvaldeger",
-    thumbnail: ""
+    thumbnail: "https://img.youtube.com/vi_webp/t7bQwwqW-Hc/maxresdefault.webp",
   },
   {
     title: "Titanium",
@@ -23,7 +23,7 @@ export const videos: Video[] = [
     language: "English",
     genre: "Electronica",
     username: "heitorvaldeger",
-    thumbnail: ""
+    thumbnail: "https://img.youtube.com/vi_webp/90RLzVUuXe4/maxresdefault.webp",
   },
   {
     title: "A Bar Song (Tipsy)",
@@ -35,7 +35,7 @@ export const videos: Video[] = [
     language: "English",
     genre: "Country",
     username: "heitorvaldeger",
-    thumbnail: ""
+    thumbnail: "https://img.youtube.com/vi_webp/t7bQwwqW-Hc/maxresdefault.webp",
   },
   {
     title: "A Bar Song (Tipsy)",
@@ -47,7 +47,7 @@ export const videos: Video[] = [
     language: "English",
     genre: "Country",
     username: "heitorvaldeger",
-    thumbnail: ""
+    thumbnail: "https://img.youtube.com/vi_webp/t7bQwwqW-Hc/maxresdefault.webp",
   },
   {
     title: "Titanium",
@@ -59,6 +59,6 @@ export const videos: Video[] = [
     language: "English",
     genre: "Electronica",
     username: "heitorvaldeger",
-    thumbnail: ""
+    thumbnail: "https://img.youtube.com/vi_webp/90RLzVUuXe4/maxresdefault.webp",
   },
-]
+];

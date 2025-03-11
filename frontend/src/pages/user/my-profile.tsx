@@ -1,16 +1,16 @@
-import { Button, Label } from "@/components/ui/_index"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { FaPencil } from "react-icons/fa6"
-import { useMyProfile } from "@/hooks/use-my-profile"
+import { Button, Label } from "@/components/ui/_index";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { FaPencil } from "react-icons/fa6";
+import { useMyProfile } from "@/hooks/use-my-profile";
 
-export const MyProfileView = () => {
-  const { userFullInfo, userNameInitials } = useMyProfile()
+export const MyProfile = () => {
+  const { userFullInfo, userNameInitials } = useMyProfile();
 
   return (
     <div className="flex flex-col gap-4">
       <header className="text-2xl font-bold">My Profile</header>
       <div className="border-gray-200 border p-4 flex gap-2 items-center rounded">
-        <Avatar className="hover:opacity-50 transition-opacity outline outline-2 outline-teal-500 w-16 h-16 cursor-pointer" >
+        <Avatar className="hover:opacity-50 transition-opacity outline outline-2 outline-teal-500 w-16 h-16 cursor-pointer">
           <AvatarImage src="https://github.com/heitorvaldeger.png" sizes="8" alt="avatar" />
           <AvatarFallback>{userNameInitials}</AvatarFallback>
         </Avatar>
@@ -59,5 +59,5 @@ export const MyProfileView = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

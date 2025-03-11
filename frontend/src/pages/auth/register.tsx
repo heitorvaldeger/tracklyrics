@@ -3,15 +3,19 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BackToHomeButton } from "@/components/BackToHomeButton";
+import { BackToHomeButton } from "@/pages/auth/components/back-to-home-button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useRegister } from "@/hooks/use-register";
+import { Logo } from "@/components/logo";
 
-export const RegisterView = () => {
+export const Register = () => {
   const { navigate, form, handleCreateNewAccount, isLoading } = useRegister();
 
   return (
     <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto">
+      <div className="w-full flex justify-center">
+        <Logo />
+      </div>
       <BackToHomeButton />
       <Card className="rounded-3xl">
         <Form {...form}>

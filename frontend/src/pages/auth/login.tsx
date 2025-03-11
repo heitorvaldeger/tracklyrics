@@ -4,16 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import googleIcon from "@/assets/images/google-icon.svg";
 import facebookIcon from "@/assets/images/facebook-icon.svg";
-import { BackToHomeButton } from "@/components/BackToHomeButton";
+import { BackToHomeButton } from "@/pages/auth/components/back-to-home-button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useLogin } from "@/hooks/use-login";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Logo } from "@/components/logo";
 
-export const LoginView = () => {
+export const Login = () => {
   const { form, handleLogin, navigate, isLoading } = useLogin();
 
   return (
     <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto px-4">
+      <div className="w-full flex justify-center">
+        <Logo />
+      </div>
       <BackToHomeButton />
       <Card className="rounded-3xl">
         <Form {...form}>

@@ -1,17 +1,17 @@
-import { Button } from "@/components/ui/_index"
-import { AxiosError, HttpStatusCode } from "axios"
-import { NotFoundView } from "../NotFoundView"
-import { useGameModes } from "@/hooks/use-game-modes"
+import { Button } from "@/components/ui/_index";
+import { AxiosError, HttpStatusCode } from "axios";
+import { NotFound } from "../404";
+import { useGameModes } from "@/hooks/use-game-modes";
 
-export const GameModesView = () => {
-  const { modes, video, releaseYearByExtended, error } = useGameModes()
+export const GameModes = () => {
+  const { modes, video, releaseYearByExtended } = useGameModes();
 
-  if (error instanceof AxiosError) {
-    if (error.status === (HttpStatusCode.BadRequest || HttpStatusCode.NotFound)) {
-      return <NotFoundView />
+  if (video instanceof AxiosError) {
+    if (video.status === (HttpStatusCode.BadRequest || HttpStatusCode.NotFound)) {
+      return <NotFound />;
     }
 
-    return <NotFoundView />
+    return <NotFound />;
   }
 
   return (
@@ -54,5 +54,5 @@ export const GameModesView = () => {
         <p className="text-lg">{video?.artist}</p>
       </section>
     </main>
-  )
-}
+  );
+};

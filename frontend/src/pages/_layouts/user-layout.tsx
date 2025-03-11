@@ -1,26 +1,21 @@
-import { Outlet, useNavigate } from "react-router"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Header } from "@/components/Header"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Footer } from "@/components/Footer"
-import { useUserAuth } from "@/contexts/UserAuthContext"
+import { Outlet, useNavigate } from "react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Header } from "@/components/header";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Footer } from "@/components/footer";
+import { useUserAuth } from "@/contexts/UserAuthContext";
 
 export const UserLayout = () => {
-  const navigate = useNavigate()
-  const { logoutUser } = useUserAuth()
+  const navigate = useNavigate();
+  const { logoutUser } = useUserAuth();
 
   const handleLogoutUser = () => {
-    logoutUser()
-    navigate("/")
-  }
+    logoutUser();
+    navigate("/");
+  };
 
   return (
-    <div className="w-full min-h-screen flex flex-col mx-auto relative">
+    <>
       <Header>
         <div className="w-full flex justify-end items-center">
           <DropdownMenu>
@@ -43,6 +38,6 @@ export const UserLayout = () => {
         <Outlet />
       </div>
       <Footer />
-    </div>
-  )
-}
+    </>
+  );
+};
