@@ -1,0 +1,93 @@
+import { test } from '@japa/runner'
+
+import { APPLICATION_MESSAGES } from '#constants/app-messages'
+import UserLucid from '#models/user-model/user-lucid'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { NilUUID } from '#tests/__utils__/NilUUID'
+
+test.group('Video Delete Route', (group) => {
+  test('/DELETE videos/{uuid} - it must return 404 if video not belong user uuid', async ({
+    client,
+    expect,
+  }) => {
+    const { fakeUser } = await mockAllTables()
+    const { fakeVideo } = await mockAllTables()
+
+    const accessToken = await UserLucid.accessTokens.create(
+      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    )
+    const accessTokenValue = accessToken.value!.release()
+
+    const response = await client
+      .delete(`/videos/${fakeVideo.uuid}`)
+      .withCookie('AUTH', accessTokenValue)
+
+    expect(response.status()).toBe(404)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+  })
+
+  test('/DELETE videos/{uuid} - it must return 200 if user uuid is valid and video exists', async ({
+    client,
+    expect,
+  }) => {
+    const { fakeUser, fakeVideo } = await mockAllTables()
+
+    const accessToken = await UserLucid.accessTokens.create(
+      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    )
+    const accessTokenValue = accessToken.value!.release()
+
+    const response = await client
+      .delete(`/videos/${fakeVideo.uuid}`)
+      .withCookie('AUTH', accessTokenValue)
+
+    expect(response.status()).toBe(200)
+    expect(response.body()).toBeTruthy()
+  })
+
+  test('/DELETE videos/{uuid} - it must return 400 on delete if video uuid invalid is provided', async ({
+    client,
+    expect,
+  }) => {
+    const { fakeUser } = await mockAllTables()
+
+    const accessToken = await UserLucid.accessTokens.create(
+      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    )
+    const accessTokenValue = accessToken.value!.release()
+
+    const response = await client.delete(`/videos/any_value`).withCookie('AUTH', accessTokenValue)
+
+    expect(response.status()).toBe(400)
+    expect(response.body()).toEqual([
+      { field: 'uuid', message: 'The uuid field must be a valid UUID' },
+    ])
+  })
+
+  test('/DELETE videos/{uuid} - it must return 404 on delete if video not exists', async ({
+    client,
+    expect,
+  }) => {
+    const { fakeUser } = await mockAllTables()
+
+    const accessToken = await UserLucid.accessTokens.create(
+      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    )
+    const accessTokenValue = accessToken.value!.release()
+
+    const response = await client.delete(`/videos/${NilUUID}`).withCookie('AUTH', accessTokenValue)
+
+    expect(response.status()).toBe(404)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+  })
+
+  test('/DELETE videos/{uuid} - it must return 401 on delete if user unauthorized', async ({
+    client,
+    expect,
+  }) => {
+    const response = await client.delete(`/videos/${NilUUID}`)
+
+    expect(response.status()).toBe(401)
+    expect(response.body()).toEqual(APPLICATION_MESSAGES.UNAUTHORIZED)
+  })
+})

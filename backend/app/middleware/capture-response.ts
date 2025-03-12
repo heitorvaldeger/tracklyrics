@@ -1,4 +1,4 @@
-import type { HttpContext } from '@adonisjs/core/http'
+import { type HttpContext, ResponseStatus } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 
 /**
@@ -14,14 +14,19 @@ export default class CaptureResponseMiddleware {
     await next()
 
     const { statusCode, body } = response.getBody()
+
     if (statusCode) {
-      if (statusCode === 500) {
+      if (statusCode === ResponseStatus.InternalServerError) {
         response.status(statusCode).json({
           message: body.message,
           stack: body.stack,
         })
       } else {
-        response.status(statusCode).json(body)
+        if (request.url()?.includes('/login') && statusCode === ResponseStatus.Ok) {
+          response.status(statusCode).cookie('AUTH', body.token).json(body)
+        } else {
+          response.status(statusCode).json(body)
+        }
       }
     }
   }

@@ -20,7 +20,9 @@ test.group('Favorite Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.post(`favorites/${fakeVideo.uuid}`).bearerToken(accessTokenValue)
+    const response = await client
+      .post(`favorites/${fakeVideo.uuid}`)
+      .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -37,7 +39,7 @@ test.group('Favorite Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.post(`favorites/any_uuid`).bearerToken(accessTokenValue)
+    const response = await client.post(`favorites/any_uuid`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -56,7 +58,7 @@ test.group('Favorite Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.post(`favorites/${NilUUID}`).bearerToken(accessTokenValue)
+    const response = await client.post(`favorites/${NilUUID}`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(404)
     expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
@@ -85,7 +87,7 @@ test.group('Favorite Routes', (group) => {
 
     const response = await client
       .delete(`favorites/${fakeVideo.uuid}`)
-      .bearerToken(accessTokenValue)
+      .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -102,7 +104,7 @@ test.group('Favorite Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.delete(`favorites/any_uuid`).bearerToken(accessTokenValue)
+    const response = await client.delete(`favorites/any_uuid`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -121,7 +123,9 @@ test.group('Favorite Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.delete(`favorites/${NilUUID}`).bearerToken(accessTokenValue)
+    const response = await client
+      .delete(`favorites/${NilUUID}`)
+      .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(404)
     expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
@@ -148,7 +152,7 @@ test.group('Favorite Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.get(`favorites`).bearerToken(accessTokenValue)
+    const response = await client.get(`favorites`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
     expect(response.body().length).toBe(1)

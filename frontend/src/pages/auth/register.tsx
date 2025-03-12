@@ -1,39 +1,109 @@
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { Link } from "react-router";
+import { toast } from "sonner";
+
+import { LoadingOutlined } from "@ant-design/icons";
+import { vineResolver } from "@hookform/resolvers/vine";
+import vine from "@vinejs/vine";
+import { InferInput } from "@vinejs/vine/types";
+
+import { register } from "@/api/register";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BackToHomeButton } from "@/pages/auth/components/back-to-home-button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useRegister } from "@/hooks/use-register";
-import { Logo } from "@/components/logo";
+
+const registerFormSchema = vine.compile(
+  vine.object({
+    email: vine.string().trim().email(),
+    password: vine.string().trim().minLength(6).confirmed(),
+    username: vine.string().trim().minLength(4),
+    firstName: vine.string().trim().minLength(1),
+    lastName: vine.string().trim().minLength(1),
+  }),
+);
+
+type CreateNewAccountData = InferInput<typeof registerFormSchema> & {
+  password_confirmation: string;
+};
 
 export const Register = () => {
-  const { navigate, form, handleCreateNewAccount, isLoading } = useRegister();
+  const form = useForm<CreateNewAccountData>({
+    resolver: vineResolver(registerFormSchema),
+  });
+
+  const { handleSubmit } = form;
+
+  const { mutateAsync: createNewAccount, isLoading } = useMutation({
+    mutationFn: register,
+  });
+
+  const handleCreateNewAccount = async (data: CreateNewAccountData) => {
+    try {
+      const dataWithPasswordConfirmation: CreateNewAccountData = {
+        ...data,
+        password_confirmation: data.password,
+      };
+
+      await createNewAccount(dataWithPasswordConfirmation);
+
+      toast.info(
+        "A code verification was sended for you e-mail address. Please, check your inbox ou spam e-mail",
+        {
+          duration: 7000,
+        },
+      );
+    } catch (error) {
+      toast.error("Sorry, an error occurred");
+      console.log(error);
+    }
+  };
 
   return (
-    <div className="bg-white h-screen flex justify-center flex-col w-[450px] mx-auto">
-      <div className="w-full flex justify-center">
-        <Logo />
-      </div>
-      <BackToHomeButton />
-      <Card className="rounded-3xl">
+    <div className="mx-auto flex h-screen w-[450px] flex-col justify-center gap-4 bg-white">
+      <Card>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleCreateNewAccount)}>
-            <CardHeader>
-              <CardTitle className="text-center text-xl tracking-normal">Create an account</CardTitle>
+          <form
+            onSubmit={handleSubmit(handleCreateNewAccount)}
+            className="space-y-6"
+          >
+            <CardHeader className="justify-center text-center">
+              <CardTitle className="text-xl tracking-normal">
+                Create an account
+              </CardTitle>
+              <CardDescription>
+                Enter your details below to create your account
+              </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
-              <div className="grid grid-cols-2 w-full gap-4">
+              <div className="grid w-full grid-cols-2 gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
                     control={form.control}
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">First name</FormLabel>
+                        <FormLabel className="font-semibold">
+                          First name
+                        </FormLabel>
                         <FormControl>
-                          <Input tabIndex={1} {...field} />
+                          <Input required {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -46,9 +116,11 @@ export const Register = () => {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">Last name</FormLabel>
+                        <FormLabel className="font-semibold">
+                          Last name
+                        </FormLabel>
                         <FormControl>
-                          <Input tabIndex={2} {...field} />
+                          <Input required {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -64,9 +136,11 @@ export const Register = () => {
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">Username</FormLabel>
+                        <FormLabel className="font-semibold">
+                          Username
+                        </FormLabel>
                         <FormControl>
-                          <Input tabIndex={3} {...field} />
+                          <Input required {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -81,9 +155,11 @@ export const Register = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">E-mail address</FormLabel>
+                        <FormLabel className="font-semibold">
+                          E-mail address
+                        </FormLabel>
                         <FormControl>
-                          <Input type="email" tabIndex={4} {...field} />
+                          <Input required type="email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -98,9 +174,11 @@ export const Register = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">Password</FormLabel>
+                        <FormLabel className="font-semibold">
+                          Password
+                        </FormLabel>
                         <FormControl>
-                          <Input type="password" tabIndex={5} {...field} />
+                          <Input required type="password" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -115,9 +193,11 @@ export const Register = () => {
                     name="password_confirmation"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">Confirm Password</FormLabel>
+                        <FormLabel className="font-semibold">
+                          Confirm Password
+                        </FormLabel>
                         <FormControl>
-                          <Input type="password" tabIndex={6} {...field} />
+                          <Input required type="password" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -127,20 +207,24 @@ export const Register = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col items-start gap-1">
-              <Button type="submit" tabIndex={7} disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-800 font-bold">
-                {isLoading ? <AiOutlineLoading3Quarters className="animate-spin" /> : "Register"}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full font-bold"
+              >
+                {isLoading ? <LoadingOutlined /> : "Register"}
               </Button>
-
-              <div className="flex items-center">
-                <Label className="text-xs">Already have an account?</Label>
-                <Button type="button" tabIndex={8} variant="link" className="font-bold text-xs px-1" onClick={() => navigate("/login")}>
-                  Login here
-                </Button>
-              </div>
             </CardFooter>
           </form>
         </Form>
       </Card>
+
+      <div className="flex items-center justify-center">
+        <Label className="text-xs">Already have an account?</Label>
+        <Link className="px-1 text-xs font-bold" to="/sign-in">
+          Login here
+        </Link>
+      </div>
     </div>
   );
 };

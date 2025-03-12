@@ -7,7 +7,7 @@ import { toCamelCase } from '#utils/index'
 import { FavoriteRepository } from '../_protocols/favorite-repository.js'
 
 export class FavoritePostgresRepository implements FavoriteRepository {
-  async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
+  async saveFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
     const favoriteQuery = db.from('favorites').where('user_id', userId).where('video_id', videoId)
 
     const hasFavorite = !!(await favoriteQuery.first())

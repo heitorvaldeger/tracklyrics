@@ -3,7 +3,7 @@ import { stub } from 'sinon'
 
 import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import UserController from '#controllers/user-controller'
-import { ok, unauthorized, unprocessable } from '#helpers/http'
+import { ok, serverError, unauthorized, unprocessable } from '#helpers/http'
 import { createFailureResponse } from '#helpers/method-response'
 import {
   mockUserServiceStub,
@@ -23,7 +23,7 @@ test.group('UserController', (group) => {
   })
 
   test('return 200 with user information on success', async ({ expect }) => {
-    const { sut, userServiceStub } = makeSut()
+    const { sut } = makeSut()
 
     const httpResponse = await sut.getFullInfoByUserLogged()
 
@@ -50,5 +50,15 @@ test.group('UserController', (group) => {
     const httpResponse = await sut.getFullInfoByUserLogged()
 
     expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.USER_NOTFOUND))
+  })
+
+  test('return 500 if user getFullInfoByUserLogged throws', async ({ expect }) => {
+    const { sut, userServiceStub } = makeSut()
+
+    stub(userServiceStub, 'getFullInfoByUserLogged').throws(new Error())
+
+    const httpResponse = await sut.getFullInfoByUserLogged()
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

@@ -35,4 +35,8 @@ export namespace AuthProtocolService {
     uuid: string
     emailStatus?: UserEmailStatus
   }
+
+  export type IsAuthenticated = {
+    isAuthenticated: boolean
+  }
 }

@@ -38,7 +38,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   MAILTRAP_PORT: Env.schema.number(),
   MAILTRAP_USER: Env.schema.string(),
   MAILTRAP_PASS: Env.schema.string(),
-  MAILTRAP_FROM: Env.schema.string(),
+  MAIL_FROM: Env.schema.string(),
 
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),

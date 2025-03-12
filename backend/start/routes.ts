@@ -9,6 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 
+import { dispatch } from '#helpers/dispatch'
 import { middleware } from '#start/kernel'
 
 const LyricSaveController = () => import('#controllers/lyric/lyric-save-controller')
@@ -30,6 +31,16 @@ router.post('/register', [AuthController, 'register'])
 router.post('/validate-email', [AuthController, 'validateEmail'])
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
+
+router
+  .get('/session', ({ response }) => {
+    return dispatch({ isSuccess: true })
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
 
 router
   .group(() => {
@@ -62,7 +73,7 @@ router
     router
       .group(() => {
         router.get('', [FavoriteController, 'findFavoritesByUserLogged'])
-        router.post(':uuid', [FavoriteController, 'addFavorite'])
+        router.post(':uuid', [FavoriteController, 'saveFavorite'])
         router.delete(':uuid', [FavoriteController, 'removeFavorite'])
       })
       .prefix('favorites')

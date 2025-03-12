@@ -7,12 +7,12 @@ import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
 import { ApplicationError } from '#helpers/types/application-error'
 import { MethodResponse } from '#helpers/types/method-response'
+import { Auth } from '#infra/auth/protocols/auth'
 import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
 import { VideoMetadata } from '#models/video-metadata'
 import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
 import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
-import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
@@ -20,11 +20,11 @@ export class FavoriteService implements FavoriteProtocolService {
   constructor(
     private readonly videoRepository: VideoRepository,
     private readonly favoriteRepository: FavoriteRepository,
-    private readonly authStrategy: AuthStrategy,
+    private readonly authStrategy: Auth,
     private readonly videoCurrentUserService: VideoUserLoggedProtocolService
   ) {}
 
-  async addFavorite(videoUuid: string): Promise<MethodResponse<boolean | ApplicationError>> {
+  async saveFavorite(videoUuid: string): Promise<MethodResponse<boolean | ApplicationError>> {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     const userId = this.authStrategy.getUserId()
     if (
@@ -36,7 +36,7 @@ export class FavoriteService implements FavoriteProtocolService {
     }
 
     const favoriteUuid = randomUUID()
-    const added = await this.favoriteRepository.addFavorite(videoId, userId, favoriteUuid)
+    const added = await this.favoriteRepository.saveFavorite(videoId, userId, favoriteUuid)
 
     if (!added) {
       return createFailureResponse(APPLICATION_MESSAGES.VIDEO_UNPOSSIBLE_ADD_TO_FAVORITE)
@@ -66,6 +66,8 @@ export class FavoriteService implements FavoriteProtocolService {
   async findFavoritesByUserLogged(): Promise<MethodResponse<VideoMetadata[] | ApplicationError>> {
     const userId = this.authStrategy.getUserId()
     const videos = await this.favoriteRepository.findFavoritesByUser(userId)
+
+    console.log(this.authStrategy)
 
     const videosWithThumbnail = videos.map((video) => ({
       ...video,

@@ -37,15 +37,15 @@ test.group('FavoriteService', (group) => {
 
   test('return success if a video was added to favorite', async ({ expect }) => {
     const { sut } = makeSut()
-    const response = await sut.addFavorite(faker.string.uuid())
+    const response = await sut.saveFavorite(faker.string.uuid())
 
     expect(response).toEqual(createSuccessResponse(true))
   })
 
   test("return fail if a video wasn't added to favorite", async ({ expect }) => {
     const { sut, favoriteRepositoryStub } = makeSut()
-    stub(favoriteRepositoryStub, 'addFavorite').returns(Promise.resolve(false))
-    const response = await sut.addFavorite(faker.string.uuid())
+    stub(favoriteRepositoryStub, 'saveFavorite').returns(Promise.resolve(false))
+    const response = await sut.saveFavorite(faker.string.uuid())
 
     expect(response).toEqual(
       createFailureResponse(APPLICATION_MESSAGES.VIDEO_UNPOSSIBLE_ADD_TO_FAVORITE)
@@ -55,7 +55,7 @@ test.group('FavoriteService', (group) => {
   test('return an error if video not belong from user', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
     stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
-    const response = await sut.addFavorite(faker.string.uuid())
+    const response = await sut.saveFavorite(faker.string.uuid())
 
     expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
   })

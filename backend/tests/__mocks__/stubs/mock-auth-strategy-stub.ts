@@ -1,16 +1,16 @@
 import { faker } from '@faker-js/faker'
 import { createStubInstance, SinonStubbedInstance } from 'sinon'
 
-import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
-import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { AuthAdonis } from '#infra/auth/auth-adonis'
+import { Auth } from '#infra/auth/protocols/auth'
 
 type AuthStrategyStub = {
-  authStrategyStub: SinonStubbedInstance<AuthStrategy>
+  authStrategyStub: SinonStubbedInstance<Auth>
   uuid: string
 }
 export const mockAuthStrategyStub = (): AuthStrategyStub => {
   const uuid = faker.string.uuid()
-  const authStrategyStub = createStubInstance(AuthAdonisStrategy)
+  const authStrategyStub = createStubInstance(AuthAdonis)
   authStrategyStub.getUserId.returns(1)
   authStrategyStub.getUserEmail.returns('valid_email@mail.com')
   authStrategyStub.getUserUuid.returns(faker.string.uuid())

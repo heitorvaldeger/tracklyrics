@@ -4,13 +4,13 @@ import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-
 import { mockVideoData } from '#tests/__mocks__/stubs/mock-video-stub'
 
 export const mockFavoriteRepositoryStub = (): FavoriteRepository => ({
-  addFavorite: (videoId: number, userId: number) => Promise.resolve(true),
+  saveFavorite: (videoId: number, userId: number) => Promise.resolve(true),
   removeFavorite: (videoId: number, userId: number) => Promise.resolve(true),
   findFavoritesByUser: (userId: number) => Promise.resolve([mockVideoData, mockVideoData]),
 })
 
 export const mockFavoriteServiceStub = (): FavoriteProtocolService => ({
-  addFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
+  saveFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   removeFavorite: (videoUuid: string) => Promise.resolve(createSuccessResponse(true)),
   findFavoritesByUserLogged: () =>
     Promise.resolve(createSuccessResponse([mockVideoData, mockVideoData])),

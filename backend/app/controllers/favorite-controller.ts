@@ -9,10 +9,10 @@ import { uuidValidator } from '#validators/vinejs/uuid-validator'
 export default class FavoriteController {
   constructor(private readonly favoriteService: FavoriteProtocolService) {}
 
-  async addFavorite({ request }: HttpContext) {
+  async saveFavorite({ request }: HttpContext) {
     try {
       const { uuid } = await uuidValidator.validate(request.params())
-      const added = await this.favoriteService.addFavorite(uuid)
+      const added = await this.favoriteService.saveFavorite(uuid)
       return dispatch(added)
     } catch (error) {
       return dispatch({

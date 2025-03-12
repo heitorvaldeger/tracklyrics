@@ -56,7 +56,7 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
     )
   })
 
-  test('return true if AuthStrategy.getUserEmail method was called', async ({ expect }) => {
+  test('return true if Auth.getUserEmail method was called', async ({ expect }) => {
     const { sut, authStrategyStub } = makeSut()
     const getUserEmail = authStrategyStub.getUserEmail
     await sut.getFullInfoByUserLogged()

@@ -1,30 +1,21 @@
-import { SWRConfig } from "swr";
-import { Toaster } from "react-hot-toast";
-import { AppRoutes } from "./routes";
-import { UserAuthProvider } from "./contexts/UserAuthContext";
-import { GenreProvider } from "./contexts/GenreContext";
-import { LanguageProvider } from "./contexts/LanguageContext";
+import { QueryClientProvider } from "react-query";
+import { RouterProvider } from "react-router";
+import { Toaster } from "sonner";
 
-import "./index.css";
+import { GenreLanguageProvider } from "@/contexts/genre-language-context";
+import { UserProvider } from "@/contexts/user-context";
+import { queryClient } from "@/lib/react-query";
+import { router } from "@/routes";
+
 export const App = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col mx-auto relative">
-      <SWRConfig
-        value={{
-          onErrorRetry: () => {
-            return;
-          },
-        }}
-      >
-        <UserAuthProvider>
-          <GenreProvider>
-            <LanguageProvider>
-              <AppRoutes />
-              <Toaster />
-            </LanguageProvider>
-          </GenreProvider>
-        </UserAuthProvider>
-      </SWRConfig>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <GenreLanguageProvider>
+          <RouterProvider router={router} />
+        </GenreLanguageProvider>
+      </UserProvider>
+      <Toaster richColors />
+    </QueryClientProvider>
   );
 };

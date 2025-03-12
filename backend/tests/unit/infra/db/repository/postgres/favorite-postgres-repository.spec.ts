@@ -18,17 +18,19 @@ test.group('FavoritePostgresRepository', () => {
   test('it must return true if video added to favorite or already exists on success', async ({
     expect,
   }) => {
-    const { sut, fakeVideo, fakeUser } = await makeSut()
+    const { sut, fakeVideo, fakeUser, fakeFavorite } = await makeSut()
 
-    const added = await sut.addFavorite(fakeVideo.id, fakeUser.id, faker.string.uuid())
+    await db.from('favorites').where('uuid', fakeFavorite.uuid).del()
+    const added = await sut.saveFavorite(fakeVideo.id, fakeUser.id, faker.string.uuid())
+
     expect(added).toBeTruthy()
   })
 
   test('it must return true if favorite already exists', async ({ expect }) => {
     const { sut, fakeVideo, fakeFavorite } = await makeSut()
 
-    const added = await sut.addFavorite(fakeVideo.id, fakeVideo.userId, fakeFavorite.uuid)
-    expect(added).toBeTruthy()
+    const updated = await sut.saveFavorite(fakeVideo.id, fakeVideo.userId, fakeFavorite.uuid)
+    expect(updated).toBeTruthy()
   })
 
   test('it must return true if video removed to favorite on success', async ({ expect }) => {

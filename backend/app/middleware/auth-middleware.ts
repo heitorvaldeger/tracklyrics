@@ -7,8 +7,8 @@ import type { NextFn } from '@adonisjs/core/types/http'
 
 import { APPLICATION_MESSAGES } from '#constants/app-messages'
 import { HTTP_STATUS_CODE } from '#constants/http-status-code'
-import { AuthAdonisStrategy } from '#services/auth/strategy/auth-adonis-strategy'
-import { AuthStrategy } from '#services/auth/strategy/auth-strategy'
+import { AuthAdonis } from '#infra/auth/auth-adonis'
+import { Auth } from '#infra/auth/protocols/auth'
 
 /**
  * Auth middleware is used authenticate HTTP requests and deny
@@ -29,9 +29,15 @@ export default class AuthMiddleware {
     } = {}
   ) {
     try {
+      const token = ctx.request.cookie('AUTH', '')
+
+      const headers = ctx.request.headers()
+      headers.accept = 'application/json'
+      headers.authorization = `Bearer ${token}`
+
       await ctx.auth.authenticateUsing(options.guards)
-      app.container.bind(AuthStrategy, async () => {
-        return new AuthAdonisStrategy(ctx.auth)
+      app.container.bind(Auth, async () => {
+        return new AuthAdonis(ctx.auth)
       })
       return next()
     } catch (error) {
@@ -40,8 +46,6 @@ export default class AuthMiddleware {
           .status(HTTP_STATUS_CODE.UNAUTHORIZED)
           .send(APPLICATION_MESSAGES.UNAUTHORIZED)
       }
-      // console.log(error)
-      // return next()
     }
   }
 }

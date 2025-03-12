@@ -26,7 +26,7 @@ test.group('User Routes', (group) => {
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.get('user').bearerToken(accessTokenValue)
+    const response = await client.get('user').withCookie('AUTH', accessTokenValue)
 
     const body = response.body()
 
