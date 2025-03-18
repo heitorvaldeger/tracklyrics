@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { DateTime } from 'luxon'
 
 import { UserEmailStatus } from '#enums/user-email-status'
 import { createSuccessResponse } from '#helpers/method-response'
@@ -36,6 +37,7 @@ export const mockAuthServiceStub = (): AuthProtocolService => ({
       createSuccessResponse({
         type: 'any_type',
         token: 'any_token',
+        expiresAt: new Date(2000, 0, 1),
       })
     ),
   validateEmail: (params: AuthProtocolService.ValidateEmailParams) =>

@@ -1,9 +1,9 @@
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { Link } from "react-router";
 import { toast } from "sonner";
 
-import { LoadingOutlined } from "@ant-design/icons";
 import { vineResolver } from "@hookform/resolvers/vine";
 import vine from "@vinejs/vine";
 import { InferInput } from "@vinejs/vine/types";
@@ -212,7 +212,11 @@ export const Register = () => {
                 disabled={isLoading}
                 className="w-full font-bold"
               >
-                {isLoading ? <LoadingOutlined /> : "Register"}
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Register"
+                )}
               </Button>
             </CardFooter>
           </form>

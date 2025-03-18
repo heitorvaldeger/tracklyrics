@@ -7,14 +7,18 @@ import { UserProvider } from "@/contexts/user-context";
 import { queryClient } from "@/lib/react-query";
 import { router } from "@/routes";
 
+import { SessionProvider } from "./contexts/session-context";
+
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <GenreLanguageProvider>
-          <RouterProvider router={router} />
-        </GenreLanguageProvider>
-      </UserProvider>
+      <SessionProvider>
+        <UserProvider>
+          <GenreLanguageProvider>
+            <RouterProvider router={router} />
+          </GenreLanguageProvider>
+        </UserProvider>
+      </SessionProvider>
       <Toaster richColors />
     </QueryClientProvider>
   );

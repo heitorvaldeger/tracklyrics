@@ -63,6 +63,7 @@ export class UserPostgresRepository implements UserRepository {
     return {
       type: accessToken.type,
       token: accessToken.value!.release(),
+      expiresAt: accessToken.expiresAt,
     }
   }
 

@@ -88,6 +88,7 @@ test.group('AuthController.login', (group) => {
       ok({
         type: 'any_type',
         token: 'any_token',
+        expiresAt: new Date(2000, 0, 1),
       })
     )
   })

@@ -105,6 +105,7 @@ test.group('Auth Service', (group) => {
       createSuccessResponse({
         type: 'any_type',
         token: 'any_token',
+        expiresAt: new Date(2000, 0, 1),
       })
     )
   })

@@ -1,10 +1,10 @@
 import { AxiosError } from "axios";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
-import { LoadingOutlined } from "@ant-design/icons";
 import { vineResolver } from "@hookform/resolvers/vine";
 import vine from "@vinejs/vine";
 import { InferInput } from "@vinejs/vine/types";
@@ -44,10 +44,14 @@ export const SignIn = () => {
 
   const form = useForm<SignInForm>({
     resolver: vineResolver(signInFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
+  const { handleSubmit, control } = form;
 
-  const { handleSubmit } = form;
-
+  const queryClient = useQueryClient();
   const { mutateAsync: authenticate, isLoading } = useMutation({
     mutationFn: signIn,
     onError: (error) => {
@@ -63,6 +67,7 @@ export const SignIn = () => {
   const handleSignIn = async (data: SignInForm) => {
     try {
       await authenticate(data);
+      queryClient.invalidateQueries({ queryKey: ["session"] });
       navigate("/", { replace: true });
     } catch (error) {
       toast.error("Invalid credentials");
@@ -86,19 +91,20 @@ export const SignIn = () => {
               <div className="grid w-full gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold">
+                        <FormLabel htmlFor="email" className="font-semibold">
                           E-mail address
                         </FormLabel>
                         <FormControl>
                           <Input
+                            id="email"
                             type="email"
-                            {...field}
                             placeholder="name@example.com"
                             required
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -110,7 +116,7 @@ export const SignIn = () => {
               <div className="grid w-full gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
@@ -142,7 +148,11 @@ export const SignIn = () => {
                 type="submit"
                 className="w-full font-bold"
               >
-                {isLoading ? <LoadingOutlined /> : "Sign in"}
+                {isLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  "Sign in"
+                )}
               </Button>
 
               <span className="text-xs">OR</span>

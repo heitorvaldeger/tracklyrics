@@ -1,9 +1,21 @@
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
 import { Footer } from "@/components/footer";
 import { HeaderAuthenticated } from "@/components/headers/header-authenticated";
+import { Loading } from "@/components/loading";
+import { useSession } from "@/contexts/session-context";
 
 export const AuthenticatedLayout = () => {
+  const { hasSession, isLoading } = useSession();
+
+  if (!hasSession && !isLoading) {
+    return <Navigate to="/" />;
+  }
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <HeaderAuthenticated />

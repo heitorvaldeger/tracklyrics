@@ -42,6 +42,7 @@ export const mockUserRepositoryStub = () => {
       Promise.resolve({
         type: 'any_type',
         token: 'any_token',
+        expiresAt: new Date(2000, 0, 1),
       }),
     deleteAllAccessToken: (userUuid: string) => Promise.resolve(),
     updateEmailStatus: (userUuid: string) => Promise.resolve(),

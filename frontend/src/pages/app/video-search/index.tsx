@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 import { fetchVideos } from "@/api/fetch-videos";
 import { CardVideo } from "@/components/cards/card-video";
@@ -13,14 +14,24 @@ export const VideoSearch = () => {
 
   const { genres, languages } = useGenreLanguage();
 
-  const { data: videos } = useQuery({
+  const { data: videos, isLoading } = useQuery({
     queryKey: ["videos", genreId, languageId, uuid],
-    queryFn: () =>
-      fetchVideos({
-        genreId,
-        languageId,
-        uuid,
-      }),
+    queryFn: async () =>
+      await toast
+        .promise(
+          fetchVideos({
+            genreId,
+            languageId,
+            uuid,
+          }),
+          {
+            loading: "Loading data...",
+          },
+        )
+        .unwrap(),
+    onError: () => {
+      toast.error("Sorry, an error occurred!");
+    },
     staleTime: 60000,
   });
 
@@ -28,6 +39,10 @@ export const VideoSearch = () => {
   const language = languages.find(
     (language) => language.id.toString() === languageId,
   );
+
+  if (isLoading) {
+    return <></>;
+  }
 
   return (
     <div className="flex flex-col gap-4">

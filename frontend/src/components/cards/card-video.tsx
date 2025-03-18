@@ -3,9 +3,8 @@ import { ptBR } from "date-fns/locale";
 import { Calendar, Pencil, User, X } from "lucide-react";
 import { useNavigate } from "react-router";
 
-import { YoutubeFilled } from "@ant-design/icons";
+import { SiYoutube } from "@icons-pack/react-simple-icons";
 
-// import usFlag from "@/assets/images/flags/us.svg";
 import { Video } from "@/models/video";
 
 import { Button } from "../ui/button";
@@ -71,7 +70,6 @@ export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
             >
               {video.title}
             </Button>
-            {/* <img src={usFlag} width={20} className="rounded-sm" /> */}
           </div>
           <p className="text-sm font-light">{video.artist}</p>
 
@@ -87,7 +85,7 @@ export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
             </p>
           </div>
           <div className="flex items-center gap-1">
-            <YoutubeFilled className="text-gray-500" />
+            <SiYoutube className="text-gray-500" />
             <p className="text-sm text-gray-500">{`${video.qtyViews ?? 0} plays`}</p>
           </div>
           <div className="flex items-center gap-1">

@@ -32,15 +32,15 @@ router.post('/validate-email', [AuthController, 'validateEmail'])
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
 
-router
-  .get('/session', ({ response }) => {
-    return dispatch({ isSuccess: true })
+router.get('/session', async ({ response, auth }) => {
+  const hasSession = await auth.check()
+  return dispatch({
+    isSuccess: true,
+    value: {
+      hasSession,
+    },
   })
-  .use(
-    middleware.auth({
-      guards: ['api'],
-    })
-  )
+})
 
 router
   .group(() => {

@@ -29,12 +29,6 @@ export default class AuthMiddleware {
     } = {}
   ) {
     try {
-      const token = ctx.request.cookie('AUTH', '')
-
-      const headers = ctx.request.headers()
-      headers.accept = 'application/json'
-      headers.authorization = `Bearer ${token}`
-
       await ctx.auth.authenticateUsing(options.guards)
       app.container.bind(Auth, async () => {
         return new AuthAdonis(ctx.auth)
