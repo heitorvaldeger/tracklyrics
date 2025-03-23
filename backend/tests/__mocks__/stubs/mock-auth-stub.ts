@@ -1,9 +1,7 @@
 import { faker } from '@faker-js/faker'
 
 import { UserEmailStatus } from '#enums/user-email-status'
-import { createSuccessResponse } from '#helpers/method-response'
-import { AuthProtocolService } from '#services/protocols/auth-protocol-service'
-import { RegisterProtocolService } from '#services/protocols/register-protocol-service'
+import { AuthProtocolService } from '#services/_protocols/auth-protocol-service'
 
 export const mockAuthRegisterData = (): {
   email: string
@@ -24,26 +22,21 @@ export const mockAuthRegisterData = (): {
   }
 }
 
-export const mockAuthServiceStub = (): RegisterProtocolService & AuthProtocolService => ({
-  register: (params: RegisterProtocolService.Params) =>
-    Promise.resolve(
-      createSuccessResponse({
-        uuid: 'any_uuid',
-        emailStatus: UserEmailStatus.UNVERIFIED,
-      })
-    ),
+export const mockAuthServiceStub = (): AuthProtocolService => ({
+  register: (params: AuthProtocolService.RegisterParams) =>
+    Promise.resolve({
+      uuid: 'any_uuid',
+      emailStatus: UserEmailStatus.UNVERIFIED,
+    }),
   login: (params: AuthProtocolService.LoginParams) =>
-    Promise.resolve(
-      createSuccessResponse({
-        type: 'any_type',
-        token: 'any_token',
-      })
-    ),
+    Promise.resolve({
+      type: 'any_type',
+      token: 'any_token',
+      expiresAt: new Date(2000, 0, 1),
+    }),
   validateEmail: (params: AuthProtocolService.ValidateEmailParams) =>
-    Promise.resolve(
-      createSuccessResponse({
-        uuid: 'any_uuid',
-        emailStatus: UserEmailStatus.VERIFIED,
-      })
-    ),
+    Promise.resolve({
+      uuid: 'any_uuid',
+      emailStatus: UserEmailStatus.VERIFIED,
+    }),
 })

@@ -1,13 +1,11 @@
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
-import { spy, stub } from 'sinon'
+import Sinon, { spy, stub } from 'sinon'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { MethodResponse } from '#helpers/types/method-response'
-import { VideoPlayCountRepository } from '#infra/db/repository/protocols/video-play-count-repository'
+import VideoNotFoundException from '#exceptions/video-not-found-exception'
+import { VideoPlayCountRepository } from '#infra/db/repository/_protocols/video-play-count-repository'
+import { GameProtocolService } from '#services/_protocols/game-protocol-service'
 import { GameService } from '#services/game-service'
-import { GameProtocolService } from '#services/protocols/game-protocol-service'
 import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
 import { mockLyricRepositoryStub } from '#tests/__mocks__/stubs/mock-lyric-stub'
 import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
@@ -53,15 +51,12 @@ test.group('GameService', (group) => {
     }
 
     stub(lyricRepositoryStub, 'find').resolves(lyrics)
-    const response = (await sut.getModes(
-      faker.string.uuid()
-    )) as MethodResponse<GameProtocolService.ModesResponse>
-    const { totalWords, beginner, intermediate, advanced, specialist } =
-      response.value as GameProtocolService.ModesResponse
+    const response = await sut.getModes(faker.string.uuid())
+    const { totalWords, beginner, intermediate, advanced, specialist } = response
 
     const { beginnerPercent, intermediatePercent, advancedPercent } = mockGameModesData
     const mockTotalWords = lyrics.reduce((acc, lyric) => {
-      return acc + lyric.line.length
+      return acc + lyric.line.split(' ').length
     }, 0)
 
     expect(totalWords).toBe(mockTotalWords)
@@ -86,9 +81,9 @@ test.group('GameService', (group) => {
   test('return an error if video not found', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'getVideoId').resolves(null)
-    const response = await sut.getModes('any_uuid')
+    const response = sut.getModes('any_uuid')
 
-    expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
+    expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('call LyricRepository find with correct values', async ({ expect }) => {
@@ -113,21 +108,21 @@ test.group('GameService', (group) => {
     const { sut } = makeSut()
     const response = await sut.play(faker.string.uuid())
 
-    expect(response).toEqual(createSuccessResponse())
+    expect(response).toBeFalsy()
   })
 
   test('return fail if a video not exists', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     stub(videoRepositoryStub, 'getVideoId').resolves(null)
-    const response = await sut.play(faker.string.uuid())
+    const response = sut.play(faker.string.uuid())
 
-    expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
+    expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('call VideoRepository.getVideoId with correct values', async ({ expect }) => {
     const { sut, videoRepositoryStub } = makeSut()
     const uuid = faker.string.uuid()
-    const getVideoIdStub = stub(videoRepositoryStub, 'getVideoId')
+    const getVideoIdStub = Sinon.spy(videoRepositoryStub, 'getVideoId')
     await sut.play(uuid)
 
     expect(getVideoIdStub.calledWith(uuid)).toBeTruthy()
@@ -136,7 +131,7 @@ test.group('GameService', (group) => {
   test('call VideoPlayCountRepository.increment with correct values', async ({ expect }) => {
     const { sut, videoPlayCountRepositoryStub } = makeSut()
     const uuid = faker.string.uuid()
-    const incrementStub = stub(videoPlayCountRepositoryStub, 'increment')
+    const incrementStub = Sinon.spy(videoPlayCountRepositoryStub, 'increment')
     await sut.play(uuid)
 
     expect(incrementStub.calledWith(1)).toBeTruthy()

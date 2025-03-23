@@ -1,10 +1,10 @@
 import redis from '@adonisjs/redis/services/main'
 import { test } from '@japa/runner'
 
-import { RedisAdonisAdapter } from '#infra/db/cache/redis-adonis-adapter'
+import { RedisAdonis } from '#infra/db/cache/redis-adonis'
 
 const makeSut = () => {
-  const sut = new RedisAdonisAdapter()
+  const sut = new RedisAdonis()
   return { sut }
 }
 

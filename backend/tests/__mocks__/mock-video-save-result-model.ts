@@ -1,6 +1,6 @@
-import { VideoSaveResultModel } from '#models/video-model/video-save-result-model'
+import { VideoSaveResult } from '#models/video-save'
 
-export const mockFakeVideoSaveResultModel = (): VideoSaveResultModel => ({
+export const mockFakeVideoSaveResultModel = (): VideoSaveResult => ({
   artist: 'any_artist',
   genreId: 0,
   isDraft: false,

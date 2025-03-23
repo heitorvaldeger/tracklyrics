@@ -2,9 +2,8 @@ import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
 import UserController from '#controllers/user-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { ok, unauthorized, unprocessable } from '#helpers/http'
-import { createFailureResponse } from '#helpers/method-response'
+import UnauthorizedException from '#exceptions/unauthorized-exception'
+import UserNotFoundException from '#exceptions/user-not-found-exception'
 import {
   mockUserServiceStub,
   mockUserWithoutPasswordData,
@@ -23,32 +22,38 @@ test.group('UserController', (group) => {
   })
 
   test('return 200 with user information on success', async ({ expect }) => {
-    const { sut, userServiceStub } = makeSut()
+    const { sut } = makeSut()
 
     const httpResponse = await sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).toEqual(ok(mockUserWithoutPasswordData))
+    expect(httpResponse).toEqual(mockUserWithoutPasswordData)
   })
 
   test('return 401 with user unauthenticated if email provided is invalid', async ({ expect }) => {
     const { sut, userServiceStub } = makeSut()
 
-    stub(userServiceStub, 'getFullInfoByUserLogged').resolves(
-      createFailureResponse(APPLICATION_MESSAGES.UNAUTHORIZED)
-    )
-    const httpResponse = await sut.getFullInfoByUserLogged()
+    stub(userServiceStub, 'getFullInfoByUserLogged').rejects(new UnauthorizedException())
+    const httpResponse = sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).toEqual(unauthorized(APPLICATION_MESSAGES.UNAUTHORIZED))
+    expect(httpResponse).rejects.toEqual(new UnauthorizedException())
   })
 
   test('return 422 with user not found if user was not found', async ({ expect }) => {
     const { sut, userServiceStub } = makeSut()
 
-    stub(userServiceStub, 'getFullInfoByUserLogged').resolves(
-      createFailureResponse(APPLICATION_MESSAGES.USER_NOTFOUND)
-    )
-    const httpResponse = await sut.getFullInfoByUserLogged()
+    stub(userServiceStub, 'getFullInfoByUserLogged').rejects(new UserNotFoundException())
+    const httpResponse = sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).toEqual(unprocessable(APPLICATION_MESSAGES.USER_NOTFOUND))
+    expect(httpResponse).rejects.toEqual(new UserNotFoundException())
+  })
+
+  test('return 500 if user getFullInfoByUserLogged throws', async ({ expect }) => {
+    const { sut, userServiceStub } = makeSut()
+
+    stub(userServiceStub, 'getFullInfoByUserLogged').throws(new Error())
+
+    const httpResponse = sut.getFullInfoByUserLogged()
+
+    expect(httpResponse).rejects.toEqual(new Error())
   })
 })

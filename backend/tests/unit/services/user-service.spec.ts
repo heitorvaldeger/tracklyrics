@@ -1,19 +1,19 @@
 import { test } from '@japa/runner'
-import { stub } from 'sinon'
+import Sinon, { stub } from 'sinon'
 
 import { UserEmailStatus } from '#enums/user-email-status'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import UnauthorizedException from '#exceptions/unauthorized-exception'
+import UserNotFoundException from '#exceptions/user-not-found-exception'
 import { UserService } from '#services/user-service'
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockUserRepositoryStub } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const makeSut = () => {
   const fakeUserRepositoryStub = mockUserRepositoryStub()
-  const fakeAuthStrategy = mockAuthStrategyStub()
-  const sut = new UserService(fakeUserRepositoryStub, fakeAuthStrategy)
+  const { authStrategyStub } = mockAuthStrategyStub()
+  const sut = new UserService(fakeUserRepositoryStub, authStrategyStub)
 
-  return { sut, fakeAuthStrategy, fakeUserRepositoryStub }
+  return { sut, authStrategyStub, fakeUserRepositoryStub }
 }
 
 test.group('UserService.getFullInfoByUserLogged', (group) => {
@@ -22,21 +22,21 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
   })
 
   test('return user unauthenticated if email provided is invalid', async ({ expect }) => {
-    const { sut, fakeAuthStrategy } = makeSut()
+    const { sut, authStrategyStub } = makeSut()
 
-    fakeAuthStrategy.getUserEmail.returns(undefined)
-    const httpResponse = await sut.getFullInfoByUserLogged()
+    authStrategyStub.getUserEmail.returns(undefined)
+    const httpResponse = sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).toEqual(createFailureResponse(APPLICATION_MESSAGES.UNAUTHORIZED))
+    expect(httpResponse).rejects.toEqual(new UnauthorizedException())
   })
 
   test('return user not found if user was not found', async ({ expect }) => {
     const { sut, fakeUserRepositoryStub } = makeSut()
 
     stub(fakeUserRepositoryStub, 'getUserByEmailWithoutPassword').resolves(null)
-    const httpResponse = await sut.getFullInfoByUserLogged()
+    const httpResponse = sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).toEqual(createFailureResponse(APPLICATION_MESSAGES.USER_NOTFOUND))
+    expect(httpResponse).rejects.toEqual(new UserNotFoundException())
   })
 
   test('return a full info by user logged with on success', async ({ expect }) => {
@@ -44,21 +44,19 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
 
     const httpResponse = await sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).toEqual(
-      createSuccessResponse({
-        uuid: 'any_uuid',
-        username: 'any_username',
-        email: 'any_email',
-        emailStatus: UserEmailStatus.VERIFIED,
-        firstName: 'any_firstname',
-        lastName: 'any_lastname',
-      })
-    )
+    expect(httpResponse).toEqual({
+      uuid: 'any_uuid',
+      username: 'any_username',
+      email: 'any_email',
+      emailStatus: UserEmailStatus.VERIFIED,
+      firstName: 'any_firstname',
+      lastName: 'any_lastname',
+    })
   })
 
-  test('return true if AuthStrategy.getUserEmail method was called', async ({ expect }) => {
-    const { sut, fakeAuthStrategy } = makeSut()
-    const getUserEmail = fakeAuthStrategy.getUserEmail
+  test('return true if Auth.getUserEmail method was called', async ({ expect }) => {
+    const { sut, authStrategyStub } = makeSut()
+    const getUserEmail = authStrategyStub.getUserEmail
     await sut.getFullInfoByUserLogged()
 
     expect(getUserEmail.called).toBeTruthy()
@@ -68,7 +66,7 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
     expect,
   }) => {
     const { sut, fakeUserRepositoryStub } = makeSut()
-    const getUserByEmailWithoutPasswordSpy = stub(
+    const getUserByEmailWithoutPasswordSpy = Sinon.spy(
       fakeUserRepositoryStub,
       'getUserByEmailWithoutPassword'
     )

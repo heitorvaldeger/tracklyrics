@@ -1,8 +1,0 @@
-.swiper-pagination-bullet {
-  background: theme('colors.zinc.100');
-  opacity: theme('opacity.70');
-}
-
-.swiper-pagination-bullet-active {
-  background: theme('colors.teal.500');
-}

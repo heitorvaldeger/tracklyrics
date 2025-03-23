@@ -5,9 +5,7 @@ import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
 import FavoriteController from '#controllers/favorite-controller'
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { badRequest, notFound, ok, serverError } from '#helpers/http'
-import { createFailureResponse } from '#helpers/method-response'
+import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { mockFavoriteServiceStub } from '#tests/__mocks__/stubs/mock-favorite-stub'
 import { mockVideoData } from '#tests/__mocks__/stubs/mock-video-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
@@ -32,44 +30,40 @@ test.group('FavoriteController', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('returns 400 if invalid video uuid is provided', async ({ expect }) => {
-    const { sut, httpContext } = await makeSut()
+  test('returns 400 if invalid video uuid is provided on remove', async ({ expect }) => {
+    const { sut, httpContext: context } = await makeSut()
 
-    stub(httpContext.request, 'params').returns({
+    stub(context.request, 'params').returns({
       uuid: 'invalid_uuid',
     })
 
-    const httpResponse = await sut.removeFavorite(httpContext)
+    await sut.removeFavorite(context)
 
-    expect(httpResponse).toEqual(
-      badRequest([
-        {
-          field: 'uuid',
-          message: 'The uuid field must be a valid UUID',
-        },
-      ])
-    )
+    expect(context.response.getBody()).toEqual([
+      {
+        field: 'uuid',
+        message: 'The uuid field must be a valid UUID',
+      },
+    ])
   })
 
-  test('returns 404 if a video not found', async ({ expect }) => {
+  test('returns 404 if a video not found on remove', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
-    stub(favoriteServiceStub, 'removeFavorite').resolves(
-      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
-    )
+    stub(favoriteServiceStub, 'removeFavorite').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
     })
 
-    const httpResponse = await sut.removeFavorite(httpContext)
+    const httpResponse = sut.removeFavorite(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
+    expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('returns 200 if video was remove favorite on success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.removeFavorite(httpContext)
-    expect(httpResponse).toEqual(ok(true))
+    expect(httpResponse).toBeTruthy()
   })
 
   test('returns 500 if video remove favorite throws', async ({ expect }) => {
@@ -77,62 +71,58 @@ test.group('FavoriteController', (group) => {
 
     stub(favoriteServiceStub, 'removeFavorite').throws(new Error())
 
-    const httpResponse = await sut.removeFavorite(httpContext)
+    const httpResponse = sut.removeFavorite(httpContext)
 
-    expect(httpResponse).toEqual(serverError(new Error()))
+    expect(httpResponse).rejects.toEqual(new Error())
   })
 
-  test('returns 400 if invalid video uuid is provided', async ({ expect }) => {
-    const { sut, httpContext } = await makeSut()
+  test('returns 400 if invalid video uuid is provided on save', async ({ expect }) => {
+    const { sut, httpContext: context } = await makeSut()
 
-    stub(httpContext.request, 'params').returns({
+    stub(context.request, 'params').returns({
       uuid: 'invalid_uuid',
     })
 
-    const httpResponse = await sut.addFavorite(httpContext)
+    await sut.saveFavorite(context)
 
-    expect(httpResponse).toEqual(
-      badRequest([
-        {
-          field: 'uuid',
-          message: 'The uuid field must be a valid UUID',
-        },
-      ])
-    )
+    expect(context.response.getBody()).toEqual([
+      {
+        field: 'uuid',
+        message: 'The uuid field must be a valid UUID',
+      },
+    ])
   })
 
-  test('returns 404 if return a video not found', async ({ expect }) => {
+  test('returns 404 if return a video not found on save', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
-    stub(favoriteServiceStub, 'addFavorite').resolves(
-      createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
-    )
+    stub(favoriteServiceStub, 'saveFavorite').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
     })
 
-    const httpResponse = await sut.addFavorite(httpContext)
+    const httpResponse = sut.saveFavorite(httpContext)
 
-    expect(httpResponse).toEqual(notFound(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
+    expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('returns 200 if video was add favorite on success', async ({ expect }) => {
+  test('returns 200 if video was add favorite on save', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
-    const httpResponse = await sut.addFavorite(httpContext)
-    expect(httpResponse).toEqual(ok(true))
+    const httpResponse = await sut.saveFavorite(httpContext)
+    expect(httpResponse).toBeTruthy()
   })
 
-  test('returns 500 if video add favorite throws', async ({ expect }) => {
+  test('returns 500 if video add favorite throws on save', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: faker.string.uuid(),
     })
 
-    stub(favoriteServiceStub, 'addFavorite').throws(new Error())
+    stub(favoriteServiceStub, 'saveFavorite').throws(new Error())
 
-    const httpResponse = await sut.addFavorite(httpContext)
+    const httpResponse = sut.saveFavorite(httpContext)
 
-    expect(httpResponse).toEqual(serverError(new Error()))
+    expect(httpResponse).rejects.toEqual(new Error())
   })
 
   test('returns 200 on find favorites by user logged', async ({ expect }) => {
@@ -140,7 +130,7 @@ test.group('FavoriteController', (group) => {
 
     const httpResponse = await sut.findFavoritesByUserLogged()
 
-    expect(httpResponse).toEqual(ok([mockVideoData, mockVideoData]))
+    expect(httpResponse).toEqual([mockVideoData, mockVideoData])
   })
 
   test('returns 500 if find favorites by user logged throws', async ({ expect }) => {
@@ -148,8 +138,8 @@ test.group('FavoriteController', (group) => {
 
     stub(favoriteServiceStub, 'findFavoritesByUserLogged').throws(new Error())
 
-    const httpResponse = await sut.findFavoritesByUserLogged()
+    const httpResponse = sut.findFavoritesByUserLogged()
 
-    expect(httpResponse).toEqual(serverError(new Error()))
+    expect(httpResponse).rejects.toEqual(new Error())
   })
 })

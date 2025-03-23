@@ -1,17 +1,13 @@
+import db from '@adonisjs/lucid/services/db'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
 import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
-import VideoLucid from '#models/video-model/video-lucid'
-import { mockGenreEntity } from '#tests/__mocks__/entities/mock-genre-entity'
-import { mockLanguageEntity } from '#tests/__mocks__/entities/mock-language-entity'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
-import { mockUserEntity } from '#tests/__mocks__/entities/mock-user-entity'
-import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { toSnakeCase } from '#utils/index'
 
 const makeSut = async () => {
-  const { fakeVideo, fakeGenre, fakeLanguage, fakeUser, fakeFavorite } = await mockLucidEntity()
+  const { fakeVideo, fakeGenre, fakeLanguage, fakeUser, fakeFavorite } = await mockAllTables()
 
   const sut = new FavoritePostgresRepository()
 
@@ -19,34 +15,22 @@ const makeSut = async () => {
 }
 
 test.group('FavoritePostgresRepository', () => {
-  test('it must return true if video added to favorite on success', async ({ expect }) => {
-    const fakeLanguage = await mockLanguageEntity()
-    const fakeGenre = await mockGenreEntity()
-    const fakeUser = await mockUserEntity()
+  test('it must return true if video added to favorite or already exists on success', async ({
+    expect,
+  }) => {
+    const { sut, fakeVideo, fakeUser, fakeFavorite } = await makeSut()
 
-    const fakeVideo = await VideoLucid.create({
-      isDraft: false,
-      title: faker.lorem.words(2),
-      artist: faker.lorem.words(2),
-      releaseYear: faker.string.numeric({ length: 4 }),
-      linkYoutube: makeYoutubeUrl(),
-      uuid: faker.string.uuid(),
-      languageId: fakeLanguage.id,
-      genreId: fakeGenre.id,
-      userId: fakeUser.id,
-    })
+    await db.from('favorites').where('uuid', fakeFavorite.uuid).del()
+    const added = await sut.saveFavorite(fakeVideo.id, fakeUser.id, faker.string.uuid())
 
-    const { sut } = await makeSut()
-
-    const added = await sut.addFavorite(fakeVideo.id, fakeUser.id, faker.string.uuid())
     expect(added).toBeTruthy()
   })
 
   test('it must return true if favorite already exists', async ({ expect }) => {
     const { sut, fakeVideo, fakeFavorite } = await makeSut()
 
-    const added = await sut.addFavorite(fakeVideo.id, fakeVideo.userId, fakeFavorite.uuid)
-    expect(added).toBeTruthy()
+    const updated = await sut.saveFavorite(fakeVideo.id, fakeVideo.userId, fakeFavorite.uuid)
+    expect(updated).toBeTruthy()
   })
 
   test('it must return true if video removed to favorite on success', async ({ expect }) => {
@@ -58,25 +42,27 @@ test.group('FavoritePostgresRepository', () => {
 
   test('it must return a list favorite videos by user', async ({ expect }) => {
     const { sut, fakeVideo, fakeGenre, fakeLanguage, fakeUser } = await makeSut()
-    const entity2 = await mockLucidEntity()
-    const entity3 = await mockLucidEntity()
-    const entity4 = await mockLucidEntity()
+    const entity2 = await mockAllTables()
+    const entity3 = await mockAllTables()
+    const entity4 = await mockAllTables()
 
-    await FavoriteLucid.create({
-      videoId: entity2.fakeVideo.id,
-      userId: fakeVideo.userId,
-      uuid: faker.string.uuid(),
-    })
-    await FavoriteLucid.create({
-      videoId: entity3.fakeVideo.id,
-      userId: fakeVideo.userId,
-      uuid: faker.string.uuid(),
-    })
-    await FavoriteLucid.create({
-      videoId: entity4.fakeVideo.id,
-      userId: fakeVideo.userId,
-      uuid: faker.string.uuid(),
-    })
+    await db.table('favorites').multiInsert([
+      toSnakeCase({
+        videoId: entity2.fakeVideo.id,
+        userId: fakeVideo.userId,
+        uuid: faker.string.uuid(),
+      }),
+      toSnakeCase({
+        videoId: entity3.fakeVideo.id,
+        userId: fakeVideo.userId,
+        uuid: faker.string.uuid(),
+      }),
+      toSnakeCase({
+        videoId: entity4.fakeVideo.id,
+        userId: fakeVideo.userId,
+        uuid: faker.string.uuid(),
+      }),
+    ])
 
     const response = await sut.findFavoritesByUser(fakeVideo.userId)
     expect(response.length).toBe(4)

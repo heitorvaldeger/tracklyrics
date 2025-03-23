@@ -1,8 +1,7 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { createSuccessResponse } from '#helpers/method-response'
-import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
-import { UserProtocolService } from '#services/protocols/user-protocol-service'
+import { UserProtocolService } from '#services/_protocols/user-protocol-service'
 
 export const mockUserWithoutPasswordData: UserWithoutPasswordModel = {
   uuid: 'any_uuid',
@@ -14,8 +13,7 @@ export const mockUserWithoutPasswordData: UserWithoutPasswordModel = {
 }
 
 export const mockUserServiceStub = (): UserProtocolService => ({
-  getFullInfoByUserLogged: () =>
-    Promise.resolve(createSuccessResponse(mockUserWithoutPasswordData)),
+  getFullInfoByUserLogged: () => Promise.resolve(mockUserWithoutPasswordData),
 })
 
 export const mockUserRepositoryStub = () => {
@@ -42,6 +40,7 @@ export const mockUserRepositoryStub = () => {
       Promise.resolve({
         type: 'any_type',
         token: 'any_token',
+        expiresAt: new Date(2000, 0, 1),
       }),
     deleteAllAccessToken: (userUuid: string) => Promise.resolve(),
     updateEmailStatus: (userUuid: string) => Promise.resolve(),

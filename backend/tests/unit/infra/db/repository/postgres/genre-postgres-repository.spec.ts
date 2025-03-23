@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
 import { GenrePostgresRepository } from '#infra/db/repository/postgres/genre-postgres-repository'
-import { mockGenreEntity } from '#tests/__mocks__/entities/mock-genre-entity'
+import { mockGenre } from '#tests/__mocks__/db/mock-genre'
 
 const makeSut = () => {
   const sut = new GenrePostgresRepository()
@@ -10,7 +10,7 @@ const makeSut = () => {
 
 test.group('GenrePostgresRepository', (group) => {
   test('it must returns a list of genres with on success', async ({ expect }) => {
-    const fakeGenre = (await mockGenreEntity()).serialize()
+    const fakeGenre = await mockGenre()
     const { sut } = makeSut()
 
     const genres = await sut.findAll()
@@ -19,12 +19,12 @@ test.group('GenrePostgresRepository', (group) => {
   })
 
   test('it must return a genre if genre id exists', async ({ expect }) => {
-    const fakeGenre = await mockGenreEntity()
+    const fakeGenre = await mockGenre()
     const { sut } = makeSut()
 
     const genre = await sut.findById(fakeGenre.id)
 
-    expect(genre).toEqual(fakeGenre.serialize())
+    expect(genre).toEqual(fakeGenre)
   })
 
   test('it must return null if genre id not exists', async ({ expect }) => {

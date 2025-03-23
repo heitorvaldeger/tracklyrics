@@ -1,9 +1,9 @@
-import { LanguageRepository } from '#infra/db/repository/protocols/language-repository'
-import { LanguageFindModel } from '#models/language-model/language-find-model'
+import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
+import { Language } from '#models/language'
 
 interface MockLanguageRepositoryStub extends LanguageRepository {
-  languages: LanguageFindModel[]
-  language: LanguageFindModel
+  languages: Language[]
+  language: Language
 }
 export const mockLanguageRepositoryStub = (): MockLanguageRepositoryStub => ({
   language: {

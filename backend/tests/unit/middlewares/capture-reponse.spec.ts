@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 import sinon, { spy, stub } from 'sinon'
 
-import CaptureResponseMiddleware from '#middleware/capture-response'
+import ServerMiddleware from '#middleware/server-middleware'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
-  const sut = new CaptureResponseMiddleware()
+  const sut = new ServerMiddleware()
   const httpContext = makeHttpRequest({}, {})
 
   stub(httpContext, 'response').value({
@@ -27,7 +27,7 @@ const makeSut = () => {
   }
 }
 
-test.group('CaptureResponseMiddleware', (group) => {
+test.group('ServerMiddleware', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })

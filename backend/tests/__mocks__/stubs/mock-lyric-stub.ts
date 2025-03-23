@@ -1,5 +1,5 @@
-import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
-import { LyricFindResponse } from '#models/lyric-model/lyric-find-response'
+import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
+import { LyricFindResponse } from '#models/lyric-metadata'
 
 export const mockLyricFindResponseData: LyricFindResponse[] = [
   {

@@ -1,0 +1,15 @@
+node_modules/
+public/
+
+.gitignore
+.prettierignore
+.prettierrc
+
+components.json
+eslint.config.js
+index.html
+package.json
+tsconfig.app.json
+tsconfig.node.json
+tsconfig.json
+yarn.lock

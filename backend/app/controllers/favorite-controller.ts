@@ -1,49 +1,30 @@
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
-import { dispatch } from '#helpers/dispatch'
-import { FavoriteProtocolService } from '#services/protocols/favorite-protocol-service'
+import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()
 export default class FavoriteController {
   constructor(private readonly favoriteService: FavoriteProtocolService) {}
 
-  async addFavorite({ request }: HttpContext) {
-    try {
-      const { uuid } = await uuidValidator.validate(request.params())
-      const added = await this.favoriteService.addFavorite(uuid)
-      return dispatch(added)
-    } catch (error) {
-      return dispatch({
-        isSuccess: false,
-        error,
-      })
+  async saveFavorite({ request, response }: HttpContext) {
+    const [errors, data] = await uuidValidator.tryValidate(request.params())
+    if (errors || !data) {
+      return response.badRequest(errors.messages)
     }
+    return await this.favoriteService.saveFavorite(data.uuid)
   }
 
-  async removeFavorite({ request }: HttpContext) {
-    try {
-      const { uuid } = await uuidValidator.validate(request.params())
-      const result = await this.favoriteService.removeFavorite(uuid)
-      return dispatch(result)
-    } catch (error) {
-      return dispatch({
-        isSuccess: false,
-        error,
-      })
+  async removeFavorite({ request, response }: HttpContext) {
+    const [errors, data] = await uuidValidator.tryValidate(request.params())
+    if (errors || !data) {
+      return response.badRequest(errors.messages)
     }
+    return await this.favoriteService.removeFavorite(data.uuid)
   }
 
   async findFavoritesByUserLogged() {
-    try {
-      const result = await this.favoriteService.findFavoritesByUserLogged()
-      return dispatch(result)
-    } catch (error) {
-      return dispatch({
-        isSuccess: false,
-        error,
-      })
-    }
+    return await this.favoriteService.findFavoritesByUserLogged()
   }
 }
