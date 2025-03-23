@@ -1,14 +1,11 @@
 import { inject } from '@adonisjs/core'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
-import { ApplicationError } from '#helpers/types/application-error'
-import { MethodResponse } from '#helpers/types/method-response'
-import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
-import { VideoPlayCountRepository } from '#infra/db/repository/protocols/video-play-count-repository'
-import { VideoRepository } from '#infra/db/repository/protocols/video-repository'
+import VideoNotFoundException from '#exceptions/video-not-found-exception'
+import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
+import { VideoPlayCountRepository } from '#infra/db/repository/_protocols/video-play-count-repository'
+import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
 
-import { GameProtocolService } from './protocols/game-protocol-service.js'
+import { GameProtocolService } from './_protocols/game-protocol-service.js'
 
 @inject()
 export class GameService implements GameProtocolService {
@@ -18,17 +15,15 @@ export class GameService implements GameProtocolService {
     private readonly videoPlayCountRepository: VideoPlayCountRepository
   ) {}
 
-  async getModes(
-    videoUuid: string
-  ): Promise<MethodResponse<GameProtocolService.ModesResponse | ApplicationError>> {
+  async getModes(videoUuid: string) {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     if (!videoId) {
-      return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+      throw new VideoNotFoundException()
     }
 
     const lyrics = await this.lyricRepository.find(videoId)
     const totalWords = lyrics.reduce((acc, value) => {
-      return acc + value.line.length
+      return acc + value.line.split(' ').length
     }, 0)
 
     const beginnerModePercent = 15
@@ -55,16 +50,15 @@ export class GameService implements GameProtocolService {
       },
     }
 
-    return createSuccessResponse(modes)
+    return modes
   }
 
-  async play(videoUuid: string): Promise<MethodResponse<void | ApplicationError>> {
+  async play(videoUuid: string) {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
     if (!videoId) {
-      return createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+      throw new VideoNotFoundException()
     }
 
     await this.videoPlayCountRepository.increment(videoId)
-    return createSuccessResponse()
   }
 }

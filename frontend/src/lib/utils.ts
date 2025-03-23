@@ -4,7 +4,3 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-
-export const getUserTokenFromLocalStorage = () => {
-  return localStorage.getItem("user-token")
-}

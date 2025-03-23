@@ -1,26 +1,27 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-
-import { LanguageLucid } from '#models/language-model/language-lucid'
+import db from '@adonisjs/lucid/services/db'
 
 export default class extends BaseSeeder {
   static environment = ['development']
 
   async run() {
-    const uniqueKey = 'id'
-
-    await LanguageLucid.updateOrCreateMany(uniqueKey, [
-      { id: 1, name: 'English', flagCountry: 'us' },
-      { id: 2, name: 'Spanish', flagCountry: 'es' },
-      { id: 3, name: 'Portuguese', flagCountry: 'br' },
-      { id: 4, name: 'French', flagCountry: 'fr' },
-      { id: 5, name: 'Italian', flagCountry: 'it' },
-      { id: 6, name: 'German', flagCountry: 'de' },
-      { id: 7, name: 'Dutch', flagCountry: 'nl' },
-      { id: 8, name: 'Japanese (Romaji)', flagCountry: 'jp' },
-      { id: 9, name: 'Turkish', flagCountry: 'tr' },
-      { id: 10, name: 'Polish', flagCountry: 'pl' },
-      { id: 11, name: 'Swedish', flagCountry: 'se' },
-      { id: 12, name: 'Finnish', flagCountry: 'fi' },
-    ])
+    await db
+      .table('languages')
+      .knexQuery.insert([
+        { id: 1, name: 'English', flag_country: 'us' },
+        { id: 2, name: 'Spanish', flag_country: 'es' },
+        { id: 3, name: 'Portuguese', flag_country: 'br' },
+        { id: 4, name: 'French', flag_country: 'fr' },
+        { id: 5, name: 'Italian', flag_country: 'it' },
+        { id: 6, name: 'German', flag_country: 'de' },
+        { id: 7, name: 'Dutch', flag_country: 'nl' },
+        { id: 8, name: 'Japanese (Romaji)', flag_country: 'jp' },
+        { id: 9, name: 'Turkish', flag_country: 'tr' },
+        { id: 10, name: 'Polish', flag_country: 'pl' },
+        { id: 11, name: 'Swedish', flag_country: 'se' },
+        { id: 12, name: 'Finnish', flag_country: 'fi' },
+      ])
+      .onConflict('id')
+      .merge()
   }
 }

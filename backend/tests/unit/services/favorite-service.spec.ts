@@ -2,19 +2,19 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { createFailureResponse, createSuccessResponse } from '#helpers/method-response'
+import GenericException from '#exceptions/generic-exception'
+import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { FavoriteService } from '#services/favorite-service'
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockFavoriteRepositoryStub } from '#tests/__mocks__/stubs/mock-favorite-stub'
 import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
-import { mockVideoCurrentUserServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoUserLoggedServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const favoriteRepositoryStub = mockFavoriteRepositoryStub()
   const videoRepositoryStub = mockVideoRepositoryStub()
-  const authStrategyStub = mockAuthStrategyStub()
-  const videoCurrentUserServiceStub = mockVideoCurrentUserServiceStub()
+  const { authStrategyStub } = mockAuthStrategyStub()
+  const videoCurrentUserServiceStub = mockVideoUserLoggedServiceStub()
   const sut = new FavoriteService(
     videoRepositoryStub,
     favoriteRepositoryStub,
@@ -37,58 +37,54 @@ test.group('FavoriteService', (group) => {
 
   test('return success if a video was added to favorite', async ({ expect }) => {
     const { sut } = makeSut()
-    const response = await sut.addFavorite(faker.string.uuid())
+    const response = await sut.saveFavorite(faker.string.uuid())
 
-    expect(response).toEqual(createSuccessResponse(true))
+    expect(response).toBe(true)
   })
 
   test("return fail if a video wasn't added to favorite", async ({ expect }) => {
     const { sut, favoriteRepositoryStub } = makeSut()
-    stub(favoriteRepositoryStub, 'addFavorite').returns(Promise.resolve(false))
-    const response = await sut.addFavorite(faker.string.uuid())
+    stub(favoriteRepositoryStub, 'saveFavorite').returns(Promise.resolve(false))
+    const response = sut.saveFavorite(faker.string.uuid())
 
-    expect(response).toEqual(
-      createFailureResponse(APPLICATION_MESSAGES.VIDEO_UNPOSSIBLE_ADD_TO_FAVORITE)
-    )
+    expect(response).rejects.toEqual(new GenericException())
   })
 
   test('return an error if video not belong from user', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
-    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
-    const response = await sut.addFavorite(faker.string.uuid())
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
+    const response = sut.saveFavorite(faker.string.uuid())
 
-    expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
+    expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('return success if a video was removed to favorite', async ({ expect }) => {
     const { sut } = makeSut()
     const response = await sut.removeFavorite(faker.string.uuid())
 
-    expect(response).toEqual(createSuccessResponse(true))
+    expect(response).toEqual(true)
   })
 
   test("return fail if a video wasn't removed to favorite", async ({ expect }) => {
     const { sut, favoriteRepositoryStub } = makeSut()
     stub(favoriteRepositoryStub, 'removeFavorite').returns(Promise.resolve(false))
-    const response = await sut.removeFavorite(faker.string.uuid())
+    const response = sut.removeFavorite(faker.string.uuid())
 
-    expect(response).toEqual(
-      createFailureResponse(APPLICATION_MESSAGES.VIDEO_UNPOSSIBLE_REMOVE_TO_FAVORITE)
-    )
+    expect(response).rejects.toEqual(new GenericException())
   })
 
   test('return an error if video not belong from user', async ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
-    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByCurrentUser').returns(Promise.resolve(true))
-    const response = await sut.removeFavorite(faker.string.uuid())
+    stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
+    const response = sut.removeFavorite(faker.string.uuid())
 
-    expect(response).toEqual(createFailureResponse(APPLICATION_MESSAGES.VIDEO_NOT_FOUND))
+    expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('return a list favorite videos by user logged', async ({ expect }) => {
     const { sut } = makeSut()
     const response = await sut.findFavoritesByUserLogged()
 
-    expect(response).toEqual(createSuccessResponse([mockVideoData, mockVideoData]))
+    expect(response).toEqual([mockVideoData, mockVideoData])
   })
 })

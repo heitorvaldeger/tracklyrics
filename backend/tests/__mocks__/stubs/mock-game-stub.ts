@@ -1,5 +1,4 @@
-import { createSuccessResponse } from '#helpers/method-response'
-import { GameProtocolService } from '#services/protocols/game-protocol-service'
+import { GameProtocolService } from '#services/_protocols/game-protocol-service'
 
 export const mockGameModesData = {
   beginnerPercent: 15,
@@ -28,6 +27,6 @@ export const mockGameModesData = {
 }
 
 export const mockGameServiceStub = (): GameProtocolService => ({
-  play: (videoUuid: string) => Promise.resolve(createSuccessResponse()),
-  getModes: (videoUuid: string) => Promise.resolve(createSuccessResponse(mockGameModesData.stub)),
+  play: (_: string) => Promise.resolve(),
+  getModes: (_: string) => Promise.resolve(mockGameModesData.stub),
 })

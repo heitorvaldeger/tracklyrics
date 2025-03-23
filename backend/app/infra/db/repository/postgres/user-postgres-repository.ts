@@ -1,5 +1,5 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { UserRepository } from '#infra/db/repository/protocols/user-repository'
+import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 import UserLucid from '#models/user-model/user-lucid'
 import { UserModel } from '#models/user-model/user-model'
@@ -63,6 +63,7 @@ export class UserPostgresRepository implements UserRepository {
     return {
       type: accessToken.type,
       token: accessToken.value!.release(),
+      expiresAt: accessToken.expiresAt,
     }
   }
 

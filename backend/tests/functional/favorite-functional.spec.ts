@@ -1,11 +1,10 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
-test.group('FavoriteLucid Routes', (group) => {
+test.group('Favorite Routes', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
@@ -13,14 +12,16 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeUser, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.post(`favorites/${fakeVideo.uuid}`).bearerToken(accessTokenValue)
+    const response = await client
+      .post(`favorites/${fakeVideo.uuid}`)
+      .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -30,14 +31,14 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.post(`favorites/any_uuid`).bearerToken(accessTokenValue)
+    const response = await client.post(`favorites/any_uuid`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -49,17 +50,17 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.post(`favorites/${NilUUID}`).bearerToken(accessTokenValue)
+    const response = await client.post(`favorites/${NilUUID}`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+    expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')
   })
 
   test('/POST favorites/{uuid} - return 401 on add favorite if user unauthorized', async ({
@@ -69,14 +70,14 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.post(`favorites/${NilUUID}`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body().code).toBe('E_UNAUTHORIZED_ACCESS')
   })
 
   test('/DELETE favorites/{uuid} - return 200 if video remove favorite on success', async ({
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeUser, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -85,7 +86,7 @@ test.group('FavoriteLucid Routes', (group) => {
 
     const response = await client
       .delete(`favorites/${fakeVideo.uuid}`)
-      .bearerToken(accessTokenValue)
+      .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -95,14 +96,14 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.delete(`favorites/any_uuid`).bearerToken(accessTokenValue)
+    const response = await client.delete(`favorites/any_uuid`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -114,17 +115,19 @@ test.group('FavoriteLucid Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.delete(`favorites/${NilUUID}`).bearerToken(accessTokenValue)
+    const response = await client
+      .delete(`favorites/${NilUUID}`)
+      .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+    expect(response.body().code).toEqual('E_VIDEO_NOT_FOUND')
   })
 
   test('/DELETE favorites/{uuid} - return 401 on remove favorite if user unauthorized', async ({
@@ -134,21 +137,21 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.delete(`favorites/${NilUUID}`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body().code).toBe('E_UNAUTHORIZED_ACCESS')
   })
 
   test('/GET favorites - return 200 on find a list favorite videos by user logged', async ({
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockLucidEntity()
+    const { fakeUser, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.get(`favorites`).bearerToken(accessTokenValue)
+    const response = await client.get(`favorites`).withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
     expect(response.body().length).toBe(1)
@@ -164,6 +167,6 @@ test.group('FavoriteLucid Routes', (group) => {
     const response = await client.get(`favorites`)
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body().code).toBe('E_UNAUTHORIZED_ACCESS')
   })
 })

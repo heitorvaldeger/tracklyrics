@@ -1,31 +1,31 @@
 import { test } from '@japa/runner'
 
 import UserLucid from '#models/user-model/user-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
 test.group('User Routes', (group) => {
   test('/GET user information - it must return 401 on get user information if user unauthorized', async ({
     client,
     expect,
   }) => {
-    const response = await client.get('/users')
+    const response = await client.get('user')
 
     expect(response.status()).toBe(401)
-    expect(response.body()).toEqual({ errors: [{ message: 'Unauthorized access' }] })
+    expect(response.body().code).toBe('E_UNAUTHORIZED_ACCESS')
   })
 
   test('/GET user information - it must return 200 on get user information with success', async ({
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockLucidEntity()
+    const { fakeUser } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
-    const response = await client.get('/users').bearerToken(accessTokenValue)
+    const response = await client.get('user').withCookie('AUTH', accessTokenValue)
 
     const body = response.body()
 

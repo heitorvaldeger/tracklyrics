@@ -1,10 +1,11 @@
 import { defineConfig } from '@adonisjs/mail'
 
-import { mailTrapTransport } from '#infra/mail/nodemailer/mailtrap-transport'
+import { mailTrapTransport } from '#infra/mail/adonis/mailtrap-transport'
+import { resendMailTransport } from '#infra/mail/adonis/resend-transport'
 import env from '#start/env'
 
 const mailConfig = defineConfig({
-  default: 'mailTrap',
+  default: 'resend',
 
   /**
    * The mailers object can be used to configure multiple mailers
@@ -20,6 +21,7 @@ const mailConfig = defineConfig({
         pass: env.get('MAILTRAP_PASS'),
       },
     }),
+    resend: resendMailTransport('re_PQyBYBDf_BnUduVdr81u9kHJXah2dWsJc'),
   },
 })
 

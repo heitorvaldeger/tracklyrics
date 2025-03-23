@@ -1,5 +1,6 @@
 import app from '@adonisjs/core/services/app'
 import testUtils from '@adonisjs/core/services/test_utils'
+import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
 import { apiClient } from '@japa/api-client'
 import { expect } from '@japa/expect'
@@ -7,13 +8,7 @@ import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import type { Config } from '@japa/runner/types'
 import Sinon from 'sinon'
 
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
-import GenreLucid from '#models/genre-model/genre-lucid'
-import { LanguageLucid } from '#models/language-model/language-lucid'
-import { LyricLucid } from '#models/lyric-model/lyric-lucid'
 import UserLucid from '#models/user-model/user-lucid'
-import VideoLucid from '#models/video-model/video-lucid'
-import VideoPlayCountLucid from '#models/video-play-count/video-play-count-lucid'
 
 /**
  * This file is imported by the "bin/test.ts" entrypoint file
@@ -43,19 +38,17 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
  */
 export const configureSuite: Config['configureSuite'] = (suite) => {
   suite.onGroup((group) => {
-    group.tap((test) => {
-      test.teardown(async () => {
-        mail.fake()
-        Sinon.reset()
-        Sinon.restore()
-        await LyricLucid.query().del()
-        await FavoriteLucid.query().del()
-        await VideoPlayCountLucid.query().del()
-        await VideoLucid.query().del()
-        await UserLucid.query().del()
-        await GenreLucid.query().del()
-        await LanguageLucid.query().del()
-      })
+    group.each.teardown(async (test) => {
+      mail.fake()
+      Sinon.reset()
+      Sinon.restore()
+      await db.from('lyrics').del()
+      await db.from('favorites').del()
+      await db.from('video_play_counts').del()
+      await db.from('videos').del()
+      await UserLucid.query().del()
+      await db.from('genres').del()
+      await db.from('languages').del()
     })
   })
 

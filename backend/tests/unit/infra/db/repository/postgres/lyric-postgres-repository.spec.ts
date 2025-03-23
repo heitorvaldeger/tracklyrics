@@ -3,11 +3,11 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import _ from 'lodash'
 
-import { toCamelCase } from '#helpers/to-camel-case'
+import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
 import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
-import { LyricRepository } from '#infra/db/repository/protocols/lyric-repository'
-import { LyricLucid } from '#models/lyric-model/lyric-lucid'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { toSnakeCase } from '#utils/index'
+import { toCamelCase } from '#utils/index'
 
 const makeSut = () => {
   const sut = new LyricPostgresRepository()
@@ -20,7 +20,7 @@ test.group('LyricPostgresRepository', (group) => {
   })
 
   test('insert lyrics with success', async ({ expect }) => {
-    const { fakeVideo } = await mockLucidEntity()
+    const { fakeVideo } = await mockAllTables()
     const { sut } = makeSut()
 
     const lyrics: LyricRepository.LyricParamsToInsert[] = []
@@ -45,7 +45,7 @@ test.group('LyricPostgresRepository', (group) => {
   })
 
   test('update lyrics with success', async ({ expect }) => {
-    const { fakeVideo } = await mockLucidEntity()
+    const { fakeVideo } = await mockAllTables()
     const { sut } = makeSut()
 
     const lyrics: LyricRepository.LyricParamsToInsert[] = []
@@ -59,7 +59,11 @@ test.group('LyricPostgresRepository', (group) => {
       })
     }
 
-    await LyricLucid.updateOrCreateMany(['videoId', 'seq'], lyrics)
+    await db
+      .table('lyrics')
+      .knexQuery.insert(lyrics.map(toSnakeCase))
+      .onConflict(['video_id', 'seq'])
+      .merge()
 
     lyrics[0].line = faker.lorem.sentence(5)
     delete lyrics[1]
@@ -83,7 +87,7 @@ test.group('LyricPostgresRepository', (group) => {
   })
 
   test('return a lyrics list by videoId with success', async ({ expect }) => {
-    const { fakeVideo } = await mockLucidEntity()
+    const { fakeVideo } = await mockAllTables()
     const { sut } = makeSut()
 
     const lyrics: LyricRepository.LyricParamsToInsert[] = []
@@ -97,7 +101,11 @@ test.group('LyricPostgresRepository', (group) => {
       })
     }
 
-    await LyricLucid.updateOrCreateMany(['videoId', 'seq'], lyrics)
+    await db
+      .table('lyrics')
+      .knexQuery.insert(lyrics.map(toSnakeCase))
+      .onConflict(['video_id', 'seq'])
+      .merge()
 
     const lyricsFromSut = await sut.find(fakeVideo.id)
     expect(

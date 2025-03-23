@@ -17,6 +17,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_KEY: Env.schema.string(),
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
+  LOG_ENABLE: Env.schema.boolean(),
 
   /*
   |----------------------------------------------------------
@@ -38,7 +39,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   MAILTRAP_PORT: Env.schema.number(),
   MAILTRAP_USER: Env.schema.string(),
   MAILTRAP_PASS: Env.schema.string(),
-  MAILTRAP_FROM: Env.schema.string(),
+  MAIL_FROM: Env.schema.string(),
 
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),

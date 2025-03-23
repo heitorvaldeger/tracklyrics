@@ -1,38 +1,52 @@
 import db from '@adonisjs/lucid/services/db'
 
-import { toCamelCase } from '#helpers/to-camel-case'
-import FavoriteLucid from '#models/favorite-model/favorite-lucid'
-import { VideoFindModel } from '#models/video-model/video-find-model'
+import { VideoMetadata } from '#models/video-metadata'
+import { toSnakeCase } from '#utils/index'
+import { toCamelCase } from '#utils/index'
 
-import { FavoriteRepository } from '../protocols/favorite-repository.js'
+import { FavoriteRepository } from '../_protocols/favorite-repository.js'
 
 export class FavoritePostgresRepository implements FavoriteRepository {
-  async addFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
-    const favorite = await FavoriteLucid.query()
-      .where('userId', userId)
-      .where('videoId', videoId)
-      .first()
-    const favoriteAdded = await FavoriteLucid.updateOrCreate(
-      {
-        videoId,
-        userId,
-      },
-      {
-        videoId,
-        userId,
-        uuid: favorite?.uuid ? favorite.uuid : favoriteUuid,
-      }
-    )
-    return favoriteAdded.$isPersisted
+  async saveFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
+    const favoriteQuery = db.from('favorites').where('user_id', userId).where('video_id', videoId)
+
+    const hasFavorite = !!(await favoriteQuery.first())
+
+    const favoritesUpdatedOrInserted = hasFavorite
+      ? await db
+          .from('favorites')
+          .where('user_id', userId)
+          .where('video_id', videoId)
+          .returning('uuid')
+          .update(
+            toSnakeCase({
+              videoId,
+              userId,
+              updatedAt: new Date().toISOString(),
+            })
+          )
+      : await db
+          .table('favorites')
+          .returning('uuid')
+          .insert(
+            toSnakeCase({
+              videoId,
+              userId,
+              uuid: favoriteUuid,
+              createdAt: new Date().toISOString(),
+            })
+          )
+
+    return !!favoritesUpdatedOrInserted.length
   }
 
   async removeFavorite(videoId: number, userId: number): Promise<boolean> {
-    await FavoriteLucid.query().where('videoId', videoId).where('userId', userId).delete()
-    return !(await FavoriteLucid.query().where('videoId', videoId).where('userId', userId).first())
+    await db.from('favorites').where('video_id', videoId).where('user_id', userId).delete()
+    return !(await db.from('favorites').where('video_id', videoId).where('user_id', userId).first())
   }
 
-  async findFavoritesByUser(userId: number): Promise<VideoFindModel[]> {
-    const favorites: VideoFindModel[] = await db
+  async findFavoritesByUser(userId: number): Promise<VideoMetadata[]> {
+    const favorites: VideoMetadata[] = await db
       .from('favorites')
       .where('favorites.user_id', userId)
       .innerJoin('videos', 'videos.id', 'favorites.video_id')

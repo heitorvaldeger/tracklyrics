@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 
-import { APPLICATION_MESSAGES } from '#helpers/application-messages'
-import { mockLucidEntity } from '#tests/__mocks__/entities/mock-lucid-entity'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
@@ -10,7 +9,7 @@ test.group('Game Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeVideo } = await mockLucidEntity()
+    const { fakeVideo } = await mockAllTables()
 
     const response = await client.put(`game/${fakeVideo.uuid}/play`)
 
@@ -36,15 +35,15 @@ test.group('Game Routes', (group) => {
     const response = await client.put(`game/${NilUUID}/play`)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+    expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')
   })
 
   test('/GET game/{uuid}/modes - return 200 with modes on success', async ({ client, expect }) => {
-    const { fakeVideo, fakeLyrics } = await mockLucidEntity()
+    const { fakeVideo, fakeLyrics } = await mockAllTables()
 
     const response = await client.get(`game/${fakeVideo.uuid}/modes`)
 
-    const totalWords = fakeLyrics.reduce((acc, value) => acc + value.line.length, 0)
+    const totalWords = fakeLyrics.reduce((acc, value) => acc + value.line.split(' ').length, 0)
     expect(response.status()).toBe(200)
     expect(response.body().beginner).toEqual({
       percent: mockGameModesData.beginnerPercent,
@@ -73,7 +72,7 @@ test.group('Game Routes', (group) => {
     const response = await client.get(`game/${NilUUID}/modes`)
 
     expect(response.status()).toBe(404)
-    expect(response.body()).toEqual(APPLICATION_MESSAGES.VIDEO_NOT_FOUND)
+    expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')
   })
 
   test('/GET game/{uuid}/modes - return 400 on get modes if video uuid invalid is provided', async ({

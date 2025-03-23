@@ -1,24 +1,22 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query"
-import { AppRoutes } from "./routes"
-import { Toaster } from "@/components/ui/toaster"
-import { UserAuthProvider } from "./contexts/UserAuthContext"
+import { QueryClientProvider } from "react-query";
+import { RouterProvider } from "react-router";
+import { Toaster } from "sonner";
 
-const queryClient = new QueryClient()
+import { GenreLanguageProvider } from "@/contexts/genre-language-context";
+import { queryClient } from "@/lib/react-query";
+import { router } from "@/routes";
 
-function App() {
+import { SessionProvider } from "./contexts/session-context";
+
+export const App = () => {
   return (
-    <div className="w-full h-screen flex flex-col mx-auto">
-      <QueryClientProvider client={queryClient}>
-        <UserAuthProvider>
-          <AppRoutes />
-          <Toaster duration={3000} />
-        </UserAuthProvider>
-      </QueryClientProvider>
-    </div>
-  )
-}
-
-export default App
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <GenreLanguageProvider>
+          <RouterProvider router={router} />
+        </GenreLanguageProvider>
+      </SessionProvider>
+      <Toaster richColors />
+    </QueryClientProvider>
+  );
+};
