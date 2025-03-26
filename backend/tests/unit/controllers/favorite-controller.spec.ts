@@ -30,7 +30,7 @@ test.group('FavoriteController', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('returns 400 if invalid video uuid is provided on remove', async ({ expect }) => {
+  test('return 400 if invalid video uuid is provided on remove', async ({ expect }) => {
     const { sut, httpContext: context } = await makeSut()
 
     stub(context.request, 'params').returns({
@@ -47,7 +47,7 @@ test.group('FavoriteController', (group) => {
     ])
   })
 
-  test('returns 404 if a video not found on remove', async ({ expect }) => {
+  test('return 404 if a video not found on remove', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(favoriteServiceStub, 'removeFavorite').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({
@@ -59,14 +59,14 @@ test.group('FavoriteController', (group) => {
     expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('returns 200 if video was remove favorite on success', async ({ expect }) => {
+  test('return 200 if video was remove favorite on success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.removeFavorite(httpContext)
     expect(httpResponse).toBeTruthy()
   })
 
-  test('returns 500 if video remove favorite throws', async ({ expect }) => {
+  test('return 500 if video remove favorite throws', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
 
     stub(favoriteServiceStub, 'removeFavorite').throws(new Error())
@@ -76,7 +76,7 @@ test.group('FavoriteController', (group) => {
     expect(httpResponse).rejects.toEqual(new Error())
   })
 
-  test('returns 400 if invalid video uuid is provided on save', async ({ expect }) => {
+  test('return 400 if invalid video uuid is provided on save', async ({ expect }) => {
     const { sut, httpContext: context } = await makeSut()
 
     stub(context.request, 'params').returns({
@@ -93,7 +93,7 @@ test.group('FavoriteController', (group) => {
     ])
   })
 
-  test('returns 404 if return a video not found on save', async ({ expect }) => {
+  test('return 404 if return a video not found on save', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(favoriteServiceStub, 'saveFavorite').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({
@@ -105,14 +105,14 @@ test.group('FavoriteController', (group) => {
     expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('returns 200 if video was add favorite on save', async ({ expect }) => {
+  test('return 200 if video was add favorite on save', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.saveFavorite(httpContext)
     expect(httpResponse).toBeTruthy()
   })
 
-  test('returns 500 if video add favorite throws on save', async ({ expect }) => {
+  test('return 500 if video add favorite throws on save', async ({ expect }) => {
     const { sut, httpContext, favoriteServiceStub } = await makeSut()
     stub(httpContext.request, 'params').returns({
       uuid: faker.string.uuid(),
@@ -125,7 +125,7 @@ test.group('FavoriteController', (group) => {
     expect(httpResponse).rejects.toEqual(new Error())
   })
 
-  test('returns 200 on find favorites by user logged', async ({ expect }) => {
+  test('return 200 on find favorites by user logged', async ({ expect }) => {
     const { sut } = await makeSut()
 
     const httpResponse = await sut.findFavoritesByUserLogged()
@@ -133,7 +133,7 @@ test.group('FavoriteController', (group) => {
     expect(httpResponse).toEqual([mockVideoData, mockVideoData])
   })
 
-  test('returns 500 if find favorites by user logged throws', async ({ expect }) => {
+  test('return 500 if find favorites by user logged throws', async ({ expect }) => {
     const { sut, favoriteServiceStub } = await makeSut()
 
     stub(favoriteServiceStub, 'findFavoritesByUserLogged').throws(new Error())

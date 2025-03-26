@@ -1,5 +1,6 @@
 import { Info, Plus, Trash } from "lucide-react";
 import { useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import ReactPlayer from "react-player";
 
 import { Button } from "@/components/ui/button";
@@ -13,11 +14,11 @@ import {
 import { TabsContent } from "@/components/ui/tabs";
 import { Lyric } from "@/models/lyric";
 
-import { useVideoAdd } from "./contexts/video-add-context";
 import { TableLyricRow } from "./table-lyric-row";
 
 export const TabLyrics = () => {
-  const { youtubeURL } = useVideoAdd();
+  const { watch } = useFormContext();
+  const youtubeURLWatcher = watch("linkYoutube");
 
   const playerRef = useRef<ReactPlayer | null>(null);
 
@@ -104,10 +105,10 @@ export const TabLyrics = () => {
       <div className="bg-slate-100 p-4 rounded-lg space-y-4">
         <div className="mb-4">
           <h3 className="font-medium mb-2">Video Controls</h3>
-          {youtubeURL ? (
+          {youtubeURLWatcher ? (
             <div className="aspect-video w-full max-h-[250px] rounded-md overflow-hidden border bg-black">
               <ReactPlayer
-                url={youtubeURL}
+                url={youtubeURLWatcher}
                 width="auto"
                 height="250px"
                 ref={playerRef}

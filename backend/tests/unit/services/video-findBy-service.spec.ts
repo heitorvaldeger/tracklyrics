@@ -17,7 +17,7 @@ test.group('VideoFindService.findBy()', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('returns a empty list of videos with on success', async ({ expect }) => {
+  test('return a empty list of videos with on success', async ({ expect }) => {
     const { sut } = makeSut()
 
     const video = await sut.findBy({})
@@ -25,21 +25,21 @@ test.group('VideoFindService.findBy()', (group) => {
     expect(video).toEqual([mockVideoData])
   })
 
-  test('returns a list videos returns on find by genre', async ({ expect }) => {
+  test('return a list videos returns on find by genre', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({ genreId: 0 })
 
     expect(video).toEqual([mockVideoData])
   })
 
-  test('returns a list videos returns on find by language', async ({ expect }) => {
+  test('return a list videos returns on find by language', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({ languageId: 0 })
 
     expect(video).toEqual([mockVideoData])
   })
 
-  test('returns a list videos returns on find by user uuid', async ({ expect }) => {
+  test('return a list videos returns on find by user uuid', async ({ expect }) => {
     const { sut } = makeSut()
     const video = await sut.findBy({
       userUuid: faker.string.uuid(),

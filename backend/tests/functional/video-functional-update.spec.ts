@@ -1,18 +1,17 @@
-import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
 import UserLucid from '#models/user-model/user-lucid'
-import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
 const httpRequest = mockVideoCreateOrUpdateRequest()
 
-test.group('Video Create Route', (group) => {
-  test('/POST videos/ - it must return 200 on create if video create on success', async ({
+test.group('Video Update Route', (group) => {
+  test('/PUT videos/:uuid - it must return 200 on update if video update on success', async ({
     client,
     expect,
   }) => {
-    const { fakeUser, fakeGenre, fakeLanguage } = await mockAllTables()
+    const { fakeUser, fakeGenre, fakeLanguage, fakeVideo } = await mockAllTables()
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -20,7 +19,7 @@ test.group('Video Create Route', (group) => {
     const accessTokenValue = accessToken.value!.release()
 
     const response = await client
-      .post(`/videos`)
+      .put(`/videos/${fakeVideo.uuid}`)
       .json({
         ...httpRequest,
         languageId: fakeLanguage.id,
@@ -29,17 +28,13 @@ test.group('Video Create Route', (group) => {
       .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
-    expect(response.body().artist).toBe(httpRequest.artist)
-    expect(response.body().linkYoutube).toBe(httpRequest.linkYoutube)
-    expect(response.body().title).toBe(httpRequest.title)
-    expect(response.body().releaseYear).toBe(httpRequest.releaseYear)
   })
 
-  test('/POST videos/ - it must return 400 on create if any param is invalid', async ({
+  test('/PUT videos/:uuid - it must return 400 on update if any param is invalid', async ({
     client,
     expect,
   }) => {
-    const { fakeUser, fakeLanguage } = await mockAllTables()
+    const { fakeUser, fakeLanguage, fakeVideo } = await mockAllTables()
     const { genreId, artist, ...rest } = httpRequest
 
     const accessToken = await UserLucid.accessTokens.create(
@@ -48,7 +43,7 @@ test.group('Video Create Route', (group) => {
     const accessTokenValue = accessToken.value!.release()
 
     const response = await client
-      .post(`/videos`)
+      .put(`/videos/${fakeVideo.uuid}`)
       .json({
         ...rest,
         languageId: fakeLanguage.id,
@@ -68,7 +63,7 @@ test.group('Video Create Route', (group) => {
     ])
   })
 
-  test('/POST videos/ - it must return 401 on create if user unauthorized', async ({
+  test('/PUT videos/:uuid - it must return 401 on update if user unauthorized', async ({
     client,
     expect,
   }) => {
@@ -78,11 +73,13 @@ test.group('Video Create Route', (group) => {
     expect(response.body().code).toBe('E_UNAUTHORIZED_ACCESS')
   })
 
-  test('/POST videos/ - it must return 422 on create if video youtube already exists', async ({
+  test("/PUT videos/:uuid - it must return 422 on update if youtube URL video provided already exists and doesn't belong the video provided", async ({
     client,
     expect,
   }) => {
     const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockAllTables()
+    const anotherFakeVideo = await mockVideo({ fakeGenre, fakeLanguage, fakeUser })
+
     const { genreId, languageId, ...rest } = httpRequest
 
     const accessToken = await UserLucid.accessTokens.create(
@@ -91,10 +88,10 @@ test.group('Video Create Route', (group) => {
     const accessTokenValue = accessToken.value!.release()
 
     const response = await client
-      .post(`/videos`)
+      .put(`/videos/${fakeVideo.uuid}`)
       .json({
         ...rest,
-        linkYoutube: fakeVideo.linkYoutube,
+        linkYoutube: anotherFakeVideo.linkYoutube,
         languageId: fakeLanguage.id,
         genreId: fakeGenre.id,
       })

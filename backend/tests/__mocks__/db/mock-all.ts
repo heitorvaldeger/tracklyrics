@@ -24,11 +24,15 @@ type MockAllTables = {
   fakeLyrics: Lyric[]
 }
 
-export const mockAllTables = async (): Promise<MockAllTables> => {
-  const fakeLanguage = await mockLanguage()
-  const fakeGenre = await mockGenre()
-  const fakeUser = await mockUser()
-
+export const mockVideo = async ({
+  fakeLanguage,
+  fakeGenre,
+  fakeUser,
+}: {
+  fakeLanguage: Language
+  fakeGenre: Genre
+  fakeUser: UserLucid
+}) => {
   const video = toSnakeCase({
     isDraft: false,
     title: faker.lorem.words(2),
@@ -41,11 +45,19 @@ export const mockAllTables = async (): Promise<MockAllTables> => {
     userId: fakeUser.id,
     createdAt: new Date().toISOString(),
   })
-  const fakeVideo = _.omit(
+  return _.omit(
     toCamelCase<Video>((await db.table('videos').insert(video).returning(['*']))[0]),
     'createdAt',
     'updatedAt'
   )
+}
+
+export const mockAllTables = async (): Promise<MockAllTables> => {
+  const fakeLanguage = await mockLanguage()
+  const fakeGenre = await mockGenre()
+  const fakeUser = await mockUser()
+
+  const fakeVideo = await mockVideo({ fakeGenre, fakeLanguage, fakeUser })
 
   const fakeFavorite = toCamelCase<Favorite>(
     (

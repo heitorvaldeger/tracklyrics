@@ -5,6 +5,7 @@ export abstract class VideoRepository {
   abstract find(uuid: string): Promise<VideoMetadata | null>
   abstract findBy(filters: VideoRepository.FindVideoParams): Promise<VideoMetadata[]>
   abstract getVideoId(videoUuid: string): Promise<number | null>
+  abstract getVideoUuidByYoutubeURL(videoUuid: string): Promise<string | undefined>
   abstract getUserId(videoUuid: string): Promise<number | null>
   abstract delete(uuid: string): Promise<boolean>
   abstract create(payload: VideoCreateInput): Promise<VideoSaveResult>

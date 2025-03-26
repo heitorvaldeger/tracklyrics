@@ -30,7 +30,7 @@ test.group('VideoCreateController', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('returns 400 if isDraft is not a boolean', async ({ expect }) => {
+  test('return 400 if isDraft is not a boolean', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request.body(), 'isDraft').value('any_value')
 
@@ -44,7 +44,7 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 400 if required fields is not provided', async ({ expect }) => {
+  test('return 400 if required fields is not provided', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request, 'body').returns({
       isDraft: false,
@@ -79,7 +79,7 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 400 if releseYear not contains four length', async ({ expect }) => {
+  test('return 400 if releseYear not contains four length', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request.body(), 'releaseYear').value('00000')
 
@@ -93,7 +93,7 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 400 if releseYear is not string numeric', async ({ expect }) => {
+  test('return 400 if releseYear is not string numeric', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request.body(), 'releaseYear').value('abcd')
 
@@ -107,7 +107,72 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 400 if fields not contains most three characteres', async ({ expect }) => {
+  test('return 400 if lyrics is not array', async ({ expect }) => {
+    const { sut, httpContext: ctx } = await makeSut()
+    stub(ctx.request.body(), 'lyrics').value([
+      {
+        startTime: 'invalid_time',
+        endTime: 'invalid_time',
+        line: '',
+      },
+    ])
+
+    await sut.create(ctx)
+
+    expect(ctx.response.getBody()).toEqual([
+      {
+        field: 'line',
+        message: 'The line field must have at least 1 characters',
+      },
+      {
+        field: 'startTime',
+        message: 'The startTime field must be pattern 00:00:00',
+      },
+      {
+        field: 'endTime',
+        message: 'The endTime field must be pattern 00:00:00',
+      },
+    ])
+  })
+
+  test('return 400 if fields in lyrics are invalid', async ({ expect }) => {
+    const { sut, httpContext: ctx } = await makeSut()
+    stub(ctx.request.body(), 'lyrics').value({})
+
+    await sut.create(ctx)
+
+    expect(ctx.response.getBody()).toEqual([
+      {
+        field: 'lyrics',
+        message: 'The lyrics field must be an array',
+      },
+    ])
+  })
+
+  test('return 400 if any lyric provided with startTime is more then endTime', async ({
+    expect,
+  }) => {
+    const { sut, httpContext: ctx } = await makeSut()
+
+    stub(ctx.request.body(), 'lyrics').value([
+      {
+        startTime: '00:00:10',
+        endTime: '00:00:00',
+        line: 'any_line',
+      },
+    ])
+
+    await sut.create(ctx)
+
+    expect(ctx.response.getBody()).toEqual([
+      {
+        field: 'startTime',
+        message: 'The startTime field must be less than the endTime field',
+      },
+    ])
+  })
+
+  test('return 400 if fields not contains most three characteres', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     const httpBody = ctx.request.body()
     stub(ctx.request, 'body').returns({
@@ -130,7 +195,7 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 400 if string fields is empty', async ({ expect }) => {
+  test('return 400 if string fields is empty', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     const httpBody = ctx.request.body()
     stub(ctx.request, 'body').returns({
@@ -158,7 +223,7 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 400 if linkYoutube is not valid link', async ({ expect }) => {
+  test('return 400 if linkYoutube is not valid link', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request.body(), 'linkYoutube').value('any_link')
 
@@ -172,14 +237,14 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('returns 200 if video created on success', async ({ expect }) => {
+  test('return 200 if video created on success', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     const httpResponse = await sut.create(ctx)
 
     expect(httpResponse).toEqual(videoResponse)
   })
 
-  test('returns 500 if video create throws', async ({ expect }) => {
+  test('return 500 if video create throws', async ({ expect }) => {
     const { sut, httpContext: ctx, videoCreateServiceStub } = await makeSut()
 
     stub(videoCreateServiceStub, 'create').throws(new Error())
@@ -189,7 +254,7 @@ test.group('VideoCreateController', (group) => {
     expect(httpResponse).rejects.toEqual(new Error())
   })
 
-  test('returns 422 if link youtube already exists', async ({ expect }) => {
+  test('return 422 if link youtube already exists', async ({ expect }) => {
     const { sut, httpContext, videoCreateServiceStub } = await makeSut()
     stub(videoCreateServiceStub, 'create').rejects(new YoutubeLinkAlreadyExistsException())
 

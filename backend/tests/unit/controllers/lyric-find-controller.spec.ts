@@ -5,7 +5,7 @@ import { stub } from 'sinon'
 
 import LyricFindController from '#controllers/lyric-find-controller'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { LyricFindProtocolService } from '#services/_protocols/lyric/lyric-find-protocol-service'
+import { LyricFindProtocolService } from '#services/_protocols/lyric-find-protocol-service'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 

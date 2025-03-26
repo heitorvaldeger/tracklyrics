@@ -10,6 +10,7 @@ import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-r
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
+import { mockLyricRepositoryStub } from '#tests/__mocks__/stubs/mock-lyric-stub'
 import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const videoRequest = mockVideoCreateOrUpdateRequest()
@@ -18,13 +19,15 @@ const makeSut = () => {
   const videoRepositoryStub = mockVideoRepositoryStub()
   const genreRepositoryStub = mockGenreRepositoryStub()
   const languageRepositoryStub = mockLanguageRepositoryStub()
+  const lyricRepositoryStub = mockLyricRepositoryStub()
   const { authStrategyStub } = mockAuthStrategyStub()
 
   const sut = new VideoCreateService(
     videoRepositoryStub,
     authStrategyStub,
     genreRepositoryStub,
-    languageRepositoryStub
+    languageRepositoryStub,
+    lyricRepositoryStub
   )
 
   return { sut, videoRepositoryStub, authStrategyStub, genreRepositoryStub, languageRepositoryStub }

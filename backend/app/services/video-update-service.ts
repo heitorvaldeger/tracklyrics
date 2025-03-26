@@ -7,6 +7,7 @@ import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-
 import { Auth } from '#infra/auth/protocols/auth'
 import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
 import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
+import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
 import { VideoUpdateProtocolService } from '#services/_protocols/video/video-update-protocol-service'
 import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
@@ -18,20 +19,21 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
     private readonly authStrategy: Auth,
     private readonly videoCurrentUserService: VideoUserLoggedProtocolService,
     private readonly genreRepository: GenreRepository,
-    private readonly languageRepository: LanguageRepository
+    private readonly languageRepository: LanguageRepository,
+    private readonly lyricRepository: LyricRepository
   ) {}
 
   async update(payload: VideoUpdateProtocolService.Params, uuid: string) {
-    if (await this.videoRepository.hasYoutubeLink(payload.linkYoutube)) {
-      throw new YoutubeLinkAlreadyExistsException()
-    }
+    const { lyrics, linkYoutube, genreId, languageId, ...rest } = payload
+
     if (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(uuid)) {
       throw new VideoNotFoundException()
     }
 
-    const [genre, language] = await Promise.all([
-      this.genreRepository.findById(payload.genreId),
-      this.languageRepository.findById(payload.languageId),
+    const [genre, language, videoUuid] = await Promise.all([
+      this.genreRepository.findById(genreId),
+      this.languageRepository.findById(languageId),
+      this.videoRepository.getVideoUuidByYoutubeURL(linkYoutube),
     ])
 
     if (!genre) {
@@ -42,14 +44,35 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
       throw new LanguageNotFoundException()
     }
 
-    return await this.videoRepository.update(
+    if (videoUuid && uuid !== videoUuid) {
+      throw new YoutubeLinkAlreadyExistsException()
+    }
+
+    const updated = await this.videoRepository.update(
       {
-        ...payload,
-        languageId: payload.languageId,
-        genreId: payload.genreId,
+        ...rest,
+        languageId,
+        genreId,
         userId: this.authStrategy.getUserId(),
       },
       uuid
     )
+
+    const videoId = await this.videoRepository.getVideoId(uuid)
+    if (!videoId) {
+      throw new VideoNotFoundException()
+    }
+
+    const newLyricsToInsert = payload.lyrics?.map((lyric, idx) => ({
+      seq: ++idx,
+      videoId,
+      ...lyric,
+    }))
+
+    if (newLyricsToInsert) {
+      await this.lyricRepository.save(newLyricsToInsert)
+    }
+
+    return updated
   }
 }

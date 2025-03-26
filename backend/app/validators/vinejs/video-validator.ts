@@ -1,5 +1,7 @@
 import vine from '@vinejs/vine'
 
+import { compareTimeRule } from './rules/compare-time.js'
+
 const youtubeLinkRegex =
   /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
 
@@ -16,6 +18,23 @@ export const createOrUpdateVideoValidator = vine.compile(
     linkYoutube: vine.string().regex(youtubeLinkRegex).url(),
     languageId: vine.number(),
     genreId: vine.number(),
+    lyrics: vine
+      .array(
+        vine.object({
+          line: vine.string().trim().minLength(1),
+          startTime: vine
+            .string()
+            .trim()
+            .use(
+              compareTimeRule({
+                fieldName: 'endTime',
+                operation: 'less',
+              })
+            ),
+          endTime: vine.string().trim(),
+        })
+      )
+      .optional(),
   })
 )
 

@@ -21,7 +21,7 @@ test.group('VideoUserLoggedController', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('returns 200 if return a video list on success', async ({ expect }) => {
+  test('return 200 if return a video list on success', async ({ expect }) => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.getVideosByUserLogged()
@@ -29,7 +29,7 @@ test.group('VideoUserLoggedController', (group) => {
     expect(httpResponse).toEqual([mockVideoData])
   })
 
-  test('returns 401 if user is not authorized', async ({ expect }) => {
+  test('return 401 if user is not authorized', async ({ expect }) => {
     const { sut, videoUserLoggedServiceStub } = makeSut()
     stub(videoUserLoggedServiceStub, 'getVideosByUserLogged').rejects(new UnauthorizedException())
 

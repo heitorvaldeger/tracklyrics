@@ -13,5 +13,10 @@ export namespace VideoCreateProtocolService {
     languageId: number
     genreId: number
     isDraft?: boolean
+    lyrics?: {
+      line: string
+      startTime: string
+      endTime: string
+    }[]
   }
 }

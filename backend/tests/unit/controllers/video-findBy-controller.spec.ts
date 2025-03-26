@@ -19,7 +19,7 @@ test.group('VideoFindController.findBy()', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('returns 200 if return a list videos on success', async ({ expect }) => {
+  test('return 200 if return a list videos on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     const httpResponse = await sut.findBy(httpContext)
     expect(httpResponse).toEqual([mockVideoData])
@@ -44,7 +44,7 @@ test.group('VideoFindController.findBy()', (group) => {
     ).toBeTruthy()
   })
 
-  test('returns 400 if invalid params is provided', async ({ expect }) => {
+  test('return 400 if invalid params is provided', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
     stub(ctx.request, 'qs').returns({
       genreId: 'any_id',
@@ -69,7 +69,7 @@ test.group('VideoFindController.findBy()', (group) => {
     ])
   })
 
-  test('returns 500 if video findBy return throws', async ({ expect }) => {
+  test('return 500 if video findBy return throws', async ({ expect }) => {
     const { sut, videoServiceStub, httpContext } = makeSut()
     stub(videoServiceStub, 'findBy').throws(new Error())
     const httpResponse = sut.findBy(httpContext)

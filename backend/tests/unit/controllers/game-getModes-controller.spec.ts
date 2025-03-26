@@ -45,7 +45,7 @@ test.group('GameController.getModes()', (group) => {
     ])
   })
 
-  test('returns 404 if a video not found', async ({ expect }) => {
+  test('return 404 if a video not found', async ({ expect }) => {
     const { sut, httpContext, gameServiceStub } = await makeSut()
     stub(gameServiceStub, 'getModes').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({

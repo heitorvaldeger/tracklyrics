@@ -29,7 +29,7 @@ test.group('VideoDeleteController', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
-  test('returns 200 if video was delete on success', async ({ expect }) => {
+  test('return 200 if video was delete on success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
 
     const httpResponse = await sut.delete(httpContext)
@@ -37,7 +37,7 @@ test.group('VideoDeleteController', (group) => {
     expect(httpResponse).toBeTruthy()
   })
 
-  test('returns 404 if a video not found', ({ expect }) => {
+  test('return 404 if a video not found', ({ expect }) => {
     const { sut, httpContext, videoDeleteServiceStub } = makeSut()
     stub(videoDeleteServiceStub, 'delete').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({
@@ -49,7 +49,7 @@ test.group('VideoDeleteController', (group) => {
     expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('returns 400 if a invalid uuid is provided', async ({ expect }) => {
+  test('return 400 if a invalid uuid is provided', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
     stub(ctx.request, 'params').returns({
       uuid: 'invalid_uuid',
@@ -65,7 +65,7 @@ test.group('VideoDeleteController', (group) => {
     ])
   })
 
-  test('returns 500 if video delete throws', ({ expect }) => {
+  test('return 500 if video delete throws', ({ expect }) => {
     const { sut, httpContext, videoDeleteServiceStub } = makeSut()
 
     stub(videoDeleteServiceStub, 'delete').throws(new Error())

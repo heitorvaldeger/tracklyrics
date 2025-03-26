@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
-import { LyricFindProtocolService } from '#services/_protocols/lyric/lyric-find-protocol-service'
+import { LyricFindProtocolService } from '#services/_protocols/lyric-find-protocol-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()

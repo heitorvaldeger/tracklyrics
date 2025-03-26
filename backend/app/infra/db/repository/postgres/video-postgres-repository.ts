@@ -70,6 +70,11 @@ export class VideoPostgresRepository implements VideoRepository {
     return video ? video.id : null
   }
 
+  async getVideoUuidByYoutubeURL(youtubeURL: string): Promise<string | undefined> {
+    const video: Video | null = await db.from('videos').where('link_youtube', youtubeURL).first()
+    return video?.uuid
+  }
+
   async getUserId(videoUuid: string): Promise<number | null> {
     const video: Video | null = await db.from('videos').where('uuid', videoUuid).first()
     return video ? toCamelCase(video).userId : null

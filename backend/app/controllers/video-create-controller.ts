@@ -10,6 +10,7 @@ export default class VideoCreateController {
 
   async create({ request, response }: HttpContext) {
     const [errors, data] = await createOrUpdateVideoValidator.tryValidate(request.body())
+
     if (errors || !data) {
       return response.badRequest(errors.messages)
     }

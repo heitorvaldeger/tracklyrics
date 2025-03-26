@@ -11,6 +11,7 @@ import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-requ
 import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepositoryStub } from '#tests/__mocks__/stubs/mock-language-stub'
+import { mockLyricRepositoryStub } from '#tests/__mocks__/stubs/mock-lyric-stub'
 import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
 import { mockVideoUserLoggedServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
 
@@ -22,12 +23,15 @@ const makeSut = () => {
   const genreRepositoryStub = mockGenreRepositoryStub()
   const languageRepositoryStub = mockLanguageRepositoryStub()
   const videoCurrentUserServiceStub = mockVideoUserLoggedServiceStub()
+  const lyricRepositoryStub = mockLyricRepositoryStub()
+
   const sut = new VideoUpdateService(
     videoRepositoryStub,
     authStrategyStub,
     videoCurrentUserServiceStub,
     genreRepositoryStub,
-    languageRepositoryStub
+    languageRepositoryStub,
+    lyricRepositoryStub
   )
 
   return {
@@ -52,6 +56,18 @@ test.group('Video Update Service', (group) => {
     expect(updated).toBeTruthy()
   })
 
+  test('return video updated with success if another youtube URL provided is valid', async ({
+    expect,
+  }) => {
+    const uuid = faker.string.uuid()
+    const { sut, videoRepositoryStub } = makeSut()
+    stub(videoRepositoryStub, 'getVideoUuidByYoutubeURL').resolves(uuid)
+
+    const updated = await sut.update(videoRequest, uuid)
+
+    expect(updated).toBeTruthy()
+  })
+
   test('return userId valid on call AuthService.getUserId', async ({ expect }) => {
     const { sut, authStrategyStub } = makeSut()
     authStrategyStub.getUserId.returns(0)
@@ -60,14 +76,16 @@ test.group('Video Update Service', (group) => {
     expect(authStrategyStub.getUserId.returned(0)).toBeTruthy()
   })
 
-  test('returns a error if link youtube already exists on update', ({ expect }) => {
+  test("return an error if youtube URL video provided already exists and doesn't belong the video provided", ({
+    expect,
+  }) => {
     const { sut, videoRepositoryStub } = makeSut()
-    stub(videoRepositoryStub, 'hasYoutubeLink').resolves(true)
+    stub(videoRepositoryStub, 'getVideoUuidByYoutubeURL').resolves('any_uuid')
     const videoResponse = sut.update(videoRequest, faker.string.uuid())
     expect(videoResponse).rejects.toEqual(new YoutubeLinkAlreadyExistsException())
   })
 
-  test('returns a error if video not exists', ({ expect }) => {
+  test('return a error if video not exists', ({ expect }) => {
     const { sut, videoCurrentUserServiceStub } = makeSut()
     stub(videoCurrentUserServiceStub, 'isNotVideoOwnedByUserLogged').returns(Promise.resolve(true))
     const video = sut.update(videoRequest, faker.string.uuid())

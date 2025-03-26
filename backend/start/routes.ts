@@ -21,6 +21,7 @@ const GenreController = () => import('#controllers/genre-controller')
 const VideoFindController = () => import('#controllers/video-find-controller')
 const VideoCreateController = () => import('#controllers/video-create-controller')
 const VideoDeleteController = () => import('#controllers/video-delete-controller')
+const VideoUpdateController = () => import('#controllers/video-update-controller')
 const VideoUserLoggedController = () => import('#controllers/video-user-logged-controller')
 const AuthController = () => import('#controllers/auth-controller')
 const UserController = () => import('#controllers/user-controller')
@@ -46,8 +47,9 @@ router
     router
       .group(() => {
         router.post('', [VideoCreateController, 'create'])
-        router.delete(':uuid', [VideoDeleteController, 'delete'])
         router.post(':uuid/lyrics', [LyricSaveController, 'save'])
+        router.put(':uuid', [VideoUpdateController, 'update'])
+        router.delete(':uuid', [VideoDeleteController, 'delete'])
       })
       .use(
         middleware.auth({

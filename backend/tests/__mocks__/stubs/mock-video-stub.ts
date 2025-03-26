@@ -36,6 +36,7 @@ export const mockVideoRepositoryStub = (): VideoRepository => ({
     Promise.resolve([mockVideoDataWithoutThumbnail]),
   getVideoId: (uuid: string) => Promise.resolve(1),
   getUserId: (uuid: string) => Promise.resolve(0),
+  getVideoUuidByYoutubeURL: (_: string) => Promise.resolve(undefined),
   delete: (uuid: string) => Promise.resolve(true),
   create: (params: VideoCreateInput) => Promise.resolve(mockFakeVideoSaveResultModel()),
   update: (params: VideoUpdateInput, uuid: string) => Promise.resolve(true),

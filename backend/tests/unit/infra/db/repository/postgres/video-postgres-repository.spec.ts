@@ -74,7 +74,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos[0].artist).toBe(fakeVideo.artist)
   })
 
-  test('returns a list videos on findBy if userUuid param is provided', async ({ expect }) => {
+  test('return a list videos on findBy if userUuid param is provided', async ({ expect }) => {
     const { sut } = await makeSut()
 
     const videos = await sut.findBy({ userUuid: fakeUser.uuid })
@@ -104,7 +104,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(video).toBeFalsy()
   })
 
-  test('returns true if link youtube already exists', async ({ expect }) => {
+  test('return true if link youtube already exists', async ({ expect }) => {
     const { sut } = await makeSut()
     const hasYoutubeLink = await sut.hasYoutubeLink(fakeVideo.linkYoutube)
 
@@ -243,5 +243,19 @@ test.group('VideoPostgresRepository', (group) => {
 
     const userId = await sut.getUserId(NilUUID)
     expect(userId).toBeFalsy()
+  })
+
+  test("return null if youtube URL doesn't exists", async ({ expect }) => {
+    const { sut } = await makeSut()
+
+    const videoUuid = await sut.getVideoUuidByYoutubeURL('any_youtube_url')
+    expect(videoUuid).toBeFalsy()
+  })
+
+  test('return video uuid if youtube URL exists', async ({ expect }) => {
+    const { sut } = await makeSut()
+
+    const videoUuid = await sut.getVideoUuidByYoutubeURL(fakeVideo.linkYoutube)
+    expect(videoUuid).toBe(fakeVideo.uuid)
   })
 })
