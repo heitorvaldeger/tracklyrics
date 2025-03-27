@@ -4,7 +4,7 @@ import _ from 'lodash'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
 import { VideoMetadata } from '#models/video-metadata'
-import { VideoFindProtocolService } from '#services/_protocols/video/video-find-protocol-service'
+import { VideoFindProtocolService } from '#services/_protocols/video-find-protocol-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()

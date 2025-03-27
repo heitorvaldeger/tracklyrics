@@ -3,7 +3,7 @@ import sinon, { stub } from 'sinon'
 
 import VideoCreateController from '#controllers/video-create-controller'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
-import { VideoCreateProtocolService } from '#services/_protocols/video/video-create-protocol-service'
+import { VideoCreateProtocolService } from '#services/_protocols/video-create-protocol-service'
 import {
   mockVideoCreateOrUpdateRequest,
   mockVideoCreateOrUpdateResponse,

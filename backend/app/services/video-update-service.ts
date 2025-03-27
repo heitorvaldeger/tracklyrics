@@ -9,8 +9,8 @@ import { GenreRepository } from '#infra/db/repository/_protocols/genre-repositor
 import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
 import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { VideoUpdateProtocolService } from '#services/_protocols/video/video-update-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
+import { VideoUpdateProtocolService } from '#services/_protocols/video-update-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
 
 @inject()
 export class VideoUpdateService implements VideoUpdateProtocolService {

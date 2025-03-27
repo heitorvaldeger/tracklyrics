@@ -13,7 +13,7 @@ type CardVideoProps = {
   hasActionDelete?: boolean;
   hasActionEdit?: boolean;
   onDelete?: (videoUuid: string) => void;
-  onEdit?: () => void;
+  onEdit?: (videoUuid: string) => void;
 };
 
 export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
@@ -49,6 +49,7 @@ export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
                   <Button
                     variant="outline"
                     size="icon"
+                    onClick={() => onEdit(video.uuid)}
                     className="bg-transparent rounded-full hover:bg-black-600 hover:opacity-50 [&_svg]:size-3"
                   >
                     <Pencil color="white" />

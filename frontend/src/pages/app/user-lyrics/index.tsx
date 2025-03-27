@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 import { deleteVideo } from "@/api/delete-video";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Video } from "@/models/video";
 
 export const UserLyrics = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data: videos } = useQuery({
@@ -46,6 +47,10 @@ export const UserLyrics = () => {
     });
   };
 
+  const handleEditLyric = async (videoUuid: string) => {
+    navigate(`/video/add?uuid=${videoUuid}`);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-3">
@@ -66,7 +71,7 @@ export const UserLyrics = () => {
             key={video.uuid}
             video={video}
             onDelete={() => handleDeleteLyric(video.uuid)}
-            onEdit={() => {}}
+            onEdit={() => handleEditLyric(video.uuid)}
           />
         ))}
       </div>

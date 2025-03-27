@@ -8,9 +8,8 @@ import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { Auth } from '#infra/auth/protocols/auth'
 import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { VideoMetadata } from '#models/video-metadata'
 import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()

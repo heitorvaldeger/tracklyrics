@@ -2,7 +2,7 @@ export interface Video {
   uuid: string;
   title: string;
   artist: string;
-  releaseYear: number;
+  releaseYear: string;
   linkYoutube: string;
   qtyViews: number;
   language: string;

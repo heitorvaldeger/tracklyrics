@@ -1,8 +1,8 @@
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
 import { VideoMetadata } from '#models/video-metadata'
 import { VideoCreateInput, VideoUpdateInput } from '#models/video-save'
-import { VideoFindProtocolService } from '#services/_protocols/video/video-find-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
+import { VideoFindProtocolService } from '#services/_protocols/video-find-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
 import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
 
 export const mockVideoData: VideoMetadata & {

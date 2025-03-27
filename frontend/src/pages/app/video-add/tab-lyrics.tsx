@@ -126,6 +126,7 @@ export const TabLyrics = () => {
                 width="auto"
                 height="250px"
                 ref={playerRef}
+                progressInterval={1}
                 onProgress={(state) => setCurrentTime(state.playedSeconds)}
                 controls
               />

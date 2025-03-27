@@ -1,6 +1,13 @@
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import ReactPlayer from "react-player";
 
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -13,10 +20,12 @@ import {
 import { TabsContent } from "@/components/ui/tabs";
 import { useGenreLanguage } from "@/contexts/genre-language-context";
 
+import { SaveVideoSchemaValidator } from ".";
+
 export const TabDetails = () => {
   const { genres, languages } = useGenreLanguage();
 
-  const { watch, register, control } = useFormContext();
+  const { watch, control } = useFormContext<SaveVideoSchemaValidator>();
 
   const youtubeURLWatcher = watch("linkYoutube");
 
@@ -26,17 +35,30 @@ export const TabDetails = () => {
       className="flex flex-col w-auto px-1 space-y-4 flex-1 overflow-y-auto py-4"
     >
       <div className="space-y-2">
-        <Label htmlFor="linkYoutube">YouTube Video URL *</Label>
-        <Input
-          id="linkYoutube"
-          required
-          placeholder="https://www.youtube.com/watch?v=..."
-          className="w-full"
-          {...register("linkYoutube")}
+        <FormField
+          control={control}
+          name="linkYoutube"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel htmlFor="linkYoutube" className="font-semibold">
+                YouTube Video URL *
+              </FormLabel>
+              <FormControl>
+                <Input
+                  id="linkYoutube"
+                  required
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  className="w-full"
+                  {...field}
+                />
+              </FormControl>
+              <FormLabel className="text-sm text-muted-foreground">
+                Paste the full YouTube URL of the video you want to add
+              </FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <p className="text-sm text-muted-foreground">
-          Paste the full YouTube URL of the video you want to add
-        </p>
       </div>
 
       {youtubeURLWatcher && (
@@ -50,91 +72,152 @@ export const TabDetails = () => {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2 flex-1">
-          <Label htmlFor="title">Title *</Label>
-          <Input
-            id="title"
-            required
-            placeholder="Enter the song title"
-            {...register("title")}
+          <FormField
+            control={control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="title" className="font-semibold">
+                  Title
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    id="title"
+                    required
+                    placeholder="Enter the song title"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="artist">Artist *</Label>
-          <Input
-            id="artist"
-            required
-            placeholder="Enter the artist name"
-            {...register("artist")}
+          <FormField
+            control={control}
+            name="artist"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="artist" className="font-semibold">
+                  Artist *
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    id="artist"
+                    required
+                    placeholder="Enter the artist name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="genre">Genre *</Label>
-          <Controller
+          <FormField
             control={control}
             name="genreId"
             render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
-                value={field.value?.toString()}
-              >
-                <SelectTrigger id="genre" className="w-full">
-                  <SelectValue placeholder="Select a genre" />
-                </SelectTrigger>
+              <FormItem>
+                <FormLabel htmlFor="genre" className="font-semibold">
+                  Genre *
+                </FormLabel>
+                <FormControl id="genre">
+                  <Select
+                    onValueChange={(v) => {
+                      if (v) {
+                        field.onChange(v);
+                      }
+                    }}
+                    value={field.value?.toString()}
+                  >
+                    <SelectTrigger id="genre" className="w-full">
+                      <SelectValue placeholder="Select a genre" />
+                    </SelectTrigger>
 
-                <SelectContent>
-                  {genres.map((genre) => (
-                    <SelectItem key={genre.id} value={genre.id.toString()}>
-                      {genre.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <SelectContent>
+                      {genres.map((genre) => (
+                        <SelectItem key={genre.id} value={genre.id.toString()}>
+                          {genre.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="language">Language *</Label>
-          <Controller
+          <FormField
             control={control}
             name="languageId"
             render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
-                value={field.value?.toString()}
-              >
-                <SelectTrigger id="language" className="w-full">
-                  <SelectValue placeholder="Select a language" />
-                </SelectTrigger>
+              <FormItem>
+                <FormLabel htmlFor="language" className="font-semibold">
+                  Language *
+                </FormLabel>
+                <FormControl id="language">
+                  <Select
+                    onValueChange={(v) => {
+                      if (v) {
+                        field.onChange(v);
+                      }
+                    }}
+                    value={field.value?.toString()}
+                  >
+                    <SelectTrigger id="language" className="w-full">
+                      <SelectValue placeholder="Select a language" />
+                    </SelectTrigger>
 
-                <SelectContent>
-                  {languages.map((language) => (
-                    <SelectItem
-                      key={language.id}
-                      value={language.id.toString()}
-                    >
-                      {language.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <SelectContent>
+                      {languages.map((language) => (
+                        <SelectItem
+                          key={language.id}
+                          value={language.id.toString()}
+                        >
+                          {language.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="releaseYear">Release year *</Label>
-        <Input
-          id="releaseYear"
-          type="number"
-          min={0}
-          className="w-[80px]"
-          {...register("releaseYear")}
+        <FormField
+          control={control}
+          name="releaseYear"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel htmlFor="releaseYear" className="font-semibold">
+                Artist *
+              </FormLabel>
+              <FormControl>
+                <Input
+                  id="releaseYear"
+                  type="number"
+                  min={0}
+                  className="w-[85px]"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       </div>
     </TabsContent>

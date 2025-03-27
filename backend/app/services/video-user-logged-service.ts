@@ -3,7 +3,7 @@ import { inject } from '@adonisjs/core'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import { Auth } from '#infra/auth/protocols/auth'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video/video-user-logged-protocol-service'
+import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()

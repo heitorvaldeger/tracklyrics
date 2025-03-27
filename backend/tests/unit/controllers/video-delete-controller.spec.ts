@@ -4,7 +4,7 @@ import { stub } from 'sinon'
 
 import VideoDeleteController from '#controllers/video-delete-controller'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { VideoDeleteProtocolService } from '#services/_protocols/video/video-delete-protocol-service'
+import { VideoDeleteProtocolService } from '#services/_protocols/video-delete-protocol-service'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 

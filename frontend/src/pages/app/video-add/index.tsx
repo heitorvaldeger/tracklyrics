@@ -1,7 +1,7 @@
 import { HelpCircle, Loader2Icon, Music, Video } from "lucide-react";
-import { FormProvider, useForm } from "react-hook-form";
-import { useMutation } from "react-query";
-import { Navigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery } from "react-query";
+import { Link, Navigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 import { vineResolver } from "@hookform/resolvers/vine";
@@ -9,15 +9,19 @@ import vine from "@vinejs/vine";
 import { Infer } from "@vinejs/vine/types";
 
 import { createVideo } from "@/api/create-video";
+import { fetchVideo } from "@/api/fetch-video";
 import { AvatarUser } from "@/components/avatar/avatar-user";
 import { Loading } from "@/components/loading";
 import { LogoApp } from "@/components/logo-app";
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGenreLanguage } from "@/contexts/genre-language-context";
 import { useSession } from "@/contexts/session-context";
 import { compareTimeRule } from "@/lib/vinejs/rules/compare-time";
 
 import { TabDetails } from "./tab-details";
+import { TabDetailsSkeleton } from "./tab-details-skeleton";
 import { TabHelp } from "./tab-help";
 import { TabLyrics } from "./tab-lyrics";
 
@@ -60,18 +64,42 @@ const saveVideoSchemaValidator = vine.compile(
 export type SaveVideoSchemaValidator = Infer<typeof saveVideoSchemaValidator>;
 
 export const VideoAdd = () => {
+  const [searchParams] = useSearchParams();
+  const uuid = searchParams.get("uuid");
   const { hasSession, isLoading } = useSession();
+  const { genres, languages } = useGenreLanguage();
 
-  const form = useForm<SaveVideoSchemaValidator>({
-    resolver: vineResolver(saveVideoSchemaValidator),
+  const { data: videoToEdit, isLoading: isVideoToEditLoading } = useQuery({
+    queryFn: () => fetchVideo({ uuid: uuid ?? "" }),
+    queryKey: ["video-save", uuid],
+    enabled: !!uuid,
+    refetchOnWindowFocus: false,
   });
-
-  const { handleSubmit } = form;
 
   const { mutateAsync: createVideoFn, isLoading: isCreatingVideo } =
     useMutation({
       mutationFn: createVideo,
     });
+
+  const genreId = genres.find((genre) => genre.name === videoToEdit?.genre)?.id;
+  const languageId = languages.find(
+    (language) => language.name === videoToEdit?.language,
+  )?.id;
+
+  const form = useForm<SaveVideoSchemaValidator>({
+    resolver: vineResolver(saveVideoSchemaValidator),
+    values: {
+      artist: videoToEdit?.artist ?? "",
+      title: videoToEdit?.title ?? "",
+      linkYoutube: videoToEdit?.linkYoutube ?? "",
+      releaseYear: videoToEdit?.releaseYear ?? "",
+      lyrics: [],
+      genreId: genreId ?? 0,
+      languageId: languageId ?? 0,
+    },
+  });
+
+  const { handleSubmit } = form;
 
   const handleAddNewVideo = async (data: SaveVideoSchemaValidator) => {
     try {
@@ -81,6 +109,7 @@ export const VideoAdd = () => {
       toast.error("Whoops! An error occured, try again!");
     }
   };
+
   if (!hasSession && !isLoading) {
     return <Navigate to="/" />;
   }
@@ -90,10 +119,11 @@ export const VideoAdd = () => {
   }
 
   return (
-    <FormProvider {...form}>
+    <Form {...form}>
       <form
         onSubmit={handleSubmit(handleAddNewVideo)}
         className="flex flex-col h-screen"
+        key={Number(!!isVideoToEditLoading)}
       >
         <section className="flex items-center justify-between gap-4 p-2">
           <LogoApp />
@@ -126,13 +156,13 @@ export const VideoAdd = () => {
               </TabsTrigger>
             </TabsList>
 
-            <TabDetails />
+            {!isVideoToEditLoading ? <TabDetails /> : <TabDetailsSkeleton />}
             <TabLyrics />
             <TabHelp />
           </Tabs>
           <div className="w-full flex justify-end gap-2 py-2">
-            <Button type="button" variant="outline">
-              Cancel
+            <Button type="button" variant="outline" asChild>
+              <Link to="/lyrics">Cancel</Link>
             </Button>
             <Button type="submit">
               {isCreatingVideo ? (
@@ -144,6 +174,6 @@ export const VideoAdd = () => {
           </div>
         </section>
       </form>
-    </FormProvider>
+    </Form>
   );
 };
