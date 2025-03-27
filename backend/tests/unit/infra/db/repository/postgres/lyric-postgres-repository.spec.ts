@@ -19,6 +19,10 @@ test.group('LyricPostgresRepository', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
+  group.each.setup(async () => {
+    await db.from('lyrics').del()
+  })
+
   test('insert lyrics with success', async ({ expect }) => {
     const { fakeVideo } = await mockAllTables()
     const { sut } = makeSut()
@@ -28,8 +32,8 @@ test.group('LyricPostgresRepository', (group) => {
       lyrics.push({
         seq: i,
         line: faker.lorem.sentence(5),
-        startTime: '00:00:00',
-        endTime: '00:00:10',
+        startTime: '00:00.00',
+        endTime: '00:00.10',
         videoId: fakeVideo.id,
       })
     }
@@ -53,8 +57,8 @@ test.group('LyricPostgresRepository', (group) => {
       lyrics.push({
         seq: i,
         line: faker.lorem.sentence(5),
-        startTime: '00:00:00',
-        endTime: '00:00:10',
+        startTime: '00:00.00',
+        endTime: '00:00.10',
         videoId: fakeVideo.id,
       })
     }
@@ -95,8 +99,8 @@ test.group('LyricPostgresRepository', (group) => {
       lyrics.push({
         seq: i,
         line: faker.lorem.sentence(5),
-        startTime: '00:00:00',
-        endTime: '00:00:10',
+        startTime: '00:00.00',
+        endTime: '00:00.10',
         videoId: fakeVideo.id,
       })
     }

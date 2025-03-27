@@ -15,6 +15,7 @@ import { LogoApp } from "@/components/logo-app";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/contexts/session-context";
+import { compareTimeRule } from "@/lib/vinejs/rules/compare-time";
 
 import { TabDetails } from "./tab-details";
 import { TabHelp } from "./tab-help";
@@ -36,6 +37,23 @@ const saveVideoSchemaValidator = vine.compile(
     linkYoutube: vine.string().regex(youtubeLinkRegex).url(),
     languageId: vine.number(),
     genreId: vine.number(),
+    lyrics: vine
+      .array(
+        vine.object({
+          line: vine.string().trim().minLength(1),
+          startTime: vine
+            .string()
+            .trim()
+            .use(
+              compareTimeRule({
+                fieldName: "endTime",
+                operation: "less",
+              }),
+            ),
+          endTime: vine.string().trim(),
+        }),
+      )
+      .optional(),
   }),
 );
 

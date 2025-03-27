@@ -79,15 +79,15 @@ export const mockAllTables = async (): Promise<MockAllTables> => {
     {
       videoId: fakeVideo.id,
       seq: 1,
-      startTime: '00:00:00',
-      endTime: '00:00:10',
+      startTime: '00:00.00',
+      endTime: '00:00.10',
       line: faker.lorem.sentence(5),
     },
     {
       videoId: fakeVideo.id,
       seq: 2,
-      startTime: '00:00:11',
-      endTime: '00:00:14',
+      startTime: '00:00.11',
+      endTime: '00:00.14',
       line: faker.lorem.sentence(5),
     },
   ].map(toSnakeCase)

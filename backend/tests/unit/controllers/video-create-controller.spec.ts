@@ -107,7 +107,7 @@ test.group('VideoCreateController', (group) => {
     ])
   })
 
-  test('return 400 if lyrics is not array', async ({ expect }) => {
+  test('return 400 if fields in lyrics are invalid', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request.body(), 'lyrics').value([
       {
@@ -126,16 +126,16 @@ test.group('VideoCreateController', (group) => {
       },
       {
         field: 'startTime',
-        message: 'The startTime field must be pattern 00:00:00',
+        message: 'The startTime field must be in the format MM:SS.ss',
       },
       {
         field: 'endTime',
-        message: 'The endTime field must be pattern 00:00:00',
+        message: 'The endTime field must be in the format MM:SS.ss',
       },
     ])
   })
 
-  test('return 400 if fields in lyrics are invalid', async ({ expect }) => {
+  test('return 400 if lyrics is not array', async ({ expect }) => {
     const { sut, httpContext: ctx } = await makeSut()
     stub(ctx.request.body(), 'lyrics').value({})
 
@@ -156,8 +156,8 @@ test.group('VideoCreateController', (group) => {
 
     stub(ctx.request.body(), 'lyrics').value([
       {
-        startTime: '00:00:10',
-        endTime: '00:00:00',
+        startTime: '00:00.10',
+        endTime: '00:00.00',
         line: 'any_line',
       },
     ])

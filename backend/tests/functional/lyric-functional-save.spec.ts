@@ -21,18 +21,18 @@ test.group('Lyric Save Route', () => {
       .post(`/videos/${fakeVideo.uuid}/lyrics`)
       .json([
         {
-          startTime: '00:00:00',
-          endTime: '00:00:10',
+          startTime: '00:00.00',
+          endTime: '00:00.10',
           line: faker.lorem.sentence(5),
         },
         {
-          startTime: '00:00:11',
-          endTime: '00:00:16',
+          startTime: '00:00.11',
+          endTime: '00:00.16',
           line: faker.lorem.sentence(5),
         },
         {
-          startTime: '00:00:18',
-          endTime: '00:00:23',
+          startTime: '00:00.18',
+          endTime: '00:00.23',
           line: faker.lorem.sentence(5),
         },
       ])
@@ -70,11 +70,11 @@ test.group('Lyric Save Route', () => {
     expect(response.body()).toEqual([
       {
         field: 'startTime',
-        message: 'The startTime field must be pattern 00:00:00',
+        message: 'The startTime field must be in the format MM:SS.ss',
       },
       {
         field: 'endTime',
-        message: 'The endTime field must be pattern 00:00:00',
+        message: 'The endTime field must be in the format MM:SS.ss',
       },
     ])
   })
@@ -105,18 +105,18 @@ test.group('Lyric Save Route', () => {
       .post(`/videos/${fakeVideo.uuid}/lyrics`)
       .json([
         {
-          startTime: '00:00:00',
-          endTime: '00:00:10',
+          startTime: '00:00.00',
+          endTime: '00:00.10',
           line: faker.lorem.sentence(5),
         },
         {
-          startTime: '00:00:11',
-          endTime: '00:00:16',
+          startTime: '00:00.11',
+          endTime: '00:00.16',
           line: faker.lorem.sentence(5),
         },
         {
-          startTime: '00:00:18',
-          endTime: '00:00:23',
+          startTime: '00:00.18',
+          endTime: '00:00.23',
           line: faker.lorem.sentence(5),
         },
       ])

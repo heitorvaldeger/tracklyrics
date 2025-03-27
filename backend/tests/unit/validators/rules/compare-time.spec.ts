@@ -44,11 +44,11 @@ test.group('CompareTime Validator Rule', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('return a fail if startTime is more than endTime', async ({ expect }) => {
+  test('return a fail if startTime is greate than endTime', async ({ expect }) => {
     const { sut } = makeSut()
     const isValid = await sut.tryValidate({
-      startTime: '00:00:10',
-      endTime: '00:00:00',
+      startTime: '00:00.10',
+      endTime: '00:00.00',
     })
 
     expect(isValid[0]?.code).toBe('E_VALIDATION_ERROR')
@@ -57,14 +57,16 @@ test.group('CompareTime Validator Rule', (group) => {
   test('return a fail if endTime is less than startTime', async ({ expect }) => {
     const { sut } = otherMakeSut()
     const isValid = await sut.tryValidate({
-      startTime: '00:00:10',
-      endTime: '00:00:00',
+      startTime: '00:00.10',
+      endTime: '00:00.00',
     })
 
     expect(isValid[0]?.code).toBe('E_VALIDATION_ERROR')
   })
 
-  test('return a fail if endTime is less than startTime', async ({ expect }) => {
+  test('return a fail if endTime is less than startTime in the pov startTime', async ({
+    expect,
+  }) => {
     const sut = vine.compile(
       vine.object({
         startTime: vine.string(),
@@ -77,10 +79,20 @@ test.group('CompareTime Validator Rule', (group) => {
       })
     )
     const isValid = await sut.tryValidate({
-      startTime: '00:00:10',
+      startTime: '00:00.10',
       endTime: 0,
     })
 
     expect(isValid[0]).toBeFalsy()
+  })
+
+  test('return a fail if times match the pattern MM:SS:ss', async ({ expect }) => {
+    const { sut } = otherMakeSut()
+    const isValid = await sut.tryValidate({
+      startTime: '00:00:00',
+      endTime: '00:00:05',
+    })
+
+    expect(isValid[0]?.code).toBe('E_VALIDATION_ERROR')
   })
 })

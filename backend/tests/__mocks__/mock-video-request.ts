@@ -14,18 +14,18 @@ export const mockVideoCreateOrUpdateRequest = (): VideoCreateProtocolService.Par
   genreId: 0,
   lyrics: [
     {
-      startTime: '00:00:00',
-      endTime: '00:00:10',
+      startTime: '00:00.00',
+      endTime: '00:00.10',
       line: faker.lorem.sentence(5),
     },
     {
-      startTime: '00:00:11',
-      endTime: '00:00:16',
+      startTime: '00:00.11',
+      endTime: '00:00.16',
       line: faker.lorem.sentence(5),
     },
     {
-      startTime: '00:00:18',
-      endTime: '00:00:23',
+      startTime: '00:00.18',
+      endTime: '00:00.23',
       line: faker.lorem.sentence(5),
     },
   ],

@@ -18,13 +18,13 @@ const mockLyricSaveServiceStub = (): LyricSaveProtocolService => ({
 
 const lyrics = [
   {
-    startTime: '00:00:00',
-    endTime: '00:00:00',
+    startTime: '00:00.00',
+    endTime: '00:00.00',
     line: 'any_lyric',
   },
   {
-    startTime: '00:00:00',
-    endTime: '00:00:00',
+    startTime: '00:00.00',
+    endTime: '00:00.00',
     line: 'any_lyric',
   },
 ]
@@ -83,11 +83,11 @@ test.group('LyricSaveController', (group) => {
       },
       {
         field: 'startTime',
-        message: 'The startTime field must be pattern 00:00:00',
+        message: 'The startTime field must be in the format MM:SS.ss',
       },
       {
         field: 'endTime',
-        message: 'The endTime field must be pattern 00:00:00',
+        message: 'The endTime field must be in the format MM:SS.ss',
       },
     ])
   })
@@ -99,8 +99,8 @@ test.group('LyricSaveController', (group) => {
 
     stub(ctx.request, 'body').returns([
       {
-        startTime: '00:00:10',
-        endTime: '00:00:00',
+        startTime: '00:00.10',
+        endTime: '00:00.00',
         line: 'any_line',
       },
     ])
@@ -154,17 +154,18 @@ test.group('LyricSaveController', (group) => {
   test('return 200 on video save if seconds in startTime is more than seconds in endTime', async ({
     expect,
   }) => {
-    const { sut, httpContext } = await makeSut()
+    const { sut, httpContext: ctx } = await makeSut()
 
-    stub(httpContext.request, 'body').returns([
+    stub(ctx.request, 'body').returns([
       {
-        startTime: '00:02:10',
-        endTime: '00:03:00',
+        startTime: '00:02.10',
+        endTime: '00:03.00',
         line: 'any_lyric',
       },
     ])
 
-    const httpResponse = await sut.save(httpContext)
+    const httpResponse = await sut.save(ctx)
+    expect(ctx.response.getStatus()).toBe(200)
     expect(httpResponse).toEqual({
       countLyricsInserted: 1,
     })

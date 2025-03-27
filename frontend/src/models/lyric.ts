@@ -1,5 +1,5 @@
 export interface Lyric {
-  id: number;
+  key: number;
   startTime: string;
   endTime: string;
   line: string;

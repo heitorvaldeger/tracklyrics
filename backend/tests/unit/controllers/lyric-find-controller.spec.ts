@@ -12,8 +12,8 @@ import { NilUUID } from '#tests/__utils__/NilUUID'
 const lyrics = [
   {
     seq: 0,
-    startTime: '00:00:00',
-    endTime: '00:00:00',
+    startTime: '00:00.00',
+    endTime: '00:00.00',
     line: 'any_line',
   },
 ]

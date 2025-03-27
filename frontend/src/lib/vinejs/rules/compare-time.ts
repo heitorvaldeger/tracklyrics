@@ -1,53 +1,77 @@
-import vine from '@vinejs/vine'
-import { FieldContext } from '@vinejs/vine/types'
+import vine from "@vinejs/vine";
+import { FieldContext } from "@vinejs/vine/types";
 
 /**
  * Options accepted by the unique rule
  */
 type Options = {
-  fieldName: string
-  operation: 'more' | 'less'
-}
+  fieldName: string;
+  operation: "more" | "less";
+};
 
-async function compareTime(value: unknown, options: Options, field: FieldContext) {
+async function compareTime(
+  value: unknown,
+  options: Options,
+  field: FieldContext,
+) {
   /**
-   * We do not want to deal with non-string
-   * values. The "string" rule will handle the
-   * the validation.
+   * Ensure the value is a string. If not, let the "string" rule handle validation.
    */
-  if (typeof value !== 'string') {
-    return
+  if (typeof value !== "string") {
+    return;
   }
 
-  const timeOne = field.parent[options.fieldName] as string
-  const timeTwo = value as string
+  const timeOne = field.parent[options.fieldName] as string;
+  const timeTwo = value as string;
 
-  const isTimeTwoFormatInvalid = !timeTwo.match(/^([01]\d|2[0-3]):([0-5]?\d):([0-5]?\d)$/)
-  const isTimeOneFormatInvalid = !timeOne.match(/^([01]\d|2[0-3]):([0-5]?\d):([0-5]?\d)$/)
+  const timePattern = /^(\d{2}):(\d{2})\.(\d{2})$/;
+
+  const isTimeTwoFormatInvalid = !timeTwo.match(timePattern);
+  const isTimeOneFormatInvalid = !timeOne.match(timePattern);
+
   if (isTimeTwoFormatInvalid) {
-    field.report(`The {{field}} field must be pattern 00:00:00`, 'compareTime', field)
+    field.report(
+      `The {{field}} field must be in the format MM:SS.ss`,
+      "compareTime",
+      field,
+    );
   }
 
   if (isTimeOneFormatInvalid) {
-    field.name = options.fieldName
-    field.report(`The ${options.fieldName} field must be pattern 00:00:00`, 'compareTime', field)
+    field.name = options.fieldName;
+    field.report(
+      `The ${options.fieldName} field must be in the format MM:SS.ss`,
+      "compareTime",
+      field,
+    );
   }
 
-  if (isTimeOneFormatInvalid || isTimeTwoFormatInvalid) return
+  if (isTimeOneFormatInvalid || isTimeTwoFormatInvalid) return;
 
-  const isInvalid = options.operation === 'less' ? timeOne < timeTwo : timeOne > timeTwo
+  const parseTime = (time: string) => {
+    const [minutes, seconds, milliseconds] = time.split(/[:.]/).map(Number);
+    return minutes * 60000 + seconds * 1000 + milliseconds * 10; // Ajustando milissegundos para duas casas decimais
+  };
+
+  const timeOneMs = parseTime(timeOne);
+  const timeTwoMs = parseTime(timeTwo);
+
+  const isInvalid =
+    options.operation === "less"
+      ? timeOneMs < timeTwoMs
+      : timeOneMs > timeTwoMs;
   if (isInvalid) {
     field.report(
-      options.operation === 'less'
+      options.operation === "less"
         ? `The {{field}} field must be less than the ${options.fieldName} field`
         : `The {{field}} field must be more than the ${options.fieldName} field`,
-      'compareTime',
-      field
-    )
+      "compareTime",
+      field,
+    );
   }
 }
 
 /**
- * Compare two times using operators more or less using the format 00:00:00
+ * Compare two times using operators more or less using the format MM:SS.ss
  */
-export const compareTimeRule = vine.createRule(compareTime)
+export const compareTimeRule = vine.createRule(compareTime);

@@ -99,11 +99,11 @@ test.group('VideoUpdateController', (group) => {
       },
       {
         field: 'startTime',
-        message: 'The startTime field must be pattern 00:00:00',
+        message: 'The startTime field must be in the format MM:SS.ss',
       },
       {
         field: 'endTime',
-        message: 'The endTime field must be pattern 00:00:00',
+        message: 'The endTime field must be in the format MM:SS.ss',
       },
     ])
   })
@@ -129,8 +129,8 @@ test.group('VideoUpdateController', (group) => {
 
     stub(ctx.request.body(), 'lyrics').value([
       {
-        startTime: '00:00:10',
-        endTime: '00:00:00',
+        startTime: '00:00.10',
+        endTime: '00:00.00',
         line: 'any_line',
       },
     ])

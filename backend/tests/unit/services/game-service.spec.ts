@@ -45,8 +45,8 @@ test.group('GameService', (group) => {
       lyrics.push({
         seq: i,
         line: faker.lorem.sentence(5),
-        startTime: '00:00:00',
-        endTime: '00:00:10',
+        startTime: '00:00.00',
+        endTime: '00:00.10',
       })
     }
 

@@ -1,6 +1,6 @@
 import { Info, Plus, Trash } from "lucide-react";
 import { useRef, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import ReactPlayer from "react-player";
 
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,22 @@ export const TabLyrics = () => {
   const { watch } = useFormContext();
   const youtubeURLWatcher = watch("linkYoutube");
 
+  const { control } = useFormContext<{
+    lyrics: Lyric[];
+  }>();
+  const {
+    fields: lyrics,
+    append: appendLyric,
+    remove: removeLyric,
+    update: updateLyric,
+  } = useFieldArray({
+    control,
+    name: "lyrics",
+  });
+
   const playerRef = useRef<ReactPlayer | null>(null);
 
   const [currentTime, setCurrentTime] = useState(0);
-  const [lyrics, setLyrics] = useState<Lyric[]>([]);
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
 
   const formatTime = (sec: number) => {
@@ -45,39 +57,41 @@ export const TabLyrics = () => {
   );
 
   const handleAddNewLine = () => {
-    const lastId = lyrics[lyrics.length - 1]?.id ?? 0;
+    const lastId = lyrics.length > 0 ? lyrics[lyrics.length - 1].key + 1 : 0;
 
-    setLyrics((state) => [
-      ...state,
-      { startTime: "", endTime: "", line: "", id: lastId + 1 },
-    ]);
+    appendLyric({
+      startTime: "",
+      endTime: "",
+      line: "",
+      key: lastId,
+    });
   };
 
   const handleDeleteLine = () => {
-    setLyrics((state) => state.filter((item) => item.id !== selectedLine));
-    setSelectedLine(null);
+    if (selectedLine !== null && selectedLine >= 0) {
+      removeLyric(selectedLine);
+      setSelectedLine(null);
+    }
   };
 
-  const handleUpdateStartTime = (idLine: number) => {
-    setLyrics((state) =>
-      state.map((lyric) => {
-        if (lyric.id === idLine) {
-          lyric.startTime = currentTimeFormated;
-        }
-        return lyric;
-      }),
-    );
+  const handleUpdateStartTime = (id: number) => {
+    const lyric = lyrics.find((lyric) => lyric.key === id);
+    if (lyric) {
+      updateLyric(lyric.key, {
+        ...lyric,
+        startTime: currentTimeFormated,
+      });
+    }
   };
 
-  const handleUpdateEndTime = (idLine: number) => {
-    setLyrics((state) =>
-      state.map((lyric) => {
-        if (lyric.id === idLine) {
-          lyric.endTime = currentTimeFormated;
-        }
-        return lyric;
-      }),
-    );
+  const handleUpdateEndTime = (id: number) => {
+    const lyric = lyrics.find((lyric) => lyric.key === id);
+    if (lyric) {
+      updateLyric(id, {
+        ...lyric,
+        endTime: currentTimeFormated,
+      });
+    }
   };
 
   return (
@@ -169,12 +183,12 @@ export const TabLyrics = () => {
           </TableHeader>
 
           <TableBody>
-            {lyrics.map((lyric, i) => (
+            {lyrics.map((lyric) => (
               <TableLyricRow
-                key={i}
+                key={lyric.id}
                 lyric={lyric}
                 selectedLine={selectedLine}
-                onSelectedLine={(id) => setSelectedLine(id)}
+                onSelectedLine={setSelectedLine}
                 onUpdateStartTime={handleUpdateStartTime}
                 onUpdateEndTime={handleUpdateEndTime}
               />

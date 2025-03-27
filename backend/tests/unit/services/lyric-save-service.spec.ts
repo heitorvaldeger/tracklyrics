@@ -29,13 +29,13 @@ const paramsToInsert = {
   videoUuid: 'any_uuid',
   lyrics: [
     {
-      startTime: '00:00:00',
-      endTime: '00:00:10',
+      startTime: '00:00.00',
+      endTime: '00:00.10',
       line: 'any_line',
     },
     {
-      startTime: '00:00:10',
-      endTime: '00:00:15',
+      startTime: '00:00.10',
+      endTime: '00:00.15',
       line: 'other_line',
     },
   ],
