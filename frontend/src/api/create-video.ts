@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import { Video } from "@/models/video";
 
 export interface CreateVideoBody {
   title: string;
@@ -9,5 +10,5 @@ export interface CreateVideoBody {
   genreId: number | string;
 }
 export const createVideo = async (body: CreateVideoBody) => {
-  await api.post(`/videos`, body);
+  return (await api.post<Video>(`/videos`, body)).data;
 };

@@ -121,4 +121,13 @@ test.group('LyricPostgresRepository', (group) => {
       }))
     ).toEqual(lyricsFromSut)
   })
+
+  test('return an object with count lyrics save at 0 if lyrics provided is array empty', async ({
+    expect,
+  }) => {
+    const { sut } = makeSut()
+
+    const lyricsInserted = await sut.save([])
+    expect(lyricsInserted.countLyricsInserted).toBe(0)
+  })
 })

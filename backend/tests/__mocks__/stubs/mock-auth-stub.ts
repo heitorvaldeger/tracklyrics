@@ -22,7 +22,7 @@ export const mockAuthRegisterData = (): {
   }
 }
 
-export const mockAuthServiceStub = (): AuthProtocolService => ({
+export const mockAuthService: AuthProtocolService = {
   register: (params: AuthProtocolService.RegisterParams) =>
     Promise.resolve({
       uuid: 'any_uuid',
@@ -39,4 +39,4 @@ export const mockAuthServiceStub = (): AuthProtocolService => ({
       uuid: 'any_uuid',
       emailStatus: UserEmailStatus.VERIFIED,
     }),
-})
+}

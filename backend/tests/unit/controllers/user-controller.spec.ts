@@ -4,16 +4,12 @@ import { stub } from 'sinon'
 import UserController from '#controllers/user-controller'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
-import {
-  mockUserServiceStub,
-  mockUserWithoutPasswordData,
-} from '#tests/__mocks__/stubs/mock-user-stub'
+import { mockUserService, mockUserWithoutPasswordData } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const makeSut = () => {
-  const userServiceStub = mockUserServiceStub()
-  const sut = new UserController(userServiceStub)
+  const sut = new UserController(mockUserService)
 
-  return { sut, userServiceStub }
+  return { sut }
 }
 
 test.group('UserController', (group) => {
@@ -30,27 +26,27 @@ test.group('UserController', (group) => {
   })
 
   test('return 401 with user unauthenticated if email provided is invalid', async ({ expect }) => {
-    const { sut, userServiceStub } = makeSut()
+    const { sut } = makeSut()
 
-    stub(userServiceStub, 'getFullInfoByUserLogged').rejects(new UnauthorizedException())
+    stub(mockUserService, 'getFullInfoByUserLogged').rejects(new UnauthorizedException())
     const httpResponse = sut.getFullInfoByUserLogged()
 
     expect(httpResponse).rejects.toEqual(new UnauthorizedException())
   })
 
   test('return 422 with user not found if user was not found', async ({ expect }) => {
-    const { sut, userServiceStub } = makeSut()
+    const { sut } = makeSut()
 
-    stub(userServiceStub, 'getFullInfoByUserLogged').rejects(new UserNotFoundException())
+    stub(mockUserService, 'getFullInfoByUserLogged').rejects(new UserNotFoundException())
     const httpResponse = sut.getFullInfoByUserLogged()
 
     expect(httpResponse).rejects.toEqual(new UserNotFoundException())
   })
 
   test('return 500 if user getFullInfoByUserLogged throws', async ({ expect }) => {
-    const { sut, userServiceStub } = makeSut()
+    const { sut } = makeSut()
 
-    stub(userServiceStub, 'getFullInfoByUserLogged').throws(new Error())
+    stub(mockUserService, 'getFullInfoByUserLogged').throws(new Error())
 
     const httpResponse = sut.getFullInfoByUserLogged()
 

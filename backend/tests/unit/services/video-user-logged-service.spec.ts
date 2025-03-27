@@ -3,16 +3,15 @@ import _ from 'lodash'
 
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
-import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
-import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockAuthStrategy } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const videoRepositoryStub = mockVideoRepositoryStub()
-  const { authStrategyStub } = mockAuthStrategyStub()
+  const { authStrategyStub } = mockAuthStrategy()
 
-  const sut = new VideoUserLoggedService(videoRepositoryStub, authStrategyStub)
+  const sut = new VideoUserLoggedService(mockVideoRepository, authStrategyStub)
 
-  return { sut, videoRepositoryStub, authStrategyStub }
+  return { sut, authStrategyStub }
 }
 
 test.group('VideoUserLoggedService', () => {

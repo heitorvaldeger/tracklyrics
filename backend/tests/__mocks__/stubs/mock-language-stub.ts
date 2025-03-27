@@ -5,7 +5,7 @@ interface MockLanguageRepositoryStub extends LanguageRepository {
   languages: Language[]
   language: Language
 }
-export const mockLanguageRepositoryStub = (): MockLanguageRepositoryStub => ({
+export const mockLanguageRepository: MockLanguageRepositoryStub = {
   language: {
     id: 0,
     name: 'any_name',
@@ -29,4 +29,4 @@ export const mockLanguageRepositoryStub = (): MockLanguageRepositoryStub => ({
   findById: function () {
     return Promise.resolve(this.language)
   },
-})
+}

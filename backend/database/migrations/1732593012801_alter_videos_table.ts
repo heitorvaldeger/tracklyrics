@@ -4,8 +4,11 @@ export default class extends BaseSchema {
   protected tableName = 'videos'
 
   async up() {
-    this.schema.alterTable(this.tableName, (table) => {
-      table.renameColumn('genrer_id', 'genre_id')
-    })
+    const hasGenreIdColumn = await this.schema.hasColumn(this.tableName, 'genrer_id')
+    if (hasGenreIdColumn) {
+      this.schema.alterTable(this.tableName, (table) => {
+        table.renameColumn('genrer_id', 'genre_id')
+      })
+    }
   }
 }

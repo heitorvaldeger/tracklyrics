@@ -10,6 +10,8 @@ import { Infer } from "@vinejs/vine/types";
 
 import { createVideo } from "@/api/create-video";
 import { fetchVideo } from "@/api/fetch-video";
+import { fetchVideoLyrics } from "@/api/fetch-video-lyrics";
+import { updateVideo } from "@/api/update-video";
 import { AvatarUser } from "@/components/avatar/avatar-user";
 import { Loading } from "@/components/loading";
 import { LogoApp } from "@/components/logo-app";
@@ -19,6 +21,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGenreLanguage } from "@/contexts/genre-language-context";
 import { useSession } from "@/contexts/session-context";
 import { compareTimeRule } from "@/lib/vinejs/rules/compare-time";
+import { Lyric } from "@/models/lyric";
 
 import { TabDetails } from "./tab-details";
 import { TabDetailsSkeleton } from "./tab-details-skeleton";
@@ -63,8 +66,8 @@ const saveVideoSchemaValidator = vine.compile(
 
 export type SaveVideoSchemaValidator = Infer<typeof saveVideoSchemaValidator>;
 
-export const VideoAdd = () => {
-  const [searchParams] = useSearchParams();
+export const VideoSave = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const uuid = searchParams.get("uuid");
   const { hasSession, isLoading } = useSession();
   const { genres, languages } = useGenreLanguage();
@@ -76,15 +79,31 @@ export const VideoAdd = () => {
     refetchOnWindowFocus: false,
   });
 
+  const { data: videoLyrics } = useQuery({
+    queryFn: () => fetchVideoLyrics({ uuid: uuid ?? "" }),
+    queryKey: ["video-lyrics", uuid],
+    enabled: !!uuid,
+    refetchOnWindowFocus: false,
+  });
+
   const { mutateAsync: createVideoFn, isLoading: isCreatingVideo } =
     useMutation({
       mutationFn: createVideo,
+    });
+
+  const { mutateAsync: updateVideoFn, isLoading: isUpdatingVideo } =
+    useMutation({
+      mutationFn: updateVideo,
     });
 
   const genreId = genres.find((genre) => genre.name === videoToEdit?.genre)?.id;
   const languageId = languages.find(
     (language) => language.name === videoToEdit?.language,
   )?.id;
+  const lyrics = videoLyrics?.map((lyric, i) => ({
+    ...lyric,
+    id: i,
+  })) as Lyric[] | undefined;
 
   const form = useForm<SaveVideoSchemaValidator>({
     resolver: vineResolver(saveVideoSchemaValidator),
@@ -93,18 +112,31 @@ export const VideoAdd = () => {
       title: videoToEdit?.title ?? "",
       linkYoutube: videoToEdit?.linkYoutube ?? "",
       releaseYear: videoToEdit?.releaseYear ?? "",
-      lyrics: [],
+      lyrics: lyrics ?? [],
       genreId: genreId ?? 0,
       languageId: languageId ?? 0,
     },
   });
 
-  const { handleSubmit } = form;
+  const {
+    handleSubmit,
+    formState: { isDirty: isFormDirty },
+  } = form;
 
-  const handleAddNewVideo = async (data: SaveVideoSchemaValidator) => {
+  const handleSaveVideo = async (data: SaveVideoSchemaValidator) => {
     try {
-      await createVideoFn(data);
-      toast.success("Video created with success!");
+      if (uuid) {
+        await updateVideoFn({ uuid, body: data });
+        toast.success("Video updated with success!");
+      } else {
+        const video = await createVideoFn(data);
+        setSearchParams((state) => {
+          state.set("uuid", video.uuid);
+
+          return state;
+        });
+        toast.success("Video created with success!");
+      }
     } catch (error) {
       toast.error("Whoops! An error occured, try again!");
     }
@@ -121,7 +153,7 @@ export const VideoAdd = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={handleSubmit(handleAddNewVideo)}
+        onSubmit={handleSubmit(handleSaveVideo)}
         className="flex flex-col h-screen"
         key={Number(!!isVideoToEditLoading)}
       >
@@ -164,8 +196,8 @@ export const VideoAdd = () => {
             <Button type="button" variant="outline" asChild>
               <Link to="/lyrics">Cancel</Link>
             </Button>
-            <Button type="submit">
-              {isCreatingVideo ? (
+            <Button type="submit" disabled={!isFormDirty}>
+              {isCreatingVideo || isUpdatingVideo ? (
                 <Loader2Icon className="h-4 w-4 animate-spin" />
               ) : (
                 "Save changes"

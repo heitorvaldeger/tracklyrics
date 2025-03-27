@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 import { deleteVideo } from "@/api/delete-video";
-import { fetchLyrics } from "@/api/fetch-lyrics";
+import { fetchUserLyrics } from "@/api/fetch-user-lyrics";
 import { CardVideo } from "@/components/cards/card-video";
 import { Button } from "@/components/ui/button";
 import { Video } from "@/models/video";
@@ -14,10 +14,10 @@ export const UserLyrics = () => {
   const queryClient = useQueryClient();
 
   const { data: videos } = useQuery({
-    queryKey: ["lyrics"],
+    queryKey: ["user-lyrics"],
     queryFn: async () =>
       await toast
-        .promise(fetchLyrics, {
+        .promise(fetchUserLyrics, {
           loading: "Loading data..",
         })
         .unwrap(),
@@ -48,7 +48,7 @@ export const UserLyrics = () => {
   };
 
   const handleEditLyric = async (videoUuid: string) => {
-    navigate(`/video/add?uuid=${videoUuid}`);
+    navigate(`/video/save?uuid=${videoUuid}`);
   };
 
   return (
@@ -58,7 +58,7 @@ export const UserLyrics = () => {
           Here's your lyrics uploaded
         </p>
         <Button asChild className="bg-muted-foreground hover:bg-primary">
-          <Link to="/video/add">
+          <Link to="/video/save">
             <Plus size={18} />
             Add Lyrics
           </Link>

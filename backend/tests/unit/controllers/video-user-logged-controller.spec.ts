@@ -4,16 +4,12 @@ import { stub } from 'sinon'
 
 import VideoUserLoggedController from '#controllers/video-user-logged-controller'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
-import {
-  mockVideoData,
-  mockVideoUserLoggedServiceStub,
-} from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoData, mockVideoUserLoggedService } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const videoUserLoggedServiceStub = mockVideoUserLoggedServiceStub()
-  const sut = new VideoUserLoggedController(videoUserLoggedServiceStub)
+  const sut = new VideoUserLoggedController(mockVideoUserLoggedService)
 
-  return { sut, videoUserLoggedServiceStub }
+  return { sut }
 }
 
 test.group('VideoUserLoggedController', (group) => {
@@ -30,8 +26,8 @@ test.group('VideoUserLoggedController', (group) => {
   })
 
   test('return 401 if user is not authorized', async ({ expect }) => {
-    const { sut, videoUserLoggedServiceStub } = makeSut()
-    stub(videoUserLoggedServiceStub, 'getVideosByUserLogged').rejects(new UnauthorizedException())
+    const { sut } = makeSut()
+    stub(mockVideoUserLoggedService, 'getVideosByUserLogged').rejects(new UnauthorizedException())
 
     const httpResponse = sut.getVideosByUserLogged()
 
@@ -39,9 +35,9 @@ test.group('VideoUserLoggedController', (group) => {
   })
 
   test('return 500 if user getVideosByUserLogged throws', async ({ expect }) => {
-    const { sut, videoUserLoggedServiceStub } = makeSut()
+    const { sut } = makeSut()
 
-    stub(videoUserLoggedServiceStub, 'getVideosByUserLogged').throws(new Error())
+    stub(mockVideoUserLoggedService, 'getVideosByUserLogged').throws(new Error())
 
     const httpResponse = sut.getVideosByUserLogged()
 

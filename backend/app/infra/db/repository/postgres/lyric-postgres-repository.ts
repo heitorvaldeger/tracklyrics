@@ -9,6 +9,12 @@ import { LyricRepository } from '../_protocols/lyric-repository.js'
 
 export class LyricPostgresRepository implements LyricRepository {
   async save(lyrics: LyricRepository.LyricParamsToInsert[]): Promise<LyricSaveResult> {
+    if (!lyrics.length) {
+      return {
+        countLyricsInserted: 0,
+      }
+    }
+
     await db
       .table('lyrics')
       .knexQuery.insert(lyrics.map(toSnakeCase))

@@ -12,39 +12,35 @@ export const mockUserWithoutPasswordData: UserWithoutPasswordModel = {
   lastName: 'any_lastname',
 }
 
-export const mockUserServiceStub = (): UserProtocolService => ({
+export const mockUserService: UserProtocolService = {
   getFullInfoByUserLogged: () => Promise.resolve(mockUserWithoutPasswordData),
-})
+}
 
-export const mockUserRepositoryStub = () => {
-  const userRepositoryStub: UserRepository = {
-    getUserByEmailOrUsername: (payload: UserRepository.FindUserByEmailUsernameParams) =>
-      Promise.resolve({
-        uuid: 'any_uuid',
-        username: 'any_username',
-        email: 'any_email',
-        password: 'any_password',
-        emailStatus: UserEmailStatus.VERIFIED,
-      }),
-    getUserByEmailWithoutPassword: (emailAddress: string) =>
-      Promise.resolve(mockUserWithoutPasswordData),
-    create: (user: UserRepository.CreateParams) =>
-      Promise.resolve({
-        uuid: 'any_uuid',
-        username: 'any_username',
-        email: 'any_email',
-        password: 'any_password',
-        emailStatus: UserEmailStatus.UNVERIFIED,
-      }),
-    createAccessToken: (userUuid: string) =>
-      Promise.resolve({
-        type: 'any_type',
-        token: 'any_token',
-        expiresAt: new Date(2000, 0, 1),
-      }),
-    deleteAllAccessToken: (userUuid: string) => Promise.resolve(),
-    updateEmailStatus: (userUuid: string) => Promise.resolve(),
-  }
-
-  return userRepositoryStub
+export const mockUserRepository: UserRepository = {
+  getUserByEmailOrUsername: (payload: UserRepository.FindUserByEmailUsernameParams) =>
+    Promise.resolve({
+      uuid: 'any_uuid',
+      username: 'any_username',
+      email: 'any_email',
+      password: 'any_password',
+      emailStatus: UserEmailStatus.VERIFIED,
+    }),
+  getUserByEmailWithoutPassword: (emailAddress: string) =>
+    Promise.resolve(mockUserWithoutPasswordData),
+  create: (user: UserRepository.CreateParams) =>
+    Promise.resolve({
+      uuid: 'any_uuid',
+      username: 'any_username',
+      email: 'any_email',
+      password: 'any_password',
+      emailStatus: UserEmailStatus.UNVERIFIED,
+    }),
+  createAccessToken: (userUuid: string) =>
+    Promise.resolve({
+      type: 'any_type',
+      token: 'any_token',
+      expiresAt: new Date(2000, 0, 1),
+    }),
+  deleteAllAccessToken: (userUuid: string) => Promise.resolve(),
+  updateEmailStatus: (userUuid: string) => Promise.resolve(),
 }

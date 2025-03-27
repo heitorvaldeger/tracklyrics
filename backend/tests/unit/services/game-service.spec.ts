@@ -7,27 +7,23 @@ import { VideoPlayCountRepository } from '#infra/db/repository/_protocols/video-
 import { GameProtocolService } from '#services/_protocols/game-protocol-service'
 import { GameService } from '#services/game-service'
 import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
-import { mockLyricRepositoryStub } from '#tests/__mocks__/stubs/mock-lyric-stub'
-import { mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockLyricRepository } from '#tests/__mocks__/stubs/mock-lyric-stub'
+import { mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const mockVideoPlayCountRepositoryStub = (): VideoPlayCountRepository => ({
   increment: (videoId: number) => Promise.resolve(),
 })
 
 const makeSut = () => {
-  const videoRepositoryStub = mockVideoRepositoryStub()
-  const lyricRepositoryStub = mockLyricRepositoryStub()
   const videoPlayCountRepositoryStub = mockVideoPlayCountRepositoryStub()
   const sut = new GameService(
-    videoRepositoryStub,
-    lyricRepositoryStub,
+    mockVideoRepository,
+    mockLyricRepository,
     videoPlayCountRepositoryStub
   )
 
   return {
     sut,
-    videoRepositoryStub,
-    lyricRepositoryStub,
     videoPlayCountRepositoryStub,
   }
 }
@@ -38,7 +34,7 @@ test.group('GameService', (group) => {
   })
 
   test('return game modes with success', async ({ expect }) => {
-    const { sut, lyricRepositoryStub } = makeSut()
+    const { sut } = makeSut()
 
     const lyrics = []
     for (let i = 1; i <= 50; i++) {
@@ -50,7 +46,7 @@ test.group('GameService', (group) => {
       })
     }
 
-    stub(lyricRepositoryStub, 'find').resolves(lyrics)
+    stub(mockLyricRepository, 'find').resolves(lyrics)
     const response = await sut.getModes(faker.string.uuid())
     const { totalWords, beginner, intermediate, advanced, specialist } = response
 
@@ -79,16 +75,16 @@ test.group('GameService', (group) => {
   })
 
   test('return an error if video not found', async ({ expect }) => {
-    const { sut, videoRepositoryStub } = makeSut()
-    stub(videoRepositoryStub, 'getVideoId').resolves(null)
+    const { sut } = makeSut()
+    stub(mockVideoRepository, 'getVideoId').resolves(null)
     const response = sut.getModes('any_uuid')
 
     expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('call LyricRepository find with correct values', async ({ expect }) => {
-    const { sut, lyricRepositoryStub } = makeSut()
-    const findSpy = spy(lyricRepositoryStub, 'find')
+    const { sut } = makeSut()
+    const findSpy = spy(mockLyricRepository, 'find')
 
     await sut.getModes('any_uuid')
 
@@ -96,8 +92,8 @@ test.group('GameService', (group) => {
   })
 
   test('call VideoRepository find with correct values', async ({ expect }) => {
-    const { sut, videoRepositoryStub } = makeSut()
-    const findSpy = spy(videoRepositoryStub, 'getVideoId')
+    const { sut } = makeSut()
+    const findSpy = spy(mockVideoRepository, 'getVideoId')
 
     await sut.getModes('any_uuid')
 
@@ -112,17 +108,17 @@ test.group('GameService', (group) => {
   })
 
   test('return fail if a video not exists', async ({ expect }) => {
-    const { sut, videoRepositoryStub } = makeSut()
-    stub(videoRepositoryStub, 'getVideoId').resolves(null)
+    const { sut } = makeSut()
+    stub(mockVideoRepository, 'getVideoId').resolves(null)
     const response = sut.play(faker.string.uuid())
 
     expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
   test('call VideoRepository.getVideoId with correct values', async ({ expect }) => {
-    const { sut, videoRepositoryStub } = makeSut()
+    const { sut } = makeSut()
     const uuid = faker.string.uuid()
-    const getVideoIdStub = Sinon.spy(videoRepositoryStub, 'getVideoId')
+    const getVideoIdStub = Sinon.spy(mockVideoRepository, 'getVideoId')
     await sut.play(uuid)
 
     expect(getVideoIdStub.calledWith(uuid)).toBeTruthy()

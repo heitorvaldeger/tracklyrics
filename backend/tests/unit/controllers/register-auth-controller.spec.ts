@@ -4,15 +4,14 @@ import sinon, { stub } from 'sinon'
 import AuthController from '#controllers/auth-controller'
 import { UserEmailStatus } from '#enums/user-email-status'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
-import { mockAuthRegisterData, mockAuthServiceStub } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { mockAuthRegisterData, mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
   const httpContext = makeHttpRequest(mockAuthRegisterData())
-  const authServiceStub = mockAuthServiceStub()
-  const sut = new AuthController(authServiceStub)
+  const sut = new AuthController(mockAuthService)
 
-  return { sut, httpContext, authServiceStub }
+  return { sut, httpContext }
 }
 test.group('AuthController.register', (group) => {
   group.each.teardown(() => {
@@ -97,8 +96,8 @@ test.group('AuthController.register', (group) => {
   })
 
   test('it must return 422 if email provided already in use', async ({ expect }) => {
-    const { sut, httpContext, authServiceStub } = makeSut()
-    stub(authServiceStub, 'register').rejects(new UserOrEmailAlreadyUsingException())
+    const { sut, httpContext } = makeSut()
+    stub(mockAuthService, 'register').rejects(new UserOrEmailAlreadyUsingException())
     const httpResponse = sut.register(httpContext)
 
     expect(httpResponse).rejects.toEqual(new UserOrEmailAlreadyUsingException())
@@ -115,8 +114,8 @@ test.group('AuthController.register', (group) => {
   })
 
   test('it must return 500 if create user return throws', async ({ expect }) => {
-    const { sut, httpContext, authServiceStub } = makeSut()
-    stub(authServiceStub, 'register').throws(new Error())
+    const { sut, httpContext } = makeSut()
+    stub(mockAuthService, 'register').throws(new Error())
     const httpResponse = sut.register(httpContext)
 
     expect(httpResponse).rejects.toEqual(new Error())

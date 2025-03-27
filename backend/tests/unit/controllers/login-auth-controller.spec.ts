@@ -4,7 +4,7 @@ import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
 import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
-import { mockAuthServiceStub } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
@@ -12,10 +12,10 @@ const makeSut = () => {
     email: faker.internet.email(),
     password: faker.internet.password(),
   })
-  const authServiceStub = mockAuthServiceStub()
-  const sut = new AuthController(authServiceStub)
 
-  return { sut, httpContext, authServiceStub }
+  const sut = new AuthController(mockAuthService)
+
+  return { sut, httpContext }
 }
 test.group('AuthController.login', (group) => {
   group.each.teardown(() => {
@@ -85,16 +85,16 @@ test.group('AuthController.login', (group) => {
   })
 
   test('it must return 401 if invalid credentials is provided', async ({ expect }) => {
-    const { sut, httpContext, authServiceStub } = makeSut()
-    stub(authServiceStub, 'login').rejects(new InvalidCredentialsException())
+    const { sut, httpContext } = makeSut()
+    stub(mockAuthService, 'login').rejects(new InvalidCredentialsException())
     const httpResponse = sut.login(httpContext)
 
     expect(httpResponse).rejects.toEqual(new InvalidCredentialsException())
   })
 
   test('it must return 500 if create accessToken return throws', async ({ expect }) => {
-    const { sut, httpContext, authServiceStub } = makeSut()
-    stub(authServiceStub, 'login').throws(new Error())
+    const { sut, httpContext } = makeSut()
+    stub(mockAuthService, 'login').throws(new Error())
     const httpResponse = sut.login(httpContext)
 
     expect(httpResponse).rejects.toEqual(new Error())

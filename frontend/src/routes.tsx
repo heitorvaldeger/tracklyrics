@@ -9,7 +9,7 @@ import { LayoutSwitcher } from "./pages/_layouts/layout-switcher";
 import { UserFavorites } from "./pages/app/user-favorites";
 import { UserLyrics } from "./pages/app/user-lyrics";
 import { UserProfile } from "./pages/app/user-profile";
-import { VideoAdd } from "./pages/app/video-add";
+import { VideoSave } from "./pages/app/video-save";
 import { VideoSearch } from "./pages/app/video-search";
 import { Register } from "./pages/auth/register";
 
@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
     element: <AuthenticatedLayout />,
   },
   {
-    element: <VideoAdd />,
-    path: "/video/add",
+    element: <VideoSave />,
+    path: "/video/save",
   },
 ]);

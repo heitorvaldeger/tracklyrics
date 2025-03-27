@@ -4,7 +4,7 @@ import { VideoSaveResult } from '#models/video-save'
 import { VideoCreateProtocolService } from '#services/_protocols/video-create-protocol-service'
 import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
-export const mockVideoCreateOrUpdateRequest = (): VideoCreateProtocolService.Params => ({
+export const mockVideoCreateOrUpdateRequest: VideoCreateProtocolService.Params = {
   isDraft: false,
   title: faker.lorem.words(2),
   artist: faker.lorem.words(2),
@@ -29,9 +29,9 @@ export const mockVideoCreateOrUpdateRequest = (): VideoCreateProtocolService.Par
       line: faker.lorem.sentence(5),
     },
   ],
-})
+}
 
-export const mockVideoCreateOrUpdateResponse = (): VideoSaveResult => ({
+export const mockVideoCreateOrUpdateResponse: VideoSaveResult = {
   isDraft: false,
   title: faker.lorem.words(2),
   artist: faker.lorem.words(2),
@@ -41,4 +41,4 @@ export const mockVideoCreateOrUpdateResponse = (): VideoSaveResult => ({
   genreId: 0,
   uuid: faker.string.uuid(),
   userId: 0,
-})
+}

@@ -16,10 +16,10 @@ export const mockLyricFindResponseData: LyricFindResponse[] = [
   },
 ]
 
-export const mockLyricRepositoryStub = (): LyricRepository => ({
+export const mockLyricRepository: LyricRepository = {
   save: (params: LyricRepository.LyricParamsToInsert[]) =>
     Promise.resolve({
       countLyricsInserted: 2,
     }),
   find: (videoId: number) => Promise.resolve(mockLyricFindResponseData),
-})
+}

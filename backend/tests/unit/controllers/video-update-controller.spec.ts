@@ -15,7 +15,7 @@ const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
 })
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(mockVideoCreateOrUpdateRequest(), {
+  const httpContext = makeHttpRequest(mockVideoCreateOrUpdateRequest, {
     uuid: randomUUID(),
   })
 

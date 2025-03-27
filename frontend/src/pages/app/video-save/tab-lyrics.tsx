@@ -1,4 +1,4 @@
-import { Info, Plus, Trash } from "lucide-react";
+import { Info, Plus, SkipBack, SkipForward, Trash } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import ReactPlayer from "react-player";
@@ -16,12 +16,16 @@ import { Lyric } from "@/models/lyric";
 
 import { TableLyricRow } from "./table-lyric-row";
 
+export type LyricWithId = {
+  id: number;
+} & Lyric;
+
 export const TabLyrics = () => {
   const { watch } = useFormContext();
   const youtubeURLWatcher = watch("linkYoutube");
 
-  const { control } = useFormContext<{
-    lyrics: Lyric[];
+  const { control, getValues } = useFormContext<{
+    lyrics: LyricWithId[];
   }>();
   const {
     fields: lyrics,
@@ -31,6 +35,7 @@ export const TabLyrics = () => {
   } = useFieldArray({
     control,
     name: "lyrics",
+    keyName: "customId",
   });
 
   const playerRef = useRef<ReactPlayer | null>(null);
@@ -57,13 +62,13 @@ export const TabLyrics = () => {
   );
 
   const handleAddNewLine = () => {
-    const lastId = lyrics.length > 0 ? lyrics[lyrics.length - 1].key + 1 : 0;
+    const lastId = lyrics.length > 0 ? lyrics[lyrics.length - 1].id + 1 : 0;
 
     appendLyric({
       startTime: "",
       endTime: "",
       line: "",
-      key: lastId,
+      id: lastId,
     });
   };
 
@@ -75,9 +80,10 @@ export const TabLyrics = () => {
   };
 
   const handleUpdateStartTime = (id: number) => {
-    const lyric = lyrics.find((lyric) => lyric.key === id);
+    const values = getValues("lyrics");
+    const lyric = values.find((lyric) => lyric.id === id);
     if (lyric) {
-      updateLyric(lyric.key, {
+      updateLyric(lyric.id, {
         ...lyric,
         startTime: currentTimeFormated,
       });
@@ -85,7 +91,9 @@ export const TabLyrics = () => {
   };
 
   const handleUpdateEndTime = (id: number) => {
-    const lyric = lyrics.find((lyric) => lyric.key === id);
+    const values = getValues("lyrics");
+    const lyric = values.find((lyric) => lyric.id === id);
+
     if (lyric) {
       updateLyric(id, {
         ...lyric,
@@ -146,23 +154,54 @@ export const TabLyrics = () => {
             <span>{durationTimeFormated}</span>
           </div>
 
-          <div className="flex items-center gap-2 justify-end">
-            <Button
-              onClick={handleAddNewLine}
-              type="button"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Insert</span>
-            </Button>
-            <Button
-              onClick={handleDeleteLine}
-              type="button"
-              className="flex items-center gap-2"
-              variant="outline"
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 justify-start">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => {
+                  setCurrentTime((state) => {
+                    playerRef.current?.seekTo(state - 0.2);
+                    return state - 0.2;
+                  });
+                }}
+              >
+                <SkipBack className="h-4 w-4" />
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => {
+                  setCurrentTime((state) => {
+                    playerRef.current?.seekTo(state + 0.2);
+                    return state + 0.2;
+                  });
+                }}
+              >
+                <SkipForward className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 justify-end">
+              <Button
+                onClick={handleAddNewLine}
+                type="button"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Insert</span>
+              </Button>
+              <Button
+                onClick={handleDeleteLine}
+                type="button"
+                className="flex items-center gap-2"
+                variant="outline"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -186,8 +225,9 @@ export const TabLyrics = () => {
           <TableBody>
             {lyrics.map((lyric) => (
               <TableLyricRow
-                key={lyric.id}
+                key={lyric.customId}
                 lyric={lyric}
+                currentTime={currentTime}
                 selectedLine={selectedLine}
                 onSelectedLine={setSelectedLine}
                 onUpdateStartTime={handleUpdateStartTime}

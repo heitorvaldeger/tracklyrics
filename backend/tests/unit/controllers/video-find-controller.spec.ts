@@ -5,7 +5,7 @@ import sinon, { stub } from 'sinon'
 
 import VideoFindController from '#controllers/video-find-controller'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { mockVideoData, mockVideoFindServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoData, mockVideoFindService } from '#tests/__mocks__/stubs/mock-video-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
@@ -16,10 +16,9 @@ const makeSut = async () => {
       uuid: faker.string.uuid(),
     }
   )
-  const videoServiceStub = mockVideoFindServiceStub()
-  const sut = new VideoFindController(videoServiceStub)
+  const sut = new VideoFindController(mockVideoFindService)
 
-  return { sut, httpContext, videoServiceStub }
+  return { sut, httpContext }
 }
 
 test.group('VideoFindController.find()', (group) => {
@@ -36,8 +35,8 @@ test.group('VideoFindController.find()', (group) => {
   })
 
   test('return 404 if a video not found', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = await makeSut()
-    stub(videoServiceStub, 'find').rejects(new VideoNotFoundException())
+    const { sut, httpContext } = await makeSut()
+    stub(mockVideoFindService, 'find').rejects(new VideoNotFoundException())
     stub(httpContext.request, 'params').returns({
       uuid: NilUUID,
     })
@@ -64,8 +63,8 @@ test.group('VideoFindController.find()', (group) => {
   })
 
   test('return 500 if video find throws', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = await makeSut()
-    stub(videoServiceStub, 'find').throws(new Error())
+    const { sut, httpContext } = await makeSut()
+    stub(mockVideoFindService, 'find').throws(new Error())
 
     const httpResponse = sut.find(httpContext)
 

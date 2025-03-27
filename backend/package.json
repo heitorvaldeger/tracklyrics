@@ -52,8 +52,8 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@faker-js/faker": "^9.2.0",
-    "@japa/api-client": "^2.0.4",
-    "@japa/assert": "^3.0.0",
+    "@japa/api-client": "^3.0.4",
+    "@japa/assert": "^4.0.1",
     "@japa/expect": "^3.0.2",
     "@japa/plugin-adonisjs": "^3.0.1",
     "@japa/runner": "^3.1.4",
@@ -125,5 +125,8 @@
       "**/models/**/*.ts",
       "**/helpers/types/**/*.ts"
     ]
+  },
+  "engines": {
+    "node": "20.17.0"
   }
 }

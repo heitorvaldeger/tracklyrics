@@ -3,15 +3,14 @@ import _ from 'lodash'
 import { spy, stub } from 'sinon'
 
 import VideoFindController from '#controllers/video-find-controller'
-import { mockVideoData, mockVideoFindServiceStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoData, mockVideoFindService } from '#tests/__mocks__/stubs/mock-video-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
 const makeSut = () => {
-  const videoServiceStub = mockVideoFindServiceStub()
   const httpContext = makeHttpRequest()
-  const sut = new VideoFindController(videoServiceStub)
-  return { sut, videoServiceStub, httpContext }
+  const sut = new VideoFindController(mockVideoFindService)
+  return { sut, httpContext }
 }
 
 test.group('VideoFindController.findBy()', (group) => {
@@ -26,8 +25,8 @@ test.group('VideoFindController.findBy()', (group) => {
   })
 
   test('calls VideoFindService findBy with correct values', async ({ expect }) => {
-    const { sut, httpContext, videoServiceStub } = makeSut()
-    const findBySpy = spy(videoServiceStub, 'findBy')
+    const { sut, httpContext } = makeSut()
+    const findBySpy = spy(mockVideoFindService, 'findBy')
     stub(httpContext.request, 'qs').returns({
       genreId: 0,
       languageId: 0,
@@ -70,8 +69,8 @@ test.group('VideoFindController.findBy()', (group) => {
   })
 
   test('return 500 if video findBy return throws', async ({ expect }) => {
-    const { sut, videoServiceStub, httpContext } = makeSut()
-    stub(videoServiceStub, 'findBy').throws(new Error())
+    const { sut, httpContext } = makeSut()
+    stub(mockVideoFindService, 'findBy').throws(new Error())
     const httpResponse = sut.findBy(httpContext)
     expect(httpResponse).rejects.toEqual(new Error())
   })

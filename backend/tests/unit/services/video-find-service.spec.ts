@@ -5,13 +5,12 @@ import { stub } from 'sinon'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { VideoFindService } from '#services/video-find-service'
-import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const videoRepositoryStub = mockVideoRepositoryStub()
-  const sut = new VideoFindService(videoRepositoryStub)
+  const sut = new VideoFindService(mockVideoRepository)
 
-  return { sut, videoRepositoryStub }
+  return { sut }
 }
 
 test.group('VideoFindService.find()', () => {
@@ -24,8 +23,8 @@ test.group('VideoFindService.find()', () => {
   })
 
   test('it must return an error if a video not found', async ({ expect }) => {
-    const { sut, videoRepositoryStub } = makeSut()
-    stub(videoRepositoryStub, 'find').resolves(null)
+    const { sut } = makeSut()
+    stub(mockVideoRepository, 'find').resolves(null)
     const video = sut.find(faker.string.uuid())
 
     expect(video).rejects.toEqual(new VideoNotFoundException())

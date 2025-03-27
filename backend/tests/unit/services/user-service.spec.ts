@@ -5,15 +5,14 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
 import { UserService } from '#services/user-service'
-import { mockAuthStrategyStub } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
-import { mockUserRepositoryStub } from '#tests/__mocks__/stubs/mock-user-stub'
+import { mockAuthStrategy } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockUserRepository } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const makeSut = () => {
-  const fakeUserRepositoryStub = mockUserRepositoryStub()
-  const { authStrategyStub } = mockAuthStrategyStub()
-  const sut = new UserService(fakeUserRepositoryStub, authStrategyStub)
+  const { authStrategyStub } = mockAuthStrategy()
+  const sut = new UserService(mockUserRepository, authStrategyStub)
 
-  return { sut, authStrategyStub, fakeUserRepositoryStub }
+  return { sut, authStrategyStub }
 }
 
 test.group('UserService.getFullInfoByUserLogged', (group) => {
@@ -31,9 +30,9 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
   })
 
   test('return user not found if user was not found', async ({ expect }) => {
-    const { sut, fakeUserRepositoryStub } = makeSut()
+    const { sut } = makeSut()
 
-    stub(fakeUserRepositoryStub, 'getUserByEmailWithoutPassword').resolves(null)
+    stub(mockUserRepository, 'getUserByEmailWithoutPassword').resolves(null)
     const httpResponse = sut.getFullInfoByUserLogged()
 
     expect(httpResponse).rejects.toEqual(new UserNotFoundException())
@@ -65,9 +64,9 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
   test('call UserRepository.getUserByEmailWithoutPassword with correct value', async ({
     expect,
   }) => {
-    const { sut, fakeUserRepositoryStub } = makeSut()
+    const { sut } = makeSut()
     const getUserByEmailWithoutPasswordSpy = Sinon.spy(
-      fakeUserRepositoryStub,
+      mockUserRepository,
       'getUserByEmailWithoutPassword'
     )
     await sut.getFullInfoByUserLogged()

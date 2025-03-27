@@ -4,8 +4,6 @@ import UserLucid from '#models/user-model/user-lucid'
 import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
-const httpRequest = mockVideoCreateOrUpdateRequest()
-
 test.group('Video Update Route', (group) => {
   test('/PUT videos/:uuid - it must return 200 on update if video update on success', async ({
     client,
@@ -21,7 +19,7 @@ test.group('Video Update Route', (group) => {
     const response = await client
       .put(`/videos/${fakeVideo.uuid}`)
       .json({
-        ...httpRequest,
+        ...mockVideoCreateOrUpdateRequest,
         languageId: fakeLanguage.id,
         genreId: fakeGenre.id,
       })
@@ -35,7 +33,7 @@ test.group('Video Update Route', (group) => {
     expect,
   }) => {
     const { fakeUser, fakeLanguage, fakeVideo } = await mockAllTables()
-    const { genreId, artist, ...rest } = httpRequest
+    const { genreId, artist, ...rest } = mockVideoCreateOrUpdateRequest
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -80,7 +78,7 @@ test.group('Video Update Route', (group) => {
     const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockAllTables()
     const anotherFakeVideo = await mockVideo({ fakeGenre, fakeLanguage, fakeUser })
 
-    const { genreId, languageId, ...rest } = httpRequest
+    const { genreId, languageId, ...rest } = mockVideoCreateOrUpdateRequest
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)

@@ -5,10 +5,6 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import { mockAuthRegisterData } from '#tests/__mocks__/stubs/mock-auth-stub'
 
 test.group('Auth Register Route', (group) => {
-  group.each.setup(() => {
-    mail.fake()
-  })
-
   test('/POST register/ - it must return 200 on register user with success', async ({
     client,
     expect,

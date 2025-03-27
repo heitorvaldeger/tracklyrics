@@ -8,7 +8,7 @@ type AuthStrategyStub = {
   authStrategyStub: SinonStubbedInstance<Auth>
   uuid: string
 }
-export const mockAuthStrategyStub = (): AuthStrategyStub => {
+export const mockAuthStrategy = (): AuthStrategyStub => {
   const uuid = faker.string.uuid()
   const authStrategyStub = createStubInstance(AuthAdonis)
   authStrategyStub.getUserId.returns(1)

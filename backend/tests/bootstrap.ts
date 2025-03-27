@@ -28,7 +28,11 @@ export const plugins: Config['plugins'] = [apiClient(), pluginAdonisJS(app), exp
  * The teardown functions are executed after all the tests
  */
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
-  setup: [],
+  setup: [
+    () => {
+      mail.fake()
+    },
+  ],
   teardown: [],
 }
 
@@ -38,15 +42,15 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
  */
 export const configureSuite: Config['configureSuite'] = (suite) => {
   suite.onGroup((group) => {
-    group.each.teardown(async (test) => {
-      mail.fake()
+    group.each.setup(async () => {
       Sinon.reset()
       Sinon.restore()
+
       await db.from('lyrics').del()
       await db.from('favorites').del()
       await db.from('video_play_counts').del()
       await db.from('videos').del()
-      await UserLucid.query().del()
+      await db.from('users').del()
       await db.from('genres').del()
       await db.from('languages').del()
     })

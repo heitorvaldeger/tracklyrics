@@ -1,11 +1,10 @@
 import { test } from '@japa/runner'
 
 import { GenreService } from '#services/genre-service'
-import { mockGenreRepositoryStub } from '#tests/__mocks__/stubs/mock-genre-stub'
+import { mockGenreRepository } from '#tests/__mocks__/stubs/mock-genre-stub'
 
 const makeSut = () => {
-  const fakeGenreRepositoryStub = mockGenreRepositoryStub()
-  const sut = new GenreService(fakeGenreRepositoryStub)
+  const sut = new GenreService(mockGenreRepository)
 
   return { sut }
 }

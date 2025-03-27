@@ -3,13 +3,12 @@ import { test } from '@japa/runner'
 import _ from 'lodash'
 
 import { VideoFindService } from '#services/video-find-service'
-import { mockVideoData, mockVideoRepositoryStub } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const videoRepositoryStub = mockVideoRepositoryStub()
-  const sut = new VideoFindService(videoRepositoryStub)
+  const sut = new VideoFindService(mockVideoRepository)
 
-  return { sut, videoRepositoryStub }
+  return { sut }
 }
 
 test.group('VideoFindService.findBy()', (group) => {

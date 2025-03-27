@@ -5,7 +5,7 @@ export const TabHelp = () => {
     <TabsContent value="help" className="overflow-y mx-2">
       <div className="space-y-4">
         <h3 className="text-xl font-medium">
-          How to Add Lyrics with Timestamps
+          How to Save Lyrics with Timestamps
         </h3>
 
         <div className="space-y-2">
@@ -33,7 +33,7 @@ export const TabHelp = () => {
           <ul className="list-disc pl-5 space-y-1">
             <li>Play the video and pause at the exact moment a line begins</li>
             <li>
-              Click "Insert Timestamp" to automatically add the timestamp at
+              Click "Insert Timestamp" to automatically save the timestamp at
               your cursor position
             </li>
             <li>Type the lyrics for that line after the timestamp</li>

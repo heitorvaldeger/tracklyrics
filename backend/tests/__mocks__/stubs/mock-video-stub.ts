@@ -30,7 +30,7 @@ export const mockVideoDataWithoutThumbnail: VideoMetadata = {
   username: 'any_username',
 }
 
-export const mockVideoRepositoryStub = (): VideoRepository => ({
+export const mockVideoRepository: VideoRepository = {
   find: (uuid: string) => Promise.resolve(mockVideoDataWithoutThumbnail),
   findBy: (filters: VideoRepository.FindVideoParams) =>
     Promise.resolve([mockVideoDataWithoutThumbnail]),
@@ -41,14 +41,14 @@ export const mockVideoRepositoryStub = (): VideoRepository => ({
   create: (params: VideoCreateInput) => Promise.resolve(mockFakeVideoSaveResultModel()),
   update: (params: VideoUpdateInput, uuid: string) => Promise.resolve(true),
   hasYoutubeLink: (link: string) => Promise.resolve(false),
-})
+}
 
-export const mockVideoFindServiceStub = (): VideoFindProtocolService => ({
+export const mockVideoFindService: VideoFindProtocolService = {
   find: (uuid: string) => Promise.resolve(mockVideoData),
   findBy: (filters: VideoFindProtocolService.FindVideoParams) => Promise.resolve([mockVideoData]),
-})
+}
 
-export const mockVideoUserLoggedServiceStub = (): VideoUserLoggedProtocolService => ({
+export const mockVideoUserLoggedService: VideoUserLoggedProtocolService = {
   isNotVideoOwnedByUserLogged: (uuid: string) => Promise.resolve(false),
   getVideosByUserLogged: () => Promise.resolve([mockVideoData]),
-})
+}

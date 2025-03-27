@@ -10,14 +10,13 @@ import {
 } from '#tests/__mocks__/mock-video-request'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
-const videoRequest = mockVideoCreateOrUpdateRequest()
-const videoResponse = mockVideoCreateOrUpdateResponse()
 export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({
-  create: (payload: VideoCreateProtocolService.Params) => Promise.resolve(videoResponse),
+  create: (payload: VideoCreateProtocolService.Params) =>
+    Promise.resolve(mockVideoCreateOrUpdateResponse),
 })
 
 const makeSut = async () => {
-  const httpContext = makeHttpRequest(videoRequest)
+  const httpContext = makeHttpRequest(mockVideoCreateOrUpdateRequest)
 
   const videoCreateServiceStub = mockVideoCreateServiceStub()
   const sut = new VideoCreateController(videoCreateServiceStub)
@@ -241,7 +240,7 @@ test.group('VideoCreateController', (group) => {
     const { sut, httpContext: ctx } = await makeSut()
     const httpResponse = await sut.create(ctx)
 
-    expect(httpResponse).toEqual(videoResponse)
+    expect(httpResponse).toEqual(mockVideoCreateOrUpdateResponse)
   })
 
   test('return 500 if video create throws', async ({ expect }) => {

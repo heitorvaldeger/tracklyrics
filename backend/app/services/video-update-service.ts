@@ -63,14 +63,14 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
       throw new VideoNotFoundException()
     }
 
-    const newLyricsToInsert = payload.lyrics?.map((lyric, idx) => ({
+    const newLyrics = lyrics?.map((lyric, idx) => ({
       seq: ++idx,
       videoId,
       ...lyric,
     }))
 
-    if (newLyricsToInsert) {
-      await this.lyricRepository.save(newLyricsToInsert)
+    if (newLyrics && newLyrics?.length > 0) {
+      await this.lyricRepository.save(newLyrics)
     }
 
     return updated

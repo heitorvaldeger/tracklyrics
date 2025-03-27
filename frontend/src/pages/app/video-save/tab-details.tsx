@@ -53,7 +53,7 @@ export const TabDetails = () => {
                 />
               </FormControl>
               <FormLabel className="text-sm text-muted-foreground">
-                Paste the full YouTube URL of the video you want to add
+                Paste the full YouTube URL of the video you want to save
               </FormLabel>
               <FormMessage />
             </FormItem>
@@ -204,7 +204,7 @@ export const TabDetails = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel htmlFor="releaseYear" className="font-semibold">
-                Artist *
+                Release Year
               </FormLabel>
               <FormControl>
                 <Input

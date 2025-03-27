@@ -5,8 +5,6 @@ import UserLucid from '#models/user-model/user-lucid'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
-const httpRequest = mockVideoCreateOrUpdateRequest()
-
 test.group('Video Create Route', (group) => {
   test('/POST videos/ - it must return 200 on create if video create on success', async ({
     client,
@@ -22,17 +20,17 @@ test.group('Video Create Route', (group) => {
     const response = await client
       .post(`/videos`)
       .json({
-        ...httpRequest,
+        ...mockVideoCreateOrUpdateRequest,
         languageId: fakeLanguage.id,
         genreId: fakeGenre.id,
       })
       .withCookie('AUTH', accessTokenValue)
 
     expect(response.status()).toBe(200)
-    expect(response.body().artist).toBe(httpRequest.artist)
-    expect(response.body().linkYoutube).toBe(httpRequest.linkYoutube)
-    expect(response.body().title).toBe(httpRequest.title)
-    expect(response.body().releaseYear).toBe(httpRequest.releaseYear)
+    expect(response.body().artist).toBe(mockVideoCreateOrUpdateRequest.artist)
+    expect(response.body().linkYoutube).toBe(mockVideoCreateOrUpdateRequest.linkYoutube)
+    expect(response.body().title).toBe(mockVideoCreateOrUpdateRequest.title)
+    expect(response.body().releaseYear).toBe(mockVideoCreateOrUpdateRequest.releaseYear)
   })
 
   test('/POST videos/ - it must return 400 on create if any param is invalid', async ({
@@ -40,7 +38,7 @@ test.group('Video Create Route', (group) => {
     expect,
   }) => {
     const { fakeUser, fakeLanguage } = await mockAllTables()
-    const { genreId, artist, ...rest } = httpRequest
+    const { genreId, artist, ...rest } = mockVideoCreateOrUpdateRequest
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
@@ -83,7 +81,7 @@ test.group('Video Create Route', (group) => {
     expect,
   }) => {
     const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockAllTables()
-    const { genreId, languageId, ...rest } = httpRequest
+    const { genreId, languageId, ...rest } = mockVideoCreateOrUpdateRequest
 
     const accessToken = await UserLucid.accessTokens.create(
       await UserLucid.findByOrFail('uuid', fakeUser.uuid)
