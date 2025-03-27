@@ -24,7 +24,6 @@ import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-
 import { GameProtocolService } from '#services/_protocols/game-protocol-service'
 import { GenreProtocolService } from '#services/_protocols/genre-protocol-service'
 import { LanguageProtocolService } from '#services/_protocols/language-protocol-service'
-import { LyricSaveProtocolService } from '#services/_protocols/lyric/lyric-save-protocol-service'
 import { LyricFindProtocolService } from '#services/_protocols/lyric-find-protocol-service'
 import { UserProtocolService } from '#services/_protocols/user-protocol-service'
 import { VideoCreateProtocolService } from '#services/_protocols/video/video-create-protocol-service'
@@ -38,7 +37,6 @@ import { GameService } from '#services/game-service'
 import { GenreService } from '#services/genre-service'
 import { LanguageService } from '#services/language-service'
 import { LyricFindService } from '#services/lyric-find-service'
-import { LyricSaveService } from '#services/lyric-save-service'
 import { UserService } from '#services/user-service'
 import { VideoCreateService } from '#services/video-create-service'
 import { VideoDeleteService } from '#services/video-delete-service'
@@ -62,7 +60,6 @@ export default class AppProvider {
       { protocol: VideoUpdateProtocolService, implementation: VideoUpdateService },
       { protocol: FavoriteProtocolService, implementation: FavoriteService },
       { protocol: VideoUserLoggedProtocolService, implementation: VideoUserLoggedService },
-      { protocol: LyricSaveProtocolService, implementation: LyricSaveService },
       { protocol: LyricFindProtocolService, implementation: LyricFindService },
       { protocol: GameProtocolService, implementation: GameService },
       { protocol: UserProtocolService, implementation: UserService },

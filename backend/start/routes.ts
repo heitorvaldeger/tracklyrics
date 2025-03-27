@@ -11,7 +11,6 @@ import router from '@adonisjs/core/services/router'
 
 import { middleware } from '#start/kernel'
 
-const LyricSaveController = () => import('#controllers/lyric-save-controller')
 const LyricFindController = () => import('#controllers/lyric-find-controller')
 const GameController = () => import('#controllers/game-controller')
 const FavoriteController = () => import('#controllers/favorite-controller')
@@ -47,7 +46,6 @@ router
     router
       .group(() => {
         router.post('', [VideoCreateController, 'create'])
-        router.post(':uuid/lyrics', [LyricSaveController, 'save'])
         router.put(':uuid', [VideoUpdateController, 'update'])
         router.delete(':uuid', [VideoDeleteController, 'delete'])
       })
