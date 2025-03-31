@@ -50,16 +50,19 @@ export const SignIn = () => {
   });
   const { handleSubmit, control } = form;
 
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { mutateAsync: authenticate, isLoading } = useMutation({
     mutationFn: signIn,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["session"] }).then(() => {
+        navigate("/", { replace: true });
+      });
+    },
   });
 
   const handleSignIn = async (data: SignInForm) => {
     try {
       await authenticate(data);
-      queryClient.invalidateQueries({ queryKey: ["session"] });
-      navigate("/", { replace: true });
     } catch (error) {
       toast.error("Invalid credentials");
     }

@@ -1,7 +1,8 @@
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 import { vineResolver } from "@hookform/resolvers/vine";
@@ -9,6 +10,7 @@ import vine from "@vinejs/vine";
 import { InferInput } from "@vinejs/vine/types";
 
 import { register } from "@/api/register";
+import { validateEmail } from "@/api/validate-email";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +20,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -43,16 +52,34 @@ type CreateNewAccountData = InferInput<typeof registerFormSchema> & {
   password_confirmation: string;
 };
 
+const validateEmailFormSchema = vine.compile(
+  vine.object({
+    codeOTP: vine.number(),
+  }),
+);
+
+type ValidateEmailData = InferInput<typeof validateEmailFormSchema> & {
+  email: string;
+};
+
 export const Register = () => {
-  const form = useForm<CreateNewAccountData>({
+  const navigate = useNavigate();
+  const [isOpenValidateEmailModal, setIsOpenValidateModal] = useState(false);
+  const registerForm = useForm<CreateNewAccountData>({
     resolver: vineResolver(registerFormSchema),
   });
+  const { mutateAsync: createNewAccount, isLoading: isCreatingNewAccount } =
+    useMutation({
+      mutationFn: register,
+    });
 
-  const { handleSubmit } = form;
-
-  const { mutateAsync: createNewAccount, isLoading } = useMutation({
-    mutationFn: register,
+  const validateEmailForm = useForm<ValidateEmailData>({
+    resolver: vineResolver(validateEmailFormSchema),
   });
+  const { mutateAsync: validateEmailFn, isLoading: isValidatingEmail } =
+    useMutation({
+      mutationFn: validateEmail,
+    });
 
   const handleCreateNewAccount = async (data: CreateNewAccountData) => {
     try {
@@ -69,6 +96,36 @@ export const Register = () => {
           duration: 7000,
         },
       );
+      setIsOpenValidateModal(true);
+    } catch (error) {
+      toast.error("Sorry, an error occurred");
+      console.log(error);
+    }
+  };
+
+  const handleValidateEmail = async ({ codeOTP }: ValidateEmailData) => {
+    try {
+      const email = registerForm.getValues("email");
+      if (!email) {
+        toast.error("Whoops, an e-mail must be defined");
+        return;
+      }
+
+      await validateEmailFn({
+        email,
+        codeOTP: codeOTP.toString(),
+      });
+
+      toast.info("E-mail validated with success. You can do sign-in now!", {
+        action: {
+          label: "Go to sign-in",
+          onClick: () => navigate("/sign-in"),
+        },
+        duration: 7000,
+      });
+      setIsOpenValidateModal(false);
+      validateEmailForm.reset();
+      registerForm.reset();
     } catch (error) {
       toast.error("Sorry, an error occurred");
       console.log(error);
@@ -78,9 +135,9 @@ export const Register = () => {
   return (
     <div className="mx-auto flex h-screen w-[450px] flex-col justify-center gap-4 bg-white">
       <Card>
-        <Form {...form}>
+        <Form {...registerForm}>
           <form
-            onSubmit={handleSubmit(handleCreateNewAccount)}
+            onSubmit={registerForm.handleSubmit(handleCreateNewAccount)}
             className="space-y-6"
           >
             <CardHeader className="justify-center text-center">
@@ -95,7 +152,7 @@ export const Register = () => {
               <div className="grid w-full grid-cols-2 gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
@@ -112,7 +169,7 @@ export const Register = () => {
                 </div>
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
@@ -132,7 +189,7 @@ export const Register = () => {
               <div className="grid w-full gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="username"
                     render={({ field }) => (
                       <FormItem>
@@ -151,7 +208,7 @@ export const Register = () => {
               <div className="grid w-full gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -170,7 +227,7 @@ export const Register = () => {
               <div className="grid w-full gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
@@ -189,7 +246,7 @@ export const Register = () => {
               <div className="grid w-full gap-4">
                 <div className="flex flex-col space-y-0.5">
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="password_confirmation"
                     render={({ field }) => (
                       <FormItem>
@@ -209,10 +266,10 @@ export const Register = () => {
             <CardFooter className="flex flex-col items-start gap-1">
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isCreatingNewAccount}
                 className="w-full font-bold"
               >
-                {isLoading ? (
+                {isCreatingNewAccount ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   "Register"
@@ -229,6 +286,51 @@ export const Register = () => {
           Login here
         </Link>
       </div>
+
+      <Dialog open={isOpenValidateEmailModal}>
+        <Form {...validateEmailForm}>
+          <DialogContent>
+            <form
+              onSubmit={validateEmailForm.handleSubmit(handleValidateEmail)}
+            >
+              <DialogTitle>Validate email</DialogTitle>
+              <DialogDescription>
+                Please, check your e-mail box and set the code
+              </DialogDescription>
+
+              <div className="flex justify-center items-center py-4">
+                <FormField
+                  control={validateEmailForm.control}
+                  name="codeOTP"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="font-semibold">Code</FormLabel>
+                      <FormControl>
+                        <Input
+                          required
+                          className="w-full"
+                          maxLength={6}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter>
+                <Button type="submit" disabled={isValidatingEmail}>
+                  {isValidatingEmail ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Validate"
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Form>
+      </Dialog>
     </div>
   );
 };

@@ -26,6 +26,9 @@ const AuthController = () => import('#controllers/auth-controller')
 const UserController = () => import('#controllers/user-controller')
 
 router.post('/login', [AuthController, 'login'])
+router.post('/logout', ({ response }) => {
+  response.clearCookie('AUTH').status(204)
+})
 router.post('/register', [AuthController, 'register'])
 router.post('/validate-email', [AuthController, 'validateEmail'])
 router.get('/languages', [LanguageController, 'findAll'])

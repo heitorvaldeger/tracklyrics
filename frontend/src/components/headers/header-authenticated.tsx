@@ -1,5 +1,7 @@
+import { useMutation, useQueryClient } from "react-query";
 import { Link } from "react-router";
 
+import { signOut } from "@/api/sign-out";
 import { AvatarUser } from "@/components/avatar/avatar-user";
 import {
   DropdownMenu,
@@ -11,6 +13,14 @@ import {
 import { Header } from ".";
 
 export const HeaderAuthenticated = () => {
+  const qc = useQueryClient();
+  const { mutateAsync: signOutFn } = useMutation({
+    mutationFn: signOut,
+    onSuccess: async () => {
+      await qc.invalidateQueries(["session"]);
+    },
+  });
+
   return (
     <Header>
       <div className="flex w-full items-center justify-end">
@@ -34,7 +44,9 @@ export const HeaderAuthenticated = () => {
                 My favorites
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Log Out</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOutFn()}>
+              Log Out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
