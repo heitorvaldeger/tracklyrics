@@ -5,9 +5,23 @@ import _ from 'lodash'
 
 import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
 import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
-import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
+import { mockGenre } from '#tests/__mocks__/db/mock-genre'
+import { mockLanguage } from '#tests/__mocks__/db/mock-language'
+import { mockUser } from '#tests/__mocks__/db/mock-user'
 import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
+
+const createData = async () => {
+  const [fakeLanguage, fakeGenre, fakeUser] = await Promise.all([
+    mockLanguage(),
+    mockGenre(),
+    mockUser(),
+  ])
+  const fakeVideo = await mockVideo({ fakeLanguage, fakeGenre, fakeUser })
+
+  return { fakeVideo, fakeUser, fakeLanguage, fakeGenre }
+}
 
 const makeSut = () => {
   const sut = new LyricPostgresRepository()
@@ -24,7 +38,7 @@ test.group('LyricPostgresRepository', (group) => {
   })
 
   test('insert lyrics with success', async ({ expect }) => {
-    const { fakeVideo } = await mockAllTables()
+    const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
     const lyrics: LyricRepository.LyricParamsToInsert[] = []
@@ -49,7 +63,7 @@ test.group('LyricPostgresRepository', (group) => {
   })
 
   test('update lyrics with success', async ({ expect }) => {
-    const { fakeVideo } = await mockAllTables()
+    const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
     const lyrics: LyricRepository.LyricParamsToInsert[] = []
@@ -91,7 +105,7 @@ test.group('LyricPostgresRepository', (group) => {
   })
 
   test('return a lyrics list by videoId with success', async ({ expect }) => {
-    const { fakeVideo } = await mockAllTables()
+    const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
     const lyrics: LyricRepository.LyricParamsToInsert[] = []

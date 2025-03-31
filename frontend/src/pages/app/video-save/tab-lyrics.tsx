@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TabsContent } from "@/components/ui/tabs";
+import { formatTime } from "@/lib/utils";
 import { Lyric } from "@/models/lyric";
 
 import { TableLyricRow } from "./table-lyric-row";
@@ -42,19 +43,6 @@ export const TabLyrics = () => {
 
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
-
-  const formatTime = (sec: number) => {
-    const minutes = Math.floor(sec / 60)
-      .toString()
-      .padStart(2, "0");
-    const seconds = Math.floor(sec % 60)
-      .toString()
-      .padStart(2, "0");
-    const milliseconds = Math.floor((sec % 1) * 100)
-      .toString()
-      .padStart(2, "0");
-    return `${minutes}:${seconds}.${milliseconds}`;
-  };
 
   const currentTimeFormated = formatTime(currentTime);
   const durationTimeFormated = formatTime(

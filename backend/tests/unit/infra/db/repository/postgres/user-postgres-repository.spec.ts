@@ -6,6 +6,7 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import { UserPostgresRepository } from '#infra/db/repository/postgres/user-postgres-repository'
 import UserLucid from '#models/user-model/user-lucid'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
+import { mockUser } from '#tests/__mocks__/db/mock-user'
 
 const makeSut = () => {
   const sut = new UserPostgresRepository()
@@ -19,13 +20,7 @@ test.group('UserPostgresRepository', (group) => {
 
   test('return a user if email and username valid is provided', async ({ expect }) => {
     const { sut } = makeSut()
-    const fakeUser = await UserLucid.create({
-      username: 'valid_username',
-      email: 'valid_mail@mail.com',
-      password: 'valid_password',
-      firstName: 'valid_firstName',
-      lastName: 'valid_lastName',
-    })
+    const fakeUser = await mockUser()
     const user = await sut.getUserByEmailOrUsername({
       username: fakeUser.username,
       email: fakeUser.email,
@@ -38,13 +33,8 @@ test.group('UserPostgresRepository', (group) => {
 
   test('return a user if email or username valid is provided', async ({ expect }) => {
     const { sut } = makeSut()
-    const fakeUser = await UserLucid.create({
-      username: 'valid_username',
-      email: 'valid_mail@mail.com',
-      password: 'valid_password',
-      firstName: 'valid_firstName',
-      lastName: 'valid_lastName',
-    })
+    const fakeUser = await mockUser()
+
     const user = await sut.getUserByEmailOrUsername({
       username: fakeUser.username,
       email: 'any_email@mail.com',
@@ -93,16 +83,9 @@ test.group('UserPostgresRepository', (group) => {
 
   test('return a valid token if successful', async ({ expect }) => {
     const { sut } = makeSut()
-    const uuid = randomUUID()
 
-    const fakeUser = await UserLucid.create({
-      uuid,
-      username: 'valid_username',
-      email: 'valid_mail@mail.com',
-      password: 'valid_password',
-      firstName: 'valid_firstName',
-      lastName: 'valid_lastName',
-    })
+    const fakeUser = await mockUser()
+
     const accessToken = await sut.createAccessToken(fakeUser.uuid)
 
     expect(accessToken).toBeTruthy()
@@ -112,16 +95,9 @@ test.group('UserPostgresRepository', (group) => {
 
   test('delete all tokens from user', async ({ expect }) => {
     const { sut } = makeSut()
-    const uuid = randomUUID()
 
-    const fakeUser = await UserLucid.create({
-      uuid,
-      username: 'valid_username',
-      email: 'valid_mail@mail.com',
-      password: 'valid_password',
-      firstName: 'valid_firstName',
-      lastName: 'valid_lastName',
-    })
+    const fakeUser = await mockUser()
+
     await UserLucid.accessTokens.create(fakeUser)
     await sut.deleteAllAccessToken(fakeUser.uuid)
 
@@ -132,16 +108,9 @@ test.group('UserPostgresRepository', (group) => {
 
   test('update email status from user', async ({ expect }) => {
     const { sut } = makeSut()
-    const uuid = randomUUID()
 
-    const fakeUser = await UserLucid.create({
-      uuid,
-      username: 'valid_username',
-      email: 'valid_mail@mail.com',
-      password: 'valid_password',
-      firstName: 'valid_firstName',
-      lastName: 'valid_lastName',
-    })
+    const fakeUser = await mockUser()
+
     await sut.updateEmailStatus(fakeUser.uuid)
 
     const userUpdated = await UserLucid.query().where('uuid', fakeUser.uuid).first()
@@ -163,14 +132,7 @@ test.group('UserPostgresRepository', (group) => {
   }) => {
     const { sut } = makeSut()
 
-    const fakeUser = await UserLucid.create({
-      uuid: randomUUID(),
-      username: 'valid_username',
-      email: 'valid_mail@mail.com',
-      password: 'valid_password',
-      firstName: 'valid_firstName',
-      lastName: 'valid_lastName',
-    })
+    const fakeUser = await mockUser()
 
     const { uuid, username, email, emailStatus, firstName, lastName } = (
       await UserLucid.findBy('uuid', fakeUser.uuid)
@@ -180,7 +142,7 @@ test.group('UserPostgresRepository', (group) => {
       },
     }) as UserWithoutPasswordModel
 
-    const user = await sut.getUserByEmailWithoutPassword('valid_mail@mail.com')
+    const user = await sut.getUserByEmailWithoutPassword(fakeUser.email)
     expect(user).toEqual({
       uuid,
       username,

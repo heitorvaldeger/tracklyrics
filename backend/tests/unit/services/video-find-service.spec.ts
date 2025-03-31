@@ -20,6 +20,20 @@ test.group('VideoFindService.find()', () => {
     const video = await sut.find(faker.string.uuid())
 
     expect(video).toEqual(mockVideoData)
+    expect(video).toEqual(
+      expect.objectContaining({
+        uuid: expect.any(String),
+        title: expect.any(String),
+        artist: expect.any(String),
+        linkYoutube: expect.any(String),
+        thumbnail: expect.any(String),
+        releaseYear: expect.any(String),
+        language: expect.any(String),
+        genre: expect.any(String),
+        username: expect.any(String),
+        isFavorite: expect.any(Boolean),
+      })
+    )
   })
 
   test('it must return an error if a video not found', async ({ expect }) => {

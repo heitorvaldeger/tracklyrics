@@ -16,6 +16,7 @@ export class VideoPostgresRepository implements VideoRepository {
       .innerJoin('users', 'users.id', 'user_id')
       .innerJoin('languages', 'languages.id', 'language_id')
       .innerJoin('genres', 'genres.id', 'genre_id')
+      .leftJoin('favorites', 'favorites.video_id', 'videos.id')
       .select(
         'title',
         'artist',
@@ -24,7 +25,13 @@ export class VideoPostgresRepository implements VideoRepository {
         'release_year',
         'genres.name as genre',
         'languages.name as language',
-        'users.username as username'
+        'users.username as username',
+        db.raw(`
+          CASE
+            WHEN favorites.id IS NULL THEN false
+            ELSE true
+          END as is_favorite
+        `)
       )
       .first()
 

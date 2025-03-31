@@ -74,7 +74,7 @@ export const VideoSave = () => {
 
   const { data: videoToEdit, isLoading: isVideoToEditLoading } = useQuery({
     queryFn: () => fetchVideo({ uuid: uuid ?? "" }),
-    queryKey: ["video-save", uuid],
+    queryKey: ["video", uuid],
     enabled: !!uuid,
     refetchOnWindowFocus: false,
   });

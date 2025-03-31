@@ -77,10 +77,13 @@ export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
           <div className="flex items-center gap-1">
             <Calendar size={16} className="text-gray-500" />
             <p className="text-sm text-gray-500">
-              {formatDistanceToNowStrict(new Date(video.releaseYear, 0), {
-                addSuffix: true,
-                locale: ptBR,
-              })}
+              {formatDistanceToNowStrict(
+                new Date(Number(video.releaseYear), 0),
+                {
+                  addSuffix: true,
+                  locale: ptBR,
+                },
+              )}
             </p>
           </div>
           <div className="flex items-center gap-1">

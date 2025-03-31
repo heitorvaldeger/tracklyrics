@@ -17,6 +17,7 @@ export const mockVideoData: VideoMetadata & {
   language: 'any_language',
   genre: 'any_genre',
   username: 'any_username',
+  isFavorite: true,
 }
 
 export const mockVideoDataWithoutThumbnail: VideoMetadata = {
@@ -28,6 +29,7 @@ export const mockVideoDataWithoutThumbnail: VideoMetadata = {
   language: 'any_language',
   genre: 'any_genre',
   username: 'any_username',
+  isFavorite: true,
 }
 
 export const mockVideoRepository: VideoRepository = {

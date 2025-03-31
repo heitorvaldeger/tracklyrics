@@ -6,6 +6,7 @@ import { Home } from "@/pages/app/home";
 import { SignIn } from "@/pages/auth/sign-in";
 
 import { LayoutSwitcher } from "./pages/_layouts/layout-switcher";
+import GameMode from "./pages/app/game-mode";
 import { UserFavorites } from "./pages/app/user-favorites";
 import { UserLyrics } from "./pages/app/user-lyrics";
 import { UserProfile } from "./pages/app/user-profile";
@@ -26,17 +27,21 @@ export const router = createBrowserRouter([
         element: <VideoSearch />,
         path: "/search",
       },
+      {
+        element: <GameMode />,
+        path: "/game/:videoUuid/modes",
+      },
     ],
   },
   {
     children: [
       {
         element: <SignIn />,
-        path: "sign-in",
+        path: "/sign-in",
       },
       {
         element: <Register />,
-        path: "register",
+        path: "/register",
       },
     ],
     element: <AppLayout />,

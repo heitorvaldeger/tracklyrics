@@ -7,4 +7,5 @@ export interface VideoMetadata {
   language: string
   genre: string
   username: string
+  isFavorite: boolean
 }

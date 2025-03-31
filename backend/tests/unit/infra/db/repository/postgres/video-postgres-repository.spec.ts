@@ -5,14 +5,23 @@ import _ from 'lodash'
 import { stub } from 'sinon'
 
 import { VideoPostgresRepository } from '#infra/db/repository/postgres/video-postgres-repository'
-import { Favorite } from '#models/favorite'
-import { Genre } from '#models/genre'
-import { Language } from '#models/language'
-import UserLucid from '#models/user-model/user-lucid'
-import { Video } from '#models/video'
-import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { mockVideo } from '#tests/__mocks__/db/mock-all'
+import { mockGenre } from '#tests/__mocks__/db/mock-genre'
+import { mockLanguage } from '#tests/__mocks__/db/mock-language'
+import { mockUser } from '#tests/__mocks__/db/mock-user'
 import { NilUUID } from '#tests/__utils__/NilUUID'
+import { toSnakeCase } from '#utils/index'
 
+const createData = async () => {
+  const [fakeLanguage, fakeGenre, fakeUser] = await Promise.all([
+    mockLanguage(),
+    mockGenre(),
+    mockUser(),
+  ])
+  const fakeVideo = await mockVideo({ fakeLanguage, fakeGenre, fakeUser })
+
+  return { fakeVideo, fakeUser, fakeLanguage, fakeGenre }
+}
 const makeSut = async () => {
   const sut = new VideoPostgresRepository()
 
@@ -20,27 +29,13 @@ const makeSut = async () => {
 }
 
 test.group('VideoPostgresRepository', (group) => {
-  let fakeGenre: Genre
-  let fakeLanguage: Language
-  let fakeUser: UserLucid
-  let fakeVideo: Video
-  let fakeVideoToCreate: any
-  let fakeFavorite: Favorite
-  group.each.setup(async () => {
-    let lucidEntity = await mockAllTables()
-    fakeGenre = lucidEntity.fakeGenre
-    fakeLanguage = lucidEntity.fakeLanguage
-    fakeUser = lucidEntity.fakeUser
-    fakeVideo = lucidEntity.fakeVideo
-    fakeFavorite = lucidEntity.fakeFavorite
-    fakeVideoToCreate = _.omit(fakeVideo, ['userId', 'languageId', 'genreId', 'id'])
-  })
-
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
 
   test('return a list videos on findBy if params provided is empty', async ({ expect }) => {
+    await createData()
+
     const { sut } = await makeSut()
 
     const videos = await sut.findBy({})
@@ -50,9 +45,10 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a list videos on findBy if genreId param is provided', async ({ expect }) => {
+    const { fakeVideo, fakeUser } = await createData()
     const { sut } = await makeSut()
 
-    const videos = await sut.findBy({ genreId: fakeGenre.id })
+    const videos = await sut.findBy({ genreId: fakeVideo.genreId })
 
     expect(Array.isArray(videos)).toBeTruthy()
     expect(videos.length).toBe(1)
@@ -63,6 +59,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a list videos on findBy if languageId param is provided', async ({ expect }) => {
+    const { fakeVideo, fakeLanguage } = await createData()
     const { sut } = await makeSut()
 
     const videos = await sut.findBy({ languageId: fakeLanguage.id })
@@ -75,6 +72,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a list videos on findBy if userUuid param is provided', async ({ expect }) => {
+    const { fakeVideo, fakeUser } = await createData()
     const { sut } = await makeSut()
 
     const videos = await sut.findBy({ userUuid: fakeUser.uuid })
@@ -87,6 +85,34 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a video on find', async ({ expect }) => {
+    const { fakeVideo, fakeUser } = await createData()
+
+    await db
+      .table('favorites')
+      .insert(
+        toSnakeCase({
+          videoId: fakeVideo.id,
+          userId: fakeUser.id,
+          uuid: faker.string.uuid(),
+          createdAt: new Date().toISOString(),
+        })
+      )
+      .returning(['user_id', 'video_id', 'uuid'])
+    const { sut } = await makeSut()
+
+    const video = await sut.find(fakeVideo.uuid)
+
+    expect(video).toBeTruthy()
+    expect(video?.username).toEqual(fakeUser.username)
+    expect(video?.title).toBe(fakeVideo.title)
+    expect(video?.artist).toBe(fakeVideo.artist)
+    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
+    expect(video?.isFavorite).toBeTruthy()
+  })
+
+  test('return a video on find with is_favorite false', async ({ expect }) => {
+    const { fakeVideo, fakeUser } = await createData()
+
     const { sut } = await makeSut()
     const video = await sut.find(fakeVideo.uuid)
 
@@ -95,6 +121,7 @@ test.group('VideoPostgresRepository', (group) => {
     expect(video?.title).toBe(fakeVideo.title)
     expect(video?.artist).toBe(fakeVideo.artist)
     expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
+    expect(video?.isFavorite).toBeFalsy()
   })
 
   test('return null on find if uuid param is invalid', async ({ expect }) => {
@@ -105,6 +132,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return true if link youtube already exists', async ({ expect }) => {
+    const { fakeVideo } = await createData()
     const { sut } = await makeSut()
     const hasYoutubeLink = await sut.hasYoutubeLink(fakeVideo.linkYoutube)
 
@@ -114,6 +142,8 @@ test.group('VideoPostgresRepository', (group) => {
   test('return a list videos on findBy if param provided not exists in filter', async ({
     expect,
   }) => {
+    await createData()
+
     const { sut } = await makeSut()
 
     const param: any = {
@@ -126,6 +156,8 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a list videos on findBy if any param value provided is null', async ({ expect }) => {
+    await createData()
+
     const { sut } = await makeSut()
 
     const param: any = {
@@ -138,6 +170,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return success if a video deleted on success', async ({ expect }) => {
+    const { fakeVideo } = await createData()
     const { sut } = await makeSut()
     const isSuccess = await sut.delete(fakeVideo.uuid)
 
@@ -147,6 +180,8 @@ test.group('VideoPostgresRepository', (group) => {
   test('return success if a video deleted on success with favorites/lyrics/play_counts', async ({
     expect,
   }) => {
+    const { fakeVideo } = await createData()
+
     const { sut } = await makeSut()
     const isDeleted = await sut.delete(fakeVideo.uuid)
     const favoritesCount = await db.from('favorites').where('video_id', fakeVideo.id).count('*')
@@ -163,6 +198,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return success if a video updated on success', async ({ expect }) => {
+    const { fakeVideo } = await createData()
     const { sut } = await makeSut()
 
     const video = await sut.update(
@@ -176,9 +212,11 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return success if a video created on success', async ({ expect }) => {
+    const { fakeVideo, fakeUser, fakeLanguage, fakeGenre } = await createData()
+
     const { sut } = await makeSut()
     const fakePayload = {
-      ...fakeVideoToCreate,
+      ..._.omit(fakeVideo, ['userId', 'languageId', 'genreId', 'id']),
       uuid: faker.string.uuid(),
       genreId: fakeGenre.id,
       languageId: fakeLanguage.id,
@@ -190,9 +228,10 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('throws an error on create', async ({ expect }) => {
+    const { fakeVideo, fakeUser, fakeLanguage, fakeGenre } = await createData()
     const { sut } = await makeSut()
     const fakePayload = {
-      ...fakeVideoToCreate,
+      ..._.omit(fakeVideo, ['userId', 'languageId', 'genreId', 'id']),
       uuid: faker.string.uuid(),
       genreId: fakeGenre.id,
       languageId: fakeLanguage.id,
@@ -218,6 +257,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a video id if videoUuid valid is provided', async ({ expect }) => {
+    const { fakeVideo } = await createData()
     const { sut } = await makeSut()
 
     const videoId = await sut.getVideoId(fakeVideo.uuid)
@@ -225,6 +265,7 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return a user id if userUuid valid is provided', async ({ expect }) => {
+    const { fakeVideo } = await createData()
     const { sut } = await makeSut()
 
     const userId = await sut.getUserId(fakeVideo.uuid)
@@ -253,6 +294,8 @@ test.group('VideoPostgresRepository', (group) => {
   })
 
   test('return video uuid if youtube URL exists', async ({ expect }) => {
+    const { fakeVideo } = await createData()
+
     const { sut } = await makeSut()
 
     const videoUuid = await sut.getVideoUuidByYoutubeURL(fakeVideo.linkYoutube)

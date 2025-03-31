@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import { UserEmailStatus } from '#enums/user-email-status'
 import { Crypto } from '#infra/crypto/crypto'
 import { RedisAdonis } from '#infra/db/cache/redis-adonis'
-import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { mockUser } from '#tests/__mocks__/db/mock-user'
 
 test.group('Auth Validate Email Route', (group) => {
   group.tap((t) => {
@@ -14,7 +14,7 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockAllTables()
+    const fakeUser = await mockUser()
     const redisAdapter = new RedisAdonis()
     const otpAdapter = new Crypto()
 
@@ -45,7 +45,7 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockAllTables()
+    const fakeUser = await mockUser()
 
     fakeUser.emailStatus = UserEmailStatus.VERIFIED
     fakeUser.save()
@@ -76,7 +76,7 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser } = await mockAllTables()
+    const fakeUser = await mockUser()
     const redisAdapter = new RedisAdonis()
     const otpAdapter = new Crypto()
 
