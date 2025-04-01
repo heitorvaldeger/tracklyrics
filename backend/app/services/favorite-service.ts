@@ -6,25 +6,25 @@ import _ from 'lodash'
 import GenericException from '#exceptions/generic-exception'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { Auth } from '#infra/auth/protocols/auth'
-import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
+import { Auth } from '#infra/auth/interfaces/auth'
+import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { IFavoriteService } from '#services/interfaces/favorite-service'
+import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
-export class FavoriteService implements FavoriteProtocolService {
+export class FavoriteService implements IFavoriteService {
   constructor(
-    private readonly videoRepository: VideoRepository,
-    private readonly favoriteRepository: FavoriteRepository,
-    private readonly authStrategy: Auth,
-    private readonly videoCurrentUserService: VideoUserLoggedProtocolService
+    private readonly videoRepository: IVideoRepository,
+    private readonly favoriteRepository: IFavoriteRepository,
+    private readonly auth: Auth,
+    private readonly videoCurrentUserService: IVideoUserLoggedService
   ) {}
 
   async saveFavorite(videoUuid: string) {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
-    const userId = this.authStrategy.getUserId()!
+    const userId = this.auth.getUserId()!
     if ((await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) || !videoId) {
       throw new VideoNotFoundException()
     }
@@ -41,7 +41,7 @@ export class FavoriteService implements FavoriteProtocolService {
 
   async removeFavorite(videoUuid: string) {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
-    const userId = this.authStrategy.getUserId()!
+    const userId = this.auth.getUserId()!
     if ((await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) || !videoId) {
       throw new VideoNotFoundException()
     }
@@ -55,7 +55,7 @@ export class FavoriteService implements FavoriteProtocolService {
   }
 
   async findFavoritesByUserLogged() {
-    const userId = this.authStrategy.getUserId()
+    const userId = this.auth.getUserId()
     if (!userId) {
       throw new UnauthorizedException()
     }

@@ -1,4 +1,4 @@
-import { GameProtocolService } from '#services/_protocols/game-protocol-service'
+import { IGameService } from '#services/interfaces/game-service'
 
 export const mockGameModesData = {
   beginnerPercent: 15,
@@ -26,7 +26,7 @@ export const mockGameModesData = {
   },
 }
 
-export const mockGameServiceStub = (): GameProtocolService => ({
+export const mockGameServiceStub = (): IGameService => ({
   play: (_: string) => Promise.resolve(),
   getModes: (_: string) => Promise.resolve(mockGameModesData.stub),
 })

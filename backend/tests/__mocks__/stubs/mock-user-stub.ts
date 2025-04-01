@@ -1,7 +1,7 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
+import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
-import { UserProtocolService } from '#services/_protocols/user-protocol-service'
+import { IUserService } from '#services/interfaces/user-service'
 
 export const mockUserWithoutPasswordData: UserWithoutPasswordModel = {
   uuid: 'any_uuid',
@@ -12,12 +12,12 @@ export const mockUserWithoutPasswordData: UserWithoutPasswordModel = {
   lastName: 'any_lastname',
 }
 
-export const mockUserService: UserProtocolService = {
+export const mockUserService: IUserService = {
   getFullInfoByUserLogged: () => Promise.resolve(mockUserWithoutPasswordData),
 }
 
-export const mockUserRepository: UserRepository = {
-  getUserByEmailOrUsername: (payload: UserRepository.FindUserByEmailUsernameParams) =>
+export const mockUserRepository: IUserRepository = {
+  getUserByEmailOrUsername: (payload: IUserRepository.FindUserByEmailUsernameParams) =>
     Promise.resolve({
       uuid: 'any_uuid',
       username: 'any_username',
@@ -27,7 +27,7 @@ export const mockUserRepository: UserRepository = {
     }),
   getUserByEmailWithoutPassword: (emailAddress: string) =>
     Promise.resolve(mockUserWithoutPasswordData),
-  create: (user: UserRepository.CreateParams) =>
+  create: (user: IUserRepository.CreateParams) =>
     Promise.resolve({
       uuid: 'any_uuid',
       username: 'any_username',

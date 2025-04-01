@@ -1,14 +1,14 @@
 import { inject } from '@adonisjs/core'
 
 import UserNotFoundException from '#exceptions/user-not-found-exception'
-import { Auth } from '#infra/auth/protocols/auth'
-import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
-import { UserProtocolService } from '#services/_protocols/user-protocol-service'
+import { Auth } from '#infra/auth/interfaces/auth'
+import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
+import { IUserService } from '#services/interfaces/user-service'
 
 @inject()
-export class UserService implements UserProtocolService {
+export class UserService implements IUserService {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly auth: Auth
   ) {}
 

@@ -2,9 +2,9 @@ import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
 import LanguageController from '#controllers/language-controller'
-import { LanguageProtocolService } from '#services/_protocols/language-protocol-service'
+import { ILanguageService } from '#services/interfaces/language-service'
 
-const mockLanguageServiceStub = (): LanguageProtocolService => ({
+const mockLanguageServiceStub = (): ILanguageService => ({
   findAll: () =>
     Promise.resolve([
       {

@@ -7,8 +7,10 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.request.use(async (values) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+if (env.VITE_API_DELAY) {
+  api.interceptors.request.use(async (values) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  return values;
-});
+    return values;
+  });
+}

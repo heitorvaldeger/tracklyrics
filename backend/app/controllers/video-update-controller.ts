@@ -2,13 +2,13 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 import _ from 'lodash'
 
-import { VideoUpdateProtocolService } from '#services/_protocols/video-update-protocol-service'
+import { IVideoUpdateService } from '#services/interfaces/video-update-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 import { createOrUpdateVideoValidator } from '#validators/vinejs/video-validator'
 
 @inject()
 export default class VideoUpdateController {
-  constructor(private readonly videoUpdateService: VideoUpdateProtocolService) {}
+  constructor(private readonly videoUpdateService: IVideoUpdateService) {}
 
   async update({ request, response }: HttpContext) {
     const [errorsUuid, uuid] = await uuidValidator.tryValidate(request.params())

@@ -1,10 +1,10 @@
 import { inject } from '@adonisjs/core'
 
-import { UserProtocolService } from '#services/_protocols/user-protocol-service'
+import { IUserService } from '#services/interfaces/user-service'
 
 @inject()
 export default class UserController {
-  constructor(private readonly userService: UserProtocolService) {}
+  constructor(private readonly userService: IUserService) {}
 
   async getFullInfoByUserLogged() {
     return await this.userService.getFullInfoByUserLogged()

@@ -1,12 +1,12 @@
 import { inject } from '@adonisjs/core'
 
-import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
+import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
 import { Language } from '#models/language'
-import { LanguageProtocolService } from '#services/_protocols/language-protocol-service'
+import { ILanguageService } from '#services/interfaces/language-service'
 
 @inject()
-export class LanguageService implements LanguageProtocolService {
-  constructor(private readonly languageRepository: LanguageRepository) {}
+export class LanguageService implements ILanguageService {
+  constructor(private readonly languageRepository: ILanguageRepository) {}
 
   async findAll() {
     return await this.languageRepository.findAll()

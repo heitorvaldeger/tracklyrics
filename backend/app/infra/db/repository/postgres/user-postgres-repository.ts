@@ -1,13 +1,13 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
+import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 import UserLucid from '#models/user-model/user-lucid'
 import { UserModel } from '#models/user-model/user-model'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
 
-export class UserPostgresRepository implements UserRepository {
+export class UserPostgresRepository implements IUserRepository {
   async getUserByEmailOrUsername(
-    payload: UserRepository.FindUserByEmailUsernameParams
+    payload: IUserRepository.FindUserByEmailUsernameParams
   ): Promise<UserModel | null> {
     const user = await UserLucid.query()
       .whereLike('email', payload.email ?? '')
@@ -44,7 +44,7 @@ export class UserPostgresRepository implements UserRepository {
     }) as UserWithoutPasswordModel
   }
 
-  async create(user: UserRepository.CreateParams): Promise<UserModel> {
+  async create(user: IUserRepository.CreateParams): Promise<UserModel> {
     const { uuid, username, email, password, emailStatus } = await UserLucid.create(user)
     return {
       uuid,

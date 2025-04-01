@@ -5,7 +5,7 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
 import { UserService } from '#services/user-service'
-import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockUserRepository } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const makeSut = () => {
@@ -52,7 +52,7 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
     expect(getUserEmail.called).toBeTruthy()
   })
 
-  test('call UserRepository.getUserByEmailWithoutPassword with correct value', async ({
+  test('call IUserRepository.getUserByEmailWithoutPassword with correct value', async ({
     expect,
   }) => {
     const { sut } = makeSut()

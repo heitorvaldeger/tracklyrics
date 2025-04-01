@@ -3,10 +3,10 @@ import { UserAccessTokenModel } from '#models/user-model/user-access-token-model
 import { UserModel } from '#models/user-model/user-model'
 import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
 
-export abstract class UserRepository {
-  abstract create(user: UserRepository.CreateParams): Promise<UserModel>
+export abstract class IUserRepository {
+  abstract create(user: IUserRepository.CreateParams): Promise<UserModel>
   abstract getUserByEmailOrUsername(
-    payload: UserRepository.FindUserByEmailUsernameParams
+    payload: IUserRepository.FindUserByEmailUsernameParams
   ): Promise<UserModel | null>
   abstract getUserByEmailWithoutPassword(
     emailAddress: string
@@ -16,7 +16,7 @@ export abstract class UserRepository {
   abstract updateEmailStatus(userUuid: string): Promise<void>
 }
 
-export namespace UserRepository {
+export namespace IUserRepository {
   export type CreateAccessTokenParams = {
     uuid: string
   }

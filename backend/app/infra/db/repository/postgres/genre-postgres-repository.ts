@@ -1,21 +1,14 @@
-import db from '@adonisjs/lucid/services/db'
-
+import { GenreResponse, IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
 import { Genre } from '#models/genre'
 
-import { GenreRepository } from '../_protocols/genre-repository.js'
-
-export class GenrePostgresRepository implements GenreRepository {
-  async findAll(): Promise<Genre[]> {
-    const genres: Genre[] = await db.from('genres').select(['id', 'name'])
-    return genres
+export class GenrePostgresRepository implements IGenreRepository {
+  async findAll() {
+    return (await Genre.query().orderBy('id').select()).map(
+      (genre) => genre.serialize() as GenreResponse
+    )
   }
 
   async findById(genreId: number) {
-    const language: Genre | null = await db
-      .from('genres')
-      .where('id', genreId)
-      .select(['id', 'name'])
-      .first()
-    return language
+    return (await Genre.findBy('id', genreId))?.serialize() as GenreResponse
   }
 }

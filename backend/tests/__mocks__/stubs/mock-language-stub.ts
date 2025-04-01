@@ -1,7 +1,7 @@
-import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
+import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
 import { Language } from '#models/language'
 
-interface MockLanguageRepositoryStub extends LanguageRepository {
+interface MockLanguageRepositoryStub extends ILanguageRepository {
   languages: Language[]
   language: Language
 }

@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker'
 
 import { VideoSaveResult } from '#models/video-save'
-import { VideoCreateProtocolService } from '#services/_protocols/video-create-protocol-service'
+import { IVideoCreateService } from '#services/interfaces/video-create-service'
 import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
-export const mockVideoCreateOrUpdateRequest: VideoCreateProtocolService.Params = {
+export const mockVideoCreateOrUpdateRequest: IVideoCreateService.Params = {
   isDraft: false,
   title: faker.lorem.words(2),
   artist: faker.lorem.words(2),

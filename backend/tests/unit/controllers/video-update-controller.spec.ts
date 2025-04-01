@@ -5,13 +5,13 @@ import { stub } from 'sinon'
 
 import VideoUpdateController from '#controllers/video-update-controller'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { VideoUpdateProtocolService } from '#services/_protocols/video-update-protocol-service'
+import { IVideoUpdateService } from '#services/interfaces/video-update-service'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
-const mockVideoUpdateServiceStub = (): VideoUpdateProtocolService => ({
-  update: (_payload: VideoUpdateProtocolService.Params, _uuid: string) => Promise.resolve(true),
+const mockVideoUpdateServiceStub = (): IVideoUpdateService => ({
+  update: (_payload: IVideoUpdateService.Params, _uuid: string) => Promise.resolve(true),
 })
 
 const makeSut = async () => {

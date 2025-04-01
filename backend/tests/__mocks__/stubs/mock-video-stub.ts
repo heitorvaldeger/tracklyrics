@@ -1,8 +1,8 @@
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
 import { VideoMetadata } from '#models/video-metadata'
 import { VideoCreateInput, VideoUpdateInput } from '#models/video-save'
-import { VideoFindProtocolService } from '#services/_protocols/video-find-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
+import { IVideoFindService } from '#services/interfaces/video-find-service'
+import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
 
 export const mockVideoData: VideoMetadata & {
@@ -32,9 +32,9 @@ export const mockVideoDataWithoutThumbnail: VideoMetadata = {
   isFavorite: true,
 }
 
-export const mockVideoRepository: VideoRepository = {
+export const mockVideoRepository: IVideoRepository = {
   find: (uuid: string) => Promise.resolve(mockVideoDataWithoutThumbnail),
-  findBy: (filters: VideoRepository.FindVideoParams) =>
+  findBy: (filters: IVideoRepository.FindVideoParams) =>
     Promise.resolve([mockVideoDataWithoutThumbnail]),
   getVideoId: (uuid: string) => Promise.resolve(1),
   getUserId: (uuid: string) => Promise.resolve(0),
@@ -45,12 +45,12 @@ export const mockVideoRepository: VideoRepository = {
   hasYoutubeLink: (link: string) => Promise.resolve(false),
 }
 
-export const mockVideoFindService: VideoFindProtocolService = {
+export const mockVideoFindService: IVideoFindService = {
   find: (uuid: string) => Promise.resolve(mockVideoData),
-  findBy: (filters: VideoFindProtocolService.FindVideoParams) => Promise.resolve([mockVideoData]),
+  findBy: (filters: IVideoFindService.FindVideoParams) => Promise.resolve([mockVideoData]),
 }
 
-export const mockVideoUserLoggedService: VideoUserLoggedProtocolService = {
+export const mockVideoUserLoggedService: IVideoUserLoggedService = {
   isNotVideoOwnedByUserLogged: (uuid: string) => Promise.resolve(false),
   getVideosByUserLogged: () => Promise.resolve([mockVideoData]),
 }

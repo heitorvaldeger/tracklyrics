@@ -7,7 +7,7 @@ import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-
 import { VideoCreateService } from '#services/video-create-service'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
-import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockGenreRepository } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepository } from '#tests/__mocks__/stubs/mock-language-stub'
 import { mockLyricRepository } from '#tests/__mocks__/stubs/mock-lyric-stub'

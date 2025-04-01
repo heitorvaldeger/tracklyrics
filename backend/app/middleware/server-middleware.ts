@@ -5,7 +5,7 @@ import type { NextFn } from '@adonisjs/core/types/http'
 import { DateTime } from 'luxon'
 
 import { AuthAdonis } from '#infra/auth/auth-adonis'
-import { Auth } from '#infra/auth/protocols/auth'
+import { Auth } from '#infra/auth/interfaces/auth'
 
 /**
  * Updating the "Accept" header to always accept "application/json" response

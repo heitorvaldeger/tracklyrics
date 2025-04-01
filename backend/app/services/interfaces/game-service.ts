@@ -1,9 +1,9 @@
-export abstract class GameProtocolService {
-  abstract getModes(videoUuid: string): Promise<GameProtocolService.ModesResponse>
+export abstract class IGameService {
+  abstract getModes(videoUuid: string): Promise<IGameService.ModesResponse>
   abstract play(videoUuid: string): Promise<void>
 }
 
-export namespace GameProtocolService {
+export namespace IGameService {
   export type ModesResponse = {
     totalWords: number
     beginner: {

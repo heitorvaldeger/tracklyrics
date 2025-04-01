@@ -1,13 +1,13 @@
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
-import { VideoFindProtocolService } from '#services/_protocols/video-find-protocol-service'
+import { IVideoFindService } from '#services/interfaces/video-find-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 import { findByVideoValidator } from '#validators/vinejs/video-validator'
 
 @inject()
 export default class VideoFindController {
-  constructor(private videoService: VideoFindProtocolService) {}
+  constructor(private videoService: IVideoFindService) {}
 
   async find({ request, response }: HttpContext) {
     const [errors, data] = await uuidValidator.tryValidate(request.params())

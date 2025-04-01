@@ -1,3 +1,3 @@
-export abstract class VideoDeleteProtocolService {
+export abstract class IVideoDeleteService {
   abstract delete(uuid: string): Promise<boolean>
 }

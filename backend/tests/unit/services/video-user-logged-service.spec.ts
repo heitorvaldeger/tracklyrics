@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
-import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {

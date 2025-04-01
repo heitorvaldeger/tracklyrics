@@ -1,10 +1,10 @@
 import { inject } from '@adonisjs/core'
 import redis from '@adonisjs/redis/services/main'
 
-import { CacheAdapter } from './_protocols/cache-adapter.js'
+import { ICacheAdapter } from './interfaces/cache-adapter.js'
 
 @inject()
-export class RedisAdonis implements CacheAdapter {
+export class RedisAdonis implements ICacheAdapter {
   private readonly connection
   constructor() {
     this.connection = redis.connection()

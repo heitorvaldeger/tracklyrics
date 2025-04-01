@@ -2,18 +2,18 @@ import { inject } from '@adonisjs/core'
 import _ from 'lodash'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { Auth } from '#infra/auth/protocols/auth'
-import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { VideoFindProtocolService } from '#services/_protocols/video-find-protocol-service'
+import { Auth } from '#infra/auth/interfaces/auth'
+import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { IVideoFindService } from '#services/interfaces/video-find-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
-export class VideoFindService implements VideoFindProtocolService {
+export class VideoFindService implements IVideoFindService {
   constructor(
     private readonly auth: Auth,
-    private readonly videoRepository: VideoRepository,
-    private readonly favoriteRepository: FavoriteRepository
+    private readonly videoRepository: IVideoRepository,
+    private readonly favoriteRepository: IFavoriteRepository
   ) {}
 
   async find(uuid: string) {
@@ -24,7 +24,7 @@ export class VideoFindService implements VideoFindProtocolService {
 
     const userId = this.auth.getUserId()
     if (userId) {
-      video.isFavorite = await this.favoriteRepository.isFavoriteByUser(userId)
+      video.isFavorite = await this.favoriteRepository.isFavoriteByUser(userId, video.uuid)
     } else {
       video.isFavorite = false
     }
@@ -35,7 +35,7 @@ export class VideoFindService implements VideoFindProtocolService {
     }
   }
 
-  async findBy(filters: Partial<VideoRepository.FindVideoParams>) {
+  async findBy(filters: Partial<IVideoRepository.FindVideoParams>) {
     const videos = await this.videoRepository.findBy(filters)
 
     return videos.map((video) => ({

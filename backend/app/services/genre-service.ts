@@ -1,12 +1,11 @@
 import { inject } from '@adonisjs/core'
 
-import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
-import { Genre } from '#models/genre'
-import { GenreProtocolService } from '#services/_protocols/genre-protocol-service'
+import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
+import { IGenreService } from '#services/interfaces/genre-service'
 
 @inject()
-export class GenreService implements GenreProtocolService {
-  constructor(private readonly genreRepository: GenreRepository) {}
+export class GenreService implements IGenreService {
+  constructor(private readonly genreRepository: IGenreRepository) {}
 
   async findAll() {
     return await this.genreRepository.findAll()

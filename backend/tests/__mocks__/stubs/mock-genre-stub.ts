@@ -1,6 +1,6 @@
-import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
+import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
 
-export const mockGenreRepository: GenreRepository = {
+export const mockGenreRepository: IGenreRepository = {
   findAll: () => Promise.resolve([]),
   findById: () =>
     Promise.resolve({

@@ -3,14 +3,14 @@ import { test } from '@japa/runner'
 import Sinon, { spy, stub } from 'sinon'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { VideoPlayCountRepository } from '#infra/db/repository/_protocols/video-play-count-repository'
-import { GameProtocolService } from '#services/_protocols/game-protocol-service'
+import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
 import { GameService } from '#services/game-service'
+import { IGameService } from '#services/interfaces/game-service'
 import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
 import { mockLyricRepository } from '#tests/__mocks__/stubs/mock-lyric-stub'
 import { mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
-const mockVideoPlayCountRepositoryStub = (): VideoPlayCountRepository => ({
+const mockVideoPlayCountRepositoryStub = (): IVideoPlayCountRepository => ({
   increment: (videoId: number) => Promise.resolve(),
 })
 
@@ -82,7 +82,7 @@ test.group('GameService', (group) => {
     expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('call LyricRepository find with correct values', async ({ expect }) => {
+  test('call ILyricRepository find with correct values', async ({ expect }) => {
     const { sut } = makeSut()
     const findSpy = spy(mockLyricRepository, 'find')
 
@@ -91,7 +91,7 @@ test.group('GameService', (group) => {
     expect(findSpy.calledWith(1)).toBeTruthy()
   })
 
-  test('call VideoRepository find with correct values', async ({ expect }) => {
+  test('call IVideoRepository find with correct values', async ({ expect }) => {
     const { sut } = makeSut()
     const findSpy = spy(mockVideoRepository, 'getVideoId')
 
@@ -115,7 +115,7 @@ test.group('GameService', (group) => {
     expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('call VideoRepository.getVideoId with correct values', async ({ expect }) => {
+  test('call IVideoRepository.getVideoId with correct values', async ({ expect }) => {
     const { sut } = makeSut()
     const uuid = faker.string.uuid()
     const getVideoIdStub = Sinon.spy(mockVideoRepository, 'getVideoId')
@@ -124,7 +124,7 @@ test.group('GameService', (group) => {
     expect(getVideoIdStub.calledWith(uuid)).toBeTruthy()
   })
 
-  test('call VideoPlayCountRepository.increment with correct values', async ({ expect }) => {
+  test('call IVideoPlayCountRepository.increment with correct values', async ({ expect }) => {
     const { sut, videoPlayCountRepositoryStub } = makeSut()
     const uuid = faker.string.uuid()
     const incrementStub = Sinon.spy(videoPlayCountRepositoryStub, 'increment')

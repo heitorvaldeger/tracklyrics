@@ -1,12 +1,12 @@
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
-import { GameProtocolService } from '#services/_protocols/game-protocol-service'
+import { IGameService } from '#services/interfaces/game-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()
 export default class GameController {
-  constructor(private readonly gameService: GameProtocolService) {}
+  constructor(private readonly gameService: IGameService) {}
 
   async play({ request, response }: HttpContext) {
     const [errors, data] = await uuidValidator.tryValidate(request.params())

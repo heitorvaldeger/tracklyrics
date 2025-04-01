@@ -37,7 +37,7 @@ test.group('LyricFindService', (group) => {
     expect(response).rejects.toEqual(new VideoNotFoundException())
   })
 
-  test('call LyricRepository find with correct value', async ({ expect }) => {
+  test('call ILyricRepository find with correct value', async ({ expect }) => {
     const { sut } = makeSut()
     const findSpy = Sinon.spy(mockLyricRepository, 'find')
     await sut.find('any_uuid')
@@ -45,7 +45,7 @@ test.group('LyricFindService', (group) => {
     expect(findSpy.calledWith(1)).toBeTruthy()
   })
 
-  test('call VideoRepository getVideoId with correct value', async ({ expect }) => {
+  test('call IVideoRepository getVideoId with correct value', async ({ expect }) => {
     const { sut } = makeSut()
     const getVideoIdSpy = Sinon.spy(mockVideoRepository, 'getVideoId')
     await sut.find('any_uuid')

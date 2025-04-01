@@ -4,11 +4,11 @@ import { stub } from 'sinon'
 
 import VideoDeleteController from '#controllers/video-delete-controller'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { VideoDeleteProtocolService } from '#services/_protocols/video-delete-protocol-service'
+import { IVideoDeleteService } from '#services/interfaces/video-delete-service'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
-export const mockVideoDeleteServiceStub = (): VideoDeleteProtocolService => ({
+export const mockVideoDeleteServiceStub = (): IVideoDeleteService => ({
   delete: (uuid: string) => Promise.resolve(true),
 })
 

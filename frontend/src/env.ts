@@ -5,6 +5,7 @@ const envSchema = vine.compile(
     VITE_API_URL: vine.string().url({
       host_whitelist: ["localhost"],
     }),
+    VITE_API_DELAY: vine.boolean().optional(),
   }),
 );
 

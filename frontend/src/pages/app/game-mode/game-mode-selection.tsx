@@ -42,7 +42,7 @@ export const ModeCards = ({ modes }: ModeCardsProps) => {
     <RadioGroup
       value={selectedMode}
       onValueChange={setSelectedMode}
-      className="grid grid-cols-2"
+      className="grid grid-cols-1 lg:grid-cols-2"
     >
       {gameModes.map((mode) => (
         <div

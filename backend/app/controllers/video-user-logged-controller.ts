@@ -1,10 +1,10 @@
 import { inject } from '@adonisjs/core'
 
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
+import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 
 @inject()
 export default class VideoUserLoggedController {
-  constructor(private videoUserLogged: VideoUserLoggedProtocolService) {}
+  constructor(private videoUserLogged: IVideoUserLoggedService) {}
 
   async getVideosByUserLogged() {
     return await this.videoUserLogged.getVideosByUserLogged()

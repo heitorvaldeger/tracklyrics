@@ -5,7 +5,7 @@ import { stub } from 'sinon'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { VideoFindService } from '#services/video-find-service'
-import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockFavoriteRepository } from '#tests/__mocks__/stubs/mock-favorite-stub'
 import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 

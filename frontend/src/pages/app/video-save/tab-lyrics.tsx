@@ -1,4 +1,13 @@
-import { Info, Plus, SkipBack, SkipForward, Trash } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Import,
+  Info,
+  Plus,
+  SkipBack,
+  SkipForward,
+  Trash,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import ReactPlayer from "react-player";
@@ -15,6 +24,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import { formatTime } from "@/lib/utils";
 import { Lyric } from "@/models/lyric";
 
+import { DialogImport } from "./dialog-import";
 import { TableLyricRow } from "./table-lyric-row";
 
 export type LyricWithId = {
@@ -25,7 +35,7 @@ export const TabLyrics = () => {
   const { watch } = useFormContext();
   const youtubeURLWatcher = watch("linkYoutube");
 
-  const { control, getValues } = useFormContext<{
+  const { control } = useFormContext<{
     lyrics: LyricWithId[];
   }>();
   const {
@@ -33,6 +43,8 @@ export const TabLyrics = () => {
     append: appendLyric,
     remove: removeLyric,
     update: updateLyric,
+    replace: replaceLyric,
+    swap: swapLyric,
   } = useFieldArray({
     control,
     name: "lyrics",
@@ -67,9 +79,25 @@ export const TabLyrics = () => {
     }
   };
 
-  const handleUpdateStartTime = (id: number) => {
-    const values = getValues("lyrics");
-    const lyric = values.find((lyric) => lyric.id === id);
+  const handleMoveUpLine = () => {
+    if (selectedLine !== null && selectedLine >= 1) {
+      swapLyric(selectedLine, selectedLine - 1);
+      setSelectedLine(selectedLine - 1);
+    }
+  };
+
+  const handleMoveDownLine = () => {
+    if (
+      selectedLine !== null &&
+      selectedLine >= 0 &&
+      selectedLine <= lyrics.length - 2
+    ) {
+      swapLyric(selectedLine, selectedLine + 1);
+      setSelectedLine(selectedLine + 1);
+    }
+  };
+
+  const handleUpdateStartTime = (lyric: LyricWithId) => {
     if (lyric) {
       updateLyric(lyric.id, {
         ...lyric,
@@ -78,12 +106,9 @@ export const TabLyrics = () => {
     }
   };
 
-  const handleUpdateEndTime = (id: number) => {
-    const values = getValues("lyrics");
-    const lyric = values.find((lyric) => lyric.id === id);
-
+  const handleUpdateEndTime = (lyric: LyricWithId) => {
     if (lyric) {
-      updateLyric(id, {
+      updateLyric(lyric.id, {
         ...lyric,
         endTime: currentTimeFormated,
       });
@@ -147,7 +172,7 @@ export const TabLyrics = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="flex items-center gap-2"
+                size="icon"
                 onClick={() => {
                   setCurrentTime((state) => {
                     playerRef.current?.seekTo(state - 0.2);
@@ -161,7 +186,7 @@ export const TabLyrics = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="flex items-center gap-2"
+                size="icon"
                 onClick={() => {
                   setCurrentTime((state) => {
                     playerRef.current?.seekTo(state + 0.2);
@@ -173,6 +198,28 @@ export const TabLyrics = () => {
               </Button>
             </div>
             <div className="flex items-center gap-2 justify-end">
+              <DialogImport onReplaceLyric={replaceLyric}>
+                <Button type="button">
+                  <Import className="h-4 w-4" />
+                  Import lyric
+                </Button>
+              </DialogImport>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => handleMoveUpLine()}
+              >
+                <ArrowUp className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => handleMoveDownLine()}
+              >
+                <ArrowDown className="h-4 w-4" />
+              </Button>
               <Button
                 onClick={handleAddNewLine}
                 type="button"
@@ -184,7 +231,7 @@ export const TabLyrics = () => {
               <Button
                 onClick={handleDeleteLine}
                 type="button"
-                className="flex items-center gap-2"
+                size="icon"
                 variant="outline"
               >
                 <Trash className="h-4 w-4" />
@@ -211,10 +258,13 @@ export const TabLyrics = () => {
           </TableHeader>
 
           <TableBody>
-            {lyrics.map((lyric) => (
+            {lyrics.map((lyric, i) => (
               <TableLyricRow
                 key={lyric.customId}
-                lyric={lyric}
+                lyric={{
+                  ...lyric,
+                  id: i,
+                }}
                 currentTime={currentTime}
                 selectedLine={selectedLine}
                 onSelectedLine={setSelectedLine}

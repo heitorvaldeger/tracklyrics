@@ -1,15 +1,13 @@
 import { UserEmailStatus } from '#enums/user-email-status'
 import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
 
-export abstract class AuthProtocolService {
-  abstract login(params: AuthProtocolService.LoginParams): Promise<UserAccessTokenModel>
-  abstract register(
-    payload: AuthProtocolService.RegisterParams
-  ): Promise<AuthProtocolService.UserRegisterModel>
-  abstract validateEmail(params: AuthProtocolService.ValidateEmailParams): any
+export abstract class IAuthService {
+  abstract login(params: IAuthService.LoginParams): Promise<UserAccessTokenModel>
+  abstract register(payload: IAuthService.RegisterParams): Promise<IAuthService.UserRegisterModel>
+  abstract validateEmail(params: IAuthService.ValidateEmailParams): any
 }
 
-export namespace AuthProtocolService {
+export namespace IAuthService {
   export type LoginParams = {
     email: string
     password: string

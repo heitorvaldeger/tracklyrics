@@ -2,11 +2,11 @@ import { inject } from '@adonisjs/core'
 import hash from '@adonisjs/core/services/hash'
 import * as OTPAuth from 'otpauth'
 
-import { HashAdapter } from '#infra/crypto/_protocols/hash-adapter'
-import { OTPAdapter } from '#infra/crypto/_protocols/otp-adapter'
+import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
+import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
 
 @inject()
-export class Crypto implements OTPAdapter, HashAdapter {
+export class Crypto implements IOTPAdapter, IHashAdapter {
   private readonly totp
   constructor() {
     this.totp = new OTPAuth.TOTP({

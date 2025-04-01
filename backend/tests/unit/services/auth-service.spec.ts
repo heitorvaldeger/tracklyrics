@@ -10,24 +10,24 @@ import EmailInvalidException from '#exceptions/email-invalid-exception'
 import EmailPendingValidationException from '#exceptions/email-pending-validation-exception'
 import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
-import { HashAdapter } from '#infra/crypto/_protocols/hash-adapter'
-import { OTPAdapter } from '#infra/crypto/_protocols/otp-adapter'
-import { CacheAdapter } from '#infra/db/cache/_protocols/cache-adapter'
+import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
+import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
+import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
 import { AuthService } from '#services/auth-service'
 import { mockAuthRegisterData } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockUserRepository } from '#tests/__mocks__/stubs/mock-user-stub'
 
-const mockOTPAdapterStub = (): OTPAdapter => ({
+const mockOTPAdapterStub = (): IOTPAdapter => ({
   createOTP: () => Promise.resolve('any_value'),
   validateOTP: () => Promise.resolve(true),
 })
 
-const mockHashAdapterStub = (): HashAdapter => ({
+const mockHashAdapterStub = (): IHashAdapter => ({
   createHash: () => Promise.resolve('any_value'),
   validateHash: () => Promise.resolve(true),
 })
 
-const mockCacheAdapter = (): CacheAdapter => ({
+const mockCacheAdapter = (): ICacheAdapter => ({
   set: () => Promise.resolve(),
   get: () => Promise.resolve('any_value'),
   delete: () => Promise.resolve(),
@@ -199,7 +199,7 @@ test.group('Auth Service', (group) => {
     expect(response).rejects.toEqual(new CodeOtpInvalidException())
   })
 
-  test('call UserRepository.updateEmailStatus on validate email with correct values', async ({
+  test('call IUserRepository.updateEmailStatus on validate email with correct values', async ({
     expect,
   }) => {
     const { sut } = makeSut()

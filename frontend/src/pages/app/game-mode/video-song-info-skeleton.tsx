@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const VideoSongInfoSkeleton = () => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="aspect-video w-full bg-black">
+      <div className="aspect-video w-full">
         <Skeleton className="h-full w-full" />
       </div>
 

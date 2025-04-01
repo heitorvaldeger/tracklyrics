@@ -1,18 +1,18 @@
 import { inject } from '@adonisjs/core'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
-import { VideoPlayCountRepository } from '#infra/db/repository/_protocols/video-play-count-repository'
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
+import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
+import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
 
-import { GameProtocolService } from './_protocols/game-protocol-service.js'
+import { IGameService } from './interfaces/game-service.js'
 
 @inject()
-export class GameService implements GameProtocolService {
+export class GameService implements IGameService {
   constructor(
-    private readonly videoRepository: VideoRepository,
-    private readonly lyricRepository: LyricRepository,
-    private readonly videoPlayCountRepository: VideoPlayCountRepository
+    private readonly videoRepository: IVideoRepository,
+    private readonly lyricRepository: ILyricRepository,
+    private readonly videoPlayCountRepository: IVideoPlayCountRepository
   ) {}
 
   async getModes(videoUuid: string) {

@@ -10,24 +10,24 @@ import EmailInvalidException from '#exceptions/email-invalid-exception'
 import EmailPendingValidationException from '#exceptions/email-pending-validation-exception'
 import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
-import { HashAdapter } from '#infra/crypto/_protocols/hash-adapter'
-import { OTPAdapter } from '#infra/crypto/_protocols/otp-adapter'
-import { CacheAdapter } from '#infra/db/cache/_protocols/cache-adapter'
-import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
+import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
+import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
+import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
+import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
 import { VerifyEmail } from '#infra/mail/views/verify-email'
 import { UserModel } from '#models/user-model/user-model'
-import { AuthProtocolService } from '#services/_protocols/auth-protocol-service'
+import { IAuthService } from '#services/interfaces/auth-service'
 
 @inject()
-export class AuthService implements AuthProtocolService {
+export class AuthService implements IAuthService {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly otpAdapter: OTPAdapter,
-    private readonly hashAdapter: HashAdapter,
-    private readonly cacheAdapter: CacheAdapter
+    private readonly userRepository: IUserRepository,
+    private readonly otpAdapter: IOTPAdapter,
+    private readonly hashAdapter: IHashAdapter,
+    private readonly cacheAdapter: ICacheAdapter
   ) {}
 
-  async register(payload: AuthProtocolService.RegisterParams) {
+  async register(payload: IAuthService.RegisterParams) {
     const { password, email, username, ...rest } = payload
 
     const user = await this.userRepository.getUserByEmailOrUsername({ email, username })
@@ -67,7 +67,7 @@ export class AuthService implements AuthProtocolService {
     }
   }
 
-  async login({ email, password }: AuthProtocolService.LoginParams) {
+  async login({ email, password }: IAuthService.LoginParams) {
     const user = await this.userRepository.getUserByEmailOrUsername({
       email,
     })
@@ -90,7 +90,7 @@ export class AuthService implements AuthProtocolService {
     return await this.userRepository.createAccessToken(user.uuid)
   }
 
-  async validateEmail({ email, codeOTP }: AuthProtocolService.ValidateEmailParams) {
+  async validateEmail({ email, codeOTP }: IAuthService.ValidateEmailParams) {
     const user = await this.userRepository.getUserByEmailOrUsername({ email })
     if (user && user.emailStatus === UserEmailStatus.VERIFIED) {
       throw new EmailHasBeenVerifiedException()

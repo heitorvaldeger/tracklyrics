@@ -1,4 +1,4 @@
-import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
+import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
 import { LyricFindResponse } from '#models/lyric-metadata'
 
 export const mockLyricFindResponseData: LyricFindResponse[] = [
@@ -16,8 +16,8 @@ export const mockLyricFindResponseData: LyricFindResponse[] = [
   },
 ]
 
-export const mockLyricRepository: LyricRepository = {
-  save: (params: LyricRepository.LyricParamsToInsert[]) =>
+export const mockLyricRepository: ILyricRepository = {
+  save: (params: ILyricRepository.LyricParamsToInsert[]) =>
     Promise.resolve({
       countLyricsInserted: 2,
     }),

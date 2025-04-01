@@ -5,10 +5,10 @@ import { LyricSaveResult } from '#models/lyric-save-result'
 import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
 
-import { LyricRepository } from '../_protocols/lyric-repository.js'
+import { ILyricRepository } from '../interfaces/lyric-repository.js'
 
-export class LyricPostgresRepository implements LyricRepository {
-  async save(lyrics: LyricRepository.LyricParamsToInsert[]): Promise<LyricSaveResult> {
+export class LyricPostgresRepository implements ILyricRepository {
+  async save(lyrics: ILyricRepository.LyricParamsToInsert[]): Promise<LyricSaveResult> {
     if (!lyrics.length) {
       return {
         countLyricsInserted: 0,

@@ -4,9 +4,9 @@ import { VideoMetadata } from '#models/video-metadata'
 import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
 
-import { FavoriteRepository } from '../_protocols/favorite-repository.js'
+import { IFavoriteRepository } from '../interfaces/favorite-repository.js'
 
-export class FavoritePostgresRepository implements FavoriteRepository {
+export class FavoritePostgresRepository implements IFavoriteRepository {
   async saveFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
     const favoriteQuery = db.from('favorites').where('user_id', userId).where('video_id', videoId)
 
@@ -67,7 +67,12 @@ export class FavoritePostgresRepository implements FavoriteRepository {
     return favorites.map((favorite) => toCamelCase(favorite))
   }
 
-  async isFavoriteByUser(userId: number): Promise<boolean> {
-    return !!(await db.from('favorites').where('favorites.user_id', userId).first())
+  async isFavoriteByUser(userId: number, videoUuid: string): Promise<boolean> {
+    const qVideo = db.from('videos as v').where('v.uuid', videoUuid).select('v.id')
+    return !!(await db
+      .from('favorites as f')
+      .where('f.user_id', userId)
+      .whereIn('f.video_id', qVideo)
+      .first())
   }
 }

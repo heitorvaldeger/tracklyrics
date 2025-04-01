@@ -5,29 +5,29 @@ import LanguageNotFoundException from '#exceptions/language-not-found-exception'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
-import { Auth } from '#infra/auth/protocols/auth'
-import { GenreRepository } from '#infra/db/repository/_protocols/genre-repository'
-import { LanguageRepository } from '#infra/db/repository/_protocols/language-repository'
-import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { VideoUpdateProtocolService } from '#services/_protocols/video-update-protocol-service'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
+import { Auth } from '#infra/auth/interfaces/auth'
+import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
+import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
+import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { IVideoUpdateService } from '#services/interfaces/video-update-service'
+import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 
 @inject()
-export class VideoUpdateService implements VideoUpdateProtocolService {
+export class VideoUpdateService implements IVideoUpdateService {
   constructor(
-    private readonly videoRepository: VideoRepository,
-    private readonly authStrategy: Auth,
-    private readonly videoCurrentUserService: VideoUserLoggedProtocolService,
-    private readonly genreRepository: GenreRepository,
-    private readonly languageRepository: LanguageRepository,
-    private readonly lyricRepository: LyricRepository
+    private readonly videoRepository: IVideoRepository,
+    private readonly auth: Auth,
+    private readonly videoCurrentUserService: IVideoUserLoggedService,
+    private readonly genreRepository: IGenreRepository,
+    private readonly languageRepository: ILanguageRepository,
+    private readonly lyricRepository: ILyricRepository
   ) {}
 
-  async update(payload: VideoUpdateProtocolService.Params, uuid: string) {
+  async update(payload: IVideoUpdateService.Params, uuid: string) {
     const { lyrics, linkYoutube, genreId, languageId, ...rest } = payload
 
-    const userId = this.authStrategy.getUserId()!
+    const userId = this.auth.getUserId()!
 
     if (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(uuid)) {
       throw new VideoNotFoundException()

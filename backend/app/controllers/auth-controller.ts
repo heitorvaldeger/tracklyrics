@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
-import { AuthProtocolService } from '#services/_protocols/auth-protocol-service'
+import { IAuthService } from '#services/interfaces/auth-service'
 import {
   loginAuthValidator,
   registerAuthValidator,
@@ -10,7 +10,7 @@ import {
 
 @inject()
 export default class AuthController {
-  constructor(private readonly authService: AuthProtocolService) {}
+  constructor(private readonly authService: IAuthService) {}
   async register({ request, response }: HttpContext) {
     const [errors, data] = await registerAuthValidator.tryValidate(request.body())
     if (errors || !data) {

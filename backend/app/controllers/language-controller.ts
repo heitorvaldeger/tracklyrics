@@ -1,10 +1,10 @@
 import { inject } from '@adonisjs/core'
 
-import { LanguageProtocolService } from '#services/_protocols/language-protocol-service'
+import { ILanguageService } from '#services/interfaces/language-service'
 
 @inject()
 export default class LanguageController {
-  constructor(private readonly languageService: LanguageProtocolService) {}
+  constructor(private readonly languageService: ILanguageService) {}
 
   async findAll() {
     return await this.languageService.findAll()

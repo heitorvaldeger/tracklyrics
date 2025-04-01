@@ -3,16 +3,15 @@ import sinon, { stub } from 'sinon'
 
 import VideoCreateController from '#controllers/video-create-controller'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
-import { VideoCreateProtocolService } from '#services/_protocols/video-create-protocol-service'
+import { IVideoCreateService } from '#services/interfaces/video-create-service'
 import {
   mockVideoCreateOrUpdateRequest,
   mockVideoCreateOrUpdateResponse,
 } from '#tests/__mocks__/mock-video-request'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
-export const mockVideoCreateServiceStub = (): VideoCreateProtocolService => ({
-  create: (payload: VideoCreateProtocolService.Params) =>
-    Promise.resolve(mockVideoCreateOrUpdateResponse),
+export const mockVideoCreateServiceStub = (): IVideoCreateService => ({
+  create: (payload: IVideoCreateService.Params) => Promise.resolve(mockVideoCreateOrUpdateResponse),
 })
 
 const makeSut = async () => {

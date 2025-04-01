@@ -1,12 +1,12 @@
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
-import { FavoriteProtocolService } from '#services/_protocols/favorite-protocol-service'
+import { IFavoriteService } from '#services/interfaces/favorite-service'
 import { uuidValidator } from '#validators/vinejs/uuid-validator'
 
 @inject()
 export default class FavoriteController {
-  constructor(private readonly favoriteService: FavoriteProtocolService) {}
+  constructor(private readonly favoriteService: IFavoriteService) {}
 
   async saveFavorite({ request, response }: HttpContext) {
     const [errors, data] = await uuidValidator.tryValidate(request.params())

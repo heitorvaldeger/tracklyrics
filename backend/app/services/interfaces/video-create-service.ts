@@ -1,10 +1,10 @@
 import { VideoSaveResult } from '#models/video-save'
 
-export abstract class VideoCreateProtocolService {
-  abstract create(payload: VideoCreateProtocolService.Params): Promise<VideoSaveResult>
+export abstract class IVideoCreateService {
+  abstract create(payload: IVideoCreateService.Params): Promise<VideoSaveResult>
 }
 
-export namespace VideoCreateProtocolService {
+export namespace IVideoCreateService {
   export type Params = {
     title: string
     artist: string

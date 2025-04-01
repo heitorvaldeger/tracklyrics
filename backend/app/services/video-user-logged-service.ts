@@ -1,26 +1,26 @@
 import { inject } from '@adonisjs/core'
 
-import { Auth } from '#infra/auth/protocols/auth'
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
+import { Auth } from '#infra/auth/interfaces/auth'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
 @inject()
-export class VideoUserLoggedService implements VideoUserLoggedProtocolService {
+export class VideoUserLoggedService implements IVideoUserLoggedService {
   constructor(
-    private readonly videoRepository: VideoRepository,
-    private readonly authStrategy: Auth
+    private readonly videoRepository: IVideoRepository,
+    private readonly auth: Auth
   ) {}
 
   async isNotVideoOwnedByUserLogged(videoUuid: string) {
-    const userId = this.authStrategy.getUserId()
+    const userId = this.auth.getUserId()
     const userIdFromVideo = await this.videoRepository.getUserId(videoUuid)
 
     return userIdFromVideo !== userId
   }
 
   async getVideosByUserLogged() {
-    const userUuid = this.authStrategy.getUserUuid()!
+    const userUuid = this.auth.getUserUuid()!
 
     const videos = await this.videoRepository.findBy({ userUuid })
 

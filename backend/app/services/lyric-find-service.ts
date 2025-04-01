@@ -1,15 +1,15 @@
 import { inject } from '@adonisjs/core'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { LyricRepository } from '#infra/db/repository/_protocols/lyric-repository'
-import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
-import { LyricFindProtocolService } from '#services/_protocols/lyric-find-protocol-service'
+import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { ILyricFindService } from '#services/interfaces/lyric-find-service'
 
 @inject()
-export class LyricFindService implements LyricFindProtocolService {
+export class LyricFindService implements ILyricFindService {
   constructor(
-    private readonly videoRepository: VideoRepository,
-    private readonly lyricRepository: LyricRepository
+    private readonly videoRepository: IVideoRepository,
+    private readonly lyricRepository: ILyricRepository
   ) {}
 
   async find(videoUuid: string) {

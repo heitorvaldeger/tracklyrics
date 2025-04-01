@@ -2,9 +2,9 @@ import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
 import GenreController from '#controllers/genre-controller'
-import { GenreProtocolService } from '#services/_protocols/genre-protocol-service'
+import { IGenreService } from '#services/interfaces/genre-service'
 
-const mockGenreServiceStub = (): GenreProtocolService => ({
+const mockGenreServiceStub = (): IGenreService => ({
   findAll: () =>
     Promise.resolve([
       {

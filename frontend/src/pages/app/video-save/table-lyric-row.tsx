@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { Karaoke } from "@/components/karaoke";
@@ -12,8 +12,8 @@ interface TableLyricRowProps {
   selectedLine: number | null;
   currentTime: number;
   onSelectedLine: (id: number) => void;
-  onUpdateStartTime: (id: number) => void;
-  onUpdateEndTime: (id: number) => void;
+  onUpdateStartTime: (lyric: LyricWithId) => void;
+  onUpdateEndTime: (lyric: LyricWithId) => void;
 }
 
 export const TableLyricRow = ({
@@ -24,25 +24,33 @@ export const TableLyricRow = ({
   onUpdateStartTime,
   onUpdateEndTime,
 }: TableLyricRowProps) => {
+  const rowRef = useRef<HTMLTableRowElement>(null);
   const { register, getValues } = useFormContext();
-  const line = getValues(`lyrics.${lyric.id}.line`);
+  const line = getValues(`lyrics.${lyric.id}.line`) ?? "";
   const [isEditingLine, setIsEditingLine] = useState(false);
+
+  useEffect(() => {
+    if (selectedLine && rowRef.current) {
+      rowRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [lyric.id]);
 
   return (
     <TableRow
+      ref={rowRef}
       className="h-10"
       data-state={selectedLine === lyric.id ? "selected" : null}
       onClick={() => onSelectedLine(lyric.id)}
     >
       <TableCell
         className="text-left w-12 border-r-2 text-muted-foreground"
-        onClick={() => onUpdateStartTime(lyric.id)}
+        onClick={() => onUpdateStartTime(lyric)}
       >
         {lyric.startTime}
       </TableCell>
       <TableCell
         className="text-left w-12 border-r-2 text-muted-foreground"
-        onClick={() => onUpdateEndTime(lyric.id)}
+        onClick={() => onUpdateEndTime(lyric)}
       >
         {lyric.endTime}
       </TableCell>

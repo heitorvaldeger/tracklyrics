@@ -33,7 +33,7 @@ export default function GameMode() {
   });
 
   return (
-    <div className="max-h-screen mx-auto p-4 md:p-6 flex flex-col md:flex-row gap-6">
+    <div className="max-h-screen mx-auto p-4 md:p-6 flex flex-col sm:flex-row gap-6">
       {/* Left column - Video and song info */}
       <div className="w-full md:w-2/5">
         {!video ? <VideoSongInfoSkeleton /> : <VideoSongInfo video={video} />}

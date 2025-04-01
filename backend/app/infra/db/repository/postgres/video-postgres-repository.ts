@@ -6,9 +6,9 @@ import { VideoCreateInput, VideoSaveResult, VideoUpdateInput } from '#models/vid
 import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
 
-import { VideoRepository } from '../_protocols/video-repository.js'
+import { IVideoRepository } from '../interfaces/video-repository.js'
 
-export class VideoPostgresRepository implements VideoRepository {
+export class VideoPostgresRepository implements IVideoRepository {
   async find(uuid: string): Promise<VideoMetadata | null> {
     const video: VideoMetadata | null = await db
       .from('videos')
@@ -38,7 +38,7 @@ export class VideoPostgresRepository implements VideoRepository {
     return video ? toCamelCase(video) : null
   }
 
-  async findBy(filters: VideoRepository.FindVideoParams): Promise<VideoMetadata[]> {
+  async findBy(filters: IVideoRepository.FindVideoParams): Promise<VideoMetadata[]> {
     const qb = db
       .from('videos')
       .innerJoin('users', 'users.id', 'user_id')
@@ -52,7 +52,7 @@ export class VideoPostgresRepository implements VideoRepository {
           query.from('users').where('uuid', value).select('id')
         })
       } else {
-        if (this.getParamValidToFindBy().includes(key as keyof VideoRepository.FindVideoParams)) {
+        if (this.getParamValidToFindBy().includes(key as keyof IVideoRepository.FindVideoParams)) {
           qb.where(key, value)
         }
       }

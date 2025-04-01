@@ -4,9 +4,9 @@ import { DateTime } from 'luxon'
 
 import { toSnakeCase } from '#utils/index'
 
-import { VideoPlayCountRepository } from '../_protocols/video-play-count-repository.js'
+import { IVideoPlayCountRepository } from '../interfaces/video-play-count-repository.js'
 
-export class VideoPlayCountPostgresRepository implements VideoPlayCountRepository {
+export class VideoPlayCountPostgresRepository implements IVideoPlayCountRepository {
   async increment(videoId: number): Promise<void> {
     const currentDateTime = DateTime.now()
 
