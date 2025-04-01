@@ -1,7 +1,11 @@
 import { HttpContext, ResponseStatus } from '@adonisjs/core/http'
 import { Logger } from '@adonisjs/core/logger'
+import app from '@adonisjs/core/services/app'
 import type { NextFn } from '@adonisjs/core/types/http'
 import { DateTime } from 'luxon'
+
+import { AuthAdonis } from '#infra/auth/auth-adonis'
+import { Auth } from '#infra/auth/protocols/auth'
 
 /**
  * Updating the "Accept" header to always accept "application/json" response
@@ -19,6 +23,11 @@ export default class ServerMiddleware {
 
     containerResolver.bindValue(HttpContext, ctx)
     containerResolver.bindValue(Logger, logger)
+
+    app.container.bind(Auth, async () => {
+      await ctx.auth.check()
+      return new AuthAdonis(ctx.auth)
+    })
 
     await next()
   }

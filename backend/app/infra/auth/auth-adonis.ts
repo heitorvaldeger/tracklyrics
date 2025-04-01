@@ -9,7 +9,7 @@ export class AuthAdonis implements Auth {
   constructor(private readonly auth: Authenticator<Authenticators>) {}
 
   getUserId() {
-    return this.auth.user?.id ?? -1
+    return this.auth.user?.id
   }
 
   getUserEmail() {

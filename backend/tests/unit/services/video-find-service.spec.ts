@@ -5,10 +5,14 @@ import { stub } from 'sinon'
 
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { VideoFindService } from '#services/video-find-service'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockFavoriteRepository } from '#tests/__mocks__/stubs/mock-favorite-stub'
 import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const sut = new VideoFindService(mockVideoRepository)
+  const { authStub } = mockAuth()
+
+  const sut = new VideoFindService(authStub, mockVideoRepository, mockFavoriteRepository)
 
   return { sut }
 }

@@ -1,6 +1,5 @@
 import { inject } from '@adonisjs/core'
 
-import UnauthorizedException from '#exceptions/unauthorized-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
 import { Auth } from '#infra/auth/protocols/auth'
 import { UserRepository } from '#infra/db/repository/_protocols/user-repository'
@@ -14,10 +13,7 @@ export class UserService implements UserProtocolService {
   ) {}
 
   async getFullInfoByUserLogged() {
-    const userEmail = this.auth.getUserEmail()
-    if (!userEmail) {
-      throw new UnauthorizedException()
-    }
+    const userEmail = this.auth.getUserEmail()!
 
     const user = await this.userRepository.getUserByEmailWithoutPassword(userEmail)
     if (!user) {

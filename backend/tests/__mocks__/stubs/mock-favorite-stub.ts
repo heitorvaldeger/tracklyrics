@@ -5,7 +5,8 @@ import { mockVideoData } from '#tests/__mocks__/stubs/mock-video-stub'
 export const mockFavoriteRepository: FavoriteRepository = {
   saveFavorite: (_: number, __: number) => Promise.resolve(true),
   removeFavorite: (_: number, __: number) => Promise.resolve(true),
-  findFavoritesByUser: (__: number) => Promise.resolve([mockVideoData, mockVideoData]),
+  findFavoritesByUser: (_: number) => Promise.resolve([mockVideoData, mockVideoData]),
+  isFavoriteByUser: (_: number) => Promise.resolve(true),
 }
 
 export const mockFavoriteService: FavoriteProtocolService = {

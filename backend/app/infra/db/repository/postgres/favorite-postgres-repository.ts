@@ -66,4 +66,8 @@ export class FavoritePostgresRepository implements FavoriteRepository {
 
     return favorites.map((favorite) => toCamelCase(favorite))
   }
+
+  async isFavoriteByUser(userId: number): Promise<boolean> {
+    return !!(await db.from('favorites').where('favorites.user_id', userId).first())
+  }
 }

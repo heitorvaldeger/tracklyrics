@@ -4,6 +4,7 @@ import { inject } from '@adonisjs/core'
 import _ from 'lodash'
 
 import GenericException from '#exceptions/generic-exception'
+import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { Auth } from '#infra/auth/protocols/auth'
 import { FavoriteRepository } from '#infra/db/repository/_protocols/favorite-repository'
@@ -23,12 +24,8 @@ export class FavoriteService implements FavoriteProtocolService {
 
   async saveFavorite(videoUuid: string) {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
-    const userId = this.authStrategy.getUserId()
-    if (
-      (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) ||
-      _.isNull(videoId) ||
-      _.isNull(userId)
-    ) {
+    const userId = this.authStrategy.getUserId()!
+    if ((await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) || !videoId) {
       throw new VideoNotFoundException()
     }
 
@@ -44,12 +41,8 @@ export class FavoriteService implements FavoriteProtocolService {
 
   async removeFavorite(videoUuid: string) {
     const videoId = await this.videoRepository.getVideoId(videoUuid)
-    const userId = this.authStrategy.getUserId()
-    if (
-      (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) ||
-      _.isNull(videoId) ||
-      _.isNull(userId)
-    ) {
+    const userId = this.authStrategy.getUserId()!
+    if ((await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(videoUuid)) || !videoId) {
       throw new VideoNotFoundException()
     }
 
@@ -63,6 +56,9 @@ export class FavoriteService implements FavoriteProtocolService {
 
   async findFavoritesByUserLogged() {
     const userId = this.authStrategy.getUserId()
+    if (!userId) {
+      throw new UnauthorizedException()
+    }
     const videos = await this.favoriteRepository.findFavoritesByUser(userId)
 
     const videosWithThumbnail = videos.map((video) => ({

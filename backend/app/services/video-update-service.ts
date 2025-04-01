@@ -2,6 +2,7 @@ import { inject } from '@adonisjs/core'
 
 import GenreNotFoundException from '#exceptions/genre-not-found-exception'
 import LanguageNotFoundException from '#exceptions/language-not-found-exception'
+import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
 import { Auth } from '#infra/auth/protocols/auth'
@@ -25,6 +26,8 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
 
   async update(payload: VideoUpdateProtocolService.Params, uuid: string) {
     const { lyrics, linkYoutube, genreId, languageId, ...rest } = payload
+
+    const userId = this.authStrategy.getUserId()!
 
     if (await this.videoCurrentUserService.isNotVideoOwnedByUserLogged(uuid)) {
       throw new VideoNotFoundException()
@@ -53,7 +56,7 @@ export class VideoUpdateService implements VideoUpdateProtocolService {
         ...rest,
         languageId,
         genreId,
-        userId: this.authStrategy.getUserId(),
+        userId,
       },
       uuid
     )

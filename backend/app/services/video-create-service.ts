@@ -4,6 +4,7 @@ import { inject } from '@adonisjs/core'
 
 import GenreNotFoundException from '#exceptions/genre-not-found-exception'
 import LanguageNotFoundException from '#exceptions/language-not-found-exception'
+import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
 import { Auth } from '#infra/auth/protocols/auth'
@@ -27,6 +28,8 @@ export class VideoCreateService implements VideoCreateProtocolService {
     const { lyrics, linkYoutube, genreId, languageId, ...rest } = payload
     const uuid = randomUUID()
 
+    const userId = this.authStrategy.getUserId()!
+
     if (await this.videoRepository.hasYoutubeLink(linkYoutube)) {
       throw new YoutubeLinkAlreadyExistsException()
     }
@@ -49,7 +52,7 @@ export class VideoCreateService implements VideoCreateProtocolService {
       linkYoutube,
       languageId,
       genreId,
-      userId: this.authStrategy.getUserId(),
+      userId,
       uuid,
     })
 

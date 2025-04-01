@@ -5,17 +5,17 @@ import { stub } from 'sinon'
 import GenericException from '#exceptions/generic-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { FavoriteService } from '#services/favorite-service'
-import { mockAuthStrategy } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockFavoriteRepository } from '#tests/__mocks__/stubs/mock-favorite-stub'
 import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 import { mockVideoUserLoggedService } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const { authStrategyStub } = mockAuthStrategy()
+  const { authStub } = mockAuth()
   const sut = new FavoriteService(
     mockVideoRepository,
     mockFavoriteRepository,
-    authStrategyStub,
+    authStub,
     mockVideoUserLoggedService
   )
 

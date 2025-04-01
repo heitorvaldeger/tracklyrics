@@ -7,24 +7,24 @@ import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-
 import { VideoCreateService } from '#services/video-create-service'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
-import { mockAuthStrategy } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockGenreRepository } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepository } from '#tests/__mocks__/stubs/mock-language-stub'
 import { mockLyricRepository } from '#tests/__mocks__/stubs/mock-lyric-stub'
 import { mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const { authStrategyStub } = mockAuthStrategy()
+  const { authStub } = mockAuth()
 
   const sut = new VideoCreateService(
     mockVideoRepository,
-    authStrategyStub,
+    authStub,
     mockGenreRepository,
     mockLanguageRepository,
     mockLyricRepository
   )
 
-  return { sut, authStrategyStub }
+  return { sut, authStub }
 }
 
 test.group('Video Create Service', (group) => {
@@ -40,11 +40,11 @@ test.group('Video Create Service', (group) => {
   })
 
   test('return userId valid on call AuthService getUserId', async ({ expect }) => {
-    const { sut, authStrategyStub } = makeSut()
-    authStrategyStub.getUserId.returns(0)
+    const { sut, authStub } = makeSut()
+    authStub.getUserId.returns(0)
     await sut.create(mockVideoCreateOrUpdateRequest)
 
-    expect(authStrategyStub.getUserId.returned(0)).toBeTruthy()
+    expect(authStub.getUserId.returned(0)).toBeTruthy()
   })
 
   test('return an error if link youtube already exists', async ({ expect }) => {

@@ -5,28 +5,19 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
 import { UserService } from '#services/user-service'
-import { mockAuthStrategy } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockUserRepository } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const makeSut = () => {
-  const { authStrategyStub } = mockAuthStrategy()
-  const sut = new UserService(mockUserRepository, authStrategyStub)
+  const { authStub } = mockAuth()
+  const sut = new UserService(mockUserRepository, authStub)
 
-  return { sut, authStrategyStub }
+  return { sut, authStub }
 }
 
 test.group('UserService.getFullInfoByUserLogged', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
-  })
-
-  test('return user unauthenticated if email provided is invalid', async ({ expect }) => {
-    const { sut, authStrategyStub } = makeSut()
-
-    authStrategyStub.getUserEmail.returns(undefined)
-    const httpResponse = sut.getFullInfoByUserLogged()
-
-    expect(httpResponse).rejects.toEqual(new UnauthorizedException())
   })
 
   test('return user not found if user was not found', async ({ expect }) => {
@@ -54,8 +45,8 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
   })
 
   test('return true if Auth.getUserEmail method was called', async ({ expect }) => {
-    const { sut, authStrategyStub } = makeSut()
-    const getUserEmail = authStrategyStub.getUserEmail
+    const { sut, authStub } = makeSut()
+    const getUserEmail = authStub.getUserEmail
     await sut.getFullInfoByUserLogged()
 
     expect(getUserEmail.called).toBeTruthy()

@@ -9,4 +9,5 @@ export interface Video {
   genre: string;
   username: string;
   thumbnail: string;
+  isFavorite: boolean;
 }

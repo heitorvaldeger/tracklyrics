@@ -1,6 +1,5 @@
 import { inject } from '@adonisjs/core'
 
-import UnauthorizedException from '#exceptions/unauthorized-exception'
 import { Auth } from '#infra/auth/protocols/auth'
 import { VideoRepository } from '#infra/db/repository/_protocols/video-repository'
 import { VideoUserLoggedProtocolService } from '#services/_protocols/video-user-logged-protocol-service'
@@ -21,10 +20,7 @@ export class VideoUserLoggedService implements VideoUserLoggedProtocolService {
   }
 
   async getVideosByUserLogged() {
-    const userUuid = this.authStrategy.getUserUuid()
-    if (!userUuid) {
-      throw new UnauthorizedException()
-    }
+    const userUuid = this.authStrategy.getUserUuid()!
 
     const videos = await this.videoRepository.findBy({ userUuid })
 

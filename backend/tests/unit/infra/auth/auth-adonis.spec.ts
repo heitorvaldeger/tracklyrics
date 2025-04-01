@@ -37,12 +37,12 @@ test.group('Auth Adonis Strategy', (group) => {
     expect(userId).toBe(id)
   })
 
-  test('return -1 on getUserId if auth property is null', async ({ expect }) => {
+  test('return null on getUserId if auth property is null', async ({ expect }) => {
     const { sut, authMock } = makeSut()
     stub(authMock, 'user').value({})
     const userId = sut.getUserId()
 
-    expect(userId).toBe(-1)
+    expect(userId).toBeFalsy()
   })
 
   test('return an uuid on getUserUuid', async ({ expect }) => {

@@ -3,15 +3,15 @@ import _ from 'lodash'
 
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
-import { mockAuthStrategy } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-strategy-stub'
 import { mockVideoData, mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
-  const { authStrategyStub } = mockAuthStrategy()
+  const { authStub } = mockAuth()
 
-  const sut = new VideoUserLoggedService(mockVideoRepository, authStrategyStub)
+  const sut = new VideoUserLoggedService(mockVideoRepository, authStub)
 
-  return { sut, authStrategyStub }
+  return { sut, authStub }
 }
 
 test.group('VideoUserLoggedService', () => {
@@ -21,14 +21,5 @@ test.group('VideoUserLoggedService', () => {
     const video = await sut.getVideosByUserLogged()
 
     expect(video).toEqual([mockVideoData])
-  })
-
-  test('it must return failure if getUserUuid return undefined', ({ expect }) => {
-    const { sut, authStrategyStub } = makeSut()
-    authStrategyStub.getUserUuid.returns(undefined)
-
-    const video = sut.getVideosByUserLogged()
-
-    expect(video).rejects.toEqual(new UnauthorizedException())
   })
 })
