@@ -1,7 +1,10 @@
-import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
-import { LyricFindResponse } from '#models/lyric-metadata'
+import {
+  ILyricRepository,
+  LyricResponseWithoutIds,
+  LyricToInsert,
+} from '#infra/db/repository/interfaces/lyric-repository'
 
-export const mockLyricFindResponseData: LyricFindResponse[] = [
+export const mockLyricFindResponseData: LyricResponseWithoutIds[] = [
   {
     seq: 1,
     startTime: '00:00.00',
@@ -17,7 +20,7 @@ export const mockLyricFindResponseData: LyricFindResponse[] = [
 ]
 
 export const mockLyricRepository: ILyricRepository = {
-  save: (params: ILyricRepository.LyricParamsToInsert[]) =>
+  save: (_: LyricToInsert[]) =>
     Promise.resolve({
       countLyricsInserted: 2,
     }),

@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import _ from 'lodash'
 
-import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
+import { ILyricRepository, LyricToInsert } from '#infra/db/repository/interfaces/lyric-repository'
 import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
 import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'
@@ -41,7 +41,7 @@ test.group('LyricPostgresRepository', (group) => {
     const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
-    const lyrics: ILyricRepository.LyricParamsToInsert[] = []
+    const lyrics: LyricToInsert[] = []
     for (let i = 1; i <= 5; i++) {
       lyrics.push({
         seq: i,
@@ -66,7 +66,7 @@ test.group('LyricPostgresRepository', (group) => {
     const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
-    const lyrics: ILyricRepository.LyricParamsToInsert[] = []
+    const lyrics: LyricToInsert[] = []
     for (let i = 1; i <= 10; i++) {
       lyrics.push({
         seq: i,
@@ -108,7 +108,7 @@ test.group('LyricPostgresRepository', (group) => {
     const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
-    const lyrics: ILyricRepository.LyricParamsToInsert[] = []
+    const lyrics: LyricToInsert[] = []
     for (let i = 1; i <= 10; i++) {
       lyrics.push({
         seq: i,

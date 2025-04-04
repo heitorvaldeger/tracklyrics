@@ -1,14 +1,15 @@
 import db from '@adonisjs/lucid/services/db'
 
-import { LyricFindResponse } from '#models/lyric-metadata'
-import { LyricSaveResult } from '#models/lyric-save-result'
+import {
+  ILyricRepository,
+  LyricResponseWithoutIds,
+  LyricToInsert,
+} from '#infra/db/repository/interfaces/lyric-repository'
+import { Lyric } from '#models/lyric'
 import { toSnakeCase } from '#utils/index'
-import { toCamelCase } from '#utils/index'
-
-import { ILyricRepository } from '../interfaces/lyric-repository.js'
 
 export class LyricPostgresRepository implements ILyricRepository {
-  async save(lyrics: ILyricRepository.LyricParamsToInsert[]): Promise<LyricSaveResult> {
+  async save(lyrics: LyricToInsert[]) {
     if (!lyrics.length) {
       return {
         countLyricsInserted: 0,
@@ -21,26 +22,21 @@ export class LyricPostgresRepository implements ILyricRepository {
       .onConflict(['video_id', 'seq'])
       .merge()
 
-    await db
-      .from('lyrics')
-      .where('video_id', lyrics[0].videoId)
-      .where('seq', '>', lyrics.length)
-      .delete()
+    await Lyric.query().where('videoId', lyrics[0].videoId).where('seq', '>', lyrics.length).del()
 
-    const lyricsCount = await db.from('lyrics').where('video_id', lyrics[0].videoId).count('')
+    const lyricsCount = await Lyric.query().where('videoId', lyrics[0].videoId).count('')
 
     return {
-      countLyricsInserted: lyricsCount[0].count,
+      countLyricsInserted: lyricsCount[0].$extras.count,
     }
   }
 
-  async find(videoId: number): Promise<LyricFindResponse[]> {
-    const lyrics = await db
-      .from('lyrics')
-      .where('video_id', videoId)
-      .orderBy('seq', 'asc')
-      .select(['line', 'start_time', 'end_time', 'seq'])
-
-    return lyrics.map((lyric) => toCamelCase<LyricFindResponse>(lyric))
+  async find(videoId: number): Promise<LyricResponseWithoutIds[]> {
+    return (
+      await Lyric.query()
+        .where('videoId', videoId)
+        .orderBy('seq', 'asc')
+        .select(['line', 'startTime', 'endTime', 'seq'])
+    ).map((lyric) => lyric.serialize() as LyricResponseWithoutIds)
   }
 }

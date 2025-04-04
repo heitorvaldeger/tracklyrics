@@ -1,12 +1,16 @@
-import { Lyric } from '#models/lyric'
-import { LyricFindResponse } from '#models/lyric-metadata'
-import { LyricSaveResult } from '#models/lyric-save-result'
-
-export abstract class ILyricRepository {
-  abstract save(lyrics: ILyricRepository.LyricParamsToInsert[]): Promise<LyricSaveResult>
-  abstract find(videoId: number): Promise<LyricFindResponse[]>
+interface Lyric {
+  id: number
+  seq: number
+  startTime: string
+  endTime: string
+  line: string
+  videoId: number
 }
 
-export namespace ILyricRepository {
-  export type LyricParamsToInsert = Omit<Lyric, 'id'>
+export interface LyricResponseWithoutIds extends Omit<Lyric, 'id' | 'videoId'> {}
+export interface LyricToInsert extends Omit<Lyric, 'id'> {}
+
+export abstract class ILyricRepository {
+  abstract save(lyrics: LyricToInsert[]): Promise<{ countLyricsInserted: number }>
+  abstract find(videoId: number): Promise<LyricResponseWithoutIds[]>
 }
