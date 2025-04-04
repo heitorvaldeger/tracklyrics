@@ -1,6 +1,10 @@
-import { Language } from '#models/language'
+export interface LanguageResponse {
+  id: number
+  name: string
+  flagCountry?: string
+}
 
 export abstract class ILanguageRepository {
-  abstract findAll(): Promise<Language[]>
-  abstract findById(id: number): Promise<Language | null>
+  abstract findAll(): Promise<LanguageResponse[]>
+  abstract findById(id: number): Promise<LanguageResponse | null>
 }

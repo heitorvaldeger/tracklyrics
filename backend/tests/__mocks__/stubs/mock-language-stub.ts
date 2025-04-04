@@ -1,9 +1,11 @@
-import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
-import { Language } from '#models/language'
+import {
+  ILanguageRepository,
+  LanguageResponse,
+} from '#infra/db/repository/interfaces/language-repository'
 
 interface MockLanguageRepositoryStub extends ILanguageRepository {
-  languages: Language[]
-  language: Language
+  languages: LanguageResponse[]
+  language: LanguageResponse
 }
 export const mockLanguageRepository: MockLanguageRepositoryStub = {
   language: {

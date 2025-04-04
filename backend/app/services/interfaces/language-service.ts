@@ -1,5 +1,5 @@
-import { Language } from '#models/language'
+import { LanguageResponse } from '#infra/db/repository/interfaces/language-repository'
 
 export abstract class ILanguageService {
-  abstract findAll(): Promise<Language[]>
+  abstract findAll(): Promise<LanguageResponse[]>
 }
