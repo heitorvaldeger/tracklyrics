@@ -5,6 +5,7 @@ import _ from 'lodash'
 
 import { ILyricRepository, LyricToInsert } from '#infra/db/repository/interfaces/lyric-repository'
 import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
+import { Lyric } from '#models/lyric'
 import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'
 import { mockLanguage } from '#tests/__mocks__/db/mock-language'
@@ -77,11 +78,7 @@ test.group('LyricPostgresRepository', (group) => {
       })
     }
 
-    await db
-      .table('lyrics')
-      .knexQuery.insert(lyrics.map(toSnakeCase))
-      .onConflict(['video_id', 'seq'])
-      .merge()
+    await Lyric.createMany(lyrics)
 
     lyrics[0].line = faker.lorem.sentence(5)
     delete lyrics[1]
@@ -95,22 +92,24 @@ test.group('LyricPostgresRepository', (group) => {
       }))
 
     const lyricsInserted = await sut.save(newLyrics)
-    const lyricsFromDatabase = await db
-      .from('lyrics')
-      .orderBy('seq', 'asc')
-      .where('video_id', fakeVideo.id)
-      .select(['seq', 'line', 'start_time', 'end_time', 'video_id'])
+    const lyricsFromDatabase = (
+      await Lyric.query()
+        .where('videoId', fakeVideo.id)
+        .orderBy('seq', 'asc')
+        .select(['seq', 'line', 'startTime', 'endTime', 'videoId'])
+    ).map((lyric) => lyric.serialize())
+
     expect(lyricsInserted.countLyricsInserted).toBe(newLyrics.length)
-    expect(lyricsFromDatabase.map((lyric) => toCamelCase(lyric))).toEqual(newLyrics)
+    expect(lyricsFromDatabase).toEqual(newLyrics)
   })
 
   test('return a lyrics list by videoId with success', async ({ expect }) => {
     const { fakeVideo } = await createData()
     const { sut } = makeSut()
 
-    const lyrics: LyricToInsert[] = []
+    const lyricsToInsert: LyricToInsert[] = []
     for (let i = 1; i <= 10; i++) {
-      lyrics.push({
+      lyricsToInsert.push({
         seq: i,
         line: faker.lorem.sentence(5),
         startTime: '00:00.00',
@@ -119,21 +118,17 @@ test.group('LyricPostgresRepository', (group) => {
       })
     }
 
-    await db
-      .table('lyrics')
-      .knexQuery.insert(lyrics.map(toSnakeCase))
-      .onConflict(['video_id', 'seq'])
-      .merge()
+    await Lyric.createMany(lyricsToInsert)
 
-    const lyricsFromSut = await sut.find(fakeVideo.id)
+    const lyrics = await sut.find(fakeVideo.id)
     expect(
-      lyrics.map(({ seq, line, startTime, endTime }) => ({
+      lyricsToInsert.map(({ seq, line, startTime, endTime }) => ({
         line,
         startTime,
         endTime,
         seq,
       }))
-    ).toEqual(lyricsFromSut)
+    ).toEqual(lyrics)
   })
 
   test('return an object with count lyrics save at 0 if lyrics provided is array empty', async ({

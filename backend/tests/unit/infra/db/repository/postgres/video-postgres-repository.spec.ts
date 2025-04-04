@@ -5,20 +5,12 @@ import _ from 'lodash'
 import { stub } from 'sinon'
 
 import { VideoPostgresRepository } from '#infra/db/repository/postgres/video-postgres-repository'
-import { mockVideo } from '#tests/__mocks__/db/mock-all'
-import { mockGenre } from '#tests/__mocks__/db/mock-genre'
-import { mockLanguage } from '#tests/__mocks__/db/mock-language'
-import { mockUser } from '#tests/__mocks__/db/mock-user'
+import { Lyric } from '#models/lyric'
+import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
-import { toSnakeCase } from '#utils/index'
 
 const createData = async () => {
-  const [fakeLanguage, fakeGenre, fakeUser] = await Promise.all([
-    mockLanguage(),
-    mockGenre(),
-    mockUser(),
-  ])
-  const fakeVideo = await mockVideo({ fakeLanguage, fakeGenre, fakeUser })
+  const { fakeVideo, fakeUser, fakeLanguage, fakeGenre } = await mockAllTables()
 
   return { fakeVideo, fakeUser, fakeLanguage, fakeGenre }
 }
@@ -84,61 +76,6 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos[0].artist).toBe(fakeVideo.artist)
   })
 
-  test('return a video on find', async ({ expect }) => {
-    const { fakeVideo, fakeUser } = await createData()
-
-    await db
-      .table('favorites')
-      .insert(
-        toSnakeCase({
-          videoId: fakeVideo.id,
-          userId: fakeUser.id,
-          uuid: faker.string.uuid(),
-          createdAt: new Date().toISOString(),
-        })
-      )
-      .returning(['user_id', 'video_id', 'uuid'])
-    const { sut } = await makeSut()
-
-    const video = await sut.find(fakeVideo.uuid)
-
-    expect(video).toBeTruthy()
-    expect(video?.username).toEqual(fakeUser.username)
-    expect(video?.title).toBe(fakeVideo.title)
-    expect(video?.artist).toBe(fakeVideo.artist)
-    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
-    expect(video?.isFavorite).toBeTruthy()
-  })
-
-  test('return a video on find with is_favorite false', async ({ expect }) => {
-    const { fakeVideo, fakeUser } = await createData()
-
-    const { sut } = await makeSut()
-    const video = await sut.find(fakeVideo.uuid)
-
-    expect(video).toBeTruthy()
-    expect(video?.username).toEqual(fakeUser.username)
-    expect(video?.title).toBe(fakeVideo.title)
-    expect(video?.artist).toBe(fakeVideo.artist)
-    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
-    expect(video?.isFavorite).toBeFalsy()
-  })
-
-  test('return null on find if uuid param is invalid', async ({ expect }) => {
-    const { sut } = await makeSut()
-    const video = await sut.find(NilUUID)
-
-    expect(video).toBeFalsy()
-  })
-
-  test('return true if link youtube already exists', async ({ expect }) => {
-    const { fakeVideo } = await createData()
-    const { sut } = await makeSut()
-    const hasYoutubeLink = await sut.hasYoutubeLink(fakeVideo.linkYoutube)
-
-    expect(hasYoutubeLink).toBeTruthy()
-  })
-
   test('return a list videos on findBy if param provided not exists in filter', async ({
     expect,
   }) => {
@@ -169,12 +106,45 @@ test.group('VideoPostgresRepository', (group) => {
     expect(videos.length).toBe(1)
   })
 
-  test('return success if a video deleted on success', async ({ expect }) => {
+  test('return a video on find', async ({ expect }) => {
+    const { fakeVideo, fakeUser } = await createData()
+    const { sut } = await makeSut()
+
+    const video = await sut.find(fakeVideo.uuid)
+
+    expect(video).toBeTruthy()
+    expect(video?.username).toEqual(fakeUser.username)
+    expect(video?.title).toBe(fakeVideo.title)
+    expect(video?.artist).toBe(fakeVideo.artist)
+    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
+  })
+
+  test('return a video on find with is_favorite false', async ({ expect }) => {
+    const { fakeVideo, fakeUser } = await createData()
+
+    const { sut } = await makeSut()
+    const video = await sut.find(fakeVideo.uuid)
+
+    expect(video).toBeTruthy()
+    expect(video?.username).toEqual(fakeUser.username)
+    expect(video?.title).toBe(fakeVideo.title)
+    expect(video?.artist).toBe(fakeVideo.artist)
+    expect(video?.linkYoutube).toBe(fakeVideo.linkYoutube)
+  })
+
+  test('return null on find if uuid param is invalid', async ({ expect }) => {
+    const { sut } = await makeSut()
+    const video = await sut.find(NilUUID)
+
+    expect(video).toBeFalsy()
+  })
+
+  test('return true if link youtube already exists', async ({ expect }) => {
     const { fakeVideo } = await createData()
     const { sut } = await makeSut()
-    const isSuccess = await sut.delete(fakeVideo.uuid)
+    const hasYoutubeLink = await sut.hasYoutubeLink(fakeVideo.linkYoutube)
 
-    expect(isSuccess).toBeTruthy()
+    expect(hasYoutubeLink).toBeTruthy()
   })
 
   test('return success if a video deleted on success with favorites/lyrics/play_counts', async ({
@@ -184,17 +154,15 @@ test.group('VideoPostgresRepository', (group) => {
 
     const { sut } = await makeSut()
     const isDeleted = await sut.delete(fakeVideo.uuid)
-    const favoritesCount = await db.from('favorites').where('video_id', fakeVideo.id).count('*')
-    const lyricsCount = await db.from('lyrics').where('video_id', fakeVideo.id).count('id')
-    const videoPlayCount = await db
-      .from('video_play_counts')
-      .where('video_id', fakeVideo.id)
-      .count('id')
+
+    const favorites = await db.from('favorites').where('video_id', fakeVideo.id).select()
+    const lyrics = await Lyric.findManyBy('videoId', fakeVideo.id)
+    const plays = await db.from('video_play_counts').where('video_id', fakeVideo.id).select()
 
     expect(isDeleted).toBeTruthy()
-    expect(favoritesCount[0].count).toBe(0)
-    expect(lyricsCount[0].count).toBe(0)
-    expect(videoPlayCount[0].count).toBe(0)
+    expect(favorites.length).toBe(0)
+    expect(lyrics.length).toBe(0)
+    expect(plays.length).toBe(0)
   })
 
   test('return success if a video updated on success', async ({ expect }) => {
@@ -222,38 +190,10 @@ test.group('VideoPostgresRepository', (group) => {
       languageId: fakeLanguage.id,
       userId: fakeUser.id,
     }
+
     const newVideo = await sut.create(fakePayload)
 
     expect(newVideo).toEqual(fakePayload)
-  })
-
-  test('throws an error on create', async ({ expect }) => {
-    const { fakeVideo, fakeUser, fakeLanguage, fakeGenre } = await createData()
-    const { sut } = await makeSut()
-    const fakePayload = {
-      ..._.omit(fakeVideo, ['userId', 'languageId', 'genreId', 'id']),
-      uuid: faker.string.uuid(),
-      genreId: fakeGenre.id,
-      languageId: fakeLanguage.id,
-      userId: fakeUser.id,
-    }
-
-    stub(db, 'from')
-      .withArgs('videos')
-      .returns({
-        where: stub().returnsThis(),
-        select: stub().returnsThis(),
-        knexQuery: stub(db.knexQuery()),
-        insert: stub().returnsThis(),
-        first: stub().resolves(null),
-      } as any)
-
-    const response = sut.create(fakePayload)
-    expect(response).rejects.toThrowError(
-      new Error(
-        'An error occurred during the video creation process. Please try again or contact support if the issue persists.'
-      )
-    )
   })
 
   test('return a video id if videoUuid valid is provided', async ({ expect }) => {

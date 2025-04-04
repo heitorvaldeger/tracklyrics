@@ -4,9 +4,9 @@ import { DateTime } from 'luxon'
 
 import { UserEmailStatus } from '#enums/user-email-status'
 
-export default class UserLucid extends BaseModel {
+export class User extends BaseModel {
   static table = 'users'
-  static accessTokens = DbAccessTokensProvider.forModel(UserLucid, {
+  static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',
     prefix: 'oat_',
     table: 'auth_access_tokens',
@@ -46,3 +46,6 @@ export default class UserLucid extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   declare updatedAt: DateTime
 }
+
+const UserLucid = User
+export default UserLucid

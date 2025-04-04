@@ -6,7 +6,6 @@ import {
   LyricToInsert,
 } from '#infra/db/repository/interfaces/lyric-repository'
 import { Lyric } from '#models/lyric'
-import { toSnakeCase } from '#utils/index'
 
 export class LyricPostgresRepository implements ILyricRepository {
   async save(lyrics: LyricToInsert[]) {
@@ -16,11 +15,7 @@ export class LyricPostgresRepository implements ILyricRepository {
       }
     }
 
-    await db
-      .table('lyrics')
-      .knexQuery.insert(lyrics.map(toSnakeCase))
-      .onConflict(['video_id', 'seq'])
-      .merge()
+    await Lyric.updateOrCreateMany(['videoId', 'seq'], lyrics)
 
     await Lyric.query().where('videoId', lyrics[0].videoId).where('seq', '>', lyrics.length).del()
 

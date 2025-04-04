@@ -2,11 +2,11 @@ import db from '@adonisjs/lucid/services/db'
 import { faker } from '@faker-js/faker'
 import _ from 'lodash'
 
-import { Favorite } from '#models/favorite'
+import { Favorite } from '#models/favorite-bkp'
 import { Genre } from '#models/genre'
 import { Language } from '#models/language'
 import { Lyric } from '#models/lyric'
-import UserLucid from '#models/user-model/user-lucid'
+import { User } from '#models/user-model/user-lucid'
 import { Video } from '#models/video'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'
 import { mockLanguage } from '#tests/__mocks__/db/mock-language'
@@ -18,7 +18,7 @@ import { toCamelCase } from '#utils/index'
 type MockAllTables = {
   fakeLanguage: Language
   fakeGenre: Genre
-  fakeUser: UserLucid
+  fakeUser: User
   fakeVideo: Video
   fakeFavorite: Favorite
   fakeLyrics: Lyric[]
@@ -31,25 +31,21 @@ export const mockVideo = async ({
 }: {
   fakeLanguage: Language
   fakeGenre: Genre
-  fakeUser: UserLucid
+  fakeUser: User
 }) => {
-  const video = toSnakeCase({
-    isDraft: false,
-    title: faker.lorem.words(2),
-    artist: faker.lorem.words(2),
-    releaseYear: faker.string.numeric({ length: 4 }),
-    linkYoutube: makeYoutubeUrl(),
-    uuid: faker.string.uuid(),
-    languageId: fakeLanguage.id,
-    genreId: fakeGenre.id,
-    userId: fakeUser.id,
-    createdAt: new Date().toISOString(),
-  })
-  return _.omit(
-    toCamelCase<Video>((await db.table('videos').insert(video).returning(['*']))[0]),
-    'createdAt',
-    'updatedAt'
-  )
+  return (
+    await Video.create({
+      isDraft: false,
+      title: faker.lorem.words(2),
+      artist: faker.lorem.words(2),
+      releaseYear: faker.string.numeric({ length: 4 }),
+      linkYoutube: makeYoutubeUrl(),
+      uuid: faker.string.uuid(),
+      languageId: fakeLanguage.id,
+      genreId: fakeGenre.id,
+      userId: fakeUser.id,
+    })
+  ).serialize() as Video
 }
 
 export const mockAllTables = async (): Promise<MockAllTables> => {
@@ -74,23 +70,6 @@ export const mockAllTables = async (): Promise<MockAllTables> => {
         .returning(['user_id', 'video_id', 'uuid'])
     )[0]
   )
-
-  const lyrics = [
-    {
-      videoId: fakeVideo.id,
-      seq: 1,
-      startTime: '00:00.00',
-      endTime: '00:00.10',
-      line: faker.lorem.sentence(5),
-    },
-    {
-      videoId: fakeVideo.id,
-      seq: 2,
-      startTime: '00:00.11',
-      endTime: '00:00.14',
-      line: faker.lorem.sentence(5),
-    },
-  ].map(toSnakeCase)
 
   const fakeLyrics = (
     await Lyric.createMany([

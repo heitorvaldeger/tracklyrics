@@ -1,94 +1,88 @@
+import string from '@adonisjs/core/helpers/string'
 import db from '@adonisjs/lucid/services/db'
 
+import { Lyric } from '#models/lyric'
 import { Video } from '#models/video'
-import { VideoMetadata } from '#models/video-metadata'
 import { VideoCreateInput, VideoSaveResult, VideoUpdateInput } from '#models/video-save'
 import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
 
-import { IVideoRepository } from '../interfaces/video-repository.js'
+import { IVideoRepository, VideoResponse } from '../interfaces/video-repository.js'
 
 export class VideoPostgresRepository implements IVideoRepository {
-  async find(uuid: string): Promise<VideoMetadata | null> {
-    const video: VideoMetadata | null = await db
-      .from('videos')
-      .where('videos.uuid', uuid)
-      .innerJoin('users', 'users.id', 'user_id')
-      .innerJoin('languages', 'languages.id', 'language_id')
-      .innerJoin('genres', 'genres.id', 'genre_id')
-      .leftJoin('favorites', 'favorites.video_id', 'videos.id')
-      .select(
-        'title',
-        'artist',
-        'link_youtube',
-        'videos.uuid',
-        'release_year',
-        'genres.name as genre',
-        'languages.name as language',
-        'users.username as username',
-        db.raw(`
-          CASE
-            WHEN favorites.id IS NULL THEN false
-            ELSE true
-          END as is_favorite
-        `)
-      )
+  async find(uuid: string) {
+    const video = await Video.query()
+      .where('uuid', uuid)
+      .preload('user')
+      .preload('language')
+      .preload('genre')
       .first()
 
-    return video ? toCamelCase(video) : null
+    if (!video) return null
+
+    return {
+      title: video.title,
+      artist: video.artist,
+      linkYoutube: video.linkYoutube,
+      uuid: video.uuid,
+      releaseYear: video.releaseYear,
+      genre: video.genre.name,
+      language: video.language.name,
+      username: video.user.username,
+    } as VideoResponse
   }
 
-  async findBy(filters: IVideoRepository.FindVideoParams): Promise<VideoMetadata[]> {
-    const qb = db
-      .from('videos')
-      .innerJoin('users', 'users.id', 'user_id')
-      .innerJoin('languages', 'languages.id', 'language_id')
-      .innerJoin('genres', 'genres.id', 'genre_id')
+  async findBy(filters: IVideoRepository.FindVideoParams): Promise<VideoResponse[]> {
+    const vq = Video.query().preload('user').preload('language').preload('genre')
+
     for (const [key, value] of Object.entries(toSnakeCase(filters))) {
       if (!value) continue
 
       if (key === 'user_uuid') {
-        qb.whereIn('user_id', (query) => {
-          query.from('users').where('uuid', value).select('id')
+        vq.whereHas('user', (q) => {
+          q.where('uuid', value)
         })
       } else {
         if (this.getParamValidToFindBy().includes(key as keyof IVideoRepository.FindVideoParams)) {
-          qb.where(key, value)
+          const table = string.create(key).removeSuffix('_id').toString() as 'language' | 'genre'
+          vq.whereHas(table, (q) => {
+            q.where('id', value)
+          })
         }
       }
     }
 
-    const videos: VideoMetadata[] = await qb.select(
-      'title',
-      'artist',
-      'videos.uuid',
-      'release_year',
-      'link_youtube',
-      'genres.name as genre',
-      'languages.name as language',
-      'users.username as username'
-    )
+    const videos = await vq.select()
 
-    return videos.map((video) => toCamelCase(video))
+    return videos.map((video) => ({
+      title: video.title,
+      artist: video.artist,
+      linkYoutube: video.linkYoutube,
+      uuid: video.uuid,
+      releaseYear: video.releaseYear,
+      genre: video.genre.name,
+      language: video.language.name,
+      username: video.user.username,
+    })) as VideoResponse[]
   }
 
   async getVideoId(videoUuid: string): Promise<number | null> {
-    const video: Video | null = await db.from('videos').where('uuid', videoUuid).first()
-    return video ? video.id : null
+    const video = await Video.findBy('uuid', videoUuid)
+    return video?.id ?? null
   }
 
   async getVideoUuidByYoutubeURL(youtubeURL: string): Promise<string | undefined> {
-    const video: Video | null = await db.from('videos').where('link_youtube', youtubeURL).first()
+    const video = await Video.findBy('linkYoutube', youtubeURL)
     return video?.uuid
   }
 
   async getUserId(videoUuid: string): Promise<number | null> {
-    const video: Video | null = await db.from('videos').where('uuid', videoUuid).first()
-    return video ? toCamelCase(video).userId : null
+    const video = await Video.findBy('uuid', videoUuid)
+    return video?.userId ?? null
   }
 
   async hasYoutubeLink(link: string): Promise<boolean> {
-    return !!(await db.from('videos').whereLike('link_youtube', link).first())
+    return !!(await Video.findBy('linkYoutube', link))
   }
 
   async delete(videoUuid: string): Promise<boolean> {
@@ -97,55 +91,37 @@ export class VideoPostgresRepository implements IVideoRepository {
       .whereIn('video_id', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
-      .del()
-    await db
-      .from('lyrics')
-      .whereIn('video_id', (query) => {
+      .delete()
+
+    await Lyric.query()
+      .whereIn('videoId', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
-      .del()
+      .delete()
 
     await db
       .from('video_play_counts')
       .whereIn('video_id', (query) => {
         query.from('videos').where('uuid', videoUuid).select('id')
       })
-      .del()
+      .delete()
 
-    await db.from('videos').where('uuid', videoUuid).delete()
+    await Video.query().where('uuid', videoUuid).delete()
     return !(await db.from('videos').where('uuid', videoUuid).first())
   }
 
   async create(payload: VideoCreateInput): Promise<VideoSaveResult> {
-    await db.from('videos').knexQuery.insert(toSnakeCase(payload))
-    const newVideo = await db
-      .from('videos')
-      .where('uuid', payload.uuid)
-      .select(
-        'title',
-        'artist',
-        'uuid',
-        'release_year',
-        'link_youtube',
-        'is_draft',
-        'user_id',
-        'language_id',
-        'genre_id'
-      )
-      .first()
-
-    if (!newVideo) {
-      throw new Error(
-        'An error occurred during the video creation process. Please try again or contact support if the issue persists.'
-      )
-    }
-
-    return toCamelCase<VideoSaveResult>(newVideo)
+    const video = await Video.create(payload)
+    return video.serialize({
+      fields: {
+        omit: ['id', 'genre', 'language', 'user'],
+      },
+    }) as VideoSaveResult
   }
 
   async update(payload: VideoUpdateInput, uuid: string): Promise<boolean> {
-    await db.from('videos').where('uuid', uuid).update(toSnakeCase(payload))
-    return !!(await db.from('videos').where('uuid', uuid).first())
+    const video = await Video.findBy('uuid', uuid)
+    return !!(await video?.merge(payload).save())
   }
 
   private getParamValidToFindBy(): Array<string> {
