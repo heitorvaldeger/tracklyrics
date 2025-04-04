@@ -1,8 +1,10 @@
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 
 import { UserEmailStatus } from '#enums/user-email-status'
+import { Video } from '#models/video'
 
 export class User extends BaseModel {
   static table = 'users'
@@ -39,6 +41,15 @@ export class User extends BaseModel {
 
   @column()
   declare emailStatus: UserEmailStatus
+
+  @manyToMany(() => Video, {
+    pivotTable: 'favorites',
+    pivotForeignKey: 'user_id',
+    pivotRelatedForeignKey: 'video_id',
+    pivotColumns: ['uuid'],
+    pivotTimestamps: true,
+  })
+  declare videos: ManyToMany<typeof Video>
 
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare createdAt: DateTime

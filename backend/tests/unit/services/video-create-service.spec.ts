@@ -6,12 +6,11 @@ import LanguageNotFoundException from '#exceptions/language-not-found-exception'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
 import { VideoCreateService } from '#services/video-create-service'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
-import { mockFakeVideoSaveResultModel } from '#tests/__mocks__/mock-video-save-result-model'
 import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockGenreRepository } from '#tests/__mocks__/stubs/mock-genre-stub'
 import { mockLanguageRepository } from '#tests/__mocks__/stubs/mock-language-stub'
 import { mockLyricRepository } from '#tests/__mocks__/stubs/mock-lyric-stub'
-import { mockVideoRepository } from '#tests/__mocks__/stubs/mock-video-stub'
+import { mockVideoRepository, mockVideoSave } from '#tests/__mocks__/stubs/mock-video-stub'
 
 const makeSut = () => {
   const { authStub } = mockAuth()
@@ -36,7 +35,7 @@ test.group('Video Create Service', (group) => {
     const { sut } = makeSut()
     const videoResponse = await sut.create(mockVideoCreateOrUpdateRequest)
 
-    expect(videoResponse).toEqual(mockFakeVideoSaveResultModel())
+    expect(videoResponse).toEqual(mockVideoSave)
   })
 
   test('return userId valid on call AuthService getUserId', async ({ expect }) => {

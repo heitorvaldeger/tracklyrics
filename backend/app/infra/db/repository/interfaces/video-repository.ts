@@ -1,5 +1,3 @@
-import { VideoCreateInput, VideoSaveResult, VideoUpdateInput } from '#models/video-save'
-
 export interface VideoResponse {
   linkYoutube: string
   title: string
@@ -9,25 +7,35 @@ export interface VideoResponse {
   language: string
   genre: string
   username: string
-  isFavorite: boolean
+  isFavorite?: boolean
 }
+
+export type VideoSave = {
+  title: string
+  artist: string
+  releaseYear: string
+  linkYoutube: string
+  languageId: number
+  genreId: number
+  userId: number
+  uuid: string
+  isDraft?: boolean
+}
+
+export type VideoFindParams = Partial<{
+  genreId: number
+  languageId: number
+  userUuid: string
+}>
 
 export abstract class IVideoRepository {
   abstract find(uuid: string): Promise<VideoResponse | null>
-  abstract findBy(filters: IVideoRepository.FindVideoParams): Promise<VideoResponse[]>
+  abstract findBy(filters: VideoFindParams): Promise<VideoResponse[]>
   abstract getVideoId(videoUuid: string): Promise<number | null>
   abstract getVideoUuidByYoutubeURL(videoUuid: string): Promise<string | undefined>
   abstract getUserId(videoUuid: string): Promise<number | null>
   abstract delete(uuid: string): Promise<boolean>
-  abstract create(payload: VideoCreateInput): Promise<VideoSaveResult>
-  abstract update(payload: VideoUpdateInput, uuid: string): Promise<boolean>
+  abstract create(payload: VideoSave): Promise<VideoSave>
+  abstract update(payload: Omit<VideoSave, 'uuid' | 'linkYoutube'>, uuid: string): Promise<boolean>
   abstract hasYoutubeLink(link: string): Promise<boolean>
-}
-
-export namespace IVideoRepository {
-  export type FindVideoParams = Partial<{
-    genreId: number
-    languageId: number
-    userUuid: string
-  }>
 }

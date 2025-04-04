@@ -1,5 +1,3 @@
-import db from '@adonisjs/lucid/services/db'
-
 import {
   ILyricRepository,
   LyricResponseWithoutIds,

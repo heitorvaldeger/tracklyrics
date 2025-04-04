@@ -4,7 +4,7 @@ import _ from 'lodash'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { Auth } from '#infra/auth/interfaces/auth'
 import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
-import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { IVideoRepository, VideoFindParams } from '#infra/db/repository/interfaces/video-repository'
 import { IVideoFindService } from '#services/interfaces/video-find-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
@@ -35,7 +35,7 @@ export class VideoFindService implements IVideoFindService {
     }
   }
 
-  async findBy(filters: Partial<IVideoRepository.FindVideoParams>) {
+  async findBy(filters: VideoFindParams) {
     const videos = await this.videoRepository.findBy(filters)
 
     return videos.map((video) => ({

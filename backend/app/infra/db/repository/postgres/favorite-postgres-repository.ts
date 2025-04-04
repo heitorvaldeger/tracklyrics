@@ -1,78 +1,84 @@
-import db from '@adonisjs/lucid/services/db'
-
-import { VideoMetadata } from '#models/video-metadata'
-import { toSnakeCase } from '#utils/index'
-import { toCamelCase } from '#utils/index'
+import { User } from '#models/user-model/user-lucid'
+import { Video } from '#models/video'
 
 import { IFavoriteRepository } from '../interfaces/favorite-repository.js'
 
 export class FavoritePostgresRepository implements IFavoriteRepository {
-  async saveFavorite(videoId: number, userId: number, favoriteUuid: string): Promise<boolean> {
-    const favoriteQuery = db.from('favorites').where('user_id', userId).where('video_id', videoId)
+  async saveFavorite(videoId: number, userId: number, favoriteUuid: string) {
+    const video = await Video.find(videoId)
 
-    const hasFavorite = !!(await favoriteQuery.first())
+    await video?.load('users', (uq) => {
+      uq.where('users.id', userId)
+    })
 
-    const favoritesUpdatedOrInserted = hasFavorite
-      ? await db
-          .from('favorites')
-          .where('user_id', userId)
-          .where('video_id', videoId)
-          .returning('uuid')
-          .update(
-            toSnakeCase({
-              videoId,
-              userId,
-              updatedAt: new Date().toISOString(),
-            })
-          )
-      : await db
-          .table('favorites')
-          .returning('uuid')
-          .insert(
-            toSnakeCase({
-              videoId,
-              userId,
-              uuid: favoriteUuid,
-              createdAt: new Date().toISOString(),
-            })
-          )
+    const hasUser = !!video?.users.length
+    if (hasUser) {
+      await video?.related('users').sync({
+        [userId]: {
+          updated_at: new Date().toISOString(),
+        },
+      })
+    } else {
+      await video?.related('users').attach({
+        [userId]: {
+          uuid: favoriteUuid,
+          created_at: new Date().toISOString(),
+        },
+      })
+    }
 
-    return !!favoritesUpdatedOrInserted.length
+    await video?.load('users', (uq) => {
+      uq.where('users.id', userId)
+    })
+
+    return !!video?.users.length
   }
 
   async removeFavorite(videoId: number, userId: number): Promise<boolean> {
-    await db.from('favorites').where('video_id', videoId).where('user_id', userId).delete()
-    return !(await db.from('favorites').where('video_id', videoId).where('user_id', userId).first())
+    const video = await Video.find(videoId)
+    await video?.related('users').detach([userId])
+
+    return !(
+      await Video.query()
+        .preload('users', (uq) => {
+          uq.where('users.id', userId)
+        })
+        .first()
+    )?.users.length
   }
 
-  async findFavoritesByUser(userId: number): Promise<VideoMetadata[]> {
-    const favorites: VideoMetadata[] = await db
-      .from('favorites')
-      .where('favorites.user_id', userId)
-      .innerJoin('videos', 'videos.id', 'favorites.video_id')
-      .innerJoin('users', 'users.id', 'favorites.user_id')
-      .innerJoin('languages', 'languages.id', 'videos.language_id')
-      .innerJoin('genres', 'genres.id', 'videos.genre_id')
-      .select(
-        'videos.title',
-        'videos.artist',
-        'videos.uuid',
-        'videos.release_year',
-        'videos.link_youtube',
-        'languages.name as language',
-        'genres.name as genre',
-        'users.username as username'
-      )
+  async findFavoritesByUser(userId: number) {
+    const user = await User.query()
+      .where('id', userId)
+      .preload('videos', (vq) => {
+        vq.select(['genreId', 'languageId', '*']).preload('genre').preload('language')
+      })
+      .first()
 
-    return favorites.map((favorite) => toCamelCase(favorite))
+    if (user) {
+      return user.videos.map((video) => ({
+        title: video.title,
+        artist: video.artist,
+        uuid: video.uuid,
+        releaseYear: video.releaseYear,
+        linkYoutube: video.linkYoutube,
+        language: video.language.name,
+        genre: video.genre.name,
+        username: user.username,
+      }))
+    }
+
+    return []
   }
 
   async isFavoriteByUser(userId: number, videoUuid: string): Promise<boolean> {
-    const qVideo = db.from('videos as v').where('v.uuid', videoUuid).select('v.id')
-    return !!(await db
-      .from('favorites as f')
-      .where('f.user_id', userId)
-      .whereIn('f.video_id', qVideo)
-      .first())
+    const video = await Video.query()
+      .where('uuid', videoUuid)
+      .preload('users', (uq) => {
+        uq.where('id', userId)
+      })
+      .first()
+
+    return !!video?.users.length
   }
 }

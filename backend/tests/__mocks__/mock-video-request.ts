@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { VideoSaveResult } from '#models/video-save'
+import { VideoSave } from '#infra/db/repository/interfaces/video-repository'
 import { IVideoCreateService } from '#services/interfaces/video-create-service'
 import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 
@@ -31,7 +31,7 @@ export const mockVideoCreateOrUpdateRequest: IVideoCreateService.Params = {
   ],
 }
 
-export const mockVideoCreateOrUpdateResponse: VideoSaveResult = {
+export const mockVideoCreateOrUpdateResponse: VideoSave = {
   isDraft: false,
   title: faker.lorem.words(2),
   artist: faker.lorem.words(2),

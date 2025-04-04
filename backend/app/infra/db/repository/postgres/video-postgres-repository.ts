@@ -3,11 +3,14 @@ import db from '@adonisjs/lucid/services/db'
 
 import { Lyric } from '#models/lyric'
 import { Video } from '#models/video'
-import { VideoCreateInput, VideoSaveResult, VideoUpdateInput } from '#models/video-save'
 import { toSnakeCase } from '#utils/index'
-import { toCamelCase } from '#utils/index'
 
-import { IVideoRepository, VideoResponse } from '../interfaces/video-repository.js'
+import {
+  IVideoRepository,
+  VideoFindParams,
+  VideoResponse,
+  VideoSave,
+} from '../interfaces/video-repository.js'
 
 export class VideoPostgresRepository implements IVideoRepository {
   async find(uuid: string) {
@@ -32,7 +35,7 @@ export class VideoPostgresRepository implements IVideoRepository {
     } as VideoResponse
   }
 
-  async findBy(filters: IVideoRepository.FindVideoParams): Promise<VideoResponse[]> {
+  async findBy(filters: VideoFindParams) {
     const vq = Video.query().preload('user').preload('language').preload('genre')
 
     for (const [key, value] of Object.entries(toSnakeCase(filters))) {
@@ -43,7 +46,7 @@ export class VideoPostgresRepository implements IVideoRepository {
           q.where('uuid', value)
         })
       } else {
-        if (this.getParamValidToFindBy().includes(key as keyof IVideoRepository.FindVideoParams)) {
+        if (this.getParamValidToFindBy().includes(key as keyof VideoFindParams)) {
           const table = string.create(key).removeSuffix('_id').toString() as 'language' | 'genre'
           vq.whereHas(table, (q) => {
             q.where('id', value)
@@ -110,16 +113,16 @@ export class VideoPostgresRepository implements IVideoRepository {
     return !(await db.from('videos').where('uuid', videoUuid).first())
   }
 
-  async create(payload: VideoCreateInput): Promise<VideoSaveResult> {
+  async create(payload: VideoSave) {
     const video = await Video.create(payload)
     return video.serialize({
       fields: {
         omit: ['id', 'genre', 'language', 'user'],
       },
-    }) as VideoSaveResult
+    }) as VideoSave
   }
 
-  async update(payload: VideoUpdateInput, uuid: string): Promise<boolean> {
+  async update(payload: VideoSave, uuid: string) {
     const video = await Video.findBy('uuid', uuid)
     return !!(await video?.merge(payload).save())
   }

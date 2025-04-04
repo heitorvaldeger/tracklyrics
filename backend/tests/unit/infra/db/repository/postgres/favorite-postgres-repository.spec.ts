@@ -15,9 +15,7 @@ const makeSut = async () => {
 }
 
 test.group('FavoritePostgresRepository', () => {
-  test('it must return true if video added to favorite or already exists on success', async ({
-    expect,
-  }) => {
+  test('it must return true if video added to favorite', async ({ expect }) => {
     const { sut, fakeVideo, fakeUser, fakeFavorite } = await makeSut()
 
     await db.from('favorites').where('uuid', fakeFavorite.uuid).del()

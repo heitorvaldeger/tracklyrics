@@ -171,6 +171,7 @@ test.group('VideoPostgresRepository', (group) => {
 
     const video = await sut.update(
       {
+        ...fakeVideo,
         title: 'other_title',
       },
       fakeVideo.uuid

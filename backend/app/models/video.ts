@@ -1,5 +1,5 @@
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 
 import { Genre } from './genre.js'
@@ -46,6 +46,15 @@ export class Video extends BaseModel {
 
   @hasMany(() => Lyric)
   declare lyrics: HasMany<typeof Lyric>
+
+  @manyToMany(() => User, {
+    pivotTable: 'favorites',
+    pivotForeignKey: 'video_id',
+    pivotRelatedForeignKey: 'user_id',
+    pivotColumns: ['uuid'],
+    pivotTimestamps: true,
+  })
+  declare users: ManyToMany<typeof User>
 
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare createdAt: DateTime

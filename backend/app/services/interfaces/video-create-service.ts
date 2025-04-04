@@ -1,7 +1,7 @@
-import { VideoSaveResult } from '#models/video-save'
+import { VideoSave } from '#infra/db/repository/interfaces/video-repository'
 
 export abstract class IVideoCreateService {
-  abstract create(payload: IVideoCreateService.Params): Promise<VideoSaveResult>
+  abstract create(payload: IVideoCreateService.Params): Promise<VideoSave>
 }
 
 export namespace IVideoCreateService {
