@@ -1,7 +1,7 @@
 import { User } from '#models/user'
 import { Video } from '#models/video'
 
-import { IFavoriteRepository } from '../interfaces/favorite-repository.js'
+import { IFavoriteRepository } from './interfaces/favorite-repository.js'
 
 export class FavoritePostgresRepository implements IFavoriteRepository {
   async saveFavorite(videoId: number, userId: number, favoriteUuid: string) {
@@ -75,7 +75,7 @@ export class FavoritePostgresRepository implements IFavoriteRepository {
     const video = await Video.query()
       .where('uuid', videoUuid)
       .preload('users', (uq) => {
-        uq.where('id', userId)
+        uq.where('users.id', userId)
       })
       .first()
 

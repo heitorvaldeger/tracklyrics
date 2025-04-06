@@ -68,7 +68,7 @@ export class VideoCreateService implements IVideoCreateService {
     }))
 
     if (newLyricsToInsert) {
-      await this.lyricRepository.save(newLyricsToInsert)
+      await this.lyricRepository.save(newLyricsToInsert, videoId)
     }
 
     return video

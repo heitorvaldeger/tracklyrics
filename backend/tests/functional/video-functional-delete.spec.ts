@@ -1,10 +1,9 @@
 import { test } from '@japa/runner'
 
-import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
-test.group('Video Delete Route', (group) => {
+test.group('Video Delete Route', () => {
   test('/DELETE videos/{uuid} - it must return 404 if video not belong user uuid', async ({
     client,
     expect,
@@ -12,14 +11,7 @@ test.group('Video Delete Route', (group) => {
     const { fakeUser } = await mockAllTables()
     const { fakeVideo } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client
-      .delete(`/videos/${fakeVideo.uuid}`)
-      .withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`/videos/${fakeVideo.uuid}`).loginAs(fakeUser)
 
     expect(response.status()).toBe(404)
     expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')
@@ -31,14 +23,7 @@ test.group('Video Delete Route', (group) => {
   }) => {
     const { fakeUser, fakeVideo } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client
-      .delete(`/videos/${fakeVideo.uuid}`)
-      .withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`/videos/${fakeVideo.uuid}`).loginAs(fakeUser)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -50,12 +35,7 @@ test.group('Video Delete Route', (group) => {
   }) => {
     const { fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.delete(`/videos/any_value`).withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`/videos/any_value`).loginAs(fakeUser)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -69,12 +49,7 @@ test.group('Video Delete Route', (group) => {
   }) => {
     const { fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.delete(`/videos/${NilUUID}`).withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`/videos/${NilUUID}`).loginAs(fakeUser)
 
     expect(response.status()).toBe(404)
     expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')

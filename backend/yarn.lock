@@ -52,10 +52,10 @@
     slash "^5.1.0"
     ts-morph "^23.0.0"
 
-"@adonisjs/auth@^9.2.3":
-  version "9.3.2"
-  resolved "https://registry.npmjs.org/@adonisjs/auth/-/auth-9.3.2.tgz"
-  integrity sha512-ZaOeSEsCMZkXlfS3YYp2fXh6Eri/uq87mHmhW/uN8/Iww7VlpJbaacGokwHk1gBvU3hScYNVYwiazn3jkcNygw==
+"@adonisjs/auth@^9.4.0":
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/auth/-/auth-9.4.0.tgz#d8a75cbdc836e0b7976826b5b81f44b6af75af87"
+  integrity sha512-dzvnJRKY+RcKUXCRT6ebnlGV0wAfejTSGqS0XbgjB97r6Pww14MhsY89EBr1nSydQzvjdbtIR3EDGbU97BVmbQ==
   dependencies:
     "@adonisjs/presets" "^2.6.4"
     "@poppinss/utils" "^6.9.2"
@@ -293,6 +293,14 @@
   dependencies:
     "@poppinss/colors" "^4.1.4"
     string-width "^7.2.0"
+
+"@adonisjs/session@^7.5.1":
+  version "7.5.1"
+  resolved "https://registry.yarnpkg.com/@adonisjs/session/-/session-7.5.1.tgz#fcf332648ff1dfcba20fc4c29157070be980b715"
+  integrity sha512-b1E0W/1nnJfAq3Gv8yPywgsxJ7uzzOBJxxulonXI4t1eSdvJzZGNrFScfVLOcjTwlxwrEFA847tULIQxgR4Spw==
+  dependencies:
+    "@poppinss/macroable" "^1.0.4"
+    "@poppinss/utils" "^6.9.2"
 
 "@adonisjs/tsconfig@^1.4.0":
   version "1.4.0"

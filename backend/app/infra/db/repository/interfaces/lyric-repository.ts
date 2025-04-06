@@ -11,6 +11,6 @@ export interface LyricResponseWithoutIds extends Omit<Lyric, 'id' | 'videoId'> {
 export interface LyricToInsert extends Omit<Lyric, 'id'> {}
 
 export abstract class ILyricRepository {
-  abstract save(lyrics: LyricToInsert[]): Promise<{ countLyricsInserted: number }>
+  abstract save(lyrics: LyricToInsert[], videoId: number): Promise<{ lyricsCount: number }>
   abstract find(videoId: number): Promise<LyricResponseWithoutIds[]>
 }

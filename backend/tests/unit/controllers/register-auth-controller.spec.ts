@@ -1,14 +1,23 @@
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
 import { UserEmailStatus } from '#enums/user-email-status'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
-import { mockAuthRegisterData, mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
-  const httpContext = makeHttpRequest(mockAuthRegisterData())
+  const password = faker.internet.password()
+  const httpContext = makeHttpRequest({
+    email: faker.internet.email(),
+    username: faker.internet.username(),
+    password: password,
+    password_confirmation: password,
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+  })
   const sut = new AuthController(mockAuthService)
 
   return { sut, httpContext }

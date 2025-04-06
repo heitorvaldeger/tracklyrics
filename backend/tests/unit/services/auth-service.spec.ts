@@ -1,4 +1,3 @@
-import hash from '@adonisjs/core/services/hash'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
@@ -7,13 +6,12 @@ import CodeOtpInvalidException from '#exceptions/code-otp-invalid-exception'
 import EmailHasBeenVerifiedException from '#exceptions/email-has-been-verified-exception'
 import EmailInvalidException from '#exceptions/email-invalid-exception'
 import EmailPendingValidationException from '#exceptions/email-pending-validation-exception'
-import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
 import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
 import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
 import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
 import { AuthService } from '#services/auth-service'
-import { mockAuthRegisterData } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockUserRepository } from '#tests/__mocks__/stubs/mock-user-stub'
 
 const mockOTPAdapterStub = (): IOTPAdapter => ({
@@ -32,17 +30,44 @@ const mockCacheAdapter = (): ICacheAdapter => ({
   delete: () => Promise.resolve(),
 })
 
+const fakeUser = {
+  email: 'any_email@mail.com',
+  username: 'any_username',
+  uuid: 'any_uuid',
+  password: 'any_password',
+  emailStatus: UserEmailStatus.UNVERIFIED,
+  firstName: 'any_firstname',
+  lastName: 'any_lastname',
+}
+
+const fakeUserWithoutEmailStatus = {
+  email: 'any_email@mail.com',
+  username: 'any_username',
+  uuid: 'any_uuid',
+  password: 'any_password',
+  firstName: 'any_firstname',
+  lastName: 'any_lastname',
+}
+
 const makeSut = () => {
   const otpAdapterStub = mockOTPAdapterStub()
   const hashAdapterStub = mockHashAdapterStub()
   const cacheAdapterStub = mockCacheAdapter()
-  const sut = new AuthService(mockUserRepository, otpAdapterStub, hashAdapterStub, cacheAdapterStub)
+  const { authStub } = mockAuth()
+  const sut = new AuthService(
+    mockUserRepository,
+    otpAdapterStub,
+    hashAdapterStub,
+    cacheAdapterStub,
+    authStub
+  )
 
   return {
     sut,
     cacheAdapterStub,
     otpAdapterStub,
     hashAdapterStub,
+    authStub,
   }
 }
 
@@ -53,7 +78,7 @@ test.group('Auth Service', (group) => {
   test('return success on register if user not exist', async ({ expect }) => {
     const { sut } = makeSut()
     stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(null)
-    const userRegisterModel = await sut.register(mockAuthRegisterData())
+    const userRegisterModel = await sut.register(fakeUserWithoutEmailStatus)
     expect(userRegisterModel).toEqual({
       uuid: 'any_uuid',
       emailStatus: UserEmailStatus.UNVERIFIED,
@@ -62,9 +87,8 @@ test.group('Auth Service', (group) => {
 
   test('return fail on register if user email has been verified', async ({ expect }) => {
     const { sut } = makeSut()
-    const mockUser = mockAuthRegisterData()
 
-    const userRegisterModel = sut.register(mockUser)
+    const userRegisterModel = sut.register(fakeUserWithoutEmailStatus)
     expect(userRegisterModel).rejects.toEqual(new UserOrEmailAlreadyUsingException())
   })
 
@@ -72,18 +96,9 @@ test.group('Auth Service', (group) => {
     expect,
   }) => {
     const { sut } = makeSut()
-    const mockUser = mockAuthRegisterData()
-    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves({
-      email: mockUser.email,
-      username: mockUser.username,
-      uuid: 'any_uuid',
-      password: 'any_password',
-      emailStatus: UserEmailStatus.UNVERIFIED,
-      firstName: 'any_firstname',
-      lastName: 'any_lastname',
-    })
+    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(fakeUser)
 
-    const userRegisterModel = await sut.register(mockUser)
+    const userRegisterModel = await sut.register(fakeUserWithoutEmailStatus)
     expect(userRegisterModel).toEqual({
       uuid: 'any_uuid',
       emailStatus: UserEmailStatus.UNVERIFIED,
@@ -91,57 +106,33 @@ test.group('Auth Service', (group) => {
   })
 
   test('return a token on login if user is valid', async ({ expect }) => {
-    const { sut } = makeSut()
-    stub(hash, 'verify').resolves(true)
+    const { sut, authStub } = makeSut()
 
-    const userAccessToken = await sut.login({
-      email: 'any_email',
+    await sut.login({
+      email: 'any_email@mail.com',
       password: 'any_password',
     })
-    expect(userAccessToken).toEqual({
-      type: 'any_type',
-      token: 'any_token',
-      expiresAt: new Date(2000, 0, 1),
-    })
+
+    expect(authStub.login.calledOnceWith('any_email@mail.com', 'any_password')).toBeTruthy()
   })
 
   test('return fail on login if user not found', async ({ expect }) => {
-    const { sut } = makeSut()
-    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(null)
+    const { sut, authStub } = makeSut()
+    authStub.login.rejects(new Error())
 
     const userAccessToken = sut.login({
-      email: 'any_email',
+      email: 'any_email@mail.com',
       password: 'any_password',
     })
-    expect(userAccessToken).rejects.toEqual(new InvalidCredentialsException())
-  })
-
-  test('return fail on login if password is not equal', async ({ expect }) => {
-    const { sut, hashAdapterStub } = makeSut()
-    stub(hashAdapterStub, 'validateHash').resolves(false)
-
-    const userAccessToken = sut.login({
-      email: 'any_email',
-      password: 'any_password',
-    })
-    expect(userAccessToken).rejects.toEqual(new InvalidCredentialsException())
+    expect(userAccessToken).rejects.toEqual(new Error())
   })
 
   test('return fail on login if email is pending validation', async ({ expect }) => {
-    const { sut } = makeSut()
-    const mockUser = mockAuthRegisterData()
-    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves({
-      email: mockUser.email,
-      username: mockUser.username,
-      uuid: 'any_uuid',
-      password: 'any_password',
-      emailStatus: UserEmailStatus.UNVERIFIED,
-      firstName: 'any_firstname',
-      lastName: 'any_lastname',
-    })
+    const { sut, authStub } = makeSut()
+    authStub.login.rejects(new EmailPendingValidationException())
 
     const userAccessToken = sut.login({
-      email: 'any_email',
+      email: 'any_email@mail.com',
       password: 'any_password',
     })
     expect(userAccessToken).rejects.toEqual(new EmailPendingValidationException())
@@ -149,10 +140,9 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if user email has been verified', async ({ expect }) => {
     const { sut } = makeSut()
-    const { email } = mockAuthRegisterData()
 
     const response = sut.validateEmail({
-      email,
+      email: 'any_email@mail.com',
       codeOTP: 'any_value',
     })
     expect(response).rejects.toEqual(new EmailHasBeenVerifiedException())
@@ -160,11 +150,10 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if user not exists', async ({ expect }) => {
     const { sut } = makeSut()
-    const { email } = mockAuthRegisterData()
     stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(null)
 
     const response = sut.validateEmail({
-      email,
+      email: 'any_email@mail.com',
       codeOTP: 'any_value',
     })
     expect(response).rejects.toEqual(new EmailInvalidException())
@@ -172,11 +161,10 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if user not exists', async ({ expect }) => {
     const { sut } = makeSut()
-    const { email } = mockAuthRegisterData()
     stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(null)
 
     const response = sut.validateEmail({
-      email,
+      email: 'any_email@mail.com',
       codeOTP: 'any_value',
     })
     expect(response).rejects.toEqual(new EmailInvalidException())
@@ -184,21 +172,12 @@ test.group('Auth Service', (group) => {
 
   test('return fail on validate email if code OTP is not equal', async ({ expect }) => {
     const { sut, cacheAdapterStub } = makeSut()
-    const { email, username } = mockAuthRegisterData()
 
-    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves({
-      email,
-      username,
-      uuid: 'any_uuid',
-      password: 'any_password',
-      emailStatus: UserEmailStatus.UNVERIFIED,
-      firstName: 'any_firstname',
-      lastName: 'any_lastname',
-    })
+    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(fakeUser)
     stub(cacheAdapterStub, 'get').resolves('other_value')
 
     const response = sut.validateEmail({
-      email,
+      email: 'any_email@mail.com',
       codeOTP: 'any_value',
     })
     expect(response).rejects.toEqual(new CodeOtpInvalidException())
@@ -208,22 +187,13 @@ test.group('Auth Service', (group) => {
     expect,
   }) => {
     const { sut } = makeSut()
-    const { email, username } = mockAuthRegisterData()
 
-    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves({
-      email,
-      username,
-      uuid: 'any_uuid',
-      password: 'any_password',
-      emailStatus: UserEmailStatus.UNVERIFIED,
-      firstName: 'any_firstname',
-      lastName: 'any_lastname',
-    })
+    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(fakeUser)
 
     const updateEmailStatusSpy = stub(mockUserRepository, 'updateEmailStatus')
 
     await sut.validateEmail({
-      email,
+      email: 'any_email@mail.com',
       codeOTP: 'any_value',
     })
     expect(updateEmailStatusSpy.calledWith('any_uuid')).toBeTruthy()
@@ -231,20 +201,11 @@ test.group('Auth Service', (group) => {
 
   test('return success on validate email', async ({ expect }) => {
     const { sut } = makeSut()
-    const { email, username } = mockAuthRegisterData()
 
-    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves({
-      email,
-      username,
-      uuid: 'any_uuid',
-      password: 'any_password',
-      emailStatus: UserEmailStatus.UNVERIFIED,
-      firstName: 'any_firstname',
-      lastName: 'any_lastname',
-    })
+    stub(mockUserRepository, 'getUserByEmailOrUsername').resolves(fakeUser)
 
     const response = await sut.validateEmail({
-      email,
+      email: 'any_email@mail.com',
       codeOTP: 'any_value',
     })
     expect(response).toEqual({

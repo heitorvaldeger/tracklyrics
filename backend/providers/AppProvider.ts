@@ -5,6 +5,8 @@ import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
 import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
 import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
 import { RedisAdonis } from '#infra/db/cache/redis-adonis'
+import { FavoritePostgresRepository } from '#infra/db/repository/favorite-repository'
+import { GenrePostgresRepository } from '#infra/db/repository/genre-repository'
 import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
 import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
 import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
@@ -12,13 +14,11 @@ import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-reposito
 import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
 import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
 import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
-import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
-import { GenrePostgresRepository } from '#infra/db/repository/postgres/genre-postgres-repository'
-import { LanguagePostgresRepository } from '#infra/db/repository/postgres/language-postgres-repository'
-import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
-import { UserPostgresRepository } from '#infra/db/repository/postgres/user-postgres-repository'
-import { VideoPlayCountPostgresRepository } from '#infra/db/repository/postgres/video-play-count-postgres-repository'
-import { VideoPostgresRepository } from '#infra/db/repository/postgres/video-postgres-repository'
+import { LanguagePostgresRepository } from '#infra/db/repository/language-repository'
+import { LyricPostgresRepository } from '#infra/db/repository/lyric-repository'
+import { PlayPostgresRepository } from '#infra/db/repository/play-repository'
+import { UserPostgresRepository } from '#infra/db/repository/user-repository'
+import { VideoPostgresRepository } from '#infra/db/repository/video-repository'
 import { AuthService } from '#services/auth-service'
 import { FavoriteService } from '#services/favorite-service'
 import { GameService } from '#services/game-service'
@@ -69,7 +69,7 @@ export default class AppProvider {
       { protocol: IUserRepository, implementation: UserPostgresRepository },
       { protocol: ILanguageRepository, implementation: LanguagePostgresRepository },
       { protocol: IGenreRepository, implementation: GenrePostgresRepository },
-      { protocol: IVideoPlayCountRepository, implementation: VideoPlayCountPostgresRepository },
+      { protocol: IVideoPlayCountRepository, implementation: PlayPostgresRepository },
       { protocol: ILyricRepository, implementation: LyricPostgresRepository },
       { protocol: IUserRepository, implementation: UserPostgresRepository },
 

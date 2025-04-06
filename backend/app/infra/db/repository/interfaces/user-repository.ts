@@ -23,7 +23,5 @@ export abstract class IUserRepository {
   abstract create(user: UserBasic): Promise<UserBasic>
   abstract getUserByEmailOrUsername(payload: EmailUsername): Promise<UserBasic | null>
   abstract getUserByEmailWithoutPassword(emailAddress: string): Promise<UserWithoutPassword | null>
-  abstract createAccessToken(userUuid: string): Promise<UserAccessToken>
-  abstract deleteAllAccessToken(userUuid: string): Promise<void>
   abstract updateEmailStatus(userUuid: string): Promise<void>
 }

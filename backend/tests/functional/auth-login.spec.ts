@@ -10,14 +10,14 @@ test.group('Auth Login Route', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('/POST login/ - return 200 on login user with success', async ({ client, expect }) => {
+  test('/POST login/ - return 204 on login user with success', async ({ client, expect }) => {
     const password = faker.internet.password()
     const fakeUser = await User.create({
       username: faker.internet.username(),
       email: faker.internet.email(),
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
-      password: await hash.make(password),
+      password,
       emailStatus: UserEmailStatus.VERIFIED,
     })
 
@@ -26,9 +26,7 @@ test.group('Auth Login Route', (group) => {
       password,
     })
 
-    expect(response.status()).toBe(200)
-    expect(response.body().type).toBe('auth_token')
-    expect(response.body().token).toBeTruthy()
+    expect(response.status()).toBe(204)
   })
 
   test('/POST login/ - return 400 on login if any param is invalid', async ({ client, expect }) => {
@@ -61,7 +59,7 @@ test.group('Auth Login Route', (group) => {
       email: faker.internet.email(),
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
-      password: await hash.make(password),
+      password,
       emailStatus: UserEmailStatus.VERIFIED,
     })
 
@@ -84,7 +82,7 @@ test.group('Auth Login Route', (group) => {
       email: faker.internet.email(),
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
-      password: await hash.make(password),
+      password,
     })
 
     const response = await client.post(`/login`).fields({

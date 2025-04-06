@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 
-import { GenrePostgresRepository } from '#infra/db/repository/postgres/genre-postgres-repository'
+import { GenrePostgresRepository } from '#infra/db/repository/genre-repository'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'
 
 const makeSut = () => {

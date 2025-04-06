@@ -22,7 +22,7 @@ export const mockLyricFindResponseData: LyricResponseWithoutIds[] = [
 export const mockLyricRepository: ILyricRepository = {
   save: (_: LyricToInsert[]) =>
     Promise.resolve({
-      countLyricsInserted: 2,
+      lyricsCount: 2,
     }),
   find: (videoId: number) => Promise.resolve(mockLyricFindResponseData),
 }

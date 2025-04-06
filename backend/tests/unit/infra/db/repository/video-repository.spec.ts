@@ -4,8 +4,10 @@ import { test } from '@japa/runner'
 import _ from 'lodash'
 import { stub } from 'sinon'
 
-import { VideoPostgresRepository } from '#infra/db/repository/postgres/video-postgres-repository'
+import { VideoPostgresRepository } from '#infra/db/repository/video-repository'
 import { Lyric } from '#models/lyric'
+import Play from '#models/play'
+import { Video } from '#models/video'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
@@ -155,9 +157,9 @@ test.group('VideoPostgresRepository', (group) => {
     const { sut } = await makeSut()
     const isDeleted = await sut.delete(fakeVideo.uuid)
 
-    const favorites = await db.from('favorites').where('video_id', fakeVideo.id).select()
+    const plays = await Play.findManyBy('video_id', fakeVideo.id)
+    const favorites = await Video.query().where('id', fakeVideo.id).preload('users')
     const lyrics = await Lyric.findManyBy('videoId', fakeVideo.id)
-    const plays = await db.from('video_play_counts').where('video_id', fakeVideo.id).select()
 
     expect(isDeleted).toBeTruthy()
     expect(favorites.length).toBe(0)

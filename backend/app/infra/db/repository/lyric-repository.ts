@@ -7,28 +7,24 @@ import { Lyric } from '#models/lyric'
 import { Video } from '#models/video'
 
 export class LyricPostgresRepository implements ILyricRepository {
-  async save(lyrics: LyricToInsert[]) {
-    if (!lyrics.length) {
-      return {
-        countLyricsInserted: 0,
-      }
-    }
-
-    await Lyric.updateOrCreateMany(['videoId', 'seq'], lyrics)
-
+  async save(lyrics: LyricToInsert[], videoId: number) {
     await Lyric.query()
-      .where('videoId', lyrics[0].videoId)
-      .where('seq', '>', lyrics.length)
+      .where('videoId', videoId)
+      .whereNotIn(
+        'seq',
+        lyrics.map((lyric) => lyric.seq)
+      )
       .delete()
 
-    const lyricsCount = await Lyric.query().where('videoId', lyrics[0].videoId).count('')
+    await Lyric.updateOrCreateMany(['videoId', 'seq'], lyrics)
+    const video = await Video.query().withCount('lyrics').first()
 
     return {
-      countLyricsInserted: lyricsCount[0].$extras.count,
+      lyricsCount: video?.$extras.lyrics_count,
     }
   }
 
-  async find(videoId: number): Promise<LyricResponseWithoutIds[]> {
+  async find(videoId: number) {
     return (
       await Lyric.query()
         .where('videoId', videoId)

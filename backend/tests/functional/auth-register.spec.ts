@@ -1,16 +1,22 @@
-import mail from '@adonisjs/mail/services/main'
+import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
 import { UserEmailStatus } from '#enums/user-email-status'
-import { mockAuthRegisterData } from '#tests/__mocks__/stubs/mock-auth-stub'
 
 test.group('Auth Register Route', (group) => {
   test('/POST register/ - it must return 200 on register user with success', async ({
     client,
     expect,
   }) => {
-    const registerParams = mockAuthRegisterData()
-    const response = await client.post(`/register`).fields(registerParams)
+    const password = faker.internet.password()
+    const response = await client.post(`/register`).fields({
+      email: faker.internet.email(),
+      username: faker.internet.username(),
+      password: password,
+      password_confirmation: password,
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+    })
 
     expect(response.status()).toBe(200)
     expect(response.body().uuid).toBeTruthy()

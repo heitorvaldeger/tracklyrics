@@ -2,7 +2,6 @@ import { inject } from '@adonisjs/core'
 
 import GenreNotFoundException from '#exceptions/genre-not-found-exception'
 import LanguageNotFoundException from '#exceptions/language-not-found-exception'
-import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
 import { Auth } from '#infra/auth/interfaces/auth'
@@ -51,6 +50,11 @@ export class VideoUpdateService implements IVideoUpdateService {
       throw new YoutubeLinkAlreadyExistsException()
     }
 
+    const videoId = await this.videoRepository.getVideoId(uuid)
+    if (!videoId) {
+      throw new VideoNotFoundException()
+    }
+
     const updated = await this.videoRepository.update(
       {
         ...rest,
@@ -61,11 +65,6 @@ export class VideoUpdateService implements IVideoUpdateService {
       uuid
     )
 
-    const videoId = await this.videoRepository.getVideoId(uuid)
-    if (!videoId) {
-      throw new VideoNotFoundException()
-    }
-
     const newLyrics = lyrics?.map((lyric, idx) => ({
       seq: ++idx,
       videoId,
@@ -73,7 +72,7 @@ export class VideoUpdateService implements IVideoUpdateService {
     }))
 
     if (newLyrics && newLyrics?.length > 0) {
-      await this.lyricRepository.save(newLyrics)
+      await this.lyricRepository.save(newLyrics, videoId)
     }
 
     return updated

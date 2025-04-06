@@ -1,20 +1,14 @@
 import { test } from '@japa/runner'
 
-import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
-test.group('Video Create Route', (group) => {
+test.group('Video Create Route', () => {
   test('/POST videos/ - it must return 200 on create if video create on success', async ({
     client,
     expect,
   }) => {
     const { fakeUser, fakeGenre, fakeLanguage } = await mockAllTables()
-
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
 
     const response = await client
       .post(`/videos`)
@@ -23,7 +17,7 @@ test.group('Video Create Route', (group) => {
         languageId: fakeLanguage.id,
         genreId: fakeGenre.id,
       })
-      .withCookie('AUTH', accessTokenValue)
+      .loginAs(fakeUser)
 
     expect(response.status()).toBe(200)
     expect(response.body().artist).toBe(mockVideoCreateOrUpdateRequest.artist)
@@ -39,18 +33,13 @@ test.group('Video Create Route', (group) => {
     const { fakeUser, fakeLanguage } = await mockAllTables()
     const { genreId, artist, ...rest } = mockVideoCreateOrUpdateRequest
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
     const response = await client
       .post(`/videos`)
       .json({
         ...rest,
         languageId: fakeLanguage.id,
       })
-      .withCookie('AUTH', accessTokenValue)
+      .loginAs(fakeUser)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -82,11 +71,6 @@ test.group('Video Create Route', (group) => {
     const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockAllTables()
     const { genreId, languageId, ...rest } = mockVideoCreateOrUpdateRequest
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
     const response = await client
       .post(`/videos`)
       .json({
@@ -95,9 +79,9 @@ test.group('Video Create Route', (group) => {
         languageId: fakeLanguage.id,
         genreId: fakeGenre.id,
       })
-      .withCookie('AUTH', accessTokenValue)
+      .loginAs(fakeUser)
 
-    expect(response.status()).toBe(422)
+    expect(response.status()).toBe(409)
     expect(response.body().code).toBe('E_YOUTUBE_LINK_ALREADY_EXISTS')
   })
 })

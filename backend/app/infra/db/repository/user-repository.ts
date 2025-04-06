@@ -1,3 +1,5 @@
+import auth from '@adonisjs/auth/services/main'
+
 import { UserEmailStatus } from '#enums/user-email-status'
 import {
   EmailUsername,
@@ -34,25 +36,6 @@ export class UserPostgresRepository implements IUserRepository {
   async create(user: UserBasic) {
     const newUser = await User.create(user)
     return newUser.serialize() as UserBasic
-  }
-
-  async createAccessToken(userUuid: string) {
-    const accessToken = await User.accessTokens.create(await User.findByOrFail('uuid', userUuid))
-
-    return {
-      type: accessToken.type,
-      token: accessToken.value!.release(),
-      expiresAt: accessToken.expiresAt,
-    }
-  }
-
-  async deleteAllAccessToken(userUuid: string): Promise<void> {
-    const user = await User.findByOrFail('uuid', userUuid)
-    const accessTokens = await User.accessTokens.all(user)
-
-    accessTokens.forEach(async (token) => {
-      await User.accessTokens.delete(user, token.identifier)
-    })
   }
 
   async updateEmailStatus(userUuid: string): Promise<void> {

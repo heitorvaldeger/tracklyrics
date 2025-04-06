@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker'
+
 import { UserEmailStatus } from '#enums/user-email-status'
 import {
   EmailUsername,
@@ -42,12 +44,6 @@ export const mockUserRepository: IUserRepository = {
       lastName: 'any_lastname',
       emailStatus: UserEmailStatus.UNVERIFIED,
     }),
-  createAccessToken: (_: string) =>
-    Promise.resolve({
-      type: 'any_type',
-      token: 'any_token',
-      expiresAt: new Date(2000, 0, 1),
-    }),
-  deleteAllAccessToken: (_: string) => Promise.resolve(),
+
   updateEmailStatus: (_: string) => Promise.resolve(),
 }

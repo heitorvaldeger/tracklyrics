@@ -1,7 +1,9 @@
+import { authApiClient } from '@adonisjs/auth/plugins/api_client'
 import app from '@adonisjs/core/services/app'
 import testUtils from '@adonisjs/core/services/test_utils'
 import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
+import { sessionApiClient } from '@adonisjs/session/plugins/api_client'
 import { apiClient } from '@japa/api-client'
 import { expect } from '@japa/expect'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
@@ -16,7 +18,13 @@ import Sinon from 'sinon'
  * Configure Japa plugins in the plugins array.
  * Learn more - https://japa.dev/docs/runner-config#plugins-optional
  */
-export const plugins: Config['plugins'] = [apiClient(), pluginAdonisJS(app), expect()]
+export const plugins: Config['plugins'] = [
+  apiClient(),
+  pluginAdonisJS(app),
+  sessionApiClient(app),
+  authApiClient(app),
+  expect(),
+]
 
 /**
  * Configure lifecycle function to run before and after all the
@@ -46,7 +54,7 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
 
       await db.from('lyrics').del()
       await db.from('favorites').del()
-      await db.from('video_play_counts').del()
+      await db.from('plays').del()
       await db.from('videos').del()
       await db.from('users').del()
       await db.from('genres').del()

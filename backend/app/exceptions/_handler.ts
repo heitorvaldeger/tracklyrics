@@ -52,12 +52,16 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       })
     }
 
-    if (error instanceof errors.E_UNAUTHORIZED_ACCESS) {
-      return ctx.response.status(error.status).json({
+    if (
+      error instanceof errors.E_UNAUTHORIZED_ACCESS ||
+      error instanceof errors.E_INVALID_CREDENTIALS
+    ) {
+      return ctx.response.status(401).json({
         code: error.code,
         message: error.message,
       })
     }
+
     return super.handle(error, ctx)
   }
 

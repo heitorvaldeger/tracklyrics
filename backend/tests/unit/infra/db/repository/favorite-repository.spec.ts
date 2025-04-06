@@ -2,8 +2,10 @@ import db from '@adonisjs/lucid/services/db'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
-import { FavoritePostgresRepository } from '#infra/db/repository/postgres/favorite-postgres-repository'
+import { FavoritePostgresRepository } from '#infra/db/repository/favorite-repository'
+import { Video } from '#models/video'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { mockUser } from '#tests/__mocks__/db/mock-user'
 import { toSnakeCase } from '#utils/index'
 
 const makeSut = async () => {
@@ -15,10 +17,10 @@ const makeSut = async () => {
 }
 
 test.group('FavoritePostgresRepository', () => {
-  test('it must return true if video added to favorite', async ({ expect }) => {
-    const { sut, fakeVideo, fakeUser, fakeFavorite } = await makeSut()
+  test('it must return true if video was added to favorite', async ({ expect }) => {
+    const { sut, fakeVideo, fakeUser } = await makeSut()
 
-    await db.from('favorites').where('uuid', fakeFavorite.uuid).delete()
+    await (await Video.findBy('uuid', fakeVideo.uuid))?.related('users').detach([fakeUser.id])
     const added = await sut.saveFavorite(fakeVideo.id, fakeUser.id, faker.string.uuid())
 
     expect(added).toBeTruthy()
@@ -74,5 +76,21 @@ test.group('FavoritePostgresRepository', () => {
       genre: fakeGenre.name,
       username: fakeUser.username,
     })
+  })
+
+  test('it must return true if video is favorite', async ({ expect }) => {
+    const { sut, fakeVideo, fakeUser } = await makeSut()
+
+    const isFavoriteByUser = await sut.isFavoriteByUser(fakeUser.id, fakeVideo.uuid)
+
+    expect(isFavoriteByUser).toBeTruthy()
+  })
+
+  test('it must return false if video is not favorite', async ({ expect }) => {
+    const { sut, fakeVideo } = await makeSut()
+    const anotherFakeUser = await mockUser()
+    const isFavoriteByUser = await sut.isFavoriteByUser(anotherFakeUser.id, fakeVideo.uuid)
+
+    expect(isFavoriteByUser).toBeFalsy()
   })
 })

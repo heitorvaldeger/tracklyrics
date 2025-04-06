@@ -77,11 +77,7 @@ test.group('AuthController.login', (group) => {
     const { sut, httpContext: ctx } = makeSut()
     await sut.login(ctx)
 
-    expect(ctx.response.getBody()).toEqual({
-      type: 'any_type',
-      token: 'any_token',
-      expiresAt: new Date(2000, 0, 1),
-    })
+    expect(ctx.response.getStatus()).toBe(204)
   })
 
   test('it must return 401 if invalid credentials is provided', async ({ expect }) => {

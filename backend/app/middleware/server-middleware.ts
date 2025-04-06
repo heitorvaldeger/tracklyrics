@@ -15,11 +15,9 @@ import { Auth } from '#infra/auth/interfaces/auth'
 export default class ServerMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
     const { request, containerResolver, logger, response } = ctx
-    const token = request.cookie('AUTH', '')
     const headers = request.headers()
 
     headers.accept = 'application/json'
-    headers.authorization = `Bearer ${token}`
 
     containerResolver.bindValue(HttpContext, ctx)
     containerResolver.bindValue(Logger, logger)

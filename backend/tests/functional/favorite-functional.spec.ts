@@ -1,10 +1,9 @@
 import { test } from '@japa/runner'
 
-import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
-test.group('Favorite Routes', (group) => {
+test.group('Favorite Routes', async (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
@@ -12,16 +11,12 @@ test.group('Favorite Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockAllTables()
-
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
+    const { fakeVideo, fakeUser } = await mockAllTables()
 
     const response = await client
       .post(`favorites/${fakeVideo.uuid}`)
-      .withCookie('AUTH', accessTokenValue)
+
+      .loginAs(fakeUser)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -33,12 +28,7 @@ test.group('Favorite Routes', (group) => {
   }) => {
     const { fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.post(`favorites/any_uuid`).withCookie('AUTH', accessTokenValue)
+    const response = await client.post(`favorites/any_uuid`).loginAs(fakeUser)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -51,13 +41,7 @@ test.group('Favorite Routes', (group) => {
     expect,
   }) => {
     const { fakeUser } = await mockAllTables()
-
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.post(`favorites/${NilUUID}`).withCookie('AUTH', accessTokenValue)
+    const response = await client.post(`favorites/${NilUUID}`).loginAs(fakeUser)
 
     expect(response.status()).toBe(404)
     expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')
@@ -77,16 +61,9 @@ test.group('Favorite Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockAllTables()
+    const { fakeVideo, fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client
-      .delete(`favorites/${fakeVideo.uuid}`)
-      .withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`favorites/${fakeVideo.uuid}`).loginAs(fakeUser)
 
     expect(response.status()).toBe(200)
     expect(response.body()).toBeTruthy()
@@ -98,12 +75,7 @@ test.group('Favorite Routes', (group) => {
   }) => {
     const { fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.delete(`favorites/any_uuid`).withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`favorites/any_uuid`).loginAs(fakeUser)
 
     expect(response.status()).toBe(400)
     expect(response.body()).toEqual([
@@ -117,14 +89,7 @@ test.group('Favorite Routes', (group) => {
   }) => {
     const { fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client
-      .delete(`favorites/${NilUUID}`)
-      .withCookie('AUTH', accessTokenValue)
+    const response = await client.delete(`favorites/${NilUUID}`).loginAs(fakeUser)
 
     expect(response.status()).toBe(404)
     expect(response.body().code).toEqual('E_VIDEO_NOT_FOUND')
@@ -144,14 +109,9 @@ test.group('Favorite Routes', (group) => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo } = await mockAllTables()
+    const { fakeVideo, fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.get(`favorites`).withCookie('AUTH', accessTokenValue)
+    const response = await client.get(`favorites`).loginAs(fakeUser)
 
     expect(response.status()).toBe(200)
     expect(response.body().length).toBe(1)

@@ -4,7 +4,7 @@ import { test } from '@japa/runner'
 
 import { UserEmailStatus } from '#enums/user-email-status'
 import { UserWithoutPassword } from '#infra/db/repository/interfaces/user-repository'
-import { UserPostgresRepository } from '#infra/db/repository/postgres/user-postgres-repository'
+import { UserPostgresRepository } from '#infra/db/repository/user-repository'
 import { User } from '#models/user'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 
@@ -79,31 +79,6 @@ test.group('UserPostgresRepository', (group) => {
     expect(user).toBeTruthy()
     expect(user.uuid).toBe(uuid)
     expect(user.emailStatus).toBe(UserEmailStatus.UNVERIFIED)
-  })
-
-  test('return a valid token if successful', async ({ expect }) => {
-    const { sut } = makeSut()
-
-    const fakeUser = await mockUser()
-
-    const accessToken = await sut.createAccessToken(fakeUser.uuid)
-
-    expect(accessToken).toBeTruthy()
-    expect(accessToken.type).toBe('auth_token')
-    expect(accessToken.token.startsWith('oat', 0)).toBeTruthy()
-  })
-
-  test('delete all tokens from user', async ({ expect }) => {
-    const { sut } = makeSut()
-
-    const fakeUser = await mockUser()
-
-    await User.accessTokens.create(fakeUser)
-    await sut.deleteAllAccessToken(fakeUser.uuid)
-
-    const accessTokens = await User.accessTokens.all(fakeUser)
-
-    expect(accessTokens.length).toBe(0)
   })
 
   test('update email status from user', async ({ expect }) => {

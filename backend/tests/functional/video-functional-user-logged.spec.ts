@@ -1,6 +1,5 @@
 import { test } from '@japa/runner'
 
-import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { getYoutubeThumbnail } from '#utils/index'
 
@@ -9,14 +8,9 @@ test.group('Video User Logged Route', () => {
     client,
     expect,
   }) => {
-    const { fakeUser, fakeVideo, fakeLanguage, fakeGenre } = await mockAllTables()
+    const { fakeUser, fakeVideo, fakeLanguage } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.get('user/my-lyrics').withCookie('AUTH', accessTokenValue)
+    const response = await client.get('user/my-lyrics').loginAs(fakeUser)
 
     expect(response.status()).toBe(200)
     expect(response.body()[0].title).toBe(fakeVideo.title)

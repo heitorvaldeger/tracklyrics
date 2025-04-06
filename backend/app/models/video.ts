@@ -5,6 +5,7 @@ import { DateTime } from 'luxon'
 import { Genre } from './genre.js'
 import { Language } from './language.js'
 import { Lyric } from './lyric.js'
+import Play from './play.js'
 import { User } from './user.js'
 
 export class Video extends BaseModel {
@@ -46,6 +47,9 @@ export class Video extends BaseModel {
 
   @hasMany(() => Lyric)
   declare lyrics: HasMany<typeof Lyric>
+
+  @hasMany(() => Play)
+  declare plays: HasMany<typeof Play>
 
   @manyToMany(() => User, {
     pivotTable: 'favorites',

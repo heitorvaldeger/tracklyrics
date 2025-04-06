@@ -1,9 +1,8 @@
 import { test } from '@japa/runner'
 
-import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
-test.group('User Routes', (group) => {
+test.group('User Routes', () => {
   test('/GET user information - it must return 401 on get user information if user unauthorized', async ({
     client,
     expect,
@@ -20,12 +19,7 @@ test.group('User Routes', (group) => {
   }) => {
     const { fakeUser } = await mockAllTables()
 
-    const accessToken = await User.accessTokens.create(
-      await User.findByOrFail('uuid', fakeUser.uuid)
-    )
-    const accessTokenValue = accessToken.value!.release()
-
-    const response = await client.get('user').withCookie('AUTH', accessTokenValue)
+    const response = await client.get('user').loginAs(fakeUser)
 
     const body = response.body()
 

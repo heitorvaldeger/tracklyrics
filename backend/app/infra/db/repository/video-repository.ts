@@ -2,6 +2,7 @@ import string from '@adonisjs/core/helpers/string'
 import db from '@adonisjs/lucid/services/db'
 
 import { Lyric } from '#models/lyric'
+import Play from '#models/play'
 import { Video } from '#models/video'
 import { toSnakeCase } from '#utils/index'
 
@@ -10,7 +11,7 @@ import {
   VideoFindParams,
   VideoResponse,
   VideoSave,
-} from '../interfaces/video-repository.js'
+} from './interfaces/video-repository.js'
 
 export class VideoPostgresRepository implements IVideoRepository {
   async find(uuid: string) {
@@ -91,17 +92,11 @@ export class VideoPostgresRepository implements IVideoRepository {
   async delete(videoUuid: string): Promise<boolean> {
     const video = await Video.findBy('uuid', videoUuid)
     if (video) {
-      await Lyric.query().where('videoId', video?.id).delete()
-
-      await db
-        .from('video_play_counts')
-        .whereIn('video_id', (query) => {
-          query.from('videos').where('uuid', videoUuid).select('id')
-        })
-        .delete()
-
+      await Lyric.query().where('videoId', video.id).delete()
+      await Play.query().where('videoId', video.id).delete()
       await video.related('users').detach()
       await video.delete()
+
       return !(await Video.find(video.id))
     }
 

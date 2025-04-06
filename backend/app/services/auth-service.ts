@@ -7,9 +7,8 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import CodeOtpInvalidException from '#exceptions/code-otp-invalid-exception'
 import EmailHasBeenVerifiedException from '#exceptions/email-has-been-verified-exception'
 import EmailInvalidException from '#exceptions/email-invalid-exception'
-import EmailPendingValidationException from '#exceptions/email-pending-validation-exception'
-import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
+import { Auth } from '#infra/auth/interfaces/auth'
 import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
 import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
 import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
@@ -23,7 +22,8 @@ export class AuthService implements IAuthService {
     private readonly userRepository: IUserRepository,
     private readonly otpAdapter: IOTPAdapter,
     private readonly hashAdapter: IHashAdapter,
-    private readonly cacheAdapter: ICacheAdapter
+    private readonly cacheAdapter: ICacheAdapter,
+    private readonly auth: Auth
   ) {}
 
   async register(payload: IAuthService.RegisterParams) {
@@ -67,26 +67,7 @@ export class AuthService implements IAuthService {
   }
 
   async login({ email, password }: IAuthService.LoginParams) {
-    const user = await this.userRepository.getUserByEmailOrUsername({
-      email,
-    })
-
-    if (!user) {
-      throw new InvalidCredentialsException()
-    }
-
-    if (user && user.emailStatus === UserEmailStatus.UNVERIFIED) {
-      throw new EmailPendingValidationException()
-    }
-
-    const isPasswordValid = await this.hashAdapter.validateHash(user.password, password)
-    if (!isPasswordValid) {
-      throw new InvalidCredentialsException()
-    }
-
-    await this.userRepository.deleteAllAccessToken(user.uuid)
-
-    return await this.userRepository.createAccessToken(user.uuid)
+    await this.auth.login(email, password)
   }
 
   async validateEmail({ email, codeOTP }: IAuthService.ValidateEmailParams) {

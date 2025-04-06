@@ -3,14 +3,13 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import _ from 'lodash'
 
-import { ILyricRepository, LyricToInsert } from '#infra/db/repository/interfaces/lyric-repository'
-import { LyricPostgresRepository } from '#infra/db/repository/postgres/lyric-postgres-repository'
+import { LyricToInsert } from '#infra/db/repository/interfaces/lyric-repository'
+import { LyricPostgresRepository } from '#infra/db/repository/lyric-repository'
 import { Lyric } from '#models/lyric'
-import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
+import { mockVideo } from '#tests/__mocks__/db/mock-all'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'
 import { mockLanguage } from '#tests/__mocks__/db/mock-language'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
-import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
 
 const createData = async () => {
@@ -34,10 +33,6 @@ test.group('LyricPostgresRepository', (group) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  group.each.setup(async () => {
-    await db.from('lyrics').del()
-  })
-
   test('insert lyrics with success', async ({ expect }) => {
     const { fakeVideo } = await createData()
     const { sut } = makeSut()
@@ -53,13 +48,13 @@ test.group('LyricPostgresRepository', (group) => {
       })
     }
 
-    const lyricsInserted = await sut.save(lyrics)
+    const lyricsInserted = await sut.save(lyrics, fakeVideo.id)
     const lyricsFromDatabase = await db
       .from('lyrics')
       .orderBy('seq', 'asc')
       .where('video_id', fakeVideo.id)
       .select(['seq', 'line', 'start_time', 'end_time', 'video_id'])
-    expect(lyricsInserted.countLyricsInserted).toBe(lyrics.length)
+    expect(lyricsInserted.lyricsCount).toBe(lyrics.length)
     expect(lyricsFromDatabase.map((lyric) => toCamelCase(lyric))).toEqual(lyrics)
   })
 
@@ -91,7 +86,7 @@ test.group('LyricPostgresRepository', (group) => {
         seq: ++idx,
       }))
 
-    const lyricsInserted = await sut.save(newLyrics)
+    const lyricsInserted = await sut.save(newLyrics, fakeVideo.id)
     const lyricsFromDatabase = (
       await Lyric.query()
         .where('videoId', fakeVideo.id)
@@ -99,7 +94,7 @@ test.group('LyricPostgresRepository', (group) => {
         .select(['seq', 'line', 'startTime', 'endTime', 'videoId'])
     ).map((lyric) => lyric.serialize())
 
-    expect(lyricsInserted.countLyricsInserted).toBe(newLyrics.length)
+    expect(lyricsInserted.lyricsCount).toBe(newLyrics.length)
     expect(lyricsFromDatabase).toEqual(newLyrics)
   })
 
@@ -129,14 +124,5 @@ test.group('LyricPostgresRepository', (group) => {
         seq,
       }))
     ).toEqual(lyrics)
-  })
-
-  test('return an object with count lyrics save at 0 if lyrics provided is array empty', async ({
-    expect,
-  }) => {
-    const { sut } = makeSut()
-
-    const lyricsInserted = await sut.save([])
-    expect(lyricsInserted.countLyricsInserted).toBe(0)
   })
 })

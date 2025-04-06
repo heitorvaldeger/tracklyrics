@@ -54,7 +54,7 @@ router
       })
       .use(
         middleware.auth({
-          guards: ['api'],
+          guards: ['web'],
         })
       )
   })
@@ -79,7 +79,7 @@ router
   })
   .use(
     middleware.auth({
-      guards: ['api'],
+      guards: ['web'],
     })
   )
 
@@ -94,6 +94,6 @@ router
   })
   .use(
     middleware.auth({
-      guards: ['api'],
+      guards: ['web'],
     })
   )

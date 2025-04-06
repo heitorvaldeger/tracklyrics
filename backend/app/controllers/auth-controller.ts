@@ -19,19 +19,15 @@ export default class AuthController {
     return await this.authService.register(data)
   }
 
-  async login({ request, response }: HttpContext) {
+  async login({ request, response, session }: HttpContext) {
     const [errors, data] = await loginAuthValidator.tryValidate(request.body())
     if (errors || !data) {
       return response.badRequest(errors.messages)
     }
-    const auth = await this.authService.login(data)
 
-    response
-      .cookie('AUTH', auth.token, {
-        maxAge: undefined,
-        expires: auth.expiresAt ?? undefined,
-      })
-      .json(auth)
+    await this.authService.login(data)
+
+    return response.noContent()
   }
 
   async validateEmail({ request, response }: HttpContext) {
