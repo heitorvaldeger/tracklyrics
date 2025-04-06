@@ -4,6 +4,7 @@ import {
   LyricToInsert,
 } from '#infra/db/repository/interfaces/lyric-repository'
 import { Lyric } from '#models/lyric'
+import { Video } from '#models/video'
 
 export class LyricPostgresRepository implements ILyricRepository {
   async save(lyrics: LyricToInsert[]) {
@@ -15,7 +16,10 @@ export class LyricPostgresRepository implements ILyricRepository {
 
     await Lyric.updateOrCreateMany(['videoId', 'seq'], lyrics)
 
-    await Lyric.query().where('videoId', lyrics[0].videoId).where('seq', '>', lyrics.length).del()
+    await Lyric.query()
+      .where('videoId', lyrics[0].videoId)
+      .where('seq', '>', lyrics.length)
+      .delete()
 
     const lyricsCount = await Lyric.query().where('videoId', lyrics[0].videoId).count('')
 

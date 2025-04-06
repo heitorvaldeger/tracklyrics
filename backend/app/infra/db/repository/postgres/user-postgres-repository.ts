@@ -1,38 +1,25 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
-import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
-import UserLucid from '#models/user-model/user-lucid'
-import { UserModel } from '#models/user-model/user-model'
-import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
+import {
+  EmailUsername,
+  IUserRepository,
+  UserBasic,
+  UserWithoutPassword,
+} from '#infra/db/repository/interfaces/user-repository'
+import { User } from '#models/user'
 
 export class UserPostgresRepository implements IUserRepository {
-  async getUserByEmailOrUsername(
-    payload: IUserRepository.FindUserByEmailUsernameParams
-  ): Promise<UserModel | null> {
-    const user = await UserLucid.query()
+  async getUserByEmailOrUsername(payload: EmailUsername) {
+    const user = await User.query()
       .whereLike('email', payload.email ?? '')
       .orWhere('username', payload.username ?? '')
       .select(['uuid', 'username', 'email', 'password', 'email_status'])
       .first()
 
-    if (!user) {
-      return null
-    }
-
-    const { uuid, username, email, password, emailStatus } = user
-    return {
-      uuid,
-      username,
-      email,
-      password,
-      emailStatus,
-    }
+    return user
   }
 
-  async getUserByEmailWithoutPassword(
-    emailAddress: string
-  ): Promise<UserWithoutPasswordModel | null> {
-    const user = await UserLucid.findBy('email', emailAddress)
+  async getUserByEmailWithoutPassword(emailAddress: string) {
+    const user = await User.findBy('email', emailAddress)
     if (!user) {
       return null
     }
@@ -41,24 +28,16 @@ export class UserPostgresRepository implements IUserRepository {
       fields: {
         omit: ['password'],
       },
-    }) as UserWithoutPasswordModel
+    }) as UserWithoutPassword
   }
 
-  async create(user: IUserRepository.CreateParams): Promise<UserModel> {
-    const { uuid, username, email, password, emailStatus } = await UserLucid.create(user)
-    return {
-      uuid,
-      username,
-      email,
-      password,
-      emailStatus,
-    }
+  async create(user: UserBasic) {
+    const newUser = await User.create(user)
+    return newUser.serialize() as UserBasic
   }
 
-  async createAccessToken(userUuid: string): Promise<UserAccessTokenModel> {
-    const accessToken = await UserLucid.accessTokens.create(
-      await UserLucid.findByOrFail('uuid', userUuid)
-    )
+  async createAccessToken(userUuid: string) {
+    const accessToken = await User.accessTokens.create(await User.findByOrFail('uuid', userUuid))
 
     return {
       type: accessToken.type,
@@ -68,16 +47,16 @@ export class UserPostgresRepository implements IUserRepository {
   }
 
   async deleteAllAccessToken(userUuid: string): Promise<void> {
-    const user = await UserLucid.findByOrFail('uuid', userUuid)
-    const accessTokens = await UserLucid.accessTokens.all(user)
+    const user = await User.findByOrFail('uuid', userUuid)
+    const accessTokens = await User.accessTokens.all(user)
 
     accessTokens.forEach(async (token) => {
-      await UserLucid.accessTokens.delete(user, token.identifier)
+      await User.accessTokens.delete(user, token.identifier)
     })
   }
 
   async updateEmailStatus(userUuid: string): Promise<void> {
-    await UserLucid.query().where('uuid', userUuid).update({
+    await User.query().where('uuid', userUuid).update({
       emailStatus: UserEmailStatus.VERIFIED,
     })
   }

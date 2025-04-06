@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
 import { UserEmailStatus } from '#enums/user-email-status'
-import UserLucid from '#models/user-model/user-lucid'
+import { User } from '#models/user'
 
 test.group('Auth Login Route', (group) => {
   group.tap((t) => {
@@ -12,7 +12,7 @@ test.group('Auth Login Route', (group) => {
 
   test('/POST login/ - return 200 on login user with success', async ({ client, expect }) => {
     const password = faker.internet.password()
-    const fakeUser = await UserLucid.create({
+    const fakeUser = await User.create({
       username: faker.internet.username(),
       email: faker.internet.email(),
       firstName: faker.person.firstName(),
@@ -56,7 +56,7 @@ test.group('Auth Login Route', (group) => {
     expect,
   }) => {
     const password = faker.internet.password()
-    const fakeUser = await UserLucid.create({
+    const fakeUser = await User.create({
       username: faker.internet.username(),
       email: faker.internet.email(),
       firstName: faker.person.firstName(),
@@ -79,7 +79,7 @@ test.group('Auth Login Route', (group) => {
     expect,
   }) => {
     const password = faker.internet.password()
-    const fakeUser = await UserLucid.create({
+    const fakeUser = await User.create({
       username: faker.internet.username(),
       email: faker.internet.email(),
       firstName: faker.person.firstName(),

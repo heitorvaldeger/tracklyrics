@@ -2,11 +2,12 @@ import db from '@adonisjs/lucid/services/db'
 import { faker } from '@faker-js/faker'
 import _ from 'lodash'
 
-import { Favorite } from '#models/favorite-bkp'
+import { Favorite } from '#infra/db/repository/interfaces/favorite-repository'
+import { VideoSave } from '#infra/db/repository/interfaces/video-repository'
 import { Genre } from '#models/genre'
 import { Language } from '#models/language'
 import { Lyric } from '#models/lyric'
-import { User } from '#models/user-model/user-lucid'
+import { User } from '#models/user'
 import { Video } from '#models/video'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'
 import { mockLanguage } from '#tests/__mocks__/db/mock-language'
@@ -15,11 +16,15 @@ import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 import { toSnakeCase } from '#utils/index'
 import { toCamelCase } from '#utils/index'
 
+interface VideoSaveWithId extends VideoSave {
+  id: number
+}
+
 type MockAllTables = {
   fakeLanguage: Language
   fakeGenre: Genre
   fakeUser: User
-  fakeVideo: Video
+  fakeVideo: VideoSaveWithId
   fakeFavorite: Favorite
   fakeLyrics: Lyric[]
 }
@@ -45,7 +50,7 @@ export const mockVideo = async ({
       genreId: fakeGenre.id,
       userId: fakeUser.id,
     })
-  ).serialize() as Video
+  ).serialize() as VideoSaveWithId
 }
 
 export const mockAllTables = async (): Promise<MockAllTables> => {

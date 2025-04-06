@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { Genre } from './genre.js'
 import { Language } from './language.js'
 import { Lyric } from './lyric.js'
-import { User } from './user-model/user-lucid.js'
+import { User } from './user.js'
 
 export class Video extends BaseModel {
   @column({ isPrimary: true })

@@ -8,8 +8,6 @@ import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import type { Config } from '@japa/runner/types'
 import Sinon from 'sinon'
 
-import UserLucid from '#models/user-model/user-lucid'
-
 /**
  * This file is imported by the "bin/test.ts" entrypoint file
  */

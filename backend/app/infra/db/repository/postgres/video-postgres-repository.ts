@@ -89,28 +89,23 @@ export class VideoPostgresRepository implements IVideoRepository {
   }
 
   async delete(videoUuid: string): Promise<boolean> {
-    await db
-      .from('favorites')
-      .whereIn('video_id', (query) => {
-        query.from('videos').where('uuid', videoUuid).select('id')
-      })
-      .delete()
+    const video = await Video.findBy('uuid', videoUuid)
+    if (video) {
+      await Lyric.query().where('videoId', video?.id).delete()
 
-    await Lyric.query()
-      .whereIn('videoId', (query) => {
-        query.from('videos').where('uuid', videoUuid).select('id')
-      })
-      .delete()
+      await db
+        .from('video_play_counts')
+        .whereIn('video_id', (query) => {
+          query.from('videos').where('uuid', videoUuid).select('id')
+        })
+        .delete()
 
-    await db
-      .from('video_play_counts')
-      .whereIn('video_id', (query) => {
-        query.from('videos').where('uuid', videoUuid).select('id')
-      })
-      .delete()
+      await video.related('users').detach()
+      await video.delete()
+      return !(await Video.find(video.id))
+    }
 
-    await Video.query().where('uuid', videoUuid).delete()
-    return !(await db.from('videos').where('uuid', videoUuid).first())
+    return false
   }
 
   async create(payload: VideoSave) {

@@ -1,4 +1,4 @@
-import { User } from '#models/user-model/user-lucid'
+import { User } from '#models/user'
 import { Video } from '#models/video'
 
 import { IFavoriteRepository } from '../interfaces/favorite-repository.js'

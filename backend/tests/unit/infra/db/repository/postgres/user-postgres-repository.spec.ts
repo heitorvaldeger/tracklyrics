@@ -3,9 +3,9 @@ import { randomUUID } from 'node:crypto'
 import { test } from '@japa/runner'
 
 import { UserEmailStatus } from '#enums/user-email-status'
+import { UserWithoutPassword } from '#infra/db/repository/interfaces/user-repository'
 import { UserPostgresRepository } from '#infra/db/repository/postgres/user-postgres-repository'
-import UserLucid from '#models/user-model/user-lucid'
-import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
+import { User } from '#models/user'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 
 const makeSut = () => {
@@ -98,10 +98,10 @@ test.group('UserPostgresRepository', (group) => {
 
     const fakeUser = await mockUser()
 
-    await UserLucid.accessTokens.create(fakeUser)
+    await User.accessTokens.create(fakeUser)
     await sut.deleteAllAccessToken(fakeUser.uuid)
 
-    const accessTokens = await UserLucid.accessTokens.all(fakeUser)
+    const accessTokens = await User.accessTokens.all(fakeUser)
 
     expect(accessTokens.length).toBe(0)
   })
@@ -113,7 +113,7 @@ test.group('UserPostgresRepository', (group) => {
 
     await sut.updateEmailStatus(fakeUser.uuid)
 
-    const userUpdated = await UserLucid.query().where('uuid', fakeUser.uuid).first()
+    const userUpdated = await User.query().where('uuid', fakeUser.uuid).first()
 
     expect(userUpdated?.emailStatus).toBe(UserEmailStatus.VERIFIED)
   })
@@ -135,12 +135,12 @@ test.group('UserPostgresRepository', (group) => {
     const fakeUser = await mockUser()
 
     const { uuid, username, email, emailStatus, firstName, lastName } = (
-      await UserLucid.findBy('uuid', fakeUser.uuid)
+      await User.findBy('uuid', fakeUser.uuid)
     )?.serialize({
       fields: {
         omit: ['password'],
       },
-    }) as UserWithoutPasswordModel
+    }) as UserWithoutPassword
 
     const user = await sut.getUserByEmailWithoutPassword(fakeUser.email)
     expect(user).toEqual({

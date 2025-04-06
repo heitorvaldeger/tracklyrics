@@ -1,5 +1,5 @@
-import { UserWithoutPasswordModel } from '#models/user-model/user-without-password-model'
+import { UserWithoutPassword } from '#infra/db/repository/interfaces/user-repository'
 
 export abstract class IUserService {
-  abstract getFullInfoByUserLogged(): Promise<UserWithoutPasswordModel>
+  abstract getFullInfoByUserLogged(): Promise<UserWithoutPassword>
 }

@@ -1,5 +1,4 @@
 import hash from '@adonisjs/core/services/hash'
-import mail from '@adonisjs/mail/services/main'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
@@ -80,6 +79,8 @@ test.group('Auth Service', (group) => {
       uuid: 'any_uuid',
       password: 'any_password',
       emailStatus: UserEmailStatus.UNVERIFIED,
+      firstName: 'any_firstname',
+      lastName: 'any_lastname',
     })
 
     const userRegisterModel = await sut.register(mockUser)
@@ -135,6 +136,8 @@ test.group('Auth Service', (group) => {
       uuid: 'any_uuid',
       password: 'any_password',
       emailStatus: UserEmailStatus.UNVERIFIED,
+      firstName: 'any_firstname',
+      lastName: 'any_lastname',
     })
 
     const userAccessToken = sut.login({
@@ -189,6 +192,8 @@ test.group('Auth Service', (group) => {
       uuid: 'any_uuid',
       password: 'any_password',
       emailStatus: UserEmailStatus.UNVERIFIED,
+      firstName: 'any_firstname',
+      lastName: 'any_lastname',
     })
     stub(cacheAdapterStub, 'get').resolves('other_value')
 
@@ -211,6 +216,8 @@ test.group('Auth Service', (group) => {
       uuid: 'any_uuid',
       password: 'any_password',
       emailStatus: UserEmailStatus.UNVERIFIED,
+      firstName: 'any_firstname',
+      lastName: 'any_lastname',
     })
 
     const updateEmailStatusSpy = stub(mockUserRepository, 'updateEmailStatus')
@@ -232,6 +239,8 @@ test.group('Auth Service', (group) => {
       uuid: 'any_uuid',
       password: 'any_password',
       emailStatus: UserEmailStatus.UNVERIFIED,
+      firstName: 'any_firstname',
+      lastName: 'any_lastname',
     })
 
     const response = await sut.validateEmail({

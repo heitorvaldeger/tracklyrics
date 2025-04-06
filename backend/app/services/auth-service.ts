@@ -15,7 +15,6 @@ import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
 import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
 import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
 import { VerifyEmail } from '#infra/mail/views/verify-email'
-import { UserModel } from '#models/user-model/user-model'
 import { IAuthService } from '#services/interfaces/auth-service'
 
 @inject()
@@ -35,9 +34,9 @@ export class AuthService implements IAuthService {
       throw new UserOrEmailAlreadyUsingException()
     }
 
-    let newUser = user as UserModel
+    let newUser = user
 
-    if (!user) {
+    if (!newUser) {
       const passwordHashed = await this.hashAdapter.createHash(password)
       newUser = await this.userRepository.create({
         uuid: randomUUID(),

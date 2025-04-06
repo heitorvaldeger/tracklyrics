@@ -1,7 +1,6 @@
-import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
-import UserLucid from '#models/user-model/user-lucid'
+import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { mockVideoCreateOrUpdateRequest } from '#tests/__mocks__/mock-video-request'
 
@@ -12,8 +11,8 @@ test.group('Video Create Route', (group) => {
   }) => {
     const { fakeUser, fakeGenre, fakeLanguage } = await mockAllTables()
 
-    const accessToken = await UserLucid.accessTokens.create(
-      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    const accessToken = await User.accessTokens.create(
+      await User.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
@@ -40,8 +39,8 @@ test.group('Video Create Route', (group) => {
     const { fakeUser, fakeLanguage } = await mockAllTables()
     const { genreId, artist, ...rest } = mockVideoCreateOrUpdateRequest
 
-    const accessToken = await UserLucid.accessTokens.create(
-      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    const accessToken = await User.accessTokens.create(
+      await User.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
@@ -83,8 +82,8 @@ test.group('Video Create Route', (group) => {
     const { fakeUser, fakeLanguage, fakeVideo, fakeGenre } = await mockAllTables()
     const { genreId, languageId, ...rest } = mockVideoCreateOrUpdateRequest
 
-    const accessToken = await UserLucid.accessTokens.create(
-      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    const accessToken = await User.accessTokens.create(
+      await User.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 

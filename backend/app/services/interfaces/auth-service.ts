@@ -1,8 +1,8 @@
 import { UserEmailStatus } from '#enums/user-email-status'
-import { UserAccessTokenModel } from '#models/user-model/user-access-token-model'
+import { UserAccessToken } from '#infra/db/repository/interfaces/user-repository'
 
 export abstract class IAuthService {
-  abstract login(params: IAuthService.LoginParams): Promise<UserAccessTokenModel>
+  abstract login(params: IAuthService.LoginParams): Promise<UserAccessToken>
   abstract register(payload: IAuthService.RegisterParams): Promise<IAuthService.UserRegisterModel>
   abstract validateEmail(params: IAuthService.ValidateEmailParams): any
 }

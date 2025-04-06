@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 
-import UserLucid from '#models/user-model/user-lucid'
+import { User } from '#models/user'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 import { getYoutubeThumbnail } from '#utils/index'
 
@@ -11,8 +11,8 @@ test.group('Video User Logged Route', () => {
   }) => {
     const { fakeUser, fakeVideo, fakeLanguage, fakeGenre } = await mockAllTables()
 
-    const accessToken = await UserLucid.accessTokens.create(
-      await UserLucid.findByOrFail('uuid', fakeUser.uuid)
+    const accessToken = await User.accessTokens.create(
+      await User.findByOrFail('uuid', fakeUser.uuid)
     )
     const accessTokenValue = accessToken.value!.release()
 
