@@ -89,6 +89,8 @@ router
       .group(() => {
         router.get('', [UserController, 'getFullInfoByUserLogged'])
         router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
+        router.patch('update-password', [UserController, 'updatePassword'])
+        router.patch('validate-update-password', [UserController, 'validateUpdatePassword'])
       })
       .prefix('user')
   })

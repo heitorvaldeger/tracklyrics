@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 
+import hash from '@adonisjs/core/services/hash'
 import { test } from '@japa/runner'
 
 import { UserEmailStatus } from '#enums/user-email-status'

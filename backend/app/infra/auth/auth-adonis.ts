@@ -11,6 +11,10 @@ import { User } from '#models/user'
 export class AuthAdonis implements Auth {
   constructor(private readonly auth: Authenticator<Authenticators>) {}
 
+  getUser<T>(): T | null {
+    return this.auth.user as T | null
+  }
+
   getUserId() {
     return this.auth.user?.id
   }

@@ -2,4 +2,6 @@ import { UserWithoutPassword } from '#infra/db/repository/interfaces/user-reposi
 
 export abstract class IUserService {
   abstract getFullInfoByUserLogged(): Promise<UserWithoutPassword>
+  abstract updatePassword(newPassword: string): Promise<void>
+  abstract validateUpdatePassword(codeOTP: string): Promise<void>
 }

@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker'
-
 import { UserEmailStatus } from '#enums/user-email-status'
 import {
   EmailUsername,
@@ -20,6 +18,8 @@ export const mockUserWithoutPasswordData: UserWithoutPassword = {
 
 export const mockUserService: IUserService = {
   getFullInfoByUserLogged: () => Promise.resolve(mockUserWithoutPasswordData),
+  updatePassword: (_) => Promise.resolve(),
+  validateUpdatePassword: (_) => Promise.resolve(),
 }
 
 export const mockUserRepository: IUserRepository = {
@@ -46,4 +46,5 @@ export const mockUserRepository: IUserRepository = {
     }),
 
   updateEmailStatus: (_: string) => Promise.resolve(),
+  updatePassword: (_: string, __: string) => Promise.resolve(),
 }

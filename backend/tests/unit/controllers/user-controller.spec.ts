@@ -1,10 +1,11 @@
 import { test } from '@japa/runner'
-import { stub } from 'sinon'
+import Sinon, { spy, stub } from 'sinon'
 
 import UserController from '#controllers/user-controller'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
 import { mockUserService, mockUserWithoutPasswordData } from '#tests/__mocks__/stubs/mock-user-stub'
+import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
   const sut = new UserController(mockUserService)
@@ -49,6 +50,141 @@ test.group('UserController', (group) => {
     stub(mockUserService, 'getFullInfoByUserLogged').throws(new Error())
 
     const httpResponse = sut.getFullInfoByUserLogged()
+
+    expect(httpResponse).rejects.toEqual(new Error())
+  })
+
+  test('return 204 if updatePassword was executed with success', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({
+      password: 'any_password',
+    })
+
+    await sut.updatePassword(httpContext)
+
+    expect(httpContext.response.getStatus()).toBe(204)
+  })
+
+  test('return 400 if fields provided is not valid on updatePassword', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({
+      password: 'pass',
+    })
+
+    await sut.updatePassword(httpContext)
+
+    expect(httpContext.response.getBody()).toEqual([
+      {
+        field: 'password',
+        message: 'The password field must have at least 6 characters',
+      },
+    ])
+    expect(httpContext.response.getStatus()).toBe(400)
+  })
+
+  test('return 400 if fields is not provided on updatePassword', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({})
+
+    await sut.updatePassword(httpContext)
+
+    expect(httpContext.response.getBody()).toEqual([
+      {
+        field: 'password',
+        message: 'The password field must be defined',
+      },
+    ])
+    expect(httpContext.response.getStatus()).toBe(400)
+  })
+
+  test('call IUserService.updatePassword with correct value', async ({ expect }) => {
+    const { sut } = makeSut()
+    const updatePasswordSpy = spy(mockUserService, 'updatePassword')
+    const httpContext = makeHttpRequest({
+      password: 'any_password',
+    })
+
+    await sut.updatePassword(httpContext)
+
+    expect(updatePasswordSpy.calledWith('any_password')).toBeTruthy()
+  })
+
+  test('return 500 if updatePassword throws exception', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({
+      password: 'any_password',
+    })
+    stub(mockUserService, 'updatePassword').rejects(new Error())
+
+    const httpResponse = sut.updatePassword(httpContext)
+
+    expect(httpResponse).rejects.toEqual(new Error())
+  })
+
+  test('return 204 if validateUpdatePassword was executed with success', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({
+      codeOTP: '123456',
+    })
+
+    await sut.validateUpdatePassword(httpContext)
+
+    expect(httpContext.response.getStatus()).toBe(204)
+  })
+
+  test('return 400 if fields provided is not valid on validateUpdatePassword', async ({
+    expect,
+  }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({
+      codeOTP: '12',
+    })
+
+    await sut.validateUpdatePassword(httpContext)
+
+    expect(httpContext.response.getBody()).toEqual([
+      {
+        field: 'codeOTP',
+        message: 'The codeOTP field must be 6 characters long',
+      },
+    ])
+    expect(httpContext.response.getStatus()).toBe(400)
+  })
+
+  test('return 400 if fields is not provided on validateUpdatePassword', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({})
+
+    await sut.validateUpdatePassword(httpContext)
+
+    expect(httpContext.response.getBody()).toEqual([
+      {
+        field: 'codeOTP',
+        message: 'The codeOTP field must be defined',
+      },
+    ])
+    expect(httpContext.response.getStatus()).toBe(400)
+  })
+
+  test('call IUserService.validateUpdatePassword with correct value', async ({ expect }) => {
+    const { sut } = makeSut()
+    const updatePasswordSpy = spy(mockUserService, 'validateUpdatePassword')
+    const httpContext = makeHttpRequest({
+      codeOTP: '123456',
+    })
+    await sut.validateUpdatePassword(httpContext)
+
+    expect(updatePasswordSpy.calledWith('123456')).toBeTruthy()
+  })
+
+  test('return 500 if validateUpdatePassword throws exception', async ({ expect }) => {
+    const { sut } = makeSut()
+    const httpContext = makeHttpRequest({
+      codeOTP: '123456',
+    })
+    stub(mockUserService, 'validateUpdatePassword').rejects(new Error())
+
+    const httpResponse = sut.validateUpdatePassword(httpContext)
 
     expect(httpResponse).rejects.toEqual(new Error())
   })

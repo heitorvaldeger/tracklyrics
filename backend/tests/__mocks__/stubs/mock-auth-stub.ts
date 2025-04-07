@@ -4,6 +4,7 @@ import { createStubInstance, SinonStubbedInstance } from 'sinon'
 import { UserEmailStatus } from '#enums/user-email-status'
 import { AuthAdonis } from '#infra/auth/auth-adonis'
 import { Auth } from '#infra/auth/interfaces/auth'
+import { UserBasic } from '#infra/db/repository/interfaces/user-repository'
 import { IAuthService } from '#services/interfaces/auth-service'
 
 export const mockAuthService: IAuthService = {
@@ -30,6 +31,15 @@ export const mockAuth = (): AuthStub => {
   authStub.getUserId.returns(1)
   authStub.getUserEmail.returns('valid_email@mail.com')
   authStub.getUserUuid.returns(faker.string.uuid())
+  authStub.getUser.returns({
+    email: 'any_email@mail.com',
+    emailStatus: 'UNVERIFIED',
+    firstName: 'any_firstname',
+    lastName: 'any_lastname',
+    password: 'any_password',
+    username: 'any_username',
+    uuid: 'any_uuid',
+  } as UserBasic)
 
   return {
     authStub,
