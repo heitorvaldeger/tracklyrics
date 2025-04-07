@@ -4,7 +4,9 @@ import { test } from '@japa/runner'
 
 import { FavoritePostgresRepository } from '#infra/db/repository/favorite-repository'
 import { Video } from '#models/video'
-import { mockAllTables } from '#tests/__mocks__/db/mock-all'
+import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
+import { mockGenre } from '#tests/__mocks__/db/mock-genre'
+import { mockLanguage } from '#tests/__mocks__/db/mock-language'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 import { toSnakeCase } from '#utils/index'
 
@@ -34,9 +36,17 @@ test.group('FavoritePostgresRepository', () => {
   })
 
   test('it must return true if video removed to favorite on success', async ({ expect }) => {
-    const { sut, fakeVideo } = await makeSut()
+    const { sut, fakeVideo, fakeUser } = await makeSut()
+    const [genre, language] = await Promise.all([mockGenre(), mockLanguage()])
+    const anotherVideo = await mockVideo({
+      fakeUser,
+      fakeGenre: genre,
+      fakeLanguage: language,
+    })
 
-    const response = await sut.removeFavorite(fakeVideo.id, fakeVideo.userId)
+    await (await Video.findBy('uuid', anotherVideo.uuid))?.related('users').attach([fakeUser.id])
+
+    const response = await sut.removeFavorite(anotherVideo.id, fakeVideo.userId)
     expect(response).toBeTruthy()
   })
 

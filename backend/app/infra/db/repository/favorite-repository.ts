@@ -36,15 +36,10 @@ export class FavoritePostgresRepository implements IFavoriteRepository {
 
   async removeFavorite(videoId: number, userId: number): Promise<boolean> {
     const video = await Video.find(videoId)
+
     await video?.related('users').detach([userId])
 
-    return !(
-      await Video.query()
-        .preload('users', (uq) => {
-          uq.where('users.id', userId)
-        })
-        .first()
-    )?.users.length
+    return !(await video?.related('users').pivotQuery().where('user_id', userId).select())?.length
   }
 
   async findFavoritesByUser(userId: number) {

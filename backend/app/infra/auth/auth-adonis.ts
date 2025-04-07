@@ -33,6 +33,7 @@ export class AuthAdonis implements Auth {
     if (user.emailStatus === UserEmailStatus.UNVERIFIED) {
       throw new EmailPendingValidationException()
     }
+
     await this.auth.use(this.auth.defaultGuard).login(user)
   }
 }
