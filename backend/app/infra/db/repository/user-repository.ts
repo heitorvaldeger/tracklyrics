@@ -43,4 +43,10 @@ export class UserPostgresRepository implements IUserRepository {
       emailStatus: UserEmailStatus.VERIFIED,
     })
   }
+
+  async updatePassword(userUuid: string, newPassword: string): Promise<void> {
+    await User.query().where('uuid', userUuid).update({
+      password: newPassword,
+    })
+  }
 }

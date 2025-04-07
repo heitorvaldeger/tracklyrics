@@ -127,4 +127,16 @@ test.group('UserPostgresRepository', (group) => {
       lastName,
     })
   })
+
+  test('update password from user', async ({ expect }) => {
+    const { sut } = makeSut()
+
+    const fakeUser = await mockUser()
+
+    await sut.updatePassword(fakeUser.uuid, 'any_value')
+
+    const userUpdated = await User.query().where('uuid', fakeUser.uuid).first()
+
+    expect(userUpdated?.password).toBe('any_value')
+  })
 })

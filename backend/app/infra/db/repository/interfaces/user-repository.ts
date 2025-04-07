@@ -24,4 +24,5 @@ export abstract class IUserRepository {
   abstract getUserByEmailOrUsername(payload: EmailUsername): Promise<UserBasic | null>
   abstract getUserByEmailWithoutPassword(emailAddress: string): Promise<UserWithoutPassword | null>
   abstract updateEmailStatus(userUuid: string): Promise<void>
+  abstract updatePassword(userUuid: string, newPassword: string): Promise<void>
 }
