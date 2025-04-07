@@ -70,8 +70,8 @@ export const UserLyrics = () => {
           <CardVideo
             key={video.uuid}
             video={video}
-            onDelete={() => handleDeleteLyric(video.uuid)}
-            onEdit={() => handleEditLyric(video.uuid)}
+            onDelete={handleDeleteLyric}
+            onEdit={handleEditLyric}
           />
         ))}
       </div>

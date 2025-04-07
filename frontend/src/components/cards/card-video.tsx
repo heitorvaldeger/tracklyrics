@@ -5,6 +5,17 @@ import { useNavigate } from "react-router";
 
 import { Video } from "@/models/video";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 
@@ -36,14 +47,33 @@ export const CardVideo = ({ video, onDelete, onEdit }: CardVideoProps) => {
             <div className="absolute inset-0 rounded-t-lg bg-black bg-opacity-90 flex items-center justify-end px-4 py-2 opacity-0 group-hover:opacity-90 transition-opacity duration-300">
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex space-x-2">
                 {onDelete && (
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => onDelete(video.uuid)}
-                    className="bg-transparent rounded-full hover:bg-black-600 hover:opacity-50 [&_svg]:size-3"
-                  >
-                    <X color="white" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="bg-transparent rounded-full hover:bg-black-600 hover:opacity-50 [&_svg]:size-3"
+                      >
+                        <X color="white" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action couldn't be reverted
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => onDelete(video.uuid)}>
+                          Confirm
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
                 {onEdit && (
                   <Button
