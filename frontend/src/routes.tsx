@@ -7,6 +7,7 @@ import { SignIn } from "@/pages/auth/sign-in";
 
 import { LayoutSwitcher } from "./pages/_layouts/layout-switcher";
 import GameMode from "./pages/app/game-mode";
+import { GamePlay } from "./pages/app/game-play/index";
 import { UserFavorites } from "./pages/app/user-favorites";
 import { UserLyrics } from "./pages/app/user-lyrics";
 import { UserProfile } from "./pages/app/user-profile";
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         element: <GameMode />,
         path: "/game/:videoUuid/modes",
+      },
+      {
+        element: <GamePlay />,
+        path: "/game/:videoUuid/play",
       },
     ],
   },
