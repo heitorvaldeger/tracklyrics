@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
       },
       {
         element: <GamePlay />,
-        path: "/game/:videoUuid/play",
+        path: "/game/:videoUuid/play/:modeHash",
       },
     ],
   },

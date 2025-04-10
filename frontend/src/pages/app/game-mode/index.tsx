@@ -1,16 +1,14 @@
 "use client";
 
-import { Play } from "lucide-react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 
 import { fetchGameModes } from "@/api/fetch-game-modes";
 import { fetchVideo } from "@/api/fetch-video";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-import { ModeCards } from "./game-mode-selection";
-import { ModeCardsSkeleton } from "./game-mode-selection-skeleton";
+import { ModeCards } from "./mode-cards";
+import { ModeCardsSkeleton } from "./mode-cards-skeleton";
 import { VideoSongInfo } from "./video-song-info";
 import { VideoSongInfoSkeleton } from "./video-song-info-skeleton";
 
@@ -49,15 +47,11 @@ export default function GameMode() {
               song and language skills.
             </p>
 
-            {!modes ? <ModeCardsSkeleton /> : <ModeCards modes={modes} />}
-
-            <Button
-              size="lg"
-              className="w-full mt-8 bg-blue-600 hover:bg-blue-700"
-            >
-              <Play className="mr-2 h-4 w-4" />
-              Start Game
-            </Button>
+            {!modes || !video ? (
+              <ModeCardsSkeleton />
+            ) : (
+              <ModeCards modes={modes} videoUuid={video.uuid} />
+            )}
           </CardContent>
         </Card>
       </div>

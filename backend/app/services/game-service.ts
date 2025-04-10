@@ -1,5 +1,6 @@
 import { inject } from '@adonisjs/core'
 
+import { GameModesHash } from '#enums/game-modes-hash'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
 import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
@@ -35,18 +36,22 @@ export class GameService implements IGameService {
       beginner: {
         percent: beginnerModePercent,
         totalFillWords: Number(((totalWords * beginnerModePercent) / 100).toFixed()),
+        id: GameModesHash.BEGINNER,
       },
       intermediate: {
         percent: intermediateModePercent,
         totalFillWords: Number(((totalWords * intermediateModePercent) / 100).toFixed()),
+        id: GameModesHash.INTERMEDIATE,
       },
       advanced: {
         percent: advancedModePercent,
         totalFillWords: Number(((totalWords * advancedModePercent) / 100).toFixed()),
+        id: GameModesHash.ADVANCED,
       },
       specialist: {
         percent: 100,
         totalFillWords: Number(totalWords.toFixed()),
+        id: GameModesHash.SPECIALIST,
       },
     }
 

@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import Sinon, { spy, stub } from 'sinon'
 
+import { GameModesHash } from '#enums/game-modes-hash'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
 import { GameService } from '#services/game-service'
@@ -59,18 +60,22 @@ test.group('GameService', (group) => {
     expect(beginner).toEqual({
       percent: beginnerPercent,
       totalFillWords: Number(((totalWords * beginnerPercent) / 100).toFixed()),
+      id: GameModesHash.BEGINNER,
     })
     expect(intermediate).toEqual({
       percent: intermediatePercent,
       totalFillWords: Number(((totalWords * intermediatePercent) / 100).toFixed()),
+      id: GameModesHash.INTERMEDIATE,
     })
     expect(advanced).toEqual({
       percent: advancedPercent,
       totalFillWords: Number(((totalWords * advancedPercent) / 100).toFixed()),
+      id: GameModesHash.ADVANCED,
     })
     expect(specialist).toEqual({
       percent: 100,
       totalFillWords: Number(totalWords.toFixed()),
+      id: GameModesHash.SPECIALIST,
     })
   })
 
