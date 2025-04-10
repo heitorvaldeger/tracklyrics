@@ -1,5 +1,9 @@
 import { Heart, HelpCircle, Printer, Share2 } from "lucide-react";
+import { useMutation, useQueryClient } from "react-query";
+import { toast } from "sonner";
 
+import { addFavorite } from "@/api/add-favorite";
+import { deleteFavorite } from "@/api/delete-favorite";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,13 +19,64 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSession } from "@/contexts/session-context";
+import { Video } from "@/models/video";
 
 interface GamePlayHeaderProps {
   title: string;
   artist: string;
+  videoUuid: string;
+  isFavorite: boolean;
 }
 
-export const GamePlayHeader = ({ title, artist }: GamePlayHeaderProps) => {
+export const GamePlayHeader = ({
+  title,
+  artist,
+  videoUuid,
+  isFavorite,
+}: GamePlayHeaderProps) => {
+  const queryClient = useQueryClient();
+  const { hasSession } = useSession();
+
+  const { mutateAsync: addFavoriteFn } = useMutation({
+    mutationFn: addFavorite,
+    onSuccess: () => {
+      const cached = queryClient.getQueryData<Video>(["video", videoUuid]);
+      if (cached) {
+        queryClient.setQueryData<Video>(["video", videoUuid], {
+          ...cached,
+          isFavorite: !cached.isFavorite,
+        });
+      }
+    },
+  });
+
+  const { mutateAsync: deleteFavoriteFn } = useMutation({
+    mutationFn: deleteFavorite,
+    onSuccess() {
+      const cached = queryClient.getQueryData<Video>(["video", videoUuid]);
+      if (cached) {
+        queryClient.setQueryData<Video>(["video", videoUuid], {
+          ...cached,
+          isFavorite: !cached.isFavorite,
+        });
+      }
+    },
+  });
+
+  const toggleFavorite = () => {
+    if (!hasSession) {
+      toast.info("Please, sign in the account to favorite this video!");
+      return;
+    }
+    if (isFavorite && videoUuid) {
+      deleteFavoriteFn({ videoUuid });
+    }
+
+    if (!isFavorite && videoUuid) {
+      addFavoriteFn({ videoUuid });
+    }
+  };
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
@@ -36,16 +91,17 @@ export const GamePlayHeader = ({ title, artist }: GamePlayHeaderProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className={false ? "text-red-500" : ""}
+                className={isFavorite ? "text-red-500" : ""}
+                onClick={toggleFavorite}
               >
-                <Heart className={false ? "fill-current" : ""} />
+                <Heart className={isFavorite ? "fill-current" : ""} />
                 <span className="sr-only">
-                  {false ? "Remove from favorites" : "Add to favorites"}
+                  {isFavorite ? "Remove from favorites" : "Add to favorites"}
                 </span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              {false ? "Remove from favorites" : "Add to favorites"}
+              {isFavorite ? "Remove from favorites" : "Add to favorites"}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

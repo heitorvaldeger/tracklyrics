@@ -5,7 +5,6 @@ export interface KaraokeProps {
   endTime: string | number;
   line: string;
   currentTime: number;
-  highlight?: "dark" | "light";
 }
 
 export function Karaoke({
@@ -13,7 +12,6 @@ export function Karaoke({
   endTime,
   currentTime,
   line,
-  highlight = "dark",
 }: KaraokeProps) {
   const start =
     typeof startTime === "number" ? startTime : parseTimestamp(startTime);
@@ -29,23 +27,14 @@ export function Karaoke({
 
   return (
     <div className="font-bold">
-      {line.split("").map((char, i) =>
-        highlight === "dark" ? (
-          <span
-            key={i}
-            className={`${i < highlightedIndex ? "text-black" : "text-muted-foreground"}`}
-          >
-            {char}
-          </span>
-        ) : (
-          <span
-            key={i}
-            className={`${i < highlightedIndex ? "text-white" : "text-muted-foreground"}`}
-          >
-            {char}
-          </span>
-        ),
-      )}
+      {line.split("").map((char, i) => (
+        <span
+          key={i}
+          className={`${i < highlightedIndex ? "text-black" : "text-muted-foreground"}`}
+        >
+          {char}
+        </span>
+      ))}
     </div>
   );
 }

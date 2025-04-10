@@ -1,7 +1,7 @@
 import { Globe, Heart, Trophy, Volume2 } from "lucide-react";
 import { useState } from "react";
 import ReactPlayer from "react-player";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { toast } from "sonner";
 
 import { addFavorite } from "@/api/add-favorite";
@@ -16,16 +16,35 @@ interface VideoSongInfoProps {
   video: Video;
 }
 export const VideoSongInfo = ({ video }: VideoSongInfoProps) => {
+  const queryClient = useQueryClient();
   const [duration, setDuration] = useState(0);
   const [isFavorite, setIsFavorite] = useState(video.isFavorite ?? false);
 
   const { hasSession } = useSession();
   const { mutateAsync: addFavoriteFn } = useMutation({
     mutationFn: addFavorite,
+    onSuccess: () => {
+      const cached = queryClient.getQueryData<Video>(["video", video.uuid]);
+      if (cached) {
+        queryClient.setQueryData<Video>(["video", video.uuid], {
+          ...cached,
+          isFavorite: !cached.isFavorite,
+        });
+      }
+    },
   });
 
   const { mutateAsync: deleteFavoriteFn } = useMutation({
     mutationFn: deleteFavorite,
+    onSuccess() {
+      const cached = queryClient.getQueryData<Video>(["video", video.uuid]);
+      if (cached) {
+        queryClient.setQueryData<Video>(["video", video.uuid], {
+          ...cached,
+          isFavorite: !cached.isFavorite,
+        });
+      }
+    },
   });
 
   // Toggle favorite status

@@ -26,7 +26,10 @@ export const mockGameModesData = {
   },
 }
 
+export const mockGameData = []
+
 export const mockGameServiceStub = (): IGameService => ({
   play: (_: string) => Promise.resolve(),
+  getGame: (_, __) => Promise.resolve(mockGameData),
   getModes: (_: string) => Promise.resolve(mockGameModesData.stub),
 })

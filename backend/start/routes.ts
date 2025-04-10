@@ -63,6 +63,7 @@ router
 router
   .group(() => {
     router.put(':uuid/play', [GameController, 'play'])
+    router.get(':uuid/play/:mode', [GameController, 'getGame'])
     router.get(':uuid/modes', [GameController, 'getModes'])
   })
   .prefix('game')

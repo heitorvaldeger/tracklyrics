@@ -31,14 +31,14 @@ export default function GameMode() {
   });
 
   return (
-    <div className="max-h-screen mx-auto p-4 md:p-6 flex flex-col sm:flex-row gap-6">
+    <div className="mx-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6">
       {/* Left column - Video and song info */}
-      <div className="w-full md:w-2/5">
+      <div className="w-full lg:w-2/5">
         {!video ? <VideoSongInfoSkeleton /> : <VideoSongInfo video={video} />}
       </div>
 
       {/* Right column - Game mode selection */}
-      <div className="w-full md:w-3/5">
+      <div className="w-full lg:w-3/5">
         <Card>
           <CardContent>
             <h2 className="text-2xl font-bold mb-4">Select Game Mode</h2>

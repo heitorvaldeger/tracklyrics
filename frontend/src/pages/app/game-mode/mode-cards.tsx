@@ -39,8 +39,8 @@ export const ModeCards = ({ modes, videoUuid }: ModeCardsProps) => {
       hashId: modes.advanced.id,
     },
     {
-      id: "expert",
-      name: "Expert",
+      id: "specialist",
+      name: "Specialist",
       description: `All words (${modes.specialist.totalFillWords}) are missing. The ultimate challenge for experts!`,
       color: "bg-red-100 border-red-300 text-red-700",
       hashId: modes.specialist.id,
@@ -86,7 +86,7 @@ export const ModeCards = ({ modes, videoUuid }: ModeCardsProps) => {
         ))}
       </RadioGroup>
       <Button
-        onClick={handleModeCardClick}
+        onClick={() => handleModeCardClick()}
         size="lg"
         className="w-full mt-8 bg-blue-600 hover:bg-blue-700"
       >
