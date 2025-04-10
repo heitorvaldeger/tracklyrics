@@ -1,7 +1,50 @@
-import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
+import { Karaoke } from "@/components/karaoke";
 import { Progress } from "@/components/ui/progress";
+import { parseTimestamp, shuffleArray } from "@/lib/utils";
+
+import { GamePlayHeader } from "./game-play-header";
+
+// Animation variants for Framer Motion
+const currentLineVariants = {
+  hidden: {
+    opacity: 1,
+    y: 20,
+    scale: 0.95,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24,
+      duration: 0.4,
+    },
+  },
+};
+
+const nextLineVariants = {
+  hidden: {
+    opacity: 0.6,
+    y: 20,
+  },
+  visible: {
+    opacity: 0.6,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 20,
+      duration: 0.4,
+      delay: 0.1,
+    },
+  },
+};
 
 const video = {
   title: "Under Control",
@@ -192,30 +235,164 @@ const lyrics = [
     seq: 29,
   },
 ];
+
 export const GamePlay = () => {
   const playerRef = useRef<ReactPlayer>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [durationTime, setDurationTime] = useState(0);
 
+  const lyricsProcessed = useMemo(() => {
+    const allWordPositions = lyrics.flatMap(({ line, seq }, lineIndex) =>
+      line.split(/\s+/).map((_, wordIndex) => ({ lineIndex, wordIndex, seq })),
+    );
+
+    const positionsToMask = shuffleArray(allWordPositions).slice(0, 20);
+
+    const maskMap: Map<number, Set<Number>> = positionsToMask.reduce(
+      (acc, { lineIndex, wordIndex }) => {
+        const set = acc.get(lineIndex) ?? new Set();
+        set.add(wordIndex);
+        acc.set(lineIndex, set);
+        return acc;
+      },
+      new Map(),
+    );
+
+    return lyrics.map((lyric, i) => {
+      const startTimeMs = parseTimestamp(lyric.startTime);
+      const endTimeMs = parseTimestamp(lyric.endTime);
+
+      let newWords: {
+        word: string;
+        correctWord: string;
+        isGap: boolean;
+      }[] = [];
+      if (maskMap.has(i)) {
+        const words = lyric.line.split(/\s+/);
+        newWords = words.map((word, wi) => {
+          const newWord = maskMap.get(i)?.has(wi)
+            ? word
+                .split("")
+                .map((char) => (/[a-zA-Z0-9]/.test(char) ? "*" : char))
+                .join("")
+            : word;
+
+          return {
+            word: newWord,
+            correctWord: word,
+            isGap: true,
+          };
+        });
+      }
+      return {
+        seq: lyric.seq,
+        line: lyric.line,
+        lineMasked: newWords.map((i) => i.word).join(" "),
+        startTimeMs,
+        endTimeMs,
+        words: !newWords.length ? null : newWords,
+      };
+    });
+  }, []);
+
   const currentTimePercent = (currentTime * 100) / durationTime;
+  const activeLineIndex = lyricsProcessed.findIndex(
+    (lyric, i) =>
+      currentTime >= lyric.startTimeMs &&
+      currentTime <
+        (lyricsProcessed[i + 1] ? lyricsProcessed[i + 1].startTimeMs : -1),
+  );
+
+  const nextLineIndex =
+    activeLineIndex + 1 < lyricsProcessed.length ? activeLineIndex + 1 : -1;
+
+  const renderCurrentLine = () => {
+    const lyric = lyricsProcessed[activeLineIndex];
+    if (!lyric) {
+      return null;
+    }
+
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-1 text-2xl font-bold">
+        <Karaoke
+          currentTime={currentTime}
+          startTime={lyric.startTimeMs}
+          endTime={lyric.endTimeMs}
+          line={lyric.words?.map(({ word }) => word).join(" ") ?? lyric.line}
+          highlight="light"
+        />
+      </div>
+    );
+  };
+
+  const renderNextLine = () => {
+    const lyric = lyricsProcessed[nextLineIndex];
+
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-1 text-lg">
+        <Karaoke
+          currentTime={currentTime}
+          startTime={lyric.startTimeMs}
+          endTime={lyric.endTimeMs}
+          line={lyric.words?.map(({ word }) => word).join(" ") ?? lyric.line}
+        />
+      </div>
+    );
+  };
 
   return (
-    <div className="container py-6 max-w-5xl mx-auto">
+    <div className="container max-w-5xl mx-auto">
       <div className="flex flex-col space-y-8">
-        <div className="relative rounded-t-lg aspect-3/1 overflow-hidden flex flex-col gap-1">
+        {/* Header game play */}
+        <GamePlayHeader title={video.title} artist={video.artist} />
+        <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex flex-col gap-1">
+          <Progress value={currentTimePercent} className="bg-gray-200" />
+
           <ReactPlayer
             ref={playerRef}
             url={video.linkYoutube}
             width="100%"
-            height="95%"
+            height="100%"
+            style={{
+              objectFit: "contain",
+            }}
             progressInterval={1}
             onReady={(e) => {
               setDurationTime(e.getDuration());
             }}
             onProgress={(state) => setCurrentTime(state.playedSeconds)}
           />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/100 to-transparent py-10 px-2">
+            <div className="flex flex-col space-y-2">
+              <div className="flex flex-col items-center justify-center space-y-3">
+                {/* Current line */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`current-${activeLineIndex}`}
+                    className="text-center w-full"
+                    variants={currentLineVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {renderCurrentLine()}
+                  </motion.div>
+                </AnimatePresence>
 
-          <Progress value={currentTimePercent} className="bg-gray-200" />
+                {/* Next line */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`current-${nextLineIndex}`}
+                    className="text-center w-full"
+                    variants={nextLineVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {renderNextLine()}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

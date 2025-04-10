@@ -15,9 +15,9 @@ export const VideoSongInfoSkeleton = () => {
             <Skeleton className="h-3 w-30" />
           </h2>
         </div>
-        <p className="text-muted-foreground">
+        <div className="text-muted-foreground">
           <Skeleton className="h-3 w-40" />
-        </p>
+        </div>
 
         <div className="mt-4 space-y-2">
           <div className="flex items-center justify-between">

@@ -22,3 +22,25 @@ export function formatTime(sec: number, hasMilliseconds: boolean = true) {
     .padStart(2, "0");
   return `${minutes}:${seconds}.${milliseconds}`;
 }
+
+/**
+ * Shuffle an array
+ * @param array
+ * @returns
+ */
+export function shuffleArray(array: any[]) {
+  return array
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
+
+/**
+ * Convert a format mm:ss.ms string to seconds
+ * @param timestamp
+ * @returns
+ */
+export const parseTimestamp = (timestamp: string) => {
+  const [minutes, seconds, milliseconds] = timestamp.split(/[:.]/).map(Number);
+  return minutes * 60 + seconds + milliseconds / 1000;
+};

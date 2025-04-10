@@ -1,13 +1,11 @@
+import { parseTimestamp } from "@/lib/utils";
+
 export interface KaraokeProps {
-  startTime: string;
-  endTime: string;
+  startTime: string | number;
+  endTime: string | number;
   line: string;
   currentTime: number;
-}
-
-function parseTimestamp(timestamp: string) {
-  const [minutes, seconds, milliseconds] = timestamp.split(/[:.]/).map(Number);
-  return minutes * 60 + seconds + milliseconds / 1000;
+  highlight?: "dark" | "light";
 }
 
 export function Karaoke({
@@ -15,9 +13,11 @@ export function Karaoke({
   endTime,
   currentTime,
   line,
+  highlight = "dark",
 }: KaraokeProps) {
-  const start = parseTimestamp(startTime);
-  const end = parseTimestamp(endTime);
+  const start =
+    typeof startTime === "number" ? startTime : parseTimestamp(startTime);
+  const end = typeof endTime === "number" ? endTime : parseTimestamp(endTime);
   const totalChars = line.length;
 
   if (currentTime < start) {
@@ -28,17 +28,24 @@ export function Karaoke({
   const highlightedIndex = Math.floor(progress * totalChars);
 
   return (
-    <p className="font-semibold">
-      {line.split("").map((char, i) => (
-        <span
-          key={i}
-          className={
-            i < highlightedIndex ? "text-gray-800" : "text-muted-foreground"
-          }
-        >
-          {char}
-        </span>
-      ))}
-    </p>
+    <div className="font-bold">
+      {line.split("").map((char, i) =>
+        highlight === "dark" ? (
+          <span
+            key={i}
+            className={`${i < highlightedIndex ? "text-black" : "text-muted-foreground"}`}
+          >
+            {char}
+          </span>
+        ) : (
+          <span
+            key={i}
+            className={`${i < highlightedIndex ? "text-white" : "text-muted-foreground"}`}
+          >
+            {char}
+          </span>
+        ),
+      )}
+    </div>
   );
 }
