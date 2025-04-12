@@ -35,7 +35,7 @@ export const TabLyrics = () => {
   const { watch } = useFormContext();
   const youtubeURLWatcher = watch("linkYoutube");
 
-  const { control } = useFormContext<{
+  const { control, getValues } = useFormContext<{
     lyrics: LyricWithId[];
   }>();
   const {
@@ -107,6 +107,7 @@ export const TabLyrics = () => {
   };
 
   const handleUpdateEndTime = (lyric: LyricWithId) => {
+    console.log(getValues());
     if (lyric) {
       updateLyric(lyric.id, {
         ...lyric,

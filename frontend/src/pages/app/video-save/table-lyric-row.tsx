@@ -44,13 +44,13 @@ export const TableLyricRow = ({
     >
       <TableCell
         className="text-left w-12 border-r-2 text-muted-foreground"
-        onClick={() => onUpdateStartTime(lyric)}
+        onClick={() => onUpdateStartTime({ ...lyric, line })}
       >
         {lyric.startTime}
       </TableCell>
       <TableCell
         className="text-left w-12 border-r-2 text-muted-foreground"
-        onClick={() => onUpdateEndTime(lyric)}
+        onClick={() => onUpdateEndTime({ ...lyric, line })}
       >
         {lyric.endTime}
       </TableCell>
