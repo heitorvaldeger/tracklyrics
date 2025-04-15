@@ -2,6 +2,7 @@ import { UserEmailStatus } from '#enums/user-email-status'
 
 export abstract class IAuthService {
   abstract login(params: IAuthService.LoginParams): Promise<void>
+  abstract logout(): Promise<void>
   abstract register(payload: IAuthService.RegisterParams): Promise<IAuthService.UserRegisterModel>
   abstract validateEmail(params: IAuthService.ValidateEmailParams): any
 }

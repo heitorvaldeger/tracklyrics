@@ -14,6 +14,7 @@ export const mockAuthService: IAuthService = {
       emailStatus: UserEmailStatus.UNVERIFIED,
     }),
   login: (_: IAuthService.LoginParams) => Promise.resolve(),
+  logout: () => Promise.resolve(),
   validateEmail: (_: IAuthService.ValidateEmailParams) =>
     Promise.resolve({
       uuid: 'any_uuid',

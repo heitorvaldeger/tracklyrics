@@ -185,6 +185,16 @@ export const GamePlay = () => {
               setDurationTime(e.getDuration());
             }}
             onProgress={(state) => setCurrentTime(state.playedSeconds)}
+            config={{
+              youtube: {
+                playerVars: {
+                  rel: 0,
+                  start: 0,
+                  cc_load_policy: 0,
+                  disablekb: 1,
+                },
+              },
+            }}
           />
         </div>
         <div className="flex flex-col items-center justify-center space-y-3">

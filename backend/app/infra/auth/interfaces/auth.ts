@@ -4,4 +4,5 @@ export abstract class Auth {
   abstract getUserEmail(): string | undefined
   abstract getUserUuid(): string | undefined
   abstract login(email: string, password: string): Promise<void>
+  abstract logout(): Promise<void>
 }

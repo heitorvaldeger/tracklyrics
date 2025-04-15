@@ -36,4 +36,10 @@ export class AuthAdonis implements Auth {
 
     await this.auth.use(this.auth.defaultGuard).login(user)
   }
+
+  async logout() {
+    if (await this.auth.check()) {
+      await this.auth.use(this.auth.defaultGuard).logout()
+    }
+  }
 }

@@ -70,6 +70,10 @@ export class AuthService implements IAuthService {
     await this.auth.login(email, password)
   }
 
+  async logout() {
+    await this.auth.logout()
+  }
+
   async validateEmail({ email, codeOTP }: IAuthService.ValidateEmailParams) {
     const user = await this.userRepository.getUserByEmailOrUsername({ email })
     if (user && user.emailStatus === UserEmailStatus.VERIFIED) {

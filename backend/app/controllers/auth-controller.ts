@@ -30,6 +30,11 @@ export default class AuthController {
     return response.noContent()
   }
 
+  async logout({ response }: HttpContext) {
+    await this.authService.logout()
+    return response.noContent()
+  }
+
   async validateEmail({ request, response }: HttpContext) {
     const [errors, data] = await validateEmailValidator.tryValidate(request.body())
     if (errors || !data) {

@@ -1,21 +1,35 @@
-import { Navigate, Outlet } from "react-router";
+import { isAxiosError } from "axios";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 
 import { Footer } from "@/components/footer";
 import { HeaderAuthenticated } from "@/components/headers/header-authenticated";
-import { Loading } from "@/components/loading";
-import { useSession } from "@/contexts/session-context";
+import { api } from "@/lib/axios";
 
 export const AuthenticatedLayout = () => {
-  const { hasSession, isLoading } = useSession();
+  const navigate = useNavigate();
 
-  if (!hasSession && !isLoading) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    const interceptorId = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (isAxiosError(error)) {
+          const status = error.response?.status;
+          const code = error.response?.data.code as string;
 
-  if (isLoading) {
-    return <Loading />;
-  }
+          if (status === 401 && code === "E_UNAUTHORIZED_ACCESS") {
+            await navigate("/sign-in", { replace: true });
+          }
+        }
 
+        return Promise.reject(error);
+      },
+    );
+
+    return () => {
+      api.interceptors.response.eject(interceptorId);
+    };
+  }, [navigate]);
   return (
     <>
       <HeaderAuthenticated />
