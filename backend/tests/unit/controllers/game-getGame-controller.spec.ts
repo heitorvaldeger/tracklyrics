@@ -6,7 +6,7 @@ import { stub } from 'sinon'
 import GameController from '#controllers/game-controller'
 import { GameModesHash } from '#enums/game-modes-hash'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { mockGameData, mockGameServiceStub } from '#tests/__mocks__/stubs/mock-game-stub'
+import { mockGameServiceStub } from '#tests/__mocks__/stubs/mock-game-stub'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
@@ -69,6 +69,10 @@ test.group('GameController.getGame()', (group) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.getGame(httpContext)
-    expect(httpResponse).toEqual(mockGameData)
+
+    expect(httpResponse).toEqual({
+      gaps: 0,
+      lyrics: [],
+    })
   })
 })

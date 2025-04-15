@@ -61,7 +61,7 @@ test.group('GameController.getModes()', (group) => {
     const { sut, httpContext } = await makeSut()
 
     const httpResponse = await sut.getModes(httpContext)
-    expect(httpResponse).toEqual(mockGameModesData.stub)
+    expect(httpResponse).toEqual(mockGameModesData)
   })
 
   test('return 500 if get modes throws', async ({ expect }) => {

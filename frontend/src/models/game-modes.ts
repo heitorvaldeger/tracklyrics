@@ -8,22 +8,22 @@ export interface GameModes {
   totalWords: number;
   beginner: {
     percent: number;
-    totalFillWords: number;
+    gaps: number;
     id: GameModesHash.BEGINNER;
   };
   intermediate: {
     percent: number;
-    totalFillWords: number;
+    gaps: number;
     id: GameModesHash.INTERMEDIATE;
   };
   advanced: {
     percent: number;
-    totalFillWords: number;
+    gaps: number;
     id: GameModesHash.ADVANCED;
   };
   specialist: {
     percent: number;
-    totalFillWords: number;
+    gaps: number;
     id: GameModesHash.SPECIALIST;
   };
 }

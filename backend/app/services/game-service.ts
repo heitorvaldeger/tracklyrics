@@ -1,6 +1,7 @@
 import { inject } from '@adonisjs/core'
 
 import { GameModesHash } from '#enums/game-modes-hash'
+import { GameModesPercent } from '#enums/game-modes-percent'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
 import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
@@ -28,30 +29,26 @@ export class GameService implements IGameService {
       return acc + value.line.split(' ').length
     }, 0)
 
-    const beginnerModePercent = 15
-    const intermediateModePercent = 30
-    const advancedModePercent = 60
-
     const modes = {
       totalWords,
       beginner: {
-        percent: beginnerModePercent,
-        totalFillWords: Number(((totalWords * beginnerModePercent) / 100).toFixed()),
+        percent: GameModesPercent.BEGINNER,
+        gaps: this.getGapsByMode(totalWords, GameModesPercent.BEGINNER),
         id: GameModesHash.BEGINNER,
       },
       intermediate: {
-        percent: intermediateModePercent,
-        totalFillWords: Number(((totalWords * intermediateModePercent) / 100).toFixed()),
+        percent: GameModesPercent.INTERMEDIATE,
+        gaps: this.getGapsByMode(totalWords, GameModesPercent.INTERMEDIATE),
         id: GameModesHash.INTERMEDIATE,
       },
       advanced: {
-        percent: advancedModePercent,
-        totalFillWords: Number(((totalWords * advancedModePercent) / 100).toFixed()),
+        percent: GameModesPercent.ADVANCED,
+        gaps: this.getGapsByMode(totalWords, GameModesPercent.ADVANCED),
         id: GameModesHash.ADVANCED,
       },
       specialist: {
-        percent: 100,
-        totalFillWords: Number(totalWords.toFixed()),
+        percent: GameModesPercent.SPECIALIST,
+        gaps: this.getGapsByMode(totalWords, GameModesPercent.SPECIALIST),
         id: GameModesHash.SPECIALIST,
       },
     }
@@ -75,29 +72,30 @@ export class GameService implements IGameService {
     }
 
     const lyrics = await this.lyricRepository.find(videoId)
-    if (!lyrics.length) return []
+    if (!lyrics.length) {
+      return {
+        gaps: 0,
+        lyrics: [],
+      }
+    }
 
     const totalWords = lyrics.reduce((acc, value) => {
       return acc + value.line.split(' ').length
     }, 0)
 
-    const beginnerModePercent = 15
-    const intermediateModePercent = 30
-    const advancedModePercent = 60
-
-    let totalFillWords = 0
+    let gaps = 0
     switch (mode) {
       case GameModesHash.BEGINNER:
-        totalFillWords = Number(((totalWords * beginnerModePercent) / 100).toFixed())
+        gaps = this.getGapsByMode(totalWords, GameModesPercent.BEGINNER)
         break
       case GameModesHash.INTERMEDIATE:
-        totalFillWords = Number(((totalWords * intermediateModePercent) / 100).toFixed())
+        gaps = this.getGapsByMode(totalWords, GameModesPercent.INTERMEDIATE)
         break
       case GameModesHash.ADVANCED:
-        totalFillWords = Number(((totalWords * advancedModePercent) / 100).toFixed())
+        gaps = this.getGapsByMode(totalWords, GameModesPercent.ADVANCED)
         break
       case GameModesHash.SPECIALIST:
-        totalFillWords = Number(totalWords.toFixed())
+        gaps = this.getGapsByMode(totalWords, GameModesPercent.SPECIALIST)
         break
     }
 
@@ -105,7 +103,7 @@ export class GameService implements IGameService {
       line.split(/\s+/).map((_, wordIndex) => ({ lineIndex, wordIndex, seq }))
     )
 
-    const positionsToMask = shuffleArray(allWordPositions).slice(0, totalFillWords)
+    const positionsToMask = shuffleArray(allWordPositions).slice(0, gaps)
 
     const maskMap: Map<number, Set<Number>> = positionsToMask.reduce(
       (acc, { lineIndex, wordIndex }) => {
@@ -117,7 +115,7 @@ export class GameService implements IGameService {
       new Map()
     )
 
-    return lyrics.map((lyric, i) => {
+    const lyricsWithGaps = lyrics.map((lyric, i) => {
       const startTimeMs = parseTimestamp(lyric.startTime)
       const endTimeMs = parseTimestamp(lyric.endTime)
 
@@ -152,5 +150,14 @@ export class GameService implements IGameService {
         words: !newWords.length ? null : newWords,
       }
     })
+
+    return {
+      lyrics: lyricsWithGaps,
+      gaps,
+    }
+  }
+
+  private getGapsByMode(totalWords: number, mode: GameModesPercent) {
+    return Number(((totalWords * mode) / 100).toFixed())
   }
 }

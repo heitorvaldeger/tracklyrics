@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 
 import { GameModesHash } from '#enums/game-modes-hash'
+import { GameModesPercent } from '#enums/game-modes-percent'
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
-import { mockGameModesData } from '#tests/__mocks__/stubs/mock-game-stub'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
 test.group('Game Routes', (group) => {
@@ -47,25 +47,23 @@ test.group('Game Routes', (group) => {
     const totalWords = fakeLyrics.reduce((acc, value) => acc + value.line.split(' ').length, 0)
     expect(response.status()).toBe(200)
     expect(response.body().beginner).toEqual({
-      percent: mockGameModesData.beginnerPercent,
-      totalFillWords: Number(((totalWords * mockGameModesData.beginnerPercent) / 100).toFixed()),
+      percent: GameModesPercent.BEGINNER,
+      gaps: Number(((totalWords * GameModesPercent.BEGINNER) / 100).toFixed()),
       id: GameModesHash.BEGINNER,
     })
     expect(response.body().intermediate).toEqual({
-      percent: mockGameModesData.intermediatePercent,
-      totalFillWords: Number(
-        ((totalWords * mockGameModesData.intermediatePercent) / 100).toFixed()
-      ),
+      percent: GameModesPercent.INTERMEDIATE,
+      gaps: Number(((totalWords * GameModesPercent.INTERMEDIATE) / 100).toFixed()),
       id: GameModesHash.INTERMEDIATE,
     })
     expect(response.body().advanced).toEqual({
-      percent: mockGameModesData.advancedPercent,
-      totalFillWords: Number(((totalWords * mockGameModesData.advancedPercent) / 100).toFixed()),
+      percent: GameModesPercent.ADVANCED,
+      gaps: Number(((totalWords * GameModesPercent.ADVANCED) / 100).toFixed()),
       id: GameModesHash.ADVANCED,
     })
     expect(response.body().specialist).toEqual({
-      percent: mockGameModesData.specialistPercent,
-      totalFillWords: Number(((totalWords * mockGameModesData.specialistPercent) / 100).toFixed()),
+      percent: GameModesPercent.SPECIALIST,
+      gaps: Number(((totalWords * GameModesPercent.SPECIALIST) / 100).toFixed()),
       id: GameModesHash.SPECIALIST,
     })
   })
