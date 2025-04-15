@@ -6,6 +6,24 @@ interface FetchGameModesParams {
   mode: GameModesHash;
 }
 
+interface GameResponse {
+  gaps: number;
+  lyrics: {
+    seq: number;
+    line: string;
+    lineMasked: string;
+    startTimeMs: number;
+    endTimeMs: number;
+    words:
+      | {
+          word: string;
+          correctWord: string;
+          isGap: boolean;
+        }[]
+      | null;
+  }[];
+}
+
 export const fetchGame = async ({ videoUuid, mode }: FetchGameModesParams) => {
-  return (await api.get<any[]>(`/game/${videoUuid}/play/${mode}`)).data;
+  return (await api.get<GameResponse>(`/game/${videoUuid}/play/${mode}`)).data;
 };

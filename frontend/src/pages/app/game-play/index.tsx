@@ -64,7 +64,7 @@ export const GamePlay = () => {
     refetchOnWindowFocus: false,
   });
 
-  const { data: lyrics } = useQuery({
+  const { data: game } = useQuery({
     queryKey: ["game", videoUuid, mode],
     queryFn: () =>
       fetchGame({
@@ -78,33 +78,39 @@ export const GamePlay = () => {
   const currentTimePercent = (currentTime * 100) / durationTime;
 
   const activeLineIndex = useMemo(() => {
-    if (!lyrics || !lyrics.length) return -1;
+    if (!game || !game.lyrics.length) return -1;
 
-    const isLastLine = currentTime >= lyrics[lyrics.length - 1].startTimeMs;
+    const isLastLine =
+      currentTime >= game.lyrics[game.lyrics.length - 1].startTimeMs;
     const passEndTimeLastLine =
-      currentTime >= lyrics[lyrics.length - 1].endTimeMs;
+      currentTime >= game.lyrics[game.lyrics.length - 1].endTimeMs;
 
     if (passEndTimeLastLine) {
       return -1;
     }
     if (isLastLine) {
-      return lyrics.length - 1;
+      return game.lyrics.length - 1;
     }
 
-    return lyrics.findIndex((lyric, i) => {
+    return game.lyrics.findIndex((lyric, i) => {
       return (
         currentTime >= lyric.startTimeMs &&
-        currentTime < lyrics[i + 1].startTimeMs
+        currentTime < game.lyrics[i + 1].startTimeMs
       );
     });
   }, [currentTime]);
 
   const nextLineIndex = useMemo(() => {
-    if (!lyrics || !lyrics.length || activeLineIndex === lyrics.length - 1) {
+    if (
+      !game ||
+      !game.lyrics ||
+      !game.lyrics.length ||
+      activeLineIndex === game.lyrics.length - 1
+    ) {
       return -1;
     }
 
-    if (currentTime < lyrics[0].startTimeMs) {
+    if (currentTime < game.lyrics[0].startTimeMs) {
       return 0;
     }
 
@@ -116,9 +122,9 @@ export const GamePlay = () => {
   }, [currentTime]);
 
   const renderCurrentLine = () => {
-    if (!lyrics) return null;
+    if (!game) return null;
 
-    const lyric = lyrics[activeLineIndex];
+    const lyric = game.lyrics[activeLineIndex];
     if (!lyric) {
       return null;
     }
@@ -138,8 +144,8 @@ export const GamePlay = () => {
   };
 
   const renderNextLine = () => {
-    if (nextLineIndex < 0 || !lyrics) return null;
-    const lyric = lyrics[nextLineIndex];
+    if (nextLineIndex < 0 || !game) return null;
+    const lyric = game.lyrics[nextLineIndex];
 
     return (
       <div className="flex flex-wrap items-center justify-center gap-1 text-lg">
@@ -155,7 +161,7 @@ export const GamePlay = () => {
     );
   };
 
-  if (!video || !lyrics) {
+  if (!video || !game) {
     return <GamePlaySkeleton />;
   }
 
@@ -168,6 +174,7 @@ export const GamePlay = () => {
           artist={video.artist}
           isFavorite={video.isFavorite}
           videoUuid={video.uuid}
+          gaps={game.gaps}
         />
         <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex flex-col gap-1">
           <Progress value={currentTimePercent} className="bg-gray-200" />
