@@ -10,43 +10,38 @@ import { Karaoke } from "@/components/karaoke";
 import { Progress } from "@/components/ui/progress";
 import { GameModesHash } from "@/models/game-modes";
 
+import { GameKaraoke } from "./game-karaoke";
 import { GamePlayHeader } from "./game-play-header";
 import { GamePlaySkeleton } from "./game-play-skeleton";
 
-// Animation variants for Framer Motion
-const currentLineVariants = {
-  hidden: {
-    opacity: 1,
-    y: 20,
-    scale: 0.95,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24,
-      duration: 0.4,
+// Animation variants
+const animationVariants = {
+  current: {
+    hidden: { opacity: 1, y: 20, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+        duration: 0.4,
+      },
     },
   },
-};
-
-const nextLineVariants = {
-  hidden: {
-    opacity: 0.6,
-    y: 20,
-  },
-  visible: {
-    opacity: 0.6,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 20,
-      duration: 0.4,
-      delay: 0.1,
+  next: {
+    hidden: { opacity: 0.6, y: 20 },
+    visible: {
+      opacity: 0.6,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        duration: 0.4,
+        delay: 0.1,
+      },
     },
   },
 };
@@ -54,12 +49,15 @@ const nextLineVariants = {
 export const GamePlay = () => {
   const { videoUuid, mode } = useParams();
   const playerRef = useRef<ReactPlayer>(null);
+  const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [durationTime, setDurationTime] = useState(0);
 
+  const currentTimePercent = (currentTime * 100) / durationTime;
+
   const { data: video } = useQuery({
-    queryFn: () => fetchVideo({ uuid: videoUuid ?? "" }),
     queryKey: ["video", videoUuid],
+    queryFn: () => fetchVideo({ uuid: videoUuid ?? "" }),
     enabled: !!videoUuid,
     refetchOnWindowFocus: false,
   });
@@ -75,100 +73,60 @@ export const GamePlay = () => {
     refetchOnWindowFocus: false,
   });
 
-  const currentTimePercent = (currentTime * 100) / durationTime;
-
   const activeLineIndex = useMemo(() => {
-    if (!game || !game.lyrics.length) return -1;
+    if (!game?.lyrics.length) return -1;
 
-    const isLastLine =
-      currentTime >= game.lyrics[game.lyrics.length - 1].startTimeMs;
-    const passEndTimeLastLine =
-      currentTime >= game.lyrics[game.lyrics.length - 1].endTimeMs;
+    const lastLyric = game.lyrics.at(-1);
+    if (!lastLyric) return -1;
 
-    if (passEndTimeLastLine) {
-      return -1;
-    }
-    if (isLastLine) {
-      return game.lyrics.length - 1;
-    }
+    if (currentTime >= lastLyric.endTimeMs) return -1;
+    if (currentTime >= lastLyric.startTimeMs) return game.lyrics.length - 1;
 
-    return game.lyrics.findIndex((lyric, i) => {
-      return (
+    return game.lyrics.findIndex(
+      (lyric, i) =>
         currentTime >= lyric.startTimeMs &&
-        currentTime < game.lyrics[i + 1].startTimeMs
-      );
-    });
-  }, [currentTime]);
+        currentTime < (game.lyrics[i + 1]?.startTimeMs ?? Infinity),
+    );
+  }, [game, currentTime]);
 
   const nextLineIndex = useMemo(() => {
-    if (
-      !game ||
-      !game.lyrics ||
-      !game.lyrics.length ||
-      activeLineIndex === game.lyrics.length - 1
-    ) {
-      return -1;
-    }
+    if (!game?.lyrics.length) return -1;
+    if (currentTime < game.lyrics[0].startTimeMs) return 0;
+    return activeLineIndex >= 0 && activeLineIndex < game.lyrics.length - 1
+      ? activeLineIndex + 1
+      : -1;
+  }, [game, currentTime, activeLineIndex]);
 
-    if (currentTime < game.lyrics[0].startTimeMs) {
-      return 0;
-    }
+  const getLineText = (lyric: any) =>
+    lyric.words?.map(({ word }: any) => word).join(" ") ?? lyric.line;
 
-    if (activeLineIndex < 0) {
-      return activeLineIndex;
-    }
-
-    return activeLineIndex + 1;
-  }, [currentTime]);
-
-  const renderCurrentLine = () => {
-    if (!game) return null;
-
-    const lyric = game.lyrics[activeLineIndex];
-    if (!lyric) {
-      return null;
-    }
+  const renderLine = (index: number, isCurrent: boolean) => {
+    if (!game || index < 0) return null;
+    const lyric = game.lyrics[index];
+    const LineComponent = isCurrent ? GameKaraoke : Karaoke;
 
     return (
-      <div className="flex flex-wrap items-center justify-center gap-1 text-2xl font-bold">
-        <Karaoke
+      <div
+        className={`flex flex-wrap items-center justify-center gap-1 ${
+          isCurrent ? "text-2xl font-bold" : "text-lg"
+        }`}
+      >
+        <LineComponent
           currentTime={currentTime}
           startTime={lyric.startTimeMs}
           endTime={lyric.endTimeMs}
-          line={
-            lyric.words?.map(({ word }: any) => word).join(" ") ?? lyric.line
-          }
+          line={getLineText(lyric)}
+          words={lyric.words ?? []}
         />
       </div>
     );
   };
 
-  const renderNextLine = () => {
-    if (nextLineIndex < 0 || !game) return null;
-    const lyric = game.lyrics[nextLineIndex];
-
-    return (
-      <div className="flex flex-wrap items-center justify-center gap-1 text-lg">
-        <Karaoke
-          currentTime={currentTime}
-          startTime={lyric.startTimeMs}
-          endTime={lyric.endTimeMs}
-          line={
-            lyric.words?.map(({ word }: any) => word).join(" ") ?? lyric.line
-          }
-        />
-      </div>
-    );
-  };
-
-  if (!video || !game) {
-    return <GamePlaySkeleton />;
-  }
+  if (!video || !game) return <GamePlaySkeleton />;
 
   return (
     <div className="container max-w-5xl mx-auto">
       <div className="flex flex-col space-y-4">
-        {/* Header game play */}
         <GamePlayHeader
           title={video.title}
           artist={video.artist}
@@ -176,22 +134,20 @@ export const GamePlay = () => {
           videoUuid={video.uuid}
           gaps={game.gaps}
         />
+
         <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex flex-col gap-1">
           <Progress value={currentTimePercent} className="bg-gray-200" />
-
           <ReactPlayer
             ref={playerRef}
             url={video.linkYoutube}
             width="100%"
             height="100%"
-            style={{
-              objectFit: "contain",
-            }}
+            style={{ objectFit: "contain" }}
             progressInterval={1}
-            onReady={(e) => {
-              setDurationTime(e.getDuration());
-            }}
-            onProgress={(state) => setCurrentTime(state.playedSeconds)}
+            playing={playing}
+            onPlay={() => setPlaying(true)}
+            onReady={(e) => setDurationTime(e.getDuration())}
+            onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
             config={{
               youtube: {
                 playerVars: {
@@ -204,30 +160,29 @@ export const GamePlay = () => {
             }}
           />
         </div>
+
         <div className="flex flex-col items-center justify-center space-y-3">
-          {/* Current line */}
           <AnimatePresence mode="wait">
             <motion.div
               key={`current-${activeLineIndex}`}
               className="text-center w-full"
-              variants={currentLineVariants}
+              variants={animationVariants.current}
               initial="hidden"
               animate="visible"
             >
-              {renderCurrentLine()}
+              {renderLine(activeLineIndex, true)}
             </motion.div>
           </AnimatePresence>
 
-          {/* Next line */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={`current-${nextLineIndex}`}
+              key={`next-${nextLineIndex}`}
               className="text-center w-full"
-              variants={nextLineVariants}
+              variants={animationVariants.next}
               initial="hidden"
               animate="visible"
             >
-              {renderNextLine()}
+              {renderLine(nextLineIndex, false)}
             </motion.div>
           </AnimatePresence>
         </div>

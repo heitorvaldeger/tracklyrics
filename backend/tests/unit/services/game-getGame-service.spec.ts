@@ -90,7 +90,6 @@ test.group('GameService.getGame', (group) => {
     stub(mockLyricRepository, 'find').resolves(lyrics)
     const response = await sut.getGame(faker.string.uuid(), GameModesHash.BEGINNER)
 
-    expect(response.lyrics.map((item) => item.line)).toEqual(lines)
     expect(
       response.lyrics.map((item) => ({
         startTimeMs: item.startTimeMs,
@@ -106,7 +105,6 @@ test.group('GameService.getGame', (group) => {
     stub(mockLyricRepository, 'find').resolves(lyrics)
     const response = await sut.getGame(faker.string.uuid(), GameModesHash.INTERMEDIATE)
 
-    expect(response.lyrics.map((item) => item.line)).toEqual(lines)
     expect(
       response.lyrics.map((item) => ({
         startTimeMs: item.startTimeMs,
@@ -124,7 +122,6 @@ test.group('GameService.getGame', (group) => {
     stub(mockLyricRepository, 'find').resolves(lyrics)
     const response = await sut.getGame(faker.string.uuid(), GameModesHash.ADVANCED)
 
-    expect(response.lyrics.map((item) => item.line)).toEqual(lines)
     expect(
       response.lyrics.map((item) => ({
         startTimeMs: item.startTimeMs,
@@ -140,7 +137,6 @@ test.group('GameService.getGame', (group) => {
     stub(mockLyricRepository, 'find').resolves(lyrics)
     const response = await sut.getGame(faker.string.uuid(), GameModesHash.SPECIALIST)
 
-    expect(response.lyrics.map((item) => item.line)).toEqual(lines)
     expect(
       response.lyrics.map((item) => ({
         startTimeMs: item.startTimeMs,

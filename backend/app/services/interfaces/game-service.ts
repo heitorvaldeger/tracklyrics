@@ -31,14 +31,11 @@ export namespace IGameService {
     gaps: number
     lyrics: {
       seq: number
-      line: string
-      lineMasked: string
       startTimeMs: number
       endTimeMs: number
       words:
         | {
             word: string
-            correctWord: string
             isGap: boolean
           }[]
         | null

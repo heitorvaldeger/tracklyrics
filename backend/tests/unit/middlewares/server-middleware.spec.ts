@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import sinon, { spy, stub } from 'sinon'
 
-import ServerMiddleware from '#middleware/server-middleware'
+import ServerMiddleware from '#middleware/server_middleware'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {

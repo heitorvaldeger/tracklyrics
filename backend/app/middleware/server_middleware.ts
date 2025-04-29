@@ -14,7 +14,7 @@ import { Auth } from '#infra/auth/interfaces/auth'
  */
 export default class ServerMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
-    const { request, containerResolver, logger, response } = ctx
+    const { request, containerResolver, logger } = ctx
     const headers = request.headers()
 
     headers.accept = 'application/json'

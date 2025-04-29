@@ -119,35 +119,23 @@ export class GameService implements IGameService {
       const startTimeMs = parseTimestamp(lyric.startTime)
       const endTimeMs = parseTimestamp(lyric.endTime)
 
-      let newWords: {
-        word: string
-        correctWord: string
-        isGap: boolean
-      }[] = []
-      if (maskMap.has(i)) {
-        const words = lyric.line.split(/\s+/)
-        newWords = words.map((word, wi) => {
-          const newWord = maskMap.get(i)?.has(wi)
-            ? word
-                .split('')
-                .map((char) => (/[a-zA-Z0-9]/.test(char) ? '•' : char))
-                .join('')
-            : word
+      const words = lyric.line.split(/\s+/)
 
-          return {
-            word: newWord,
-            correctWord: word,
-            isGap: true,
-          }
-        })
-      }
+      const newWords: {
+        word: string
+        isGap: boolean
+      }[] = words.map((word, wi) => {
+        return {
+          word,
+          isGap: !!maskMap.get(i)?.has(wi),
+        }
+      })
+
       return {
         seq: lyric.seq,
-        line: lyric.line,
-        lineMasked: newWords.map((nw) => nw.word).join(' '),
         startTimeMs,
         endTimeMs,
-        words: !newWords.length ? null : newWords,
+        words: newWords,
       }
     })
 
