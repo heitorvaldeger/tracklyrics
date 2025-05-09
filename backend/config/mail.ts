@@ -21,7 +21,7 @@ const mailConfig = defineConfig({
         pass: env.get('MAILTRAP_PASS'),
       },
     }),
-    resend: resendMailTransport('re_PQyBYBDf_BnUduVdr81u9kHJXah2dWsJc'),
+    resend: resendMailTransport(env.get('RESEND_API_KEY') ?? ''),
   },
 })
 

@@ -12,7 +12,7 @@ export class ResendMailTransport implements MailTransportContract {
   async send(message: NodeMailerMessage): Promise<MailResponse<any>> {
     const response = await this.resend.emails.send({
       from: message.from?.toString() ?? '',
-      to: 'aurelio.heitor@hotmail.com',
+      to: message.to?.toString() ?? '',
       subject: message.subject?.toString() ?? '',
       text: message.text?.toString() ?? '',
       html: message.html?.toString() ?? '',
