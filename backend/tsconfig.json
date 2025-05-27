@@ -1,9 +1,12 @@
 {
-  "extends": "@adonisjs/tsconfig/tsconfig.app.json",
+  "include": ["./"],
+  "extends": ["@adonisjs/tsconfig/tsconfig.app.json"],
   "compilerOptions": {
     "rootDir": "./",
     "outDir": "./build",
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+
+    "types": ["@types/node"]
   }
 }

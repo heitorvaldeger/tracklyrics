@@ -1,12 +1,9 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
+import { registerAuthValidator } from '@tracklyrics/validators'
 
 import { IAuthService } from '#services/interfaces/auth-service'
-import {
-  loginAuthValidator,
-  registerAuthValidator,
-  validateEmailValidator,
-} from '#validators/vinejs/auth-validator'
+import { loginAuthValidator, validateEmailValidator } from '#validators/vinejs/auth-validator'
 
 @inject()
 export default class AuthController {

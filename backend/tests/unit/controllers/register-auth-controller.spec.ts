@@ -38,22 +38,27 @@ test.group('AuthController.register', (group) => {
       {
         field: 'email',
         message: 'The email field must be defined',
+        rule: 'required',
       },
       {
         field: 'password',
         message: 'The password field must be defined',
+        rule: 'required',
       },
       {
         field: 'username',
         message: 'The username field must be defined',
+        rule: 'required',
       },
       {
         field: 'firstName',
         message: 'The firstName field must be defined',
+        rule: 'required',
       },
       {
         field: 'lastName',
         message: 'The lastName field must be defined',
+        rule: 'required',
       },
     ])
   })
@@ -68,6 +73,7 @@ test.group('AuthController.register', (group) => {
       {
         field: 'email',
         message: 'The email field must be a valid email address',
+        rule: 'email',
       },
     ])
   })
@@ -88,18 +94,34 @@ test.group('AuthController.register', (group) => {
       {
         field: 'password',
         message: 'The password field must have at least 6 characters',
+        meta: {
+          min: 6,
+        },
+        rule: 'minLength',
       },
       {
         field: 'username',
         message: 'The username field must have at least 4 characters',
+        meta: {
+          min: 4,
+        },
+        rule: 'minLength',
       },
       {
         field: 'firstName',
         message: 'The firstName field must have at least 1 characters',
+        meta: {
+          min: 1,
+        },
+        rule: 'minLength',
       },
       {
         field: 'lastName',
         message: 'The lastName field must have at least 1 characters',
+        meta: {
+          min: 1,
+        },
+        rule: 'minLength',
       },
     ])
   })
