@@ -4,7 +4,9 @@ import sinon, { stub } from 'sinon'
 
 import AuthController from '#controllers/auth-controller'
 import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
+import ValidationException from '#exceptions/ValidationException'
 import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { signInSchema } from '#tests/__mocks__/validators/auth/sign-in-schema'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
@@ -13,7 +15,7 @@ const makeSut = () => {
     password: faker.internet.password(),
   })
 
-  const sut = new AuthController(mockAuthService)
+  const sut = new AuthController(mockAuthService, signInSchema)
 
   return { sut, httpContext }
 }
@@ -23,54 +25,13 @@ test.group('AuthController.login', (group) => {
     sinon.restore()
   })
 
-  test('it must return 400 if required fields is not provided', async ({ expect }) => {
+  test('it must return 400 if Validation returns failed', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
 
-    stub(ctx.request, 'body').returns({})
-    await sut.login(ctx)
+    stub(signInSchema, 'validateAsync').rejects(new ValidationException([]))
+    const promise = sut.login(ctx)
 
-    expect(ctx.response.getBody()).toEqual([
-      {
-        field: 'email',
-        message: 'The email field must be defined',
-      },
-      {
-        field: 'password',
-        message: 'The password field must be defined',
-      },
-    ])
-  })
-
-  test('it must return 400 if email provided is invalid', async ({ expect }) => {
-    const { sut, httpContext: ctx } = makeSut()
-
-    stub(ctx.request.body(), 'email').value('invalid_mail')
-    await sut.login(ctx)
-
-    expect(ctx.response.getBody()).toEqual([
-      {
-        field: 'email',
-        message: 'The email field must be a valid email address',
-      },
-    ])
-  })
-
-  test('it must return 400 if password provided is less than length valid', async ({ expect }) => {
-    const { sut, httpContext: ctx } = makeSut()
-
-    stub(ctx.request, 'body').returns({
-      email: 'valid_mail@mail.com',
-      password: 'any',
-    })
-
-    await sut.login(ctx)
-
-    expect(ctx.response.getBody()).toEqual([
-      {
-        field: 'password',
-        message: 'The password field must have at least 6 characters',
-      },
-    ])
+    await expect(promise).rejects.toEqual(new ValidationException([]))
   })
 
   test('it must return 200 if create accessToken on success', async ({ expect }) => {
