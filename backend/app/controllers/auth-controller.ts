@@ -2,23 +2,11 @@ import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
 import { IAuthService } from '#services/interfaces/auth-service'
-import { ISignInSchema } from '#validators/auth/interfaces/SignInSchema'
 import { validateEmailValidator } from '#validators/vinejs/auth-validator'
 
 @inject()
 export default class AuthController {
-  constructor(
-    private readonly authService: IAuthService,
-    private readonly signInSchema: ISignInSchema
-  ) {}
-
-  async login({ request, response }: HttpContext) {
-    const payload = await this.signInSchema.validateAsync(request.body())
-
-    await this.authService.login(payload)
-
-    return response.noContent()
-  }
+  constructor(private readonly authService: IAuthService) {}
 
   async logout({ response }: HttpContext) {
     await this.authService.logout()

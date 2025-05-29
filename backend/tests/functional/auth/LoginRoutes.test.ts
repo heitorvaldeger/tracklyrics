@@ -5,7 +5,7 @@ import { test } from '@japa/runner'
 import { UserEmailStatus } from '#enums/user-email-status'
 import { User } from '#models/user'
 
-test.group('Auth Login Route', (group) => {
+test.group('Auth/LoginRoutes', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })

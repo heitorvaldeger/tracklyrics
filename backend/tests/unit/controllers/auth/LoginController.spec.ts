@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
-import AuthController from '#controllers/auth-controller'
+import LoginController from '#controllers/auth/LoginController'
 import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
 import ValidationException from '#exceptions/ValidationException'
 import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
@@ -15,7 +15,7 @@ const makeSut = () => {
     password: faker.internet.password(),
   })
 
-  const sut = new AuthController(mockAuthService, signInSchema)
+  const sut = new LoginController(mockAuthService, signInSchema)
 
   return { sut, httpContext }
 }
@@ -29,14 +29,14 @@ test.group('AuthController.login', (group) => {
     const { sut, httpContext: ctx } = makeSut()
 
     stub(signInSchema, 'validateAsync').rejects(new ValidationException([]))
-    const promise = sut.login(ctx)
+    const promise = sut.handle(ctx)
 
     await expect(promise).rejects.toEqual(new ValidationException([]))
   })
 
   test('it must return 200 if create accessToken on success', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
-    await sut.login(ctx)
+    await sut.handle(ctx)
 
     expect(ctx.response.getStatus()).toBe(204)
   })
@@ -44,7 +44,7 @@ test.group('AuthController.login', (group) => {
   test('it must return 401 if invalid credentials is provided', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(mockAuthService, 'login').rejects(new InvalidCredentialsException())
-    const httpResponse = sut.login(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new InvalidCredentialsException())
   })
@@ -52,7 +52,7 @@ test.group('AuthController.login', (group) => {
   test('it must return 500 if create accessToken return throws', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(mockAuthService, 'login').throws(new Error())
-    const httpResponse = sut.login(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new Error())
   })
