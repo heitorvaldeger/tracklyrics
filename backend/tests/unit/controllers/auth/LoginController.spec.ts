@@ -6,7 +6,7 @@ import LoginController from '#controllers/auth/LoginController'
 import InvalidCredentialsException from '#exceptions/invalid-credentials-exception'
 import ValidationException from '#exceptions/ValidationException'
 import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
-import { signInSchema } from '#tests/__mocks__/validators/auth/sign-in-schema'
+import { validatorSchema } from '#tests/__mocks__/validators/validator-schema'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
@@ -15,7 +15,7 @@ const makeSut = () => {
     password: faker.internet.password(),
   })
 
-  const sut = new LoginController(mockAuthService, signInSchema)
+  const sut = new LoginController(mockAuthService, validatorSchema)
 
   return { sut, httpContext }
 }
@@ -28,7 +28,7 @@ test.group('AuthController.login', (group) => {
   test('it must return 400 if Validation returns failed', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
 
-    stub(signInSchema, 'validateAsync').rejects(new ValidationException([]))
+    stub(validatorSchema, 'validateAsync').rejects(new ValidationException([]))
     const promise = sut.handle(ctx)
 
     await expect(promise).rejects.toEqual(new ValidationException([]))

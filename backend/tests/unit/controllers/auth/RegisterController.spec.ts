@@ -7,7 +7,7 @@ import { UserEmailStatus } from '#enums/user-email-status'
 import UserOrEmailAlreadyUsingException from '#exceptions/user-or-email-already-using-exception'
 import ValidationException from '#exceptions/ValidationException'
 import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
-import { registerSchema } from '#tests/__mocks__/validators/auth/register-schema'
+import { validatorSchema } from '#tests/__mocks__/validators/validator-schema'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const makeSut = () => {
@@ -20,7 +20,7 @@ const makeSut = () => {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
   })
-  const sut = new RegisterController(mockAuthService, registerSchema)
+  const sut = new RegisterController(mockAuthService, validatorSchema)
 
   return { sut, httpContext }
 }
@@ -33,7 +33,7 @@ test.group('Auth/RegisterController', (group) => {
   test('it must return exception if Validation throws', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
 
-    stub(registerSchema, 'validateAsync').rejects(new ValidationException([]))
+    stub(validatorSchema, 'validateAsync').rejects(new ValidationException([]))
     stub(ctx.request, 'body').returns({})
     const promise = sut.handle(ctx)
 
