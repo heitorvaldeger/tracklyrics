@@ -43,6 +43,8 @@ import { VideoDeleteService } from '#services/video-delete-service'
 import { VideoFindService } from '#services/video-find-service'
 import { VideoUpdateService } from '#services/video-update-service'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
+import { ISignInSchema } from '#validators/auth/interfaces/SignInSchema'
+import { SignInSchemaZod } from '#validators/auth/SignInSchemaZod'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -77,6 +79,9 @@ export default class AppProvider {
       { protocol: IHashAdapter, implementation: Crypto },
 
       { protocol: ICacheAdapter, implementation: RedisAdonis },
+
+      // Validators
+      { protocol: ISignInSchema, implementation: SignInSchemaZod },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {

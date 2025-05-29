@@ -13,6 +13,7 @@ import LanguageNotFoundException from './language-not-found-exception.js'
 import UnauthorizedException from './unauthorized-exception.js'
 import UserNotFoundException from './user-not-found-exception.js'
 import UserOrEmailAlreadyUsingException from './user-or-email-already-using-exception.js'
+import ValidationException from './ValidationException.js'
 import VideoNotFoundException from './video-not-found-exception.js'
 import YoutubeLinkAlreadyExistsException from './youtube-link-already-exists-exception.js'
 
@@ -59,6 +60,13 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       return ctx.response.status(401).json({
         code: error.code,
         message: error.message,
+      })
+    }
+
+    if (error instanceof ValidationException) {
+      return ctx.response.status(400).json({
+        code: error.code,
+        errors: error.errors,
       })
     }
 
