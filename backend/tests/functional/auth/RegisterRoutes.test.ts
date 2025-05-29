@@ -9,7 +9,7 @@ test.group('Auth/RegisterRoutes', (group) => {
     expect,
   }) => {
     const password = faker.internet.password()
-    const response = await client.post(`/register`).fields({
+    const response = await client.post(`/auth/register`).fields({
       email: faker.internet.email(),
       username: faker.internet.username(),
       password: password,
@@ -27,7 +27,7 @@ test.group('Auth/RegisterRoutes', (group) => {
     client,
     expect,
   }) => {
-    const response = await client.post(`/register`).fields({})
+    const response = await client.post(`/auth/register`).fields({})
 
     expect(response.status()).toBe(400)
     expect(Array.isArray(response.body().errors)).toBeTruthy()

@@ -21,7 +21,7 @@ test.group('Auth/ValidateEmailRoutes', (group) => {
     const codeOTP = await otpAdapter.createOTP(fakeUser.uuid)
     await redisAdapter.set(`${fakeUser.uuid}_${fakeUser.email}`, codeOTP)
 
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: fakeUser.email,
       codeOTP,
     })
@@ -35,7 +35,7 @@ test.group('Auth/ValidateEmailRoutes', (group) => {
     client,
     expect,
   }) => {
-    const response = await client.post(`/validate-email`).fields({})
+    const response = await client.post(`/auth/validate-email`).fields({})
 
     expect(response.status()).toBe(400)
     expect(Array.isArray(response.body().errors)).toBeTruthy()
@@ -50,7 +50,7 @@ test.group('Auth/ValidateEmailRoutes', (group) => {
     fakeUser.emailStatus = UserEmailStatus.VERIFIED
     fakeUser.save()
 
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: fakeUser.email,
       codeOTP: '123456',
     })
@@ -63,7 +63,7 @@ test.group('Auth/ValidateEmailRoutes', (group) => {
     client,
     expect,
   }) => {
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: 'any_email@mail.com',
       codeOTP: '123456',
     })
@@ -83,7 +83,7 @@ test.group('Auth/ValidateEmailRoutes', (group) => {
     const codeOTP = await otpAdapter.createOTP(fakeUser.uuid)
     await redisAdapter.set(`${fakeUser.uuid}_${fakeUser.email}`, codeOTP)
 
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: fakeUser.email,
       codeOTP: '123456',
     })

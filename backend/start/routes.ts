@@ -28,10 +28,6 @@ const VideoUserLoggedController = () => import('#controllers/video-user-logged-c
 const LogoutController = () => import('#controllers/auth/LogoutController')
 const UserController = () => import('#controllers/user-controller')
 
-router.post('/login', [LoginController, 'handle'])
-router.post('/logout', [LogoutController, 'handle'])
-router.post('/register', [RegisterController, 'handle'])
-router.post('/validate-email', [ValidateEmailController, 'handle'])
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
 
@@ -41,6 +37,15 @@ router.get('/session', async ({ response, auth }) => {
     hasSession,
   })
 })
+
+router
+  .group(() => {
+    router.post('/login', [LoginController, 'handle'])
+    router.post('/logout', [LogoutController, 'handle'])
+    router.post('/register', [RegisterController, 'handle'])
+    router.post('/validate-email', [ValidateEmailController, 'handle'])
+  })
+  .prefix('auth')
 
 router
   .group(() => {
