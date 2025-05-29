@@ -33,7 +33,7 @@ test.group('Auth Login Route', (group) => {
     const response = await client.post(`/login`).fields({})
 
     expect(response.status()).toBe(400)
-    expect(Array.isArray(response.body())).toBeTruthy()
+    expect(Array.isArray(response.body().errors)).toBeTruthy()
   })
 
   test('/POST login/ - return 401 on login if credentials is invalid', async ({
