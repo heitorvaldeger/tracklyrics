@@ -25,11 +25,11 @@ const VideoCreateController = () => import('#controllers/video-create-controller
 const VideoDeleteController = () => import('#controllers/video-delete-controller')
 const VideoUpdateController = () => import('#controllers/video-update-controller')
 const VideoUserLoggedController = () => import('#controllers/video-user-logged-controller')
-const AuthController = () => import('#controllers/auth-controller')
+const LogoutController = () => import('#controllers/auth/LogoutController')
 const UserController = () => import('#controllers/user-controller')
 
 router.post('/login', [LoginController, 'handle'])
-router.post('/logout', [AuthController, 'logout'])
+router.post('/logout', [LogoutController, 'handle'])
 router.post('/register', [RegisterController, 'handle'])
 router.post('/validate-email', [ValidateEmailController, 'handle'])
 router.get('/languages', [LanguageController, 'findAll'])
