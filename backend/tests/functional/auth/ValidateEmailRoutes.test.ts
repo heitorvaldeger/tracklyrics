@@ -5,7 +5,7 @@ import { Crypto } from '#infra/crypto/crypto'
 import { RedisAdonis } from '#infra/db/cache/redis-adonis'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 
-test.group('Auth Validate Email Route', (group) => {
+test.group('Auth/ValidateEmailRoutes', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
@@ -38,7 +38,7 @@ test.group('Auth Validate Email Route', (group) => {
     const response = await client.post(`/validate-email`).fields({})
 
     expect(response.status()).toBe(400)
-    expect(Array.isArray(response.body())).toBeTruthy()
+    expect(Array.isArray(response.body().errors)).toBeTruthy()
   })
 
   test('/POST validate-email - return 400 on validate email if user email has been verified', async ({
