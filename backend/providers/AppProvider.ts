@@ -43,7 +43,9 @@ import { VideoDeleteService } from '#services/video-delete-service'
 import { VideoFindService } from '#services/video-find-service'
 import { VideoUpdateService } from '#services/video-update-service'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
+import { IRegisterSchema } from '#validators/auth/interfaces/RegisterSchema'
 import { ISignInSchema } from '#validators/auth/interfaces/SignInSchema'
+import { RegisterSchemaZod } from '#validators/auth/RegisterSchemaZod'
 import { SignInSchemaZod } from '#validators/auth/SignInSchemaZod'
 
 export default class AppProvider {
@@ -82,6 +84,7 @@ export default class AppProvider {
 
       // Validators
       { protocol: ISignInSchema, implementation: SignInSchemaZod },
+      { protocol: IRegisterSchema, implementation: RegisterSchemaZod },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {
