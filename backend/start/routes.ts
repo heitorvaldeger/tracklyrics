@@ -11,6 +11,7 @@ import router from '@adonisjs/core/services/router'
 
 const RegisterController = () => import('#controllers/auth/RegisterController')
 const LoginController = () => import('#controllers/auth/LoginController')
+const ValidateEmailController = () => import('#controllers/auth/ValidateEmailController')
 import { middleware } from '#start/kernel'
 
 const LyricFindController = () => import('#controllers/lyric-find-controller')
@@ -30,7 +31,7 @@ const UserController = () => import('#controllers/user-controller')
 router.post('/login', [LoginController, 'handle'])
 router.post('/logout', [AuthController, 'logout'])
 router.post('/register', [RegisterController, 'handle'])
-router.post('/validate-email', [AuthController, 'validateEmail'])
+router.post('/validate-email', [ValidateEmailController, 'handle'])
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
 

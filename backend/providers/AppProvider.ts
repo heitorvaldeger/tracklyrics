@@ -45,8 +45,10 @@ import { VideoUpdateService } from '#services/video-update-service'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
 import { IRegisterSchema } from '#validators/auth/interfaces/RegisterSchema'
 import { ISignInSchema } from '#validators/auth/interfaces/SignInSchema'
+import { IValidateEmailSchema } from '#validators/auth/interfaces/ValidateEmailSchema'
 import { RegisterSchemaZod } from '#validators/auth/RegisterSchemaZod'
 import { SignInSchemaZod } from '#validators/auth/SignInSchemaZod'
+import { ValidateEmailSchemaZod } from '#validators/auth/ValidateEmailSchemaZod'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
@@ -85,6 +87,7 @@ export default class AppProvider {
       // Validators
       { protocol: ISignInSchema, implementation: SignInSchemaZod },
       { protocol: IRegisterSchema, implementation: RegisterSchemaZod },
+      { protocol: IValidateEmailSchema, implementation: ValidateEmailSchemaZod },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {
