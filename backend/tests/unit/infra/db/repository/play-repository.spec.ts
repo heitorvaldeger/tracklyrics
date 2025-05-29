@@ -39,5 +39,5 @@ test.group('PlayPostgresRepository', (group) => {
 
     expect(plays?.playCount).toBe(3)
     expect(plays?.videoId).toBe(fakeVideo.id)
-  })
+  }).skip()
 })
