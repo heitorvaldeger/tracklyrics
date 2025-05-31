@@ -12,6 +12,7 @@ import router from '@adonisjs/core/services/router'
 const RegisterController = () => import('#controllers/auth/RegisterController')
 const LoginController = () => import('#controllers/auth/LoginController')
 const ValidateEmailController = () => import('#controllers/auth/ValidateEmailController')
+const UpdatePasswordController = () => import('#controllers/user/UpdatePasswordController')
 import { middleware } from '#start/kernel'
 
 const LyricFindController = () => import('#controllers/lyric-find-controller')
@@ -96,7 +97,7 @@ router
       .group(() => {
         router.get('', [UserController, 'getFullInfoByUserLogged'])
         router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
-        router.patch('update-password', [UserController, 'updatePassword'])
+        router.patch('update-password', [UpdatePasswordController, 'handle'])
         router.patch('validate-update-password', [UserController, 'validateUpdatePassword'])
       })
       .prefix('user')

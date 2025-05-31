@@ -15,17 +15,6 @@ export default class UserController {
     return await this.userService.getFullInfoByUserLogged()
   }
 
-  async updatePassword({ request, response }: HttpContext) {
-    const [errors, data] = await updatePasswordValidator.tryValidate(request.body())
-
-    if (errors || !data) {
-      return response.badRequest(errors.messages)
-    }
-    await this.userService.updatePassword(data.password)
-
-    return response.noContent()
-  }
-
   async validateUpdatePassword({ request, response }: HttpContext) {
     const [errors, data] = await validateUpdatePasswordValidator.tryValidate(request.body())
 
