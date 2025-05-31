@@ -70,7 +70,7 @@ export class UserService implements IUserService {
     const dataCache: {
       password: string
       codeOTP: string
-    } = JSON.parse((await this.cache.get(cacheKey)) ?? '')
+    } = JSON.parse((await this.cache.get(cacheKey)) ?? '{}')
 
     if (codeOTP !== dataCache.codeOTP) {
       throw new CodeOtpInvalidException()
