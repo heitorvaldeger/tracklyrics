@@ -4,6 +4,7 @@ import { IRegisterSchema } from '#core/domain/validators/RegisterSchema'
 import { ISignInSchema } from '#core/domain/validators/SignInSchema'
 import { IUpdatePasswordSchema } from '#core/domain/validators/UpdatePasswordSchema'
 import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
+import { IValidateUpdatePasswordSchema } from '#core/domain/validators/ValidateUpdatePasswordSchema'
 import { Crypto } from '#core/infra/crypto/crypto'
 import { IHashAdapter } from '#core/infra/crypto/interfaces/hash-adapter'
 import { IOTPAdapter } from '#core/infra/crypto/interfaces/otp-adapter'
@@ -27,6 +28,7 @@ import { RegisterSchemaZod } from '#core/infra/validators/zod/auth/RegisterSchem
 import { SignInSchemaZod } from '#core/infra/validators/zod/auth/SignInSchemaZod'
 import { ValidateEmailSchemaZod } from '#core/infra/validators/zod/auth/ValidateEmailSchemaZod'
 import { UpdatePasswordSchemaZod } from '#core/infra/validators/zod/user/UpdatePasswordSchemaZod'
+import { ValidateUpdatePasswordSchemaZod } from '#core/infra/validators/zod/user/ValidateUpdatePasswordSchemaZod'
 import { AuthService } from '#services/auth-service'
 import { FavoriteService } from '#services/favorite-service'
 import { GameService } from '#services/game-service'
@@ -91,6 +93,7 @@ export default class AppProvider {
       { protocol: IRegisterSchema, implementation: RegisterSchemaZod },
       { protocol: IValidateEmailSchema, implementation: ValidateEmailSchemaZod },
       { protocol: IUpdatePasswordSchema, implementation: UpdatePasswordSchemaZod },
+      { protocol: IValidateUpdatePasswordSchema, implementation: ValidateUpdatePasswordSchemaZod },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {

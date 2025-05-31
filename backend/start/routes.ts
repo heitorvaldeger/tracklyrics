@@ -13,6 +13,8 @@ const RegisterController = () => import('#controllers/auth/RegisterController')
 const LoginController = () => import('#controllers/auth/LoginController')
 const ValidateEmailController = () => import('#controllers/auth/ValidateEmailController')
 const UpdatePasswordController = () => import('#controllers/user/UpdatePasswordController')
+const ValidateUpdatePasswordController = () =>
+  import('#controllers/user/ValidateUpdatePasswordController')
 import { middleware } from '#start/kernel'
 
 const LyricFindController = () => import('#controllers/lyric-find-controller')
@@ -98,7 +100,7 @@ router
         router.get('', [UserController, 'getFullInfoByUserLogged'])
         router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
         router.patch('update-password', [UpdatePasswordController, 'handle'])
-        router.patch('validate-update-password', [UserController, 'validateUpdatePassword'])
+        router.patch('validate-update-password', [ValidateUpdatePasswordController, 'handle'])
       })
       .prefix('user')
   })
