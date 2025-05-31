@@ -15,6 +15,8 @@ const ValidateEmailController = () => import('#controllers/auth/ValidateEmailCon
 const UpdatePasswordController = () => import('#controllers/user/UpdatePasswordController')
 const ValidateUpdatePasswordController = () =>
   import('#controllers/user/ValidateUpdatePasswordController')
+const GetInfoByUserLoggedController = () =>
+  import('#controllers/user/GetInfoByUserLoggedController')
 import { middleware } from '#start/kernel'
 
 const LyricFindController = () => import('#controllers/lyric-find-controller')
@@ -29,7 +31,7 @@ const VideoDeleteController = () => import('#controllers/video-delete-controller
 const VideoUpdateController = () => import('#controllers/video-update-controller')
 const VideoUserLoggedController = () => import('#controllers/video-user-logged-controller')
 const LogoutController = () => import('#controllers/auth/LogoutController')
-const UserController = () => import('#controllers/user-controller')
+const UserController = () => import('#controllers/user/GetInfoByUserLoggedController')
 
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
@@ -95,17 +97,16 @@ router
 
 router
   .group(() => {
-    router
-      .group(() => {
-        router.get('', [UserController, 'getFullInfoByUserLogged'])
-        router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
-        router.patch('update-password', [UpdatePasswordController])
-        router.patch('validate-update-password', [ValidateUpdatePasswordController])
-      })
-      .prefix('user')
+    router.group(() => {
+      router.get('', [GetInfoByUserLoggedController])
+      router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
+      router.patch('update-password', [UpdatePasswordController])
+      router.patch('validate-update-password', [ValidateUpdatePasswordController])
+    })
   })
   .use(
     middleware.auth({
       guards: ['web'],
     })
   )
+  .prefix('user')
