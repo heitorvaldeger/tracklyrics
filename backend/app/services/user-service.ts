@@ -1,14 +1,14 @@
 import { inject } from '@adonisjs/core'
 import mail from '@adonisjs/mail/services/main'
 
+import { Auth } from '#core/infra/auth/interfaces/auth'
+import { IHashAdapter } from '#core/infra/crypto/interfaces/hash-adapter'
+import { IOTPAdapter } from '#core/infra/crypto/interfaces/otp-adapter'
+import { ICacheAdapter } from '#core/infra/db/cache/interfaces/cache-adapter'
+import { IUserRepository, UserBasic } from '#core/infra/db/repository/interfaces/user-repository'
+import { UpdatePassword } from '#core/infra/mail/views/update-password'
 import CodeOtpInvalidException from '#exceptions/code-otp-invalid-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
-import { Auth } from '#infra/auth/interfaces/auth'
-import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
-import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
-import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
-import { IUserRepository, UserBasic } from '#infra/db/repository/interfaces/user-repository'
-import { UpdatePassword } from '#infra/mail/views/update-password'
 import { IUserService } from '#services/interfaces/user-service'
 
 @inject()

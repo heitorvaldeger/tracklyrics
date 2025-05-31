@@ -1,4 +1,4 @@
-import { VideoResponse } from '#infra/db/repository/interfaces/video-repository'
+import { VideoResponse } from '#core/infra/db/repository/interfaces/video-repository'
 
 export abstract class IFavoriteService {
   abstract saveFavorite(videoUuid: string): Promise<boolean>

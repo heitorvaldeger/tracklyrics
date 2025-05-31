@@ -1,7 +1,7 @@
 import {
   ILanguageRepository,
   LanguageResponse,
-} from '#infra/db/repository/interfaces/language-repository'
+} from '#core/infra/db/repository/interfaces/language-repository'
 import { Language } from '#models/language'
 
 export class LanguagePostgresRepository implements ILanguageRepository {

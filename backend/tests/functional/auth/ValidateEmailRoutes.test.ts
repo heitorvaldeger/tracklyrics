@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 
+import { Crypto } from '#core/infra/crypto/crypto'
+import { RedisAdonis } from '#core/infra/db/cache/redis-adonis'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { Crypto } from '#infra/crypto/crypto'
-import { RedisAdonis } from '#infra/db/cache/redis-adonis'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 
 test.group('Auth/ValidateEmailRoutes', (group) => {

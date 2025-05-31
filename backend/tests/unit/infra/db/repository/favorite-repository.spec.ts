@@ -2,7 +2,7 @@ import db from '@adonisjs/lucid/services/db'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 
-import { FavoritePostgresRepository } from '#infra/db/repository/favorite-repository'
+import { FavoritePostgresRepository } from '#core/infra/db/repository/favorite-repository'
 import { Video } from '#models/video'
 import { mockAllTables, mockVideo } from '#tests/__mocks__/db/mock-all'
 import { mockGenre } from '#tests/__mocks__/db/mock-genre'

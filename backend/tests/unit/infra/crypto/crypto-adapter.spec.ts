@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import { TOTP } from 'otpauth'
 import { stub } from 'sinon'
 
-import { Crypto } from '#infra/crypto/crypto'
+import { Crypto } from '#core/infra/crypto/crypto'
 
 const makeSut = () => {
   const sut = new Crypto()

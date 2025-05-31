@@ -2,9 +2,9 @@ import { Authenticator } from '@adonisjs/auth'
 import { Authenticators } from '@adonisjs/auth/types'
 import { inject } from '@adonisjs/core'
 
+import { Auth } from '#core/infra/auth/interfaces/auth'
 import { UserEmailStatus } from '#enums/user-email-status'
 import EmailPendingValidationException from '#exceptions/email-pending-validation-exception'
-import { Auth } from '#infra/auth/interfaces/auth'
 import { User } from '#models/user'
 
 @inject()

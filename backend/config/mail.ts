@@ -1,7 +1,7 @@
 import { defineConfig } from '@adonisjs/mail'
 
-import { mailTrapTransport } from '#infra/mail/adonis/mailtrap-transport'
-import { resendMailTransport } from '#infra/mail/adonis/resend-transport'
+import { mailTrapTransport } from '#core/infra/mail/adonis/mailtrap-transport'
+import { resendMailTransport } from '#core/infra/mail/adonis/resend-transport'
 import env from '#start/env'
 
 const mailConfig = defineConfig({

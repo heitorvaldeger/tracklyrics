@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import _ from 'lodash'
 
-import { LanguagePostgresRepository } from '#infra/db/repository/language-repository'
+import { LanguagePostgresRepository } from '#core/infra/db/repository/language-repository'
 import { mockLanguage } from '#tests/__mocks__/db/mock-language'
 
 const makeSut = () => {

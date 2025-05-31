@@ -42,7 +42,8 @@
     "#infra/*": "./app/infra/*.js",
     "#enums/*": "./app/enums/*.js",
     "#constants/*": "./app/constants/*.js",
-    "#utils/*": "./app/utils/*.js"
+    "#utils/*": "./app/utils/*.js",
+    "#core/*": "./core/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.1",
