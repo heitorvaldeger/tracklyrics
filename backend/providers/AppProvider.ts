@@ -1,5 +1,8 @@
 import { ApplicationService } from '@adonisjs/core/types'
 
+import { IRegisterSchema } from '#core/domain/validators/RegisterSchema'
+import { ISignInSchema } from '#core/domain/validators/SignInSchema'
+import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
 import { Crypto } from '#core/infra/crypto/crypto'
 import { IHashAdapter } from '#core/infra/crypto/interfaces/hash-adapter'
 import { IOTPAdapter } from '#core/infra/crypto/interfaces/otp-adapter'
@@ -19,6 +22,9 @@ import { LyricPostgresRepository } from '#core/infra/db/repository/lyric-reposit
 import { PlayPostgresRepository } from '#core/infra/db/repository/play-repository'
 import { UserPostgresRepository } from '#core/infra/db/repository/user-repository'
 import { VideoPostgresRepository } from '#core/infra/db/repository/video-repository'
+import { RegisterSchemaZod } from '#core/infra/validators/zod/auth/RegisterSchemaZod'
+import { SignInSchemaZod } from '#core/infra/validators/zod/auth/SignInSchemaZod'
+import { ValidateEmailSchemaZod } from '#core/infra/validators/zod/auth/ValidateEmailSchemaZod'
 import { AuthService } from '#services/auth-service'
 import { FavoriteService } from '#services/favorite-service'
 import { GameService } from '#services/game-service'
@@ -43,12 +49,6 @@ import { VideoDeleteService } from '#services/video-delete-service'
 import { VideoFindService } from '#services/video-find-service'
 import { VideoUpdateService } from '#services/video-update-service'
 import { VideoUserLoggedService } from '#services/video-user-logged-service'
-import { IRegisterSchema } from '#validators/auth/interfaces/RegisterSchema'
-import { ISignInSchema } from '#validators/auth/interfaces/SignInSchema'
-import { IValidateEmailSchema } from '#validators/auth/interfaces/ValidateEmailSchema'
-import { RegisterSchemaZod } from '#validators/auth/RegisterSchemaZod'
-import { SignInSchemaZod } from '#validators/auth/SignInSchemaZod'
-import { ValidateEmailSchemaZod } from '#validators/auth/ValidateEmailSchemaZod'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}

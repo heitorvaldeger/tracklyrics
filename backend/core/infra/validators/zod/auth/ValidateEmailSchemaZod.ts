@@ -1,8 +1,7 @@
 import { z, ZodError } from 'zod'
 
+import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
 import ValidationException from '#exceptions/ValidationException'
-
-import { IValidateEmailSchema } from './interfaces/ValidateEmailSchema.js'
 
 export class ValidateEmailSchemaZod implements IValidateEmailSchema {
   async validateAsync(data: any) {

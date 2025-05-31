@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
+import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
 import { IAuthService } from '#services/interfaces/auth-service'
-import { IValidateEmailSchema } from '#validators/auth/interfaces/ValidateEmailSchema'
 
 @inject()
 export default class ValidateEmailController {

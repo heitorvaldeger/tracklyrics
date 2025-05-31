@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
+import { ISignInSchema } from '#core/domain/validators/SignInSchema'
 import { IAuthService } from '#services/interfaces/auth-service'
-import { ISignInSchema } from '#validators/auth/interfaces/SignInSchema'
 
 @inject()
 export default class LoginController {

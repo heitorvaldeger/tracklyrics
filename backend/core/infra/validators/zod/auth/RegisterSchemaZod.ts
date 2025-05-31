@@ -1,8 +1,7 @@
 import { z, ZodError } from 'zod'
 
+import { IRegisterSchema } from '#core/domain/validators/RegisterSchema'
 import ValidationException from '#exceptions/ValidationException'
-
-import { IRegisterSchema } from './interfaces/RegisterSchema.js'
 
 export class RegisterSchemaZod implements IRegisterSchema {
   async validateAsync(data: any) {

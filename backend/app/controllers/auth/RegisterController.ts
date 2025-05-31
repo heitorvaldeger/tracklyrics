@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
+import { IRegisterSchema } from '#core/domain/validators/RegisterSchema'
 import { IAuthService } from '#services/interfaces/auth-service'
-import { IRegisterSchema } from '#validators/auth/interfaces/RegisterSchema'
 
 @inject()
 export default class RegisterController {

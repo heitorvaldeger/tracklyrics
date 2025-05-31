@@ -1,8 +1,7 @@
 import { z, ZodError } from 'zod'
 
+import { ISignInSchema } from '#core/domain/validators/SignInSchema'
 import ValidationException from '#exceptions/ValidationException'
-
-import { ISignInSchema } from './interfaces/SignInSchema.js'
 
 export class SignInSchemaZod implements ISignInSchema {
   async validateAsync(data: any) {
