@@ -1,24 +1,30 @@
 import { ApplicationService } from '@adonisjs/core/types'
 
-import { Crypto } from '#infra/crypto/crypto'
-import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
-import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
-import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
-import { RedisAdonis } from '#infra/db/cache/redis-adonis'
-import { FavoritePostgresRepository } from '#infra/db/repository/favorite-repository'
-import { GenrePostgresRepository } from '#infra/db/repository/genre-repository'
-import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
-import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
-import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
-import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
-import { IUserRepository } from '#infra/db/repository/interfaces/user-repository'
-import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
-import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
-import { LanguagePostgresRepository } from '#infra/db/repository/language-repository'
-import { LyricPostgresRepository } from '#infra/db/repository/lyric-repository'
-import { PlayPostgresRepository } from '#infra/db/repository/play-repository'
-import { UserPostgresRepository } from '#infra/db/repository/user-repository'
-import { VideoPostgresRepository } from '#infra/db/repository/video-repository'
+import { IRegisterSchema } from '#core/domain/validators/RegisterSchema'
+import { ISignInSchema } from '#core/domain/validators/SignInSchema'
+import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
+import { Crypto } from '#core/infra/crypto/crypto'
+import { IHashAdapter } from '#core/infra/crypto/interfaces/hash-adapter'
+import { IOTPAdapter } from '#core/infra/crypto/interfaces/otp-adapter'
+import { ICacheAdapter } from '#core/infra/db/cache/interfaces/cache-adapter'
+import { RedisAdonis } from '#core/infra/db/cache/redis-adonis'
+import { FavoritePostgresRepository } from '#core/infra/db/repository/favorite-repository'
+import { GenrePostgresRepository } from '#core/infra/db/repository/genre-repository'
+import { IFavoriteRepository } from '#core/infra/db/repository/interfaces/favorite-repository'
+import { IGenreRepository } from '#core/infra/db/repository/interfaces/genre-repository'
+import { ILanguageRepository } from '#core/infra/db/repository/interfaces/language-repository'
+import { ILyricRepository } from '#core/infra/db/repository/interfaces/lyric-repository'
+import { IUserRepository } from '#core/infra/db/repository/interfaces/user-repository'
+import { IVideoPlayCountRepository } from '#core/infra/db/repository/interfaces/video-play-count-repository'
+import { IVideoRepository } from '#core/infra/db/repository/interfaces/video-repository'
+import { LanguagePostgresRepository } from '#core/infra/db/repository/language-repository'
+import { LyricPostgresRepository } from '#core/infra/db/repository/lyric-repository'
+import { PlayPostgresRepository } from '#core/infra/db/repository/play-repository'
+import { UserPostgresRepository } from '#core/infra/db/repository/user-repository'
+import { VideoPostgresRepository } from '#core/infra/db/repository/video-repository'
+import { RegisterSchemaZod } from '#core/infra/validators/zod/auth/RegisterSchemaZod'
+import { SignInSchemaZod } from '#core/infra/validators/zod/auth/SignInSchemaZod'
+import { ValidateEmailSchemaZod } from '#core/infra/validators/zod/auth/ValidateEmailSchemaZod'
 import { AuthService } from '#services/auth-service'
 import { FavoriteService } from '#services/favorite-service'
 import { GameService } from '#services/game-service'
@@ -77,6 +83,11 @@ export default class AppProvider {
       { protocol: IHashAdapter, implementation: Crypto },
 
       { protocol: ICacheAdapter, implementation: RedisAdonis },
+
+      // Validators
+      { protocol: ISignInSchema, implementation: SignInSchemaZod },
+      { protocol: IRegisterSchema, implementation: RegisterSchemaZod },
+      { protocol: IValidateEmailSchema, implementation: ValidateEmailSchemaZod },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {

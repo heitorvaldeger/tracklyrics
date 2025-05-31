@@ -9,6 +9,9 @@
 
 import router from '@adonisjs/core/services/router'
 
+const RegisterController = () => import('#controllers/auth/RegisterController')
+const LoginController = () => import('#controllers/auth/LoginController')
+const ValidateEmailController = () => import('#controllers/auth/ValidateEmailController')
 import { middleware } from '#start/kernel'
 
 const LyricFindController = () => import('#controllers/lyric-find-controller')
@@ -22,13 +25,9 @@ const VideoCreateController = () => import('#controllers/video-create-controller
 const VideoDeleteController = () => import('#controllers/video-delete-controller')
 const VideoUpdateController = () => import('#controllers/video-update-controller')
 const VideoUserLoggedController = () => import('#controllers/video-user-logged-controller')
-const AuthController = () => import('#controllers/auth-controller')
+const LogoutController = () => import('#controllers/auth/LogoutController')
 const UserController = () => import('#controllers/user-controller')
 
-router.post('/login', [AuthController, 'login'])
-router.post('/logout', [AuthController, 'logout'])
-router.post('/register', [AuthController, 'register'])
-router.post('/validate-email', [AuthController, 'validateEmail'])
 router.get('/languages', [LanguageController, 'findAll'])
 router.get('/genres', [GenreController, 'findAll'])
 
@@ -38,6 +37,15 @@ router.get('/session', async ({ response, auth }) => {
     hasSession,
   })
 })
+
+router
+  .group(() => {
+    router.post('/login', [LoginController, 'handle'])
+    router.post('/logout', [LogoutController, 'handle'])
+    router.post('/register', [RegisterController, 'handle'])
+    router.post('/validate-email', [ValidateEmailController, 'handle'])
+  })
+  .prefix('auth')
 
 router
   .group(() => {

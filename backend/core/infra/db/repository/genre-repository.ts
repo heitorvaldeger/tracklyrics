@@ -1,4 +1,7 @@
-import { GenreResponse, IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
+import {
+  GenreResponse,
+  IGenreRepository,
+} from '#core/infra/db/repository/interfaces/genre-repository'
 import { Genre } from '#models/genre'
 
 export class GenrePostgresRepository implements IGenreRepository {

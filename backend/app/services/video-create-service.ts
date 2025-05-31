@@ -2,16 +2,16 @@ import { randomUUID } from 'node:crypto'
 
 import { inject } from '@adonisjs/core'
 
+import { Auth } from '#core/infra/auth/interfaces/auth'
+import { IGenreRepository } from '#core/infra/db/repository/interfaces/genre-repository'
+import { ILanguageRepository } from '#core/infra/db/repository/interfaces/language-repository'
+import { ILyricRepository } from '#core/infra/db/repository/interfaces/lyric-repository'
+import { IVideoRepository } from '#core/infra/db/repository/interfaces/video-repository'
 import GenreNotFoundException from '#exceptions/genre-not-found-exception'
 import LanguageNotFoundException from '#exceptions/language-not-found-exception'
 import UnauthorizedException from '#exceptions/unauthorized-exception'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import YoutubeLinkAlreadyExistsException from '#exceptions/youtube-link-already-exists-exception'
-import { Auth } from '#infra/auth/interfaces/auth'
-import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
-import { ILanguageRepository } from '#infra/db/repository/interfaces/language-repository'
-import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
-import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
 import { IVideoCreateService } from '#services/interfaces/video-create-service'
 
 @inject()

@@ -1,12 +1,12 @@
 import auth from '@adonisjs/auth/services/main'
 
-import { UserEmailStatus } from '#enums/user-email-status'
 import {
   EmailUsername,
   IUserRepository,
   UserBasic,
   UserWithoutPassword,
-} from '#infra/db/repository/interfaces/user-repository'
+} from '#core/infra/db/repository/interfaces/user-repository'
+import { UserEmailStatus } from '#enums/user-email-status'
 import { User } from '#models/user'
 
 export class UserPostgresRepository implements IUserRepository {

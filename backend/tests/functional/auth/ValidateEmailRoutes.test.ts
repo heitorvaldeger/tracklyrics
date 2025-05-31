@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 
+import { Crypto } from '#core/infra/crypto/crypto'
+import { RedisAdonis } from '#core/infra/db/cache/redis-adonis'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { Crypto } from '#infra/crypto/crypto'
-import { RedisAdonis } from '#infra/db/cache/redis-adonis'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 
-test.group('Auth Validate Email Route', (group) => {
+test.group('Auth/ValidateEmailRoutes', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
@@ -21,7 +21,7 @@ test.group('Auth Validate Email Route', (group) => {
     const codeOTP = await otpAdapter.createOTP(fakeUser.uuid)
     await redisAdapter.set(`${fakeUser.uuid}_${fakeUser.email}`, codeOTP)
 
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: fakeUser.email,
       codeOTP,
     })
@@ -35,10 +35,10 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const response = await client.post(`/validate-email`).fields({})
+    const response = await client.post(`/auth/validate-email`).fields({})
 
     expect(response.status()).toBe(400)
-    expect(Array.isArray(response.body())).toBeTruthy()
+    expect(Array.isArray(response.body().errors)).toBeTruthy()
   })
 
   test('/POST validate-email - return 400 on validate email if user email has been verified', async ({
@@ -50,7 +50,7 @@ test.group('Auth Validate Email Route', (group) => {
     fakeUser.emailStatus = UserEmailStatus.VERIFIED
     fakeUser.save()
 
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: fakeUser.email,
       codeOTP: '123456',
     })
@@ -63,7 +63,7 @@ test.group('Auth Validate Email Route', (group) => {
     client,
     expect,
   }) => {
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: 'any_email@mail.com',
       codeOTP: '123456',
     })
@@ -83,7 +83,7 @@ test.group('Auth Validate Email Route', (group) => {
     const codeOTP = await otpAdapter.createOTP(fakeUser.uuid)
     await redisAdapter.set(`${fakeUser.uuid}_${fakeUser.email}`, codeOTP)
 
-    const response = await client.post(`/validate-email`).fields({
+    const response = await client.post(`/auth/validate-email`).fields({
       email: fakeUser.email,
       codeOTP: '123456',
     })

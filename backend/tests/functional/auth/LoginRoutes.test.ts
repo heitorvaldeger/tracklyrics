@@ -5,7 +5,7 @@ import { test } from '@japa/runner'
 import { UserEmailStatus } from '#enums/user-email-status'
 import { User } from '#models/user'
 
-test.group('Auth Login Route', (group) => {
+test.group('Auth/LoginRoutes', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
@@ -21,7 +21,7 @@ test.group('Auth Login Route', (group) => {
       emailStatus: UserEmailStatus.VERIFIED,
     })
 
-    const response = await client.post(`/login`).fields({
+    const response = await client.post(`/auth/login`).fields({
       email: fakeUser.email,
       password,
     })
@@ -30,17 +30,17 @@ test.group('Auth Login Route', (group) => {
   })
 
   test('/POST login/ - return 400 on login if any param is invalid', async ({ client, expect }) => {
-    const response = await client.post(`/login`).fields({})
+    const response = await client.post(`/auth/login`).fields({})
 
     expect(response.status()).toBe(400)
-    expect(Array.isArray(response.body())).toBeTruthy()
+    expect(Array.isArray(response.body().errors)).toBeTruthy()
   })
 
   test('/POST login/ - return 401 on login if credentials is invalid', async ({
     client,
     expect,
   }) => {
-    const response = await client.post(`/login`).fields({
+    const response = await client.post(`/auth/login`).fields({
       email: faker.internet.email(),
       password: 'any_password',
     })
@@ -63,7 +63,7 @@ test.group('Auth Login Route', (group) => {
       emailStatus: UserEmailStatus.VERIFIED,
     })
 
-    const response = await client.post(`/login`).fields({
+    const response = await client.post(`/auth/login`).fields({
       email: fakeUser.email,
       password: 'any_password',
     })
@@ -85,7 +85,7 @@ test.group('Auth Login Route', (group) => {
       password,
     })
 
-    const response = await client.post(`/login`).fields({
+    const response = await client.post(`/auth/login`).fields({
       email: fakeUser.email,
       password,
     })

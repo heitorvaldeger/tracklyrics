@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 
-import { VerifyEmail } from '#infra/mail/views/verify-email'
+import { VerifyEmail } from '#core/infra/mail/views/verify-email'
 import env from '#start/env'
 
 test.group('Verify Email', () => {

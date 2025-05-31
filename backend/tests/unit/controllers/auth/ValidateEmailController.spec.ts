@@ -2,12 +2,14 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import AuthController from '#controllers/auth-controller'
+import ValidateEmailController from '#controllers/auth/ValidateEmailController'
 import { UserEmailStatus } from '#enums/user-email-status'
 import CodeOtpInvalidException from '#exceptions/code-otp-invalid-exception'
 import EmailHasBeenVerifiedException from '#exceptions/email-has-been-verified-exception'
 import EmailInvalidException from '#exceptions/email-invalid-exception'
+import ValidationException from '#exceptions/ValidationException'
 import { mockAuthService } from '#tests/__mocks__/stubs/mock-auth-stub'
+import { validatorSchema } from '#tests/__mocks__/validators/validator-schema'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 
 const mockRequest = {
@@ -18,65 +20,29 @@ const mockRequest = {
 }
 const makeSut = () => {
   const httpContext = makeHttpRequest(mockRequest)
-  const sut = new AuthController(mockAuthService)
+  const sut = new ValidateEmailController(mockAuthService, validatorSchema)
 
   return { sut, httpContext }
 }
-test.group('AuthController.validateEmail', (group) => {
+test.group('Auth/ValidateEmailController', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('return 400 if required fields is not provided', async ({ expect }) => {
+  test('return an exception if validation throws', async ({ expect }) => {
     const { sut, httpContext: ctx } = makeSut()
 
+    stub(validatorSchema, 'validateAsync').rejects(new ValidationException([]))
     stub(ctx.request, 'body').returns({})
-    await sut.validateEmail(ctx)
+    const promise = sut.handle(ctx)
 
-    expect(ctx.response.getBody()).toEqual([
-      {
-        field: 'email',
-        message: 'The email field must be defined',
-      },
-      {
-        field: 'codeOTP',
-        message: 'The codeOTP field must be defined',
-      },
-    ])
-  })
-
-  test('return 400 if email provided is invalid', async ({ expect }) => {
-    const { sut, httpContext: ctx } = makeSut()
-
-    stub(ctx.request.body(), 'email').value('invalid_mail')
-    await sut.validateEmail(ctx)
-
-    expect(ctx.response.getBody()).toEqual([
-      {
-        field: 'email',
-        message: 'The email field must be a valid email address',
-      },
-    ])
-  })
-
-  test('return 400 if codeOTP is not equal than length valid', async ({ expect }) => {
-    const { sut, httpContext: ctx } = makeSut()
-
-    stub(ctx.request.body(), 'codeOTP').value('123')
-    await sut.validateEmail(ctx)
-
-    expect(ctx.response.getBody()).toEqual([
-      {
-        field: 'codeOTP',
-        message: 'The codeOTP field must be 6 characters long',
-      },
-    ])
+    await expect(promise).rejects.toThrow(new ValidationException([]))
   })
 
   test('return 422 if user already exist and email status is verified', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(mockAuthService, 'validateEmail').rejects(new EmailHasBeenVerifiedException())
-    const httpResponse = sut.validateEmail(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new EmailHasBeenVerifiedException())
   })
@@ -84,7 +50,7 @@ test.group('AuthController.validateEmail', (group) => {
   test('return 422 if user not exist', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(mockAuthService, 'validateEmail').rejects(new EmailInvalidException())
-    const httpResponse = sut.validateEmail(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new EmailInvalidException())
   })
@@ -92,14 +58,14 @@ test.group('AuthController.validateEmail', (group) => {
   test('return 422 if code OTP is invalid', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(mockAuthService, 'validateEmail').rejects(new CodeOtpInvalidException())
-    const httpResponse = sut.validateEmail(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new CodeOtpInvalidException())
   })
 
   test('return 200 if validate email with success', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
-    const httpResponse = await sut.validateEmail(httpContext)
+    const httpResponse = await sut.handle(httpContext)
 
     expect(httpResponse).toEqual({
       uuid: 'any_uuid',
@@ -110,7 +76,7 @@ test.group('AuthController.validateEmail', (group) => {
   test('return 500 if validate email return throws', async ({ expect }) => {
     const { sut, httpContext } = makeSut()
     stub(mockAuthService, 'validateEmail').throws(new Error())
-    const httpResponse = sut.validateEmail(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new Error())
   })
