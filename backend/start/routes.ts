@@ -43,10 +43,10 @@ router.get('/session', async ({ response, auth }) => {
 
 router
   .group(() => {
-    router.post('/login', [LoginController, 'handle'])
-    router.post('/logout', [LogoutController, 'handle'])
-    router.post('/register', [RegisterController, 'handle'])
-    router.post('/validate-email', [ValidateEmailController, 'handle'])
+    router.post('/login', [LoginController])
+    router.post('/logout', [LogoutController])
+    router.post('/register', [RegisterController])
+    router.post('/validate-email', [ValidateEmailController])
   })
   .prefix('auth')
 
@@ -99,8 +99,8 @@ router
       .group(() => {
         router.get('', [UserController, 'getFullInfoByUserLogged'])
         router.get('my-lyrics', [VideoUserLoggedController, 'getVideosByUserLogged'])
-        router.patch('update-password', [UpdatePasswordController, 'handle'])
-        router.patch('validate-update-password', [ValidateUpdatePasswordController, 'handle'])
+        router.patch('update-password', [UpdatePasswordController])
+        router.patch('validate-update-password', [ValidateUpdatePasswordController])
       })
       .prefix('user')
   })
