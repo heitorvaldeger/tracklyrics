@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 
 import { Language } from '#models/language'
 
-test.group('Language Routes', (group) => {
+test.group('FindAllLanguagesRoutes', () => {
   test('/GET languages - it must return 200 on load languages success', async ({
     client,
     expect,

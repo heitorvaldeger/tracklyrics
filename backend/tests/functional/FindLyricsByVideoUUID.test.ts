@@ -4,7 +4,7 @@ import { test } from '@japa/runner'
 
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
-test.group('Lyric Find Route', () => {
+test.group('FindLyricsByVideoUUIDRoutes', () => {
   test('/GET videos/:uuid/lyrics - it must return 200 on video lyrics find with success', async ({
     client,
     expect,

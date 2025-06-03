@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 
 import { Genre } from '#models/genre'
 
-test.group('Genre Routes', (group) => {
+test.group('FindAllGenresRoutes', () => {
   test('/GET genres - it must return 200 on load genres success', async ({ client, expect }) => {
     const genres = (
       await Genre.createMany([

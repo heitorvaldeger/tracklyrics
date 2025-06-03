@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import FindLyricController from '#controllers/FindLyricController'
+import FindLyricController from '#controllers/FindLyricsByVideoUUIDController'
 import ValidationException from '#exceptions/ValidationException'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { ILyricFindService } from '#services/interfaces/lyric-find-service'

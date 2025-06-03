@@ -19,7 +19,7 @@ const GetInfoByUserLoggedController = () =>
   import('#controllers/user/GetInfoByUserLoggedController')
 import { middleware } from '#start/kernel'
 
-const FindLyricController = () => import('#controllers/FindLyricController')
+const FindLyricController = () => import('#controllers/FindLyricsByVideoUUIDController')
 const GameController = () => import('#controllers/game-controller')
 const FavoriteController = () => import('#controllers/favorite-controller')
 
