@@ -3,10 +3,10 @@ import { inject } from '@adonisjs/core'
 import { IFavoriteService } from '#services/interfaces/favorite-service'
 
 @inject()
-export default class FavoriteController {
+export default class FindFavoritesByUserLoggedController {
   constructor(private readonly favoriteService: IFavoriteService) {}
 
-  async findFavoritesByUserLogged() {
+  async handle() {
     return await this.favoriteService.findFavoritesByUserLogged()
   }
 }

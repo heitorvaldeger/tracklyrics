@@ -2,11 +2,7 @@ import { test } from '@japa/runner'
 
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
-test.group('Favorite Routes', async (group) => {
-  group.tap((t) => {
-    t.options.title = `it must ${t.options.title}`
-  })
-
+test.group('Favorite/FindFavoritesByUserLogged', async () => {
   test('/GET favorites - return 200 on find a list favorite videos by user logged', async ({
     client,
     expect,
