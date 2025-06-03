@@ -18,6 +18,7 @@ const ValidateUpdatePasswordController = () =>
 const GetInfoByUserLoggedController = () =>
   import('#controllers/user/GetInfoByUserLoggedController')
 const SaveFavoriteController = () => import('#controllers/favorite/SaveFavoriteController')
+const DeleteFavoriteController = () => import('#controllers/favorite/DeleteFavoriteController')
 import { middleware } from '#start/kernel'
 
 const FindLyricController = () => import('#controllers/FindLyricsByVideoUUIDController')
@@ -85,7 +86,7 @@ router
       .group(() => {
         router.get('', [FavoriteController, 'findFavoritesByUserLogged'])
         router.post(':uuid', [SaveFavoriteController])
-        router.delete(':uuid', [FavoriteController, 'removeFavorite'])
+        router.delete(':uuid', [DeleteFavoriteController])
       })
       .prefix('favorites')
   })
