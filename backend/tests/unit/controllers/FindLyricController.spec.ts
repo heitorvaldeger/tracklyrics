@@ -3,9 +3,11 @@ import { randomUUID } from 'node:crypto'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import LyricFindController from '#controllers/lyric-find-controller'
+import FindLyricController from '#controllers/FindLyricController'
+import ValidationException from '#exceptions/ValidationException'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
 import { ILyricFindService } from '#services/interfaces/lyric-find-service'
+import { validatorSchema } from '#tests/__mocks__/validators/validator-schema'
 import { makeHttpRequest } from '#tests/__utils__/makeHttpRequest'
 import { NilUUID } from '#tests/__utils__/NilUUID'
 
@@ -19,7 +21,7 @@ const lyrics = [
 ]
 
 const mockLyricFindServiceStub = (): ILyricFindService => ({
-  find: (videoUuid: string) => Promise.resolve(lyrics),
+  find: () => Promise.resolve(lyrics),
 })
 
 const videoUuid = randomUUID()
@@ -33,32 +35,27 @@ const makeSut = async () => {
   )
 
   const lyricFindServiceStub = mockLyricFindServiceStub()
-  const sut = new LyricFindController(lyricFindServiceStub)
+  const sut = new FindLyricController(lyricFindServiceStub, validatorSchema)
 
   return { sut, httpContext, lyricFindServiceStub }
 }
 
-test.group('LyricFindController', (group) => {
+test.group('FindLyricController', (group) => {
   group.tap((t) => {
     t.options.title = `it must ${t.options.title}`
   })
 
-  test('return 400 if invalid video uuid is provided', async ({ expect }) => {
+  test('return an exception if Validation throws', async ({ expect }) => {
     const { sut, httpContext: context } = await makeSut()
 
+    stub(validatorSchema, 'validateAsync').rejects(new ValidationException([]))
     stub(context.request, 'params').returns({
       uuid: 'invalid_uuid',
     })
 
-    await sut.find(context)
+    const promise = sut.handle(context)
 
-    expect(context.response.getStatus()).toBe(400)
-    expect(context.response.getBody()).toEqual([
-      {
-        field: 'uuid',
-        message: 'The uuid field must be a valid UUID',
-      },
-    ])
+    await expect(promise).rejects.toThrow(new ValidationException([]))
   })
 
   test('return 404 if a video not found', async ({ expect }) => {
@@ -68,7 +65,7 @@ test.group('LyricFindController', (group) => {
       uuid: NilUUID,
     })
 
-    const httpResponse = sut.find(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
   })
@@ -76,16 +73,16 @@ test.group('LyricFindController', (group) => {
   test('return 200 on video lyrics find with success', async ({ expect }) => {
     const { sut, httpContext } = await makeSut()
 
-    const httpResponse = await sut.find(httpContext)
+    const httpResponse = await sut.handle(httpContext)
     expect(httpResponse).toEqual(lyrics)
   })
 
-  test('return 500 if lyrics find throws', async ({ expect }) => {
+  test('return an exception if lyrics find throws', async ({ expect }) => {
     const { sut, httpContext, lyricFindServiceStub } = await makeSut()
 
     stub(lyricFindServiceStub, 'find').throws(new Error())
 
-    const httpResponse = sut.find(httpContext)
+    const httpResponse = sut.handle(httpContext)
 
     expect(httpResponse).rejects.toEqual(new Error())
   })
@@ -94,7 +91,7 @@ test.group('LyricFindController', (group) => {
     const { sut, httpContext, lyricFindServiceStub } = await makeSut()
     const findSpy = stub(lyricFindServiceStub, 'find')
 
-    await sut.find(httpContext)
+    await sut.handle(httpContext)
 
     expect(findSpy.calledWith(videoUuid)).toBeTruthy()
   })
