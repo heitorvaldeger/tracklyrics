@@ -1,7 +1,8 @@
+import { randomUUID } from 'node:crypto'
+
 import { test } from '@japa/runner'
 
 import { mockAllTables } from '#tests/__mocks__/db/mock-all'
-import { NilUUID } from '#tests/__utils__/NilUUID'
 
 test.group('Lyric Find Route', () => {
   test('/GET videos/:uuid/lyrics - it must return 200 on video lyrics find with success', async ({
@@ -25,19 +26,17 @@ test.group('Lyric Find Route', () => {
     const response = await client.get(`/videos/invalid_uuid/lyrics`)
 
     expect(response.status()).toBe(400)
-    expect(response.body()).toEqual([
-      {
-        field: 'uuid',
-        message: 'The uuid field must be a valid UUID',
-      },
-    ])
+    expect(response.body()).toEqual({
+      code: 'E_VALIDATION_ERROR',
+      errors: [{ error: 'Invalid uuid', field: 'uuid' }],
+    })
   })
 
   test('/GET videos/:uuid/lyrics - it must return 404 if video not found', async ({
     client,
     expect,
   }) => {
-    const response = await client.get(`/videos/${NilUUID}/lyrics`)
+    const response = await client.get(`/videos/${randomUUID()}/lyrics`)
 
     expect(response.status()).toBe(404)
     expect(response.body().code).toBe('E_VIDEO_NOT_FOUND')

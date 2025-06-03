@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import LanguageController from '#controllers/language-controller'
+import FindAllLanguageController from '#controllers/FindAllLanguageController'
 import { ILanguageService } from '#services/interfaces/language-service'
 
 const mockLanguageServiceStub = (): ILanguageService => ({
@@ -17,15 +17,15 @@ const mockLanguageServiceStub = (): ILanguageService => ({
 
 const makeSut = () => {
   const languageServiceStub = mockLanguageServiceStub()
-  const sut = new LanguageController(languageServiceStub)
+  const sut = new FindAllLanguageController(languageServiceStub)
 
   return { sut, languageServiceStub }
 }
-test.group('LanguageController', () => {
+test.group('FindAllLanguageController', () => {
   test('it must returns a list of languages with on success', async ({ expect }) => {
     const { sut } = makeSut()
 
-    const languages = await sut.findAll()
+    const languages = await sut.handle()
 
     expect(languages).toEqual([
       {
@@ -36,13 +36,13 @@ test.group('LanguageController', () => {
     ])
   })
 
-  test('return 500 if languages find all throws', ({ expect }) => {
+  test('return 500 if languages find all throws', async ({ expect }) => {
     const { sut, languageServiceStub } = makeSut()
 
     stub(languageServiceStub, 'findAll').throws(new Error())
 
-    const httpResponse = sut.findAll()
+    const promise = sut.handle()
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(promise).rejects.toEqual(new Error())
   })
 })
