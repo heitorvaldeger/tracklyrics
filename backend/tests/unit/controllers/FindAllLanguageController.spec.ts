@@ -36,13 +36,13 @@ test.group('FindAllLanguageController', () => {
     ])
   })
 
-  test('return 500 if languages find all throws', ({ expect }) => {
+  test('return 500 if languages find all throws', async ({ expect }) => {
     const { sut, languageServiceStub } = makeSut()
 
     stub(languageServiceStub, 'findAll').throws(new Error())
 
-    const httpResponse = sut.handle()
+    const promise = sut.handle()
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(promise).rejects.toEqual(new Error())
   })
 })

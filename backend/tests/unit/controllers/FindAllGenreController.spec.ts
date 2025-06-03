@@ -35,13 +35,13 @@ test.group('FindAllGenreController', () => {
     ])
   })
 
-  test('return 500 if genres find all throws', ({ expect }) => {
+  test('return 500 if genres find all throws', async ({ expect }) => {
     const { sut, genreServiceStub } = makeSut()
 
     stub(genreServiceStub, 'findAll').throws(new Error())
 
-    const httpResponse = sut.handle()
+    const promise = sut.handle()
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(promise).rejects.toEqual(new Error())
   })
 })
