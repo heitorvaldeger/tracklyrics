@@ -5,7 +5,7 @@ import { mockAllTables } from '#tests/__mocks__/db/mock-all'
 
 const ROUTE_PATH = 'user/validate-update-password'
 
-test.group('User/UpdatePasswordRoutes', () => {
+test.group('User/ValidateUpdatePasswordRoutes', () => {
   test('/PATCH validate-update-password - it must return 401 on validation update password when user is unauthorized', async ({
     client,
     expect,
