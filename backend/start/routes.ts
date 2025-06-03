@@ -23,18 +23,17 @@ const LyricFindController = () => import('#controllers/lyric-find-controller')
 const GameController = () => import('#controllers/game-controller')
 const FavoriteController = () => import('#controllers/favorite-controller')
 
-const LanguageController = () => import('#controllers/language-controller')
-const GenreController = () => import('#controllers/genre-controller')
+const FindAllLanguageController = () => import('#controllers/FindAllLanguageController')
+const FindAllGenreController = () => import('#controllers/FindAllGenreController')
 const VideoFindController = () => import('#controllers/video-find-controller')
 const VideoCreateController = () => import('#controllers/video-create-controller')
 const VideoDeleteController = () => import('#controllers/video-delete-controller')
 const VideoUpdateController = () => import('#controllers/video-update-controller')
 const VideoUserLoggedController = () => import('#controllers/video-user-logged-controller')
 const LogoutController = () => import('#controllers/auth/LogoutController')
-const UserController = () => import('#controllers/user/GetInfoByUserLoggedController')
 
-router.get('/languages', [LanguageController, 'findAll'])
-router.get('/genres', [GenreController, 'findAll'])
+router.get('/languages', [FindAllLanguageController])
+router.get('/genres', [FindAllGenreController])
 
 router.get('/session', async ({ response, auth }) => {
   const hasSession = await auth.check()

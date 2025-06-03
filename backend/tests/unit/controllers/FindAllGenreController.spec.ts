@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
-import GenreController from '#controllers/genre-controller'
+import FindAllGenreController from '#controllers/FindAllGenreController'
 import { IGenreService } from '#services/interfaces/genre-service'
 
 const mockGenreServiceStub = (): IGenreService => ({
@@ -16,16 +16,16 @@ const mockGenreServiceStub = (): IGenreService => ({
 
 const makeSut = () => {
   const genreServiceStub = mockGenreServiceStub()
-  const sut = new GenreController(genreServiceStub)
+  const sut = new FindAllGenreController(genreServiceStub)
 
   return { sut, genreServiceStub }
 }
 
-test.group('GenreController', () => {
+test.group('FindAllGenreController', () => {
   test('it must returns a list of genres on success', async ({ expect }) => {
     const { sut } = makeSut()
 
-    const genres = await sut.findAll()
+    const genres = await sut.handle()
 
     expect(genres).toEqual([
       {
@@ -40,7 +40,7 @@ test.group('GenreController', () => {
 
     stub(genreServiceStub, 'findAll').throws(new Error())
 
-    const httpResponse = sut.findAll()
+    const httpResponse = sut.handle()
 
     expect(httpResponse).rejects.toEqual(new Error())
   })
