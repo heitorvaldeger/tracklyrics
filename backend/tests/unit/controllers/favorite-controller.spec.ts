@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
 
-import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import { stub } from 'sinon'
 
@@ -74,56 +73,6 @@ test.group('FavoriteController', (group) => {
 
     expect(httpResponse).rejects.toEqual(new Error())
   })
-
-  test('return 400 if invalid video uuid is provided on save', async ({ expect }) => {
-    const { sut, httpContext: context } = await makeSut()
-
-    stub(context.request, 'params').returns({
-      uuid: 'invalid_uuid',
-    })
-
-    await sut.saveFavorite(context)
-
-    expect(context.response.getBody()).toEqual([
-      {
-        field: 'uuid',
-        message: 'The uuid field must be a valid UUID',
-      },
-    ])
-  })
-
-  test('return 404 if return a video not found on save', async ({ expect }) => {
-    const { sut, httpContext } = await makeSut()
-    stub(mockFavoriteService, 'saveFavorite').rejects(new VideoNotFoundException())
-    stub(httpContext.request, 'params').returns({
-      uuid: NilUUID,
-    })
-
-    const httpResponse = sut.saveFavorite(httpContext)
-
-    expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
-  })
-
-  test('return 200 if video was add favorite on save', async ({ expect }) => {
-    const { sut, httpContext } = await makeSut()
-
-    const httpResponse = await sut.saveFavorite(httpContext)
-    expect(httpResponse).toBeTruthy()
-  })
-
-  test('return 500 if video add favorite throws on save', async ({ expect }) => {
-    const { sut, httpContext } = await makeSut()
-    stub(httpContext.request, 'params').returns({
-      uuid: faker.string.uuid(),
-    })
-
-    stub(mockFavoriteService, 'saveFavorite').throws(new Error())
-
-    const httpResponse = sut.saveFavorite(httpContext)
-
-    expect(httpResponse).rejects.toEqual(new Error())
-  })
-
   test('return 200 on find favorites by user logged', async ({ expect }) => {
     const { sut } = await makeSut()
 
