@@ -17,11 +17,13 @@ const ValidateUpdatePasswordController = () =>
   import('#controllers/user/ValidateUpdatePasswordController')
 const GetInfoByUserLoggedController = () =>
   import('#controllers/user/GetInfoByUserLoggedController')
+const SaveFavoriteController = () => import('#controllers/favorite/SaveFavoriteController')
+const DeleteFavoriteController = () => import('#controllers/favorite/DeleteFavoriteController')
 import { middleware } from '#start/kernel'
 
 const FindLyricController = () => import('#controllers/FindLyricsByVideoUUIDController')
 const GameController = () => import('#controllers/game-controller')
-const FavoriteController = () => import('#controllers/favorite-controller')
+const FavoriteController = () => import('#controllers/favorite/FindFavoritesByUserLoggedController')
 
 const FindAllLanguageController = () => import('#controllers/FindAllLanguageController')
 const FindAllGenreController = () => import('#controllers/FindAllGenreController')
@@ -82,9 +84,9 @@ router
   .group(() => {
     router
       .group(() => {
-        router.get('', [FavoriteController, 'findFavoritesByUserLogged'])
-        router.post(':uuid', [FavoriteController, 'saveFavorite'])
-        router.delete(':uuid', [FavoriteController, 'removeFavorite'])
+        router.get('', [FavoriteController])
+        router.post(':uuid', [SaveFavoriteController])
+        router.delete(':uuid', [DeleteFavoriteController])
       })
       .prefix('favorites')
   })
