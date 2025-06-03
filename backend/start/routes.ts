@@ -19,7 +19,7 @@ const GetInfoByUserLoggedController = () =>
   import('#controllers/user/GetInfoByUserLoggedController')
 import { middleware } from '#start/kernel'
 
-const LyricFindController = () => import('#controllers/lyric-find-controller')
+const FindLyricController = () => import('#controllers/FindLyricController')
 const GameController = () => import('#controllers/game-controller')
 const FavoriteController = () => import('#controllers/favorite-controller')
 
@@ -55,7 +55,7 @@ router
   .group(() => {
     router.get(':uuid', [VideoFindController, 'find'])
     router.get('', [VideoFindController, 'findBy'])
-    router.get(':uuid/lyrics', [LyricFindController, 'find'])
+    router.get(':uuid/lyrics', [FindLyricController])
     router
       .group(() => {
         router.post('', [VideoCreateController, 'create'])

@@ -3,6 +3,7 @@ import type { ApplicationService } from '@adonisjs/core/types'
 import { IRegisterSchema } from '#core/domain/validators/RegisterSchema'
 import { ISignInSchema } from '#core/domain/validators/SignInSchema'
 import { IUpdatePasswordSchema } from '#core/domain/validators/UpdatePasswordSchema'
+import { IUUIDValidatorSchema } from '#core/domain/validators/UUIDValidatorSchema'
 import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
 import { IValidateUpdatePasswordSchema } from '#core/domain/validators/ValidateUpdatePasswordSchema'
 import { RegisterSchemaZod } from '#core/infra/validators/zod/auth/RegisterSchemaZod'
@@ -10,6 +11,7 @@ import { SignInSchemaZod } from '#core/infra/validators/zod/auth/SignInSchemaZod
 import { ValidateEmailSchemaZod } from '#core/infra/validators/zod/auth/ValidateEmailSchemaZod'
 import { UpdatePasswordSchemaZod } from '#core/infra/validators/zod/user/UpdatePasswordSchemaZod'
 import { ValidateUpdatePasswordSchemaZod } from '#core/infra/validators/zod/user/ValidateUpdatePasswordSchemaZod'
+import { UUIDValidatorSchemaZod } from '#core/infra/validators/zod/UUIDValidatorSchemaZod'
 
 export default class ValidationProvider {
   constructor(protected app: ApplicationService) {}
@@ -29,6 +31,7 @@ export default class ValidationProvider {
       { protocol: IValidateEmailSchema, implementation: ValidateEmailSchemaZod },
       { protocol: IUpdatePasswordSchema, implementation: UpdatePasswordSchemaZod },
       { protocol: IValidateUpdatePasswordSchema, implementation: ValidateUpdatePasswordSchemaZod },
+      { protocol: IUUIDValidatorSchema, implementation: UUIDValidatorSchemaZod },
     ]
 
     diMap.forEach(({ protocol, implementation }) => {
