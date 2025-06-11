@@ -67,7 +67,7 @@ test.group('FindLyricController', (group) => {
 
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new VideoNotFoundException())
+    await expect(httpResponse).rejects.toThrow(new VideoNotFoundException())
   })
 
   test('return 200 on video lyrics find with success', async ({ expect }) => {
@@ -84,7 +84,7 @@ test.group('FindLyricController', (group) => {
 
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 
   test('call LyricFindService with correct values', async ({ expect }) => {

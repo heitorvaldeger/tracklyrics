@@ -31,7 +31,7 @@ test.group('User/GetInfoByUserLoggedController', (group) => {
     stub(mockUserService, 'getFullInfoByUserLogged').rejects(new UnauthorizedException())
     const httpResponse = sut.handle()
 
-    expect(httpResponse).rejects.toEqual(new UnauthorizedException())
+    await expect(httpResponse).rejects.toThrow(new UnauthorizedException())
   })
 
   test('return an exception not found if user was not found', async ({ expect }) => {
@@ -40,7 +40,7 @@ test.group('User/GetInfoByUserLoggedController', (group) => {
     stub(mockUserService, 'getFullInfoByUserLogged').rejects(new UserNotFoundException())
     const httpResponse = sut.handle()
 
-    expect(httpResponse).rejects.toEqual(new UserNotFoundException())
+    await expect(httpResponse).rejects.toThrow(new UserNotFoundException())
   })
 
   test('return an exception if getFullInfoByUserLogged throws', async ({ expect }) => {
@@ -50,6 +50,6 @@ test.group('User/GetInfoByUserLoggedController', (group) => {
 
     const httpResponse = sut.handle()
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 })

@@ -45,7 +45,7 @@ test.group('Auth/RegisterController', (group) => {
     stub(mockAuthService, 'register').rejects(new UserOrEmailAlreadyUsingException())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new UserOrEmailAlreadyUsingException())
+    await expect(httpResponse).rejects.toThrow(new UserOrEmailAlreadyUsingException())
   })
 
   test('it must return 200 if create user return success', async ({ expect }) => {
@@ -63,6 +63,6 @@ test.group('Auth/RegisterController', (group) => {
     stub(mockAuthService, 'register').throws(new Error())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 })

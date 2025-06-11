@@ -44,7 +44,7 @@ test.group('Auth/ValidateEmailController', (group) => {
     stub(mockAuthService, 'validateEmail').rejects(new EmailHasBeenVerifiedException())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new EmailHasBeenVerifiedException())
+    await expect(httpResponse).rejects.toThrow(new EmailHasBeenVerifiedException())
   })
 
   test('return 422 if user not exist', async ({ expect }) => {
@@ -52,7 +52,7 @@ test.group('Auth/ValidateEmailController', (group) => {
     stub(mockAuthService, 'validateEmail').rejects(new EmailInvalidException())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new EmailInvalidException())
+    await expect(httpResponse).rejects.toThrow(new EmailInvalidException())
   })
 
   test('return 422 if code OTP is invalid', async ({ expect }) => {
@@ -60,7 +60,7 @@ test.group('Auth/ValidateEmailController', (group) => {
     stub(mockAuthService, 'validateEmail').rejects(new CodeOtpInvalidException())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new CodeOtpInvalidException())
+    await expect(httpResponse).rejects.toThrow(new CodeOtpInvalidException())
   })
 
   test('return 200 if validate email with success', async ({ expect }) => {
@@ -78,6 +78,6 @@ test.group('Auth/ValidateEmailController', (group) => {
     stub(mockAuthService, 'validateEmail').throws(new Error())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 })

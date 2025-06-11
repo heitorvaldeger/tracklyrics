@@ -9,6 +9,8 @@
 
 import router from '@adonisjs/core/services/router'
 
+import { middleware } from '#start/kernel'
+
 const RegisterController = () => import('#controllers/auth/RegisterController')
 const LoginController = () => import('#controllers/auth/LoginController')
 const ValidateEmailController = () => import('#controllers/auth/ValidateEmailController')
@@ -19,18 +21,20 @@ const GetInfoByUserLoggedController = () =>
   import('#controllers/user/GetInfoByUserLoggedController')
 const SaveFavoriteController = () => import('#controllers/favorite/SaveFavoriteController')
 const DeleteFavoriteController = () => import('#controllers/favorite/DeleteFavoriteController')
-import { middleware } from '#start/kernel'
+const GetModesGameController = () => import('#controllers/game/GetModesGameController')
+const PlayGameController = () => import('#controllers/game/PlayGameController')
+const FindVideoController = () => import('#controllers/video/FindVideoController')
+const CreateVideoController = () => import('#controllers/video/CreateVideoController')
+const DeleteVideoController = () => import('#controllers/video/DeleteVideoController')
 
 const FindLyricController = () => import('#controllers/FindLyricsByVideoUUIDController')
-const GameController = () => import('#controllers/game-controller')
+const GetGameController = () => import('#controllers/game/GetGameController')
 const FavoriteController = () => import('#controllers/favorite/FindFavoritesByUserLoggedController')
 
 const FindAllLanguageController = () => import('#controllers/FindAllLanguageController')
 const FindAllGenreController = () => import('#controllers/FindAllGenreController')
-const VideoFindController = () => import('#controllers/video-find-controller')
-const VideoCreateController = () => import('#controllers/video-create-controller')
-const VideoDeleteController = () => import('#controllers/video-delete-controller')
-const VideoUpdateController = () => import('#controllers/video-update-controller')
+const FindByVideoController = () => import('#controllers/video/FindByVideoController')
+const UpdateVideoController = () => import('#controllers/video/UpdateVideoController')
 const VideoUserLoggedController = () => import('#controllers/video-user-logged-controller')
 const LogoutController = () => import('#controllers/auth/LogoutController')
 
@@ -55,14 +59,14 @@ router
 
 router
   .group(() => {
-    router.get(':uuid', [VideoFindController, 'find'])
-    router.get('', [VideoFindController, 'findBy'])
+    router.get(':uuid', [FindVideoController])
+    router.get('', [FindByVideoController])
     router.get(':uuid/lyrics', [FindLyricController])
     router
       .group(() => {
-        router.post('', [VideoCreateController, 'create'])
-        router.put(':uuid', [VideoUpdateController, 'update'])
-        router.delete(':uuid', [VideoDeleteController, 'delete'])
+        router.post('', [CreateVideoController])
+        router.put(':uuid', [UpdateVideoController])
+        router.delete(':uuid', [DeleteVideoController])
       })
       .use(
         middleware.auth({
@@ -74,9 +78,9 @@ router
 
 router
   .group(() => {
-    router.put(':uuid/play', [GameController, 'play'])
-    router.get(':uuid/play/:mode', [GameController, 'getGame'])
-    router.get(':uuid/modes', [GameController, 'getModes'])
+    router.put(':uuid/play', [PlayGameController])
+    router.get(':uuid/play/:mode', [GetGameController])
+    router.get(':uuid/modes', [GetModesGameController])
   })
   .prefix('game')
 

@@ -54,7 +54,7 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
     stub(mockUserRepository, 'getUserByEmailWithoutPassword').resolves(null)
     const httpResponse = sut.getFullInfoByUserLogged()
 
-    expect(httpResponse).rejects.toEqual(new UserNotFoundException())
+    await expect(httpResponse).rejects.toThrow(new UserNotFoundException())
   })
 
   test('return a full info by user logged with on success', async ({ expect }) => {

@@ -1,4 +1,3 @@
-import hash from '@adonisjs/core/services/hash'
 import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 

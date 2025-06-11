@@ -63,6 +63,6 @@ test.group('User/UpdatePasswordController', (group) => {
 
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 })

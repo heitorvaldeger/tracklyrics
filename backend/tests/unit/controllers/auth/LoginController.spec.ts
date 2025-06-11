@@ -46,7 +46,7 @@ test.group('AuthController.login', (group) => {
     stub(mockAuthService, 'login').rejects(new InvalidCredentialsException())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new InvalidCredentialsException())
+    await expect(httpResponse).rejects.toThrow(new InvalidCredentialsException())
   })
 
   test('it must return 500 if create accessToken return throws', async ({ expect }) => {
@@ -54,6 +54,6 @@ test.group('AuthController.login', (group) => {
     stub(mockAuthService, 'login').throws(new Error())
     const httpResponse = sut.handle(httpContext)
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 })
