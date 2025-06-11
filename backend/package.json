@@ -128,8 +128,5 @@
       "**/models/**/*.ts",
       "**/helpers/types/**/*.ts"
     ]
-  },
-  "engines": {
-    "node": "20.17.0"
   }
 }
