@@ -14,11 +14,11 @@ const mailConfig = defineConfig({
    */
   mailers: {
     mailTrap: mailTrapTransport({
-      host: env.get('MAILTRAP_HOST'),
-      port: env.get('MAILTRAP_PORT'),
+      host: env.get('MAILTRAP_HOST') ?? '',
+      port: env.get('MAILTRAP_PORT') ?? 0,
       auth: {
-        user: env.get('MAILTRAP_USER'),
-        pass: env.get('MAILTRAP_PASS'),
+        user: env.get('MAILTRAP_USER') ?? '',
+        pass: env.get('MAILTRAP_PASS') ?? '',
       },
     }),
     resend: resendMailTransport(env.get('RESEND_API_KEY') ?? ''),

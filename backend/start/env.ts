@@ -36,10 +36,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring the mail package
   |----------------------------------------------------------
   */
-  MAILTRAP_HOST: Env.schema.string(),
-  MAILTRAP_PORT: Env.schema.number(),
-  MAILTRAP_USER: Env.schema.string(),
-  MAILTRAP_PASS: Env.schema.string(),
+  MAILTRAP_HOST: Env.schema.string.optional(),
+  MAILTRAP_PORT: Env.schema.number.optional(),
+  MAILTRAP_USER: Env.schema.string.optional(),
+  MAILTRAP_PASS: Env.schema.string.optional(),
   MAIL_FROM: Env.schema.string(),
 
   RESEND_API_KEY: Env.schema.string.optional(),
