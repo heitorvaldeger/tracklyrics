@@ -1,3 +1,4 @@
+import { registerAuthValidator } from '@tracklyrics/validators'
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -38,17 +39,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const registerFormSchema = vine.compile(
-  vine.object({
-    email: vine.string().trim().email(),
-    password: vine.string().trim().minLength(6).confirmed(),
-    username: vine.string().trim().minLength(4),
-    firstName: vine.string().trim().minLength(1),
-    lastName: vine.string().trim().minLength(1),
-  }),
-);
+// const registerFormSchema = vine.compile(
+//   vine.object({
+//     email: vine.string().trim().email(),
+//     password: vine.string().trim().minLength(6).confirmed(),
+//     username: vine.string().trim().minLength(4),
+//     firstName: vine.string().trim().minLength(1),
+//     lastName: vine.string().trim().minLength(1),
+//   }),
+// );
 
-type CreateNewAccountData = InferInput<typeof registerFormSchema> & {
+type CreateNewAccountData = InferInput<typeof registerAuthValidator> & {
   password_confirmation: string;
 };
 
@@ -66,7 +67,7 @@ export const Register = () => {
   const navigate = useNavigate();
   const [isOpenValidateEmailModal, setIsOpenValidateModal] = useState(false);
   const registerForm = useForm<CreateNewAccountData>({
-    resolver: vineResolver(registerFormSchema),
+    resolver: vineResolver(registerAuthValidator),
   });
   const { mutateAsync: createNewAccount, isLoading: isCreatingNewAccount } =
     useMutation({
