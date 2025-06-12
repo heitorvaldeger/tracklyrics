@@ -1,4 +1,4 @@
-import { z, ZodError } from 'zod'
+import { ValidateEmailValidatorZod, ZodError } from '@tracklyrics/validators'
 
 import { IValidateEmailSchema } from '#core/domain/validators/ValidateEmailSchema'
 import ValidationException from '#exceptions/ValidationException'
@@ -6,12 +6,7 @@ import ValidationException from '#exceptions/ValidationException'
 export class ValidateEmailSchemaZod implements IValidateEmailSchema {
   async validateAsync(data: any) {
     try {
-      const schema = z.object({
-        email: z.string().trim().email(),
-        codeOTP: z.string().trim().length(6),
-      })
-
-      return await schema.parseAsync(data)
+      return await ValidateEmailValidatorZod.parseAsync(data)
     } catch (error) {
       if (error instanceof ZodError) {
         const errors = error.errors.map((err) => ({

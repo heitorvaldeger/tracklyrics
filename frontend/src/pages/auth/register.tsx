@@ -1,4 +1,3 @@
-import { registerAuthValidator } from '@tracklyrics/validators'
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,9 +5,13 @@ import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
-import { vineResolver } from "@hookform/resolvers/vine";
-import vine from "@vinejs/vine";
-import { InferInput } from "@vinejs/vine/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  RegisterData as CreateNewAccountData,
+  RegisterValidatorZod,
+  ValidateEmailData,
+  ValidateEmailValidatorZod,
+} from "@tracklyrics/validators";
 
 import { register } from "@/api/register";
 import { validateEmail } from "@/api/validate-email";
@@ -39,35 +42,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// const registerFormSchema = vine.compile(
-//   vine.object({
-//     email: vine.string().trim().email(),
-//     password: vine.string().trim().minLength(6).confirmed(),
-//     username: vine.string().trim().minLength(4),
-//     firstName: vine.string().trim().minLength(1),
-//     lastName: vine.string().trim().minLength(1),
-//   }),
-// );
-
-type CreateNewAccountData = InferInput<typeof registerAuthValidator> & {
-  password_confirmation: string;
-};
-
-const validateEmailFormSchema = vine.compile(
-  vine.object({
-    codeOTP: vine.number(),
-  }),
-);
-
-type ValidateEmailData = InferInput<typeof validateEmailFormSchema> & {
-  email: string;
-};
-
 export const Register = () => {
   const navigate = useNavigate();
   const [isOpenValidateEmailModal, setIsOpenValidateModal] = useState(false);
   const registerForm = useForm<CreateNewAccountData>({
-    resolver: vineResolver(registerAuthValidator),
+    resolver: zodResolver(RegisterValidatorZod),
   });
   const { mutateAsync: createNewAccount, isLoading: isCreatingNewAccount } =
     useMutation({
@@ -75,7 +54,7 @@ export const Register = () => {
     });
 
   const validateEmailForm = useForm<ValidateEmailData>({
-    resolver: vineResolver(validateEmailFormSchema),
+    resolver: zodResolver(ValidateEmailValidatorZod),
   });
   const { mutateAsync: validateEmailFn, isLoading: isValidatingEmail } =
     useMutation({
@@ -86,7 +65,7 @@ export const Register = () => {
     try {
       const dataWithPasswordConfirmation: CreateNewAccountData = {
         ...data,
-        password_confirmation: data.password,
+        confirmPassword: data.password,
       };
 
       await createNewAccount(dataWithPasswordConfirmation);
@@ -248,7 +227,7 @@ export const Register = () => {
                 <div className="flex flex-col space-y-0.5">
                   <FormField
                     control={registerForm.control}
-                    name="password_confirmation"
+                    name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="font-semibold">
