@@ -4,7 +4,7 @@ export interface RegisterBody {
   email: string;
   username: string;
   password: string;
-  password_confirmation: string;
+  confirmPassword: string;
   firstName: string;
   lastName: string;
 }

@@ -1,7 +1,7 @@
 import {
   ILanguageRepository,
   LanguageResponse,
-} from '#infra/db/repository/interfaces/language-repository'
+} from '#core/infra/db/repository/interfaces/language-repository'
 
 interface MockLanguageRepositoryStub extends ILanguageRepository {
   languages: LanguageResponse[]

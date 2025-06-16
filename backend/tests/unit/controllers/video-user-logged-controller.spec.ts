@@ -31,7 +31,7 @@ test.group('VideoUserLoggedController', (group) => {
 
     const httpResponse = sut.getVideosByUserLogged()
 
-    expect(httpResponse).rejects.toEqual(new UnauthorizedException())
+    await expect(httpResponse).rejects.toThrow(new UnauthorizedException())
   })
 
   test('return 500 if user getVideosByUserLogged throws', async ({ expect }) => {
@@ -41,6 +41,6 @@ test.group('VideoUserLoggedController', (group) => {
 
     const httpResponse = sut.getVideosByUserLogged()
 
-    expect(httpResponse).rejects.toEqual(new Error())
+    await expect(httpResponse).rejects.toThrow(new Error())
   })
 })

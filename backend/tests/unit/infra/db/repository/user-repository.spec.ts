@@ -3,9 +3,9 @@ import { randomUUID } from 'node:crypto'
 import hash from '@adonisjs/core/services/hash'
 import { test } from '@japa/runner'
 
+import { UserWithoutPassword } from '#core/infra/db/repository/interfaces/user-repository'
+import { UserPostgresRepository } from '#core/infra/db/repository/user-repository'
 import { UserEmailStatus } from '#enums/user-email-status'
-import { UserWithoutPassword } from '#infra/db/repository/interfaces/user-repository'
-import { UserPostgresRepository } from '#infra/db/repository/user-repository'
 import { User } from '#models/user'
 import { mockUser } from '#tests/__mocks__/db/mock-user'
 

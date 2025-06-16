@@ -6324,3 +6324,8 @@ youch@^3.3.3, youch@^3.3.4:
     cookie "^0.7.1"
     mustache "^4.2.0"
     stacktracey "^2.1.8"
+
+zod@^3.25.34:
+  version "3.25.34"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.34.tgz#8ecc7efc6dcd94e5a008cfee82e043dff2fa5ed8"
+  integrity sha512-lZHvSc2PpWdcfpHlyB33HA9nqP16GpC9IpiG4lYq9jZCJVLZNnWd6Y1cj79bcLSBKTkxepfpjckPv5Y5VOPlwA==
