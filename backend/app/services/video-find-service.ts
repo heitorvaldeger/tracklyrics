@@ -1,10 +1,13 @@
 import { inject } from '@adonisjs/core'
 import _ from 'lodash'
 
+import { Auth } from '#core/infra/auth/interfaces/auth'
+import { IFavoriteRepository } from '#core/infra/db/repository/interfaces/favorite-repository'
+import {
+  IVideoRepository,
+  VideoFindParams,
+} from '#core/infra/db/repository/interfaces/video-repository'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
-import { Auth } from '#infra/auth/interfaces/auth'
-import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
-import { IVideoRepository, VideoFindParams } from '#infra/db/repository/interfaces/video-repository'
 import { IVideoFindService } from '#services/interfaces/video-find-service'
 import { getYoutubeThumbnail } from '#utils/index'
 

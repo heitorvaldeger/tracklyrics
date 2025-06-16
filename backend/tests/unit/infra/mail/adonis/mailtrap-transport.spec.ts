@@ -4,7 +4,7 @@ import { test } from '@japa/runner'
 import nodemailer from 'nodemailer'
 import sinon from 'sinon'
 
-import { MailTrapConfig, MailTrapTransport } from '#infra/mail/adonis/mailtrap-transport'
+import { MailTrapConfig, MailTrapTransport } from '#core/infra/mail/adonis/mailtrap-transport'
 
 test.group('Mailtrap Transport Nodemailer', (group) => {
   const config: MailTrapConfig = {

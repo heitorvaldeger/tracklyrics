@@ -2,7 +2,7 @@ import redis from '@adonisjs/redis/services/main'
 import { test } from '@japa/runner'
 import { SinonStub, stub } from 'sinon'
 
-import { RedisAdonis } from '#infra/db/cache/redis-adonis'
+import { RedisAdonis } from '#core/infra/db/cache/redis-adonis'
 
 interface RedisStub {
   set: sinon.SinonStub<[key: string, value: string], Promise<string>>

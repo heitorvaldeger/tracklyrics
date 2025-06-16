@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 import { test } from '@japa/runner'
 import sinon, { stub } from 'sinon'
 
-import { AuthAdonis } from '#infra/auth/auth-adonis'
+import { AuthAdonis } from '#core/infra/auth/auth-adonis'
 
 const id = 1
 const uuid = faker.string.uuid()

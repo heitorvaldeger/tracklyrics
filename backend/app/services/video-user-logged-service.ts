@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 
-import { Auth } from '#infra/auth/interfaces/auth'
-import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
+import { Auth } from '#core/infra/auth/interfaces/auth'
+import { IVideoRepository } from '#core/infra/db/repository/interfaces/video-repository'
 import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 import { getYoutubeThumbnail } from '#utils/index'
 
