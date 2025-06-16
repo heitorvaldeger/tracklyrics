@@ -32,14 +32,14 @@ export default defineConfig({
       file: () => import('@adonisjs/core/providers/repl_provider'),
       environment: ['repl', 'test'],
     },
+    () => import('@adonisjs/core/providers/vinejs_provider'),
     () => import('@adonisjs/cors/cors_provider'),
     () => import('@adonisjs/lucid/database_provider'),
     () => import('@adonisjs/auth/auth_provider'),
+    () => import('#providers/AppProvider'),
     () => import('@adonisjs/mail/mail_provider'),
     () => import('@adonisjs/redis/redis_provider'),
     () => import('@adonisjs/session/session_provider'),
-    () => import('#providers/AppProvider'),
-    () => import('#providers/ValidationProvider'),
   ],
 
   /*
@@ -69,7 +69,7 @@ export default defineConfig({
         timeout: 2000,
       },
       {
-        files: ['tests/functional/**/*.spec(.ts|.js)', 'tests/functional/**/*.test(.ts|.js)'],
+        files: ['tests/functional/**/*.spec(.ts|.js)'],
         name: 'functional',
         timeout: 30000,
       },

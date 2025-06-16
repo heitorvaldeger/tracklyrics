@@ -1,12 +1,12 @@
 import { test } from '@japa/runner'
 import { spy, stub } from 'sinon'
 
-import { IHashAdapter } from '#core/infra/crypto/interfaces/hash-adapter'
-import { IOTPAdapter } from '#core/infra/crypto/interfaces/otp-adapter'
-import { ICacheAdapter } from '#core/infra/db/cache/interfaces/cache-adapter'
 import { UserEmailStatus } from '#enums/user-email-status'
 import CodeOtpInvalidException from '#exceptions/code-otp-invalid-exception'
 import UserNotFoundException from '#exceptions/user-not-found-exception'
+import { IHashAdapter } from '#infra/crypto/interfaces/hash-adapter'
+import { IOTPAdapter } from '#infra/crypto/interfaces/otp-adapter'
+import { ICacheAdapter } from '#infra/db/cache/interfaces/cache-adapter'
 import { UserService } from '#services/user-service'
 import { mockAuth } from '#tests/__mocks__/stubs/mock-auth-stub'
 import { mockUserRepository } from '#tests/__mocks__/stubs/mock-user-stub'
@@ -54,7 +54,7 @@ test.group('UserService.getFullInfoByUserLogged', (group) => {
     stub(mockUserRepository, 'getUserByEmailWithoutPassword').resolves(null)
     const httpResponse = sut.getFullInfoByUserLogged()
 
-    await expect(httpResponse).rejects.toThrow(new UserNotFoundException())
+    expect(httpResponse).rejects.toEqual(new UserNotFoundException())
   })
 
   test('return a full info by user logged with on success', async ({ expect }) => {

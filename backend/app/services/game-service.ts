@@ -1,11 +1,11 @@
 import { inject } from '@adonisjs/core'
 
-import { ILyricRepository } from '#core/infra/db/repository/interfaces/lyric-repository'
-import { IVideoPlayCountRepository } from '#core/infra/db/repository/interfaces/video-play-count-repository'
-import { IVideoRepository } from '#core/infra/db/repository/interfaces/video-repository'
 import { GameModesHash } from '#enums/game-modes-hash'
 import { GameModesPercent } from '#enums/game-modes-percent'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
+import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
+import { IVideoPlayCountRepository } from '#infra/db/repository/interfaces/video-play-count-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
 import { parseTimestamp, shuffleArray } from '#utils/index'
 
 import { IGameService } from './interfaces/game-service.js'

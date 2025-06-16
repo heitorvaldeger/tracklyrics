@@ -4,7 +4,7 @@ import { test } from '@japa/runner'
 import _ from 'lodash'
 import { stub } from 'sinon'
 
-import { VideoPostgresRepository } from '#core/infra/db/repository/video-repository'
+import { VideoPostgresRepository } from '#infra/db/repository/video-repository'
 import { Lyric } from '#models/lyric'
 import Play from '#models/play'
 import { Video } from '#models/video'

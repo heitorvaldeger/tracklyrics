@@ -1,4 +1,4 @@
-import { IFavoriteRepository } from '#core/infra/db/repository/interfaces/favorite-repository'
+import { IFavoriteRepository } from '#infra/db/repository/interfaces/favorite-repository'
 import { IFavoriteService } from '#services/interfaces/favorite-service'
 import { mockVideoData } from '#tests/__mocks__/stubs/mock-video-stub'
 

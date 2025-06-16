@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core'
 
-import { IGenreRepository } from '#core/infra/db/repository/interfaces/genre-repository'
+import { IGenreRepository } from '#infra/db/repository/interfaces/genre-repository'
 import { IGenreService } from '#services/interfaces/genre-service'
 
 @inject()

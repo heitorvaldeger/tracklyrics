@@ -2,7 +2,7 @@ import {
   ILyricRepository,
   LyricResponseWithoutIds,
   LyricToInsert,
-} from '#core/infra/db/repository/interfaces/lyric-repository'
+} from '#infra/db/repository/interfaces/lyric-repository'
 
 export const mockLyricFindResponseData: LyricResponseWithoutIds[] = [
   {

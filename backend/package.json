@@ -1,6 +1,6 @@
 {
-  "name": "@tracklyrics/backend",
-  "version": "1.0.0",
+  "name": "track-lyrics",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -42,8 +42,7 @@
     "#infra/*": "./app/infra/*.js",
     "#enums/*": "./app/enums/*.js",
     "#constants/*": "./app/constants/*.js",
-    "#utils/*": "./app/utils/*.js",
-    "#core/*": "./core/*.js"
+    "#utils/*": "./app/utils/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.1",
@@ -79,7 +78,6 @@
     "typescript": "~5.5"
   },
   "dependencies": {
-    "@tracklyrics/validators": "*",
     "@adonisjs/auth": "^9.4.0",
     "@adonisjs/core": "^6.12.1",
     "@adonisjs/cors": "^2.2.1",
@@ -87,14 +85,14 @@
     "@adonisjs/mail": "^9.2.2",
     "@adonisjs/redis": "^9.1.0",
     "@adonisjs/session": "^7.5.1",
+    "@vinejs/vine": "^2.1.0",
     "lodash": "^4.17.21",
     "luxon": "^3.5.0",
     "nodemailer": "^6.9.16",
     "otpauth": "^9.3.5",
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.2",
-    "resend": "^4.1.2",
-    "zod": "^3.25.34"
+    "resend": "^4.1.2"
   },
   "hotHook": {
     "boundaries": [
@@ -128,5 +126,8 @@
       "**/models/**/*.ts",
       "**/helpers/types/**/*.ts"
     ]
+  },
+  "engines": {
+    "node": "20.17.0"
   }
 }

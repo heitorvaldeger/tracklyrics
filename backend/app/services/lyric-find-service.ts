@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 
-import { ILyricRepository } from '#core/infra/db/repository/interfaces/lyric-repository'
-import { IVideoRepository } from '#core/infra/db/repository/interfaces/video-repository'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
+import { ILyricRepository } from '#infra/db/repository/interfaces/lyric-repository'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
 import { ILyricFindService } from '#services/interfaces/lyric-find-service'
 
 @inject()

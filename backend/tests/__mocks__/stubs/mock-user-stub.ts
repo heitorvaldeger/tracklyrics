@@ -1,9 +1,9 @@
+import { UserEmailStatus } from '#enums/user-email-status'
 import {
   EmailUsername,
   IUserRepository,
   UserWithoutPassword,
-} from '#core/infra/db/repository/interfaces/user-repository'
-import { UserEmailStatus } from '#enums/user-email-status'
+} from '#infra/db/repository/interfaces/user-repository'
 import { User } from '#models/user'
 import { IUserService } from '#services/interfaces/user-service'
 

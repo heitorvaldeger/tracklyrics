@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 
-import { IVideoRepository } from '#core/infra/db/repository/interfaces/video-repository'
 import VideoNotFoundException from '#exceptions/video-not-found-exception'
+import { IVideoRepository } from '#infra/db/repository/interfaces/video-repository'
 import { IVideoDeleteService } from '#services/interfaces/video-delete-service'
 import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 

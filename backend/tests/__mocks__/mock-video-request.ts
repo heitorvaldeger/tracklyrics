@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { VideoSave } from '#core/infra/db/repository/interfaces/video-repository'
+import { VideoSave } from '#infra/db/repository/interfaces/video-repository'
 import { IVideoCreateService } from '#services/interfaces/video-create-service'
 import { makeYoutubeUrl } from '#tests/__utils__/makeYoutubeUrl'
 

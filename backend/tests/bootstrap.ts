@@ -37,7 +37,6 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
   setup: [
     () => {
       mail.fake()
-      testUtils.db().migrate()
     },
   ],
   teardown: [],

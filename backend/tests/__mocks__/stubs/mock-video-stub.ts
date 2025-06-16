@@ -3,7 +3,7 @@ import {
   VideoFindParams,
   VideoResponse,
   VideoSave,
-} from '#core/infra/db/repository/interfaces/video-repository'
+} from '#infra/db/repository/interfaces/video-repository'
 import { IVideoFindService } from '#services/interfaces/video-find-service'
 import { IVideoUserLoggedService } from '#services/interfaces/video-user-logged-service'
 

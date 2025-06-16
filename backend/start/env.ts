@@ -26,8 +26,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   |----------------------------------------------------------
   */
   DB_HOST: Env.schema.string({ format: 'host' }),
-  DB_PORT: Env.schema.number.optional(),
-  DB_USER: Env.schema.string.optional(),
+  DB_PORT: Env.schema.number(),
+  DB_USER: Env.schema.string(),
   DB_PASSWORD: Env.schema.string.optional(),
   DB_DATABASE: Env.schema.string(),
 
@@ -36,10 +36,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring the mail package
   |----------------------------------------------------------
   */
-  MAILTRAP_HOST: Env.schema.string.optional(),
-  MAILTRAP_PORT: Env.schema.number.optional(),
-  MAILTRAP_USER: Env.schema.string.optional(),
-  MAILTRAP_PASS: Env.schema.string.optional(),
+  MAILTRAP_HOST: Env.schema.string(),
+  MAILTRAP_PORT: Env.schema.number(),
+  MAILTRAP_USER: Env.schema.string(),
+  MAILTRAP_PASS: Env.schema.string(),
   MAIL_FROM: Env.schema.string(),
 
   RESEND_API_KEY: Env.schema.string.optional(),

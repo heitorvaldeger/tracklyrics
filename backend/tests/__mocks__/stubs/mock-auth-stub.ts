@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { createStubInstance, SinonStubbedInstance } from 'sinon'
 
-import { AuthAdonis } from '#core/infra/auth/auth-adonis'
-import { Auth } from '#core/infra/auth/interfaces/auth'
-import { UserBasic } from '#core/infra/db/repository/interfaces/user-repository'
 import { UserEmailStatus } from '#enums/user-email-status'
+import { AuthAdonis } from '#infra/auth/auth-adonis'
+import { Auth } from '#infra/auth/interfaces/auth'
+import { UserBasic } from '#infra/db/repository/interfaces/user-repository'
 import { IAuthService } from '#services/interfaces/auth-service'
 
 export const mockAuthService: IAuthService = {
