@@ -4,10 +4,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
-import { vineResolver } from "@hookform/resolvers/vine";
-import vine from "@vinejs/vine";
-import { InferInput } from "@vinejs/vine/types";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SignInValidatorZod as SignInFormSchema, SignInData as SignInForm } from '@tracklyrics/validators'
 import { signIn } from "@/api/sign-in";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,20 +27,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const signInFormSchema = vine.compile(
-  vine.object({
-    email: vine.string().trim().email(),
-    password: vine.string().trim().minLength(6),
-  }),
-);
-
-type SignInForm = InferInput<typeof signInFormSchema>;
-
 export const SignIn = () => {
   const navigate = useNavigate();
 
   const form = useForm<SignInForm>({
-    resolver: vineResolver(signInFormSchema),
+    resolver: zodResolver(SignInFormSchema),
     defaultValues: {
       email: "",
       password: "",

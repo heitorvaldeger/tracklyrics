@@ -1,6 +1,9 @@
-import { z, ZodError as ZE } from "zod";
+import { z, ZodError} from "zod";
 
-export const ZodError = ZE;
+export {
+  ZodError
+}
+
 export interface RegisterData extends z.infer<typeof RegisterValidatorZod> {}
 
 export const RegisterValidatorZod = z
@@ -23,4 +26,11 @@ export interface ValidateEmailData
 export const ValidateEmailValidatorZod = z.object({
   email: z.string().trim().email(),
   codeOTP: z.string().trim().length(6),
+});
+
+export interface SignInData
+  extends z.infer<typeof SignInValidatorZod> {}
+export const SignInValidatorZod = z.object({
+  email: z.string().trim().email(),
+  password: z.string().trim().min(6),
 });
