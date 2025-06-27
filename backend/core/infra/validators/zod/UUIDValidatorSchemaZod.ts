@@ -1,4 +1,4 @@
-import { z, ZodError } from 'zod'
+import { UUIDValidatorZod, ZodError } from '@tracklyrics/validators'
 
 import { IUUIDValidatorSchema } from '#core/domain/validators/UUIDValidatorSchema'
 import ValidationException from '#exceptions/ValidationException'
@@ -6,11 +6,7 @@ import ValidationException from '#exceptions/ValidationException'
 export class UUIDValidatorSchemaZod implements IUUIDValidatorSchema {
   async validateAsync(data: any) {
     try {
-      const schema = z.object({
-        uuid: z.string().uuid(),
-      })
-
-      return await schema.parseAsync(data)
+      return await UUIDValidatorZod.parseAsync(data)
     } catch (error) {
       if (error instanceof ZodError) {
         const errors = error.errors.map((err) => ({

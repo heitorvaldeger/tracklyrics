@@ -85,3 +85,41 @@ export const SaveVideoValidatorZod = z.object({
     )
     .optional(),
 });
+
+export type FindVideoSchemaValidator = z.infer<typeof FindVideoValidatorZod>;
+export const FindVideoValidatorZod = z.object({
+  genreId: z.coerce.number().int().optional(),
+  languageId: z.coerce.number().int().optional(),
+  userUuid: z.string().uuid().optional(),
+});
+
+enum GameModesHash {
+  BEGINNER = "bm",
+  INTERMEDIATE = "im",
+  ADVANCED = "am",
+  SPECIALIST = "sm",
+}
+export type GetGameSchemaValidator = z.infer<typeof GetGameValidatorZod>;
+export const GetGameValidatorZod = z.object({
+  uuid: z.string().trim().uuid(),
+  mode: z.nativeEnum(GameModesHash),
+});
+
+export type UpdatePasswordSchemaValidator = z.infer<
+  typeof UpdatePasswordValidatorZod
+>;
+export const UpdatePasswordValidatorZod = z.object({
+  password: z.string().trim().min(6),
+});
+
+export type ValidateUpdatePasswordSchemaValidator = z.infer<
+  typeof ValidateUpdatePasswordValidatorZod
+>;
+export const ValidateUpdatePasswordValidatorZod = z.object({
+  codeOTP: z.string().trim().length(6),
+});
+
+export type UUIDSchemaValidator = z.infer<typeof UUIDValidatorZod>;
+export const UUIDValidatorZod = z.object({
+  uuid: z.string().uuid(),
+});

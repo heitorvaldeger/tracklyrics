@@ -90,8 +90,7 @@
     "otpauth": "^9.3.5",
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.2",
-    "resend": "^4.1.2",
-    "zod": "^3.25.34"
+    "resend": "^4.1.2"
   },
   "hotHook": {
     "boundaries": [

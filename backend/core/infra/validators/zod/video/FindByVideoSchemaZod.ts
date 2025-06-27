@@ -1,4 +1,4 @@
-import { z, ZodError } from 'zod'
+import { FindVideoValidatorZod, ZodError } from '@tracklyrics/validators'
 
 import { IFindByVideoSchema } from '#core/domain/validators/FindByVideoSchema'
 import ValidationException from '#exceptions/ValidationException'
@@ -6,13 +6,7 @@ import ValidationException from '#exceptions/ValidationException'
 export class FindByVideoSchemaZod implements IFindByVideoSchema {
   async validateAsync(data: any) {
     try {
-      const schema = z.object({
-        genreId: z.coerce.number().int().optional(),
-        languageId: z.coerce.number().int().optional(),
-        userUuid: z.string().uuid().optional(),
-      })
-
-      return await schema.parseAsync(data)
+      return await FindVideoValidatorZod.parseAsync(data)
     } catch (error) {
       if (error instanceof ZodError) {
         const errors = error.errors.map((err) => ({

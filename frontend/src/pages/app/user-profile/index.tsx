@@ -4,9 +4,13 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "sonner";
 
-import { vineResolver } from "@hookform/resolvers/vine";
-import vine from "@vinejs/vine";
-import { InferInput } from "@vinejs/vine/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  UpdatePasswordSchemaValidator,
+  UpdatePasswordValidatorZod,
+  ValidateUpdatePasswordSchemaValidator,
+  ValidateUpdatePasswordValidatorZod,
+} from "@tracklyrics/validators";
 
 import { fetchUserProfile } from "@/api/fetch-user-profile";
 import { updatePassword } from "@/api/update-password";
@@ -32,33 +36,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const updatePasswordSchema = vine.compile(
-  vine.object({
-    password: vine.string().trim().minLength(6),
-  }),
-);
-
-type UpdatePasswordSchema = InferInput<typeof updatePasswordSchema>;
-
-const validatePasswordSchema = vine.compile(
-  vine.object({
-    codeOTP: vine.string().regex(/[0-9]/),
-  }),
-);
-
-type ValidatePasswordSchema = InferInput<typeof validatePasswordSchema>;
-
 export const UserProfile = () => {
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [isOpenValidatePasswordModal, setIsOpenValidatePasswordModal] =
     useState(false);
 
   const updatePasswordForm = useForm({
-    resolver: vineResolver(updatePasswordSchema),
+    resolver: zodResolver(UpdatePasswordValidatorZod),
   });
 
-  const validatePasswordForm = useForm<ValidatePasswordSchema>({
-    resolver: vineResolver(validatePasswordSchema),
+  const validatePasswordForm = useForm<ValidateUpdatePasswordSchemaValidator>({
+    resolver: zodResolver(ValidateUpdatePasswordValidatorZod),
   });
 
   const { handleSubmit, control } = updatePasswordForm;
@@ -92,11 +80,13 @@ export const UserProfile = () => {
     mutationFn: validateUpdatePassword,
   });
 
-  const handleUpdatePassword = (data: UpdatePasswordSchema) => {
+  const handleUpdatePassword = (data: UpdatePasswordSchemaValidator) => {
     updatePasswordFn({ password: data.password });
   };
 
-  const handleValidateEmail = async ({ codeOTP }: ValidatePasswordSchema) => {
+  const handleValidateEmail = async ({
+    codeOTP,
+  }: ValidateUpdatePasswordSchemaValidator) => {
     try {
       await validateUpdatePasswordFn({
         codeOTP: codeOTP.toString(),
