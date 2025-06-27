@@ -4,9 +4,7 @@ import { useMutation, useQuery } from "react-query";
 import { Link, Navigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
-import { vineResolver } from "@hookform/resolvers/vine";
-import vine from "@vinejs/vine";
-import { Infer } from "@vinejs/vine/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createVideo } from "@/api/create-video";
 import { fetchVideo } from "@/api/fetch-video";
@@ -20,51 +18,13 @@ import { Form } from "@/components/ui/form";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGenreLanguage } from "@/contexts/genre-language-context";
 import { useSession } from "@/contexts/session-context";
-import { compareTimeRule } from "@/lib/vinejs/rules/compare-time";
 import { Lyric } from "@/models/lyric";
 
 import { TabDetails } from "./tab-details";
 import { TabDetailsSkeleton } from "./tab-details-skeleton";
 import { TabHelp } from "./tab-help";
 import { TabLyrics } from "./tab-lyrics";
-
-const youtubeLinkRegex =
-  /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-
-const saveVideoSchemaValidator = vine.compile(
-  vine.object({
-    title: vine.string().trim().minLength(3),
-    artist: vine.string().trim().minLength(3),
-    isDraft: vine.boolean().optional(),
-    releaseYear: vine
-      .string()
-      .trim()
-      .fixedLength(4)
-      .regex(/^[0-9]+$/),
-    linkYoutube: vine.string().regex(youtubeLinkRegex).url(),
-    languageId: vine.number(),
-    genreId: vine.number(),
-    lyrics: vine
-      .array(
-        vine.object({
-          line: vine.string().trim().minLength(1),
-          startTime: vine
-            .string()
-            .trim()
-            .use(
-              compareTimeRule({
-                fieldName: "endTime",
-                operation: "less",
-              }),
-            ),
-          endTime: vine.string().trim(),
-        }),
-      )
-      .optional(),
-  }),
-);
-
-export type SaveVideoSchemaValidator = Infer<typeof saveVideoSchemaValidator>;
+import { SaveVideoSchemaValidator, SaveVideoValidatorZod } from "@tracklyrics/validators";
 
 export const VideoSave = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -106,7 +66,7 @@ export const VideoSave = () => {
   })) as Lyric[] | undefined;
 
   const form = useForm<SaveVideoSchemaValidator>({
-    resolver: vineResolver(saveVideoSchemaValidator),
+    resolver: zodResolver(SaveVideoValidatorZod),
     values: {
       artist: videoToEdit?.artist ?? "",
       title: videoToEdit?.title ?? "",
